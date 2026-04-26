@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Přihlášení — LinguaCzech</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--m:#32a0d2;--o:#ffaa37;--z:#16a34a;--r:#dc2626;--font:'Barlow Condensed',sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:linear-gradient(160deg,#0e6fa3,#32a0d2,#5bc8ec);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;}
+.box{background:white;border-radius:20px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.2);overflow:hidden;}
+.box-hdr{background:linear-gradient(135deg,#1a7fa8,var(--m));padding:2rem;text-align:center;color:white;}
+.logo{font-size:3rem;margin-bottom:.5rem;}
+.box-hdr h1{font-size:2rem;font-weight:800;}
+.box-hdr p{opacity:.88;font-size:.9rem;margin-top:.25rem;}
+.box-body{padding:2rem;}
+.info{background:#f0f7fc;border:1.5px solid #c7e8f7;border-radius:10px;padding:.85rem 1rem;margin-bottom:1.25rem;font-size:.88rem;color:#1e4a6b;display:flex;gap:.5rem;}
+.field{margin-bottom:1rem;}
+label{display:block;font-size:.78rem;font-weight:800;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.35rem;}
+input{width:100%;padding:.75rem 1rem;border:1.5px solid #e5e7eb;border-radius:10px;font-family:var(--font);font-size:1.1rem;color:#1f2937;transition:border-color .15s;text-align:center;letter-spacing:.1em;}
+input:focus{outline:none;border-color:var(--m);box-shadow:0 0 0 3px rgba(50,160,210,.12);}
+.pin-wrap{display:flex;gap:.5rem;justify-content:center;margin-top:.35rem;}
+.pin-digit{width:60px;height:70px;border:2px solid #e5e7eb;border-radius:12px;font-size:2rem;font-weight:800;text-align:center;font-family:var(--font);color:#1f2937;transition:border-color .15s;}
+.pin-digit:focus{outline:none;border-color:var(--m);box-shadow:0 0 0 3px rgba(50,160,210,.12);}
+.login-btn{width:100%;padding:.9rem;background:var(--m);color:white;border:none;border-radius:10px;font-size:1.2rem;font-weight:800;cursor:pointer;font-family:var(--font);transition:background .15s;margin-top:.5rem;}
+.login-btn:hover:not(:disabled){background:#2589b8;}
+.login-btn:disabled{background:#9ca3af;cursor:not-allowed;}
+.error{background:#fee2e2;border:1.5px solid #fca5a5;border-radius:8px;padding:.65rem .85rem;color:#b91c1c;font-size:.88rem;font-weight:700;margin-bottom:1rem;display:none;text-align:center;}
+.loading{text-align:center;padding:1rem;color:#6b7280;font-size:.9rem;display:none;}
+.box-footer{padding:1rem;background:#f8fafc;text-align:center;font-size:.75rem;color:#9ca3af;border-top:1px solid #e5e7eb;}
+/* Přihlášen */
+.logged-in{display:none;text-align:center;padding:2rem;}
+.logged-in .avatar{font-size:4rem;margin-bottom:.75rem;}
+.logged-in h2{font-size:1.5rem;font-weight:800;color:#1e3a4f;margin-bottom:.25rem;}
+.logged-in p{color:#6b7280;font-size:.9rem;margin-bottom:1.25rem;}
+.go-btn{display:inline-block;padding:.8rem 2rem;background:var(--z);color:white;border:none;border-radius:10px;font-size:1.1rem;font-weight:800;cursor:pointer;font-family:var(--font);text-decoration:none;}
+.logout-btn{display:block;margin-top:.75rem;background:none;border:none;color:#9ca3af;font-size:.8rem;cursor:pointer;font-family:var(--font);}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="box-hdr">
+    <div class="logo">📚</div>
+    <h1>LinguaCzech</h1>
+    <p>Přihlaš se a začni cvičit!</p>
+  </div>
+  <div class="box-body">
+
+    <!-- CHYBA -->
+    <div class="error" id="error-msg">Špatné jméno nebo PIN. Zkus to znovu!</div>
+    <div class="loading" id="loading">⏳ Přihlašuji...</div>
+
+    <!-- FORMULÁŘ -->
+    <div id="form-login">
+      <div class="info"><span>💡</span><div>Zadej své jméno a čtyřmístný PIN z kartičky od učitelky.</div></div>
+
+      <div class="field">
+        <label>Tvoje jméno</label>
+        <input type="text" id="jmeno" placeholder="Jana Nováková" autocomplete="name" autocapitalize="words">
+      </div>
+
+      <div class="field">
+        <label>PIN kód</label>
+        <div class="pin-wrap">
+          <input class="pin-digit" type="password" maxlength="1" id="p1" inputmode="numeric" pattern="[0-9]">
+          <input class="pin-digit" type="password" maxlength="1" id="p2" inputmode="numeric" pattern="[0-9]">
+          <input class="pin-digit" type="password" maxlength="1" id="p3" inputmode="numeric" pattern="[0-9]">
+          <input class="pin-digit" type="password" maxlength="1" id="p4" inputmode="numeric" pattern="[0-9]">
+        </div>
+      </div>
+
+      <button class="login-btn" onclick="doLogin()" id="login-btn">Přihlásit se →</button>
+    </div>
+
+    <!-- PO PŘIHLÁŠENÍ -->
+    <div class="logged-in" id="logged-in">
+      <div class="avatar">🎓</div>
+      <h2 id="hello-name">Ahoj!</h2>
+      <p id="hello-trida">Třída</p>
+      <a href="2trida.html" class="go-btn">Jít cvičit! →</a>
+      <button class="logout-btn" onclick="doLogout()">Odhlásit se</button>
+    </div>
+
+  </div>
+  <div class="box-footer">ZŠ a MŠ Lingua Universal · Litoměřice</div>
+</div>
+
+<script>
+/* ── LinguaCzech přihlášení (lokální mód) ─────────────
+   Data se ukládají do localStorage v prohlížeči žáka.
+   Backend (Dataverse / Power Automate) doplníme později. */
+
+var STORAGE_KEY = 'lc_zak';
+
+/* ── PIN NAVIGACE ────────────────────────── */
+var digits = ['p1','p2','p3','p4'];
+digits.forEach(function(id, i){
+  var inp = document.getElementById(id);
+  inp.addEventListener('input', function(){
+    this.value = this.value.replace(/[^0-9]/g,'');
+    if(this.value.length === 1 && i < 3){
+      document.getElementById(digits[i+1]).focus();
+    }
+    if(i === 3 && this.value.length === 1){
+      document.getElementById('jmeno').value && doLogin();
+    }
+  });
+  inp.addEventListener('keydown', function(e){
+    if(e.key === 'Backspace' && this.value === '' && i > 0){
+      document.getElementById(digits[i-1]).focus();
+    }
+  });
+});
+
+document.getElementById('jmeno').addEventListener('keydown', function(e){
+  if(e.key === 'Enter') document.getElementById('p1').focus();
+});
+
+/* ── PŘIHLÁŠENÍ (lokální) ─────────────────── */
+function getPin(){
+  return digits.map(function(id){return document.getElementById(id).value;}).join('');
+}
+
+function doLogin(){
+  var jmeno = document.getElementById('jmeno').value.trim();
+  var pin = getPin();
+
+  if(!jmeno){showError('Zadej prosím své jméno!');return;}
+  if(pin.length < 4){showError('Zadej celý 4-místný PIN!');return;}
+
+  hideError();
+  document.getElementById('login-btn').disabled = true;
+
+  /* Lokální uložení — bez backendu.
+     Při prvním přihlášení se uloží jméno+PIN.
+     Při dalších přihlášeních se kontroluje, že PIN sedí. */
+  var existing = localStorage.getItem(STORAGE_KEY);
+  if(existing){
+    try {
+      var stored = JSON.parse(existing);
+      if(stored.jmeno.toLowerCase() === jmeno.toLowerCase() && stored.pin === pin){
+        // OK, stejný žák
+        showLoggedIn({jmeno: stored.jmeno, trida: stored.trida || ''});
+        document.getElementById('login-btn').disabled = false;
+        return;
+      } else {
+        // Jiný žák se chce přihlásit — přepíšeme záznam
+        // (počítáme s tím, že portál používá více dětí na sdílených zařízeních)
+      }
+    } catch(e){ /* ignore — přepíšeme */ }
+  }
+
+  // Nový záznam
+  var zak = {
+    jmeno: jmeno,
+    pin: pin,
+    trida: '2.', // pro start jen 2. třída
+    prihlaseno: new Date().toISOString()
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(zak));
+  showLoggedIn(zak);
+  document.getElementById('login-btn').disabled = false;
+}
+
+function showLoggedIn(zak){
+  document.getElementById('form-login').style.display = 'none';
+  document.getElementById('logged-in').style.display = 'block';
+  document.getElementById('hello-name').textContent = 'Ahoj, ' + zak.jmeno + '! 👋';
+  document.getElementById('hello-trida').textContent = 'Třída ' + (zak.trida || '2.');
+}
+
+function doLogout(){
+  localStorage.removeItem(STORAGE_KEY);
+  document.getElementById('form-login').style.display = 'block';
+  document.getElementById('logged-in').style.display = 'none';
+  document.getElementById('jmeno').value = '';
+  digits.forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('jmeno').focus();
+}
+
+function showError(msg){
+  var e = document.getElementById('error-msg');
+  e.textContent = msg; e.style.display = 'block';
+}
+function hideError(){document.getElementById('error-msg').style.display='none';}
+function showLoading(v){
+  var el = document.getElementById('loading');
+  if(el) el.style.display = v ? 'block' : 'none';
+}
+
+/* Zkontrolovat při načtení jestli je žák přihlášen */
+window.onload = function(){
+  var saved = localStorage.getItem(STORAGE_KEY);
+  if(saved){
+    try {
+      var zak = JSON.parse(saved);
+      if(zak && zak.jmeno) showLoggedIn(zak);
+    } catch(e){ /* ignore */ }
+  }
+};
+</script>
+</body>
+</html>

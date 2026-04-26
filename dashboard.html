@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pokrok třídy — LinguaCzech</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--m:#32a0d2;--o:#ffaa37;--z:#16a34a;--r:#dc2626;--p:#9b7fe8;
+  --font:'Barlow Condensed',sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:#f0f7fc;}
+.wrap{max-width:1100px;margin:0 auto;padding:1.5rem 1rem 3rem;}
+
+/* Header */
+.hdr{background:linear-gradient(135deg,#1a7fa8,var(--m));border-radius:16px;padding:1.5rem;color:white;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.hdr h1{font-size:1.8rem;font-weight:800;}
+.hdr p{opacity:.85;font-size:.9rem;margin-top:.2rem;}
+.hdr-btns{display:flex;gap:.6rem;flex-wrap:wrap;}
+
+/* Karty */
+.card{background:white;border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;box-shadow:0 2px 10px rgba(50,160,210,.08);border:1.5px solid #e5e7eb;}
+.card-title{font-size:1rem;font-weight:800;color:#1e3a4f;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;}
+
+/* Stat boxy */
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:.85rem;margin-bottom:1.25rem;}
+@media(max-width:700px){.stats{grid-template-columns:1fr 1fr;}}
+.stat{background:white;border-radius:12px;padding:1rem;text-align:center;border:1.5px solid #e5e7eb;box-shadow:0 1px 6px rgba(0,0,0,.05);}
+.stat-val{font-size:2rem;font-weight:800;line-height:1.1;}
+.stat-lbl{font-size:.7rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em;margin-top:.2rem;}
+
+/* Import */
+.import-area{border:2px dashed #d1d5db;border-radius:10px;padding:1.5rem;text-align:center;cursor:pointer;transition:border-color .15s;margin-bottom:.85rem;}
+.import-area:hover{border-color:var(--m);}
+.import-area strong{display:block;font-size:1rem;font-weight:700;color:#374151;margin-bottom:.25rem;}
+.import-area p{color:#9ca3af;font-size:.85rem;}
+input[type=file]{display:none;}
+.sep{text-align:center;color:#d1d5db;font-size:.8rem;margin:.6rem 0;}
+textarea.paste{width:100%;min-height:75px;border:1.5px solid #d1d5db;border-radius:8px;padding:.6rem .8rem;font-family:monospace;font-size:.8rem;resize:vertical;}
+.btns{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.75rem;}
+.btn{padding:.55rem 1.1rem;border:none;border-radius:8px;font-family:var(--font);font-size:.9rem;font-weight:700;cursor:pointer;transition:all .12s;}
+.btn-m{background:var(--m);color:white;} .btn-m:hover{background:#2589b8;}
+.btn-o{background:var(--o);color:white;} .btn-o:hover{background:#e8960a;}
+.btn-w{background:white;color:#374151;border:1.5px solid #d1d5db;} .btn-w:hover{border-color:var(--m);color:var(--m);}
+.btn-g{background:var(--z);color:white;}
+
+/* Grid grafů */
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
+@media(max-width:700px){.charts-grid{grid-template-columns:1fr;}}
+.chart-wrap{position:relative;height:280px;}
+.chart-wrap.tall{height:360px;}
+
+/* Filter toolbar */
+.toolbar{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem;}
+.fsel{padding:.4rem .7rem;border:1.5px solid #d1d5db;border-radius:8px;font-family:var(--font);font-size:.85rem;color:#374151;}
+
+/* Regrese box */
+.reg-box{background:#f0f7fc;border:1.5px solid #c7e8f7;border-radius:8px;padding:.75rem 1rem;margin-top:.65rem;font-size:.85rem;color:#1e4a6b;}
+
+/* Tabulka */
+.tbl-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+th{background:#f8fafc;font-size:.72rem;font-weight:800;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;padding:.55rem .75rem;text-align:left;border-bottom:2px solid #e5e7eb;white-space:nowrap;}
+td{padding:.6rem .75rem;border-bottom:1px solid #f1f5f9;font-size:.9rem;color:#374151;}
+tr:hover td{background:#f8fafc;}
+.bdg{display:inline-block;padding:.12rem .5rem;border-radius:99px;font-size:.7rem;font-weight:700;}
+.b-top{background:#dcfce7;color:#15803d;}
+.b-mid{background:#fef3c7;color:#92400e;}
+.b-low{background:#fee2e2;color:#b91c1c;}
+
+/* Progress bar v tabulce */
+.pb{height:5px;background:#e5e7eb;border-radius:99px;min-width:60px;}
+.pb-fill{height:5px;border-radius:99px;background:var(--m);}
+
+/* Prázdný stav */
+.empty{text-align:center;padding:3rem 1rem;color:#9ca3af;}
+.empty-icon{font-size:3.5rem;margin-bottom:.75rem;}
+.empty h3{font-size:1.1rem;font-weight:700;color:#6b7280;margin-bottom:.35rem;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hdr">
+  <div><h1>📊 Pokrok třídy</h1><p>LinguaCzech · přehled aktivit a výsledků</p></div>
+  <div class="hdr-btns">
+    <button class="btn btn-w" onclick="loadDemo()">📋 Demo data</button>
+    <button class="btn btn-g" onclick="exportCSV()">📥 Export CSV</button>
+  </div>
+</div>
+
+<!-- STATISTIKY -->
+<div class="stats">
+  <div class="stat"><div class="stat-val" style="color:var(--m)" id="s-zaci">—</div><div class="stat-lbl">Žáků</div></div>
+  <div class="stat"><div class="stat-val" style="color:var(--o)" id="s-avg">—</div><div class="stat-lbl">Průměr bodů</div></div>
+  <div class="stat"><div class="stat-val" style="color:var(--z)" id="s-top">—</div><div class="stat-lbl">Nejlepší</div></div>
+  <div class="stat"><div class="stat-val" style="color:var(--r)" id="s-min">—</div><div class="stat-lbl">Nejnižší</div></div>
+  <div class="stat"><div class="stat-val" style="color:var(--p)" id="s-cas">—</div><div class="stat-lbl">Ø min/žák</div></div>
+</div>
+
+<!-- IMPORT -->
+<div class="card" id="import-card">
+  <div class="card-title">📂 Nahrát data žáků</div>
+  <div class="import-area" onclick="document.getElementById('csv-file').click()">
+    <strong>Přetáhni CSV nebo klikni</strong>
+    <p>Formát: Jméno, Body, Čas (min), Třída, Datum</p>
+    <input type="file" id="csv-file" accept=".csv" onchange="loadCSV(this)">
+  </div>
+  <div class="sep">— nebo vlož přímo —</div>
+  <textarea class="paste" id="paste" placeholder="Jana Nováková,145,32,2.A,24.4.2026&#10;Petr Svoboda,89,18,2.A,24.4.2026&#10;Marie Horáčková,210,51,2.B,24.4.2026"></textarea>
+  <div class="btns">
+    <button class="btn btn-m" onclick="parsePaste()">Načíst data</button>
+    <button class="btn btn-w" onclick="loadDemo()">Načíst demo</button>
+  </div>
+  <div style="margin-top:.75rem;font-size:.78rem;color:#9ca3af">
+    💡 Export CSV z generátoru přístupů (ucitel.html) funguje přímo — stačí přidat sloupce Body, Čas, Datum
+  </div>
+</div>
+
+<!-- GRAFY -->
+<div id="charts-section" style="display:none">
+
+  <div class="toolbar">
+    <select class="fsel" id="f-class" onchange="renderAll()">
+      <option value="all">Všechny třídy</option>
+    </select>
+    <select class="fsel" id="f-sort" onchange="renderTable()">
+      <option value="body">Seřadit: body ↓</option>
+      <option value="cas">Seřadit: čas ↓</option>
+      <option value="jmeno">Seřadit: jméno A-Z</option>
+      <option value="eff">Seřadit: efektivita ↓</option>
+    </select>
+    <button class="btn btn-w" onclick="toggleImport()">✏️ Upravit data</button>
+  </div>
+
+  <!-- Scatter + Bar grafy -->
+  <div class="charts-grid">
+    <div class="card">
+      <div class="card-title">⚡ Body vs. čas (scatter)</div>
+      <div class="chart-wrap"><canvas id="c-scatter"></canvas></div>
+      <div class="reg-box" id="reg-info"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📊 Rozložení bodů (histogram)</div>
+      <div class="chart-wrap"><canvas id="c-hist"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Průměr tříd -->
+  <div class="card" id="class-comp-card">
+    <div class="card-title">🏫 Porovnání tříd</div>
+    <div class="chart-wrap"><canvas id="c-classes"></canvas></div>
+  </div>
+
+  <!-- Tabulka žáků -->
+  <div class="card">
+    <div class="card-title">👥 Přehled žáků</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>#</th><th>Jméno</th><th>Třída</th>
+          <th>Body</th><th>Čas (min)</th><th>B/min</th>
+          <th>Pokrok</th><th>Úroveň</th>
+        </tr></thead>
+        <tbody id="tbl-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- charts-section -->
+
+<!-- Prázdný stav -->
+<div class="card" id="empty-state" style="display:none">
+  <div class="empty">
+    <div class="empty-icon">📭</div>
+    <h3>Žádná data</h3>
+    <p>Nahraj CSV soubor nebo vlož data ručně výše</p>
+  </div>
+</div>
+
+</div>
+<script>
+var DATA=[], charts={};
+
+/* ── DEMO DATA ──────────────────── */
+function loadDemo(){
+  var names2A=['Jana Nováková','Petr Svoboda','Marie Horáčková','Tomáš Dvořák','Lucie Procházková','Martin Krejčí','Eva Pokorná','Jakub Blažek','Tereza Součková','Adam Fiala','Karolína Marková','Ondřej Šimánek'];
+  var names2B=['Pavel Novotný','Klára Sedláčková','Ondřej Marek','Barbora Vlčková','Lukáš Kratochvíl','Simona Jelínková','Radek Pospíšil','Veronika Nováčková','Filip Kolář','Aneta Šimková','Marek Horáček','Nikola Procházková'];
+  DATA=[];
+  names2A.forEach(function(n){DATA.push({jmeno:n,body:40+Math.round(Math.random()*230),cas:8+Math.round(Math.random()*65),trida:'2.A',datum:'24.4.2026'});});
+  names2B.forEach(function(n){DATA.push({jmeno:n,body:30+Math.round(Math.random()*250),cas:6+Math.round(Math.random()*70),trida:'2.B',datum:'24.4.2026'});});
+  document.getElementById('import-card').style.display='none';
+  afterLoad();
+}
+
+/* ── IMPORT ─────────────────────── */
+function loadCSV(input){
+  var file=input.files[0];if(!file)return;
+  var r=new FileReader();r.onload=function(e){parseText(e.target.result);};r.readAsText(file,'UTF-8');
+}
+function parsePaste(){parseText(document.getElementById('paste').value);}
+function parseText(text){
+  var lines=text.trim().split('\n');DATA=[];
+  var start=lines[0].toLowerCase().replace(/[^a-zěščřžýáíéúůďťňó]/g,'').startsWith('jm')?1:0;
+  for(var i=start;i<lines.length;i++){
+    var c=lines[i].split(',').map(function(x){return x.trim().replace(/^"|"$/g,'');});
+    if(!c[0])continue;
+    DATA.push({jmeno:c[0],body:parseInt(c[1])||0,cas:parseInt(c[2])||0,trida:c[3]||'—',datum:c[4]||'—'});
+  }
+  if(!DATA.length){document.getElementById('empty-state').style.display='block';return;}
+  document.getElementById('import-card').style.display='none';
+  afterLoad();
+}
+
+function toggleImport(){
+  var ic=document.getElementById('import-card');
+  ic.style.display=ic.style.display==='none'?'block':'none';
+}
+
+function afterLoad(){
+  // Třídy filter
+  var classes=['all'];
+  DATA.forEach(function(d){if(classes.indexOf(d.trida)<0)classes.push(d.trida);});
+  var sel=document.getElementById('f-class');
+  sel.innerHTML='<option value="all">Všechny třídy</option>';
+  classes.slice(1).forEach(function(c){sel.innerHTML+='<option value="'+c+'">Třída '+c+'</option>';});
+
+  // Porovnání tříd — skrýt pokud jen jedna
+  document.getElementById('class-comp-card').style.display=classes.length>2?'block':'none';
+
+  document.getElementById('charts-section').style.display='block';
+  document.getElementById('empty-state').style.display='none';
+  renderAll();
+}
+
+function getFiltered(){
+  var cls=document.getElementById('f-class').value;
+  return cls==='all'?DATA:DATA.filter(function(d){return d.trida===cls;});
+}
+
+function renderAll(){renderStats();renderScatter();renderHist();renderClassComp();renderTable();}
+
+/* ── STATISTIKY ─────────────────── */
+function renderStats(){
+  var fd=getFiltered();if(!fd.length)return;
+  var avg=Math.round(fd.reduce(function(s,d){return s+d.body;},0)/fd.length);
+  var top=Math.max.apply(null,fd.map(function(d){return d.body;}));
+  var min=Math.min.apply(null,fd.map(function(d){return d.body;}));
+  var avgCas=Math.round(fd.reduce(function(s,d){return s+d.cas;},0)/fd.length);
+  el('s-zaci').textContent=fd.length;
+  el('s-avg').textContent=avg;
+  el('s-top').textContent=top;
+  el('s-min').textContent=min;
+  el('s-cas').textContent=avgCas+' min';
+}
+
+/* ── SCATTER ────────────────────── */
+function renderScatter(){
+  var fd=getFiltered();
+  destroyChart('scatter');
+  var pts=fd.map(function(d){return{x:d.cas,y:d.body,lbl:d.jmeno};});
+  var datasets=[{label:'Žáci',data:pts,type:'scatter',
+    backgroundColor:'rgba(50,160,210,.65)',borderColor:'rgba(50,160,210,1)',
+    pointRadius:7,pointHoverRadius:10}];
+
+  if(pts.length>2){
+    var reg=linReg(pts.map(function(p){return p.x;}),pts.map(function(p){return p.y;}));
+    var xs=pts.map(function(p){return p.x;});
+    var x0=Math.min.apply(null,xs),x1=Math.max.apply(null,xs);
+    datasets.push({label:'Regresní přímka',data:[{x:x0,y:reg.a*x0+reg.b},{x:x1,y:reg.a*x1+reg.b}],
+      type:'line',borderColor:'rgba(255,170,55,.9)',borderWidth:2.5,pointRadius:0,fill:false,tension:0});
+    el('reg-info').innerHTML='<b>y = '+reg.a.toFixed(2)+'x + '+reg.b.toFixed(1)+'</b> &nbsp;|&nbsp; R² = <b>'+reg.r2.toFixed(3)+'</b> &nbsp;|&nbsp; '+r2txt(reg.r2);
+  }
+
+  charts.scatter=new Chart(el('c-scatter'),{type:'scatter',data:{datasets:datasets},options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{tooltip:{callbacks:{label:function(c){return c.raw.lbl+': '+c.raw.y+' b. / '+c.raw.x+' min';}}},
+      legend:{labels:{font:{family:'Barlow Condensed',size:12},boxWidth:12}}},
+    scales:{x:{title:{display:true,text:'Čas (min)',font:{family:'Barlow Condensed',size:12,weight:'700'}},grid:{color:'rgba(0,0,0,.05)'}},
+            y:{title:{display:true,text:'Body',font:{family:'Barlow Condensed',size:12,weight:'700'}},grid:{color:'rgba(0,0,0,.05)'}}}
+  }});
+}
+
+/* ── HISTOGRAM ──────────────────── */
+function renderHist(){
+  var fd=getFiltered();
+  destroyChart('hist');
+  // Rozdělit do košů 0-49, 50-99, 100-149, ...
+  var max=Math.max.apply(null,fd.map(function(d){return d.body;}));
+  var step=50, kose=[];
+  for(var i=0;i<=max;i+=step)kose.push(i);
+  var counts=kose.map(function(k){
+    return fd.filter(function(d){return d.body>=k&&d.body<k+step;}).length;
+  });
+  var labels=kose.map(function(k){return k+'-'+(k+step-1);});
+  charts.hist=new Chart(el('c-hist'),{type:'bar',data:{
+    labels:labels,
+    datasets:[{label:'Počet žáků',data:counts,
+      backgroundColor:'rgba(155,127,232,.7)',borderColor:'rgba(155,127,232,1)',borderWidth:1.5,borderRadius:6}]
+  },options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{x:{title:{display:true,text:'Bodové rozmezí',font:{family:'Barlow Condensed',size:12,weight:'700'}},grid:{display:false}},
+            y:{title:{display:true,text:'Počet žáků',font:{family:'Barlow Condensed',size:12,weight:'700'}},ticks:{stepSize:1},grid:{color:'rgba(0,0,0,.05)'}}}
+  }});
+}
+
+/* ── POROVNÁNÍ TŘÍD ─────────────── */
+function renderClassComp(){
+  destroyChart('classes');
+  var cls={};
+  DATA.forEach(function(d){
+    if(!cls[d.trida])cls[d.trida]={sum:0,n:0};
+    cls[d.trida].sum+=d.body;cls[d.trida].n++;
+  });
+  var labels=Object.keys(cls).sort();
+  var avgs=labels.map(function(c){return Math.round(cls[c].sum/cls[c].n);});
+  var colors=['rgba(50,160,210,.75)','rgba(255,170,55,.75)','rgba(22,163,74,.75)','rgba(155,127,232,.75)'];
+  charts.classes=new Chart(el('c-classes'),{type:'bar',data:{
+    labels:labels.map(function(l){return 'Třída '+l;}),
+    datasets:[{label:'Průměr bodů',data:avgs,backgroundColor:colors,borderColor:colors.map(function(c){return c.replace('.75',1);}),borderWidth:1.5,borderRadius:8}]
+  },options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    plugins:{legend:{display:false}},
+    scales:{x:{title:{display:true,text:'Průměrné body',font:{family:'Barlow Condensed',size:12,weight:'700'}},grid:{color:'rgba(0,0,0,.05)'}},
+            y:{grid:{display:false}}}
+  }});
+}
+
+/* ── TABULKA ────────────────────── */
+function renderTable(){
+  var fd=getFiltered().slice();
+  var sortKey=document.getElementById('f-sort').value;
+  fd.sort(function(a,b){
+    if(sortKey==='jmeno')return a.jmeno.localeCompare(b.jmeno,'cs');
+    if(sortKey==='cas')return b.cas-a.cas;
+    if(sortKey==='eff'){var ea=a.cas?a.body/a.cas:0,eb=b.cas?b.body/b.cas:0;return eb-ea;}
+    return b.body-a.body;
+  });
+  var avg=fd.reduce(function(s,d){return s+d.body;},0)/(fd.length||1);
+  var maxBody=Math.max.apply(null,fd.map(function(d){return d.body;}));
+  var tbody=el('tbl-body');tbody.innerHTML='';
+  fd.forEach(function(d,i){
+    var eff=d.cas>0?(d.body/d.cas).toFixed(1):'—';
+    var pct=maxBody>0?Math.round(d.body/maxBody*100):0;
+    var lvl=d.body>=avg*1.2?['Výborný','b-top']:d.body>=avg*0.7?['Průměr','b-mid']:['Potřebuje pomoc','b-low'];
+    tbody.innerHTML+=
+      '<tr><td style="color:#9ca3af">'+(i+1)+'</td>'+
+      '<td><b>'+esc(d.jmeno)+'</b></td>'+
+      '<td>'+esc(d.trida)+'</td>'+
+      '<td><b>'+d.body+'</b></td>'+
+      '<td>'+d.cas+'</td>'+
+      '<td>'+eff+'</td>'+
+      '<td><div class="pb"><div class="pb-fill" style="width:'+pct+'%"></div></div></td>'+
+      '<td><span class="bdg '+lvl[1]+'">'+lvl[0]+'</span></td></tr>';
+  });
+}
+
+/* ── EXPORT ─────────────────────── */
+function exportCSV(){
+  if(!DATA.length){alert('Žádná data.');return;}
+  var lines=['\ufeffJméno,Třída,Body,Čas (min),Body/min,Datum'];
+  DATA.forEach(function(d){lines.push([d.jmeno,d.trida,d.body,d.cas,d.cas>0?(d.body/d.cas).toFixed(1):'—',d.datum].join(','));});
+  var blob=new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='linguaczech-pokrok.csv';a.click();
+}
+
+/* ── LINEÁRNÍ REGRESE ───────────── */
+function linReg(xs,ys){
+  var n=xs.length,sx=0,sy=0,sxy=0,sxx=0,syy=0;
+  for(var i=0;i<n;i++){sx+=xs[i];sy+=ys[i];sxy+=xs[i]*ys[i];sxx+=xs[i]*xs[i];syy+=ys[i]*ys[i];}
+  var a=(n*sxy-sx*sy)/(n*sxx-sx*sx),b=(sy-a*sx)/n;
+  var ym=sy/n,sst=0,ssr=0;
+  for(var i=0;i<n;i++){sst+=Math.pow(ys[i]-ym,2);ssr+=Math.pow(ys[i]-(a*xs[i]+b),2);}
+  return{a:a,b:b,r2:Math.max(0,1-ssr/sst)};
+}
+function r2txt(r2){
+  if(r2>.7)return'<span style="color:#16a34a;font-weight:700">silná korelace</span>';
+  if(r2>.4)return'<span style="color:#92400e;font-weight:700">střední korelace</span>';
+  return'<span style="color:#b91c1c;font-weight:700">slabá korelace</span>';
+}
+function destroyChart(name){if(charts[name]){charts[name].destroy();charts[name]=null;}}
+function el(id){return document.getElementById(id);}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+</script>
+</body>
+</html>

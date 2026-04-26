@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lingua Universal — Cvičení</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;1,700&display=swap" rel="stylesheet">
+<style>
+:root{--m:#32a0d2;--o:#ffaa37;--z:#16a34a;--font:'Barlow Condensed',sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:#f0f7fc;min-height:100vh;overflow-x:hidden;}
+
+/* HERO */
+.hero{background:linear-gradient(160deg,#0e6fa3 0%,var(--m) 50%,#5bc8ec 100%);padding:2.5rem 1rem 0;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(255,255,255,.08) 0%,transparent 60%);}
+.school-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.35);border-radius:99px;padding:.35rem 1rem;margin-bottom:1rem;position:relative;}
+.school-dot{width:9px;height:9px;background:var(--o);border-radius:50%;}
+.school-name{font-size:1rem;font-weight:800;color:white;letter-spacing:.5px;}
+.hero h1{font-size:clamp(2.2rem,8vw,3.6rem);font-weight:800;color:white;line-height:1.05;margin-bottom:.5rem;position:relative;}
+.hero h1 em{color:var(--o);font-style:normal;}
+.hero p{color:rgba(255,255,255,.88);font-size:1rem;font-weight:600;margin-bottom:1.5rem;position:relative;}
+
+/* SVG scene */
+.hero-scene{max-width:500px;margin:0 auto;animation:rise .7s ease both;}
+@keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+.hero-scene svg{width:100%;height:auto;display:block;}
+
+/* Wave */
+.wave{display:block;background:#f0f7fc;}
+
+/* MAIN */
+.main{max-width:680px;margin:0 auto;padding:1.25rem 1rem 3rem;}
+.sec-label{font-size:1.4rem;font-weight:800;color:#1e4a6b;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem;}
+.sec-label::after{content:'';flex:1;height:2px;background:linear-gradient(90deg,#c7e8f7,transparent);border-radius:2px;}
+
+/* Grade grid */
+.grade-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem;margin-bottom:1.75rem;}
+@media(max-width:480px){.grade-grid{grid-template-columns:1fr 1fr;}}
+
+.gc{border-radius:14px;padding:1rem .5rem;text-align:center;cursor:pointer;border:none;font-family:var(--font);transition:transform .15s,box-shadow .15s;outline:none;}
+.gc:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.18);}
+.gc.active{box-shadow:0 4px 16px rgba(0,0,0,.2);}
+.gc.m{background:var(--m);}
+.gc.o{background:var(--o);}
+.gc-num{font-size:2rem;font-weight:800;color:white;line-height:1;}
+.gc-lbl{font-size:.72rem;font-weight:700;color:rgba(255,255,255,.9);margin-top:.2rem;text-transform:uppercase;letter-spacing:.04em;}
+.gc-tag{display:inline-block;background:rgba(255,255,255,.25);font-size:.6rem;font-weight:800;color:white;border-radius:99px;padding:.1rem .45rem;margin-top:.3rem;}
+
+/* Lessons */
+.lessons{display:none;flex-direction:column;gap:.7rem;animation:fade .25s ease;}
+.lessons.vis{display:flex;}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.lk{display:flex;align-items:center;gap:.85rem;background:white;border-radius:12px;padding:.9rem 1rem;text-decoration:none;color:inherit;border-left:4px solid var(--m);box-shadow:0 1px 6px rgba(0,0,0,.07);transition:transform .12s,box-shadow .12s;}
+.lk:hover{transform:translateX(3px);box-shadow:0 3px 12px rgba(0,0,0,.11);}
+.lk.o{border-left-color:var(--o);}
+.lk.g{border-left-color:var(--z);}
+.lk.dim{opacity:.52;pointer-events:none;}
+.lk-ico{font-size:1.5rem;width:36px;text-align:center;flex-shrink:0;}
+.lk-body{flex:1;}
+.lk-title{font-size:1rem;font-weight:800;color:#1e3a4f;}
+.lk-desc{font-size:.78rem;color:#6b7280;margin-top:.1rem;}
+.coming{font-size:.65rem;background:#f3f4f6;color:#9ca3af;border-radius:99px;padding:.1rem .45rem;font-weight:700;margin-left:.4rem;}
+.lk-arr{color:#b0cfe0;font-size:1.1rem;flex-shrink:0;}
+.lk.o .lk-arr{color:var(--o);}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div style="position:relative">
+    <div class="school-badge"><div class="school-dot"></div><span class="school-name">Lingua Universal</span></div>
+    <h1><em style="color:#ffec6e;font-style:normal">Čeština</em><br><em style="color:#ffaa37;font-style:normal">hravě</em></h1>
+    <p>Cvičení pro 1. stupeň ZŠ</p>
+  </div>
+
+  <!-- SVG scéna se školou a dětmi -->
+  <div class="hero-scene">
+    <svg viewBox="0 0 520 265" xmlns="http://www.w3.org/2000/svg">
+      <!-- Mraky -->
+      <ellipse cx="85" cy="48" rx="52" ry="20" fill="rgba(255,255,255,.18)"/>
+      <ellipse cx="112" cy="40" rx="36" ry="16" fill="rgba(255,255,255,.22)"/>
+      <ellipse cx="420" cy="38" rx="45" ry="17" fill="rgba(255,255,255,.18)"/>
+      <ellipse cx="448" cy="31" rx="30" ry="13" fill="rgba(255,255,255,.22)"/>
+
+      <!-- Tráva -->
+      <rect x="0" y="222" width="520" height="43" rx="0" fill="#3dbd7a"/>
+      <ellipse cx="260" cy="222" rx="260" ry="11" fill="#4dd88a"/>
+
+      <!-- ŠKOLA 3 PATROVÁ — světle zelená -->
+      <!-- Základ budovy -->
+      <rect x="150" y="95" width="220" height="135" rx="4" fill="#8a9e52"/>
+      <!-- Patro 1 oddělovač -->
+      <rect x="150" y="140" width="220" height="3" fill="#6b7d3a"/>
+      <!-- Patro 2 oddělovač -->
+      <rect x="150" y="185" width="220" height="3" fill="#6b7d3a"/>
+      <!-- Nárožní pásy -->
+      <rect x="150" y="95" width="8" height="135" fill="#6b7d3a"/>
+      <rect x="362" y="95" width="8" height="135" fill="#6b7d3a"/>
+      <!-- PATRO 3 (nahoře) — okna -->
+      <rect x="172" y="103" width="32" height="28" rx="3" fill="#c8d98a"/>
+      <rect x="172" y="103" width="32" height="28" rx="3" fill="#b8e0f7" opacity=".8"/>
+      <line x1="188" y1="103" x2="188" y2="131" stroke="white" stroke-width="1.5"/>
+      <rect x="234" y="103" width="32" height="28" rx="3" fill="#b8e0f7" opacity=".8"/>
+      <line x1="250" y1="103" x2="250" y2="131" stroke="white" stroke-width="1.5"/>
+      <rect x="296" y="103" width="32" height="28" rx="3" fill="#b8e0f7" opacity=".8"/>
+      <line x1="312" y1="103" x2="312" y2="131" stroke="white" stroke-width="1.5"/>
+      <!-- Nápis LINGUA UNIVERSAL mezi 2. a 3. patrem -->
+      <rect x="158" y="135" width="204" height="10" rx="2" fill="#57693e" opacity=".6"/>
+      <text x="260" y="143" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-size="8" font-weight="800" fill="white" letter-spacing="1">LINGUA UNIVERSAL</text>
+      <!-- PATRO 2 — okna -->
+      <rect x="172" y="150" width="32" height="26" rx="3" fill="#b8e0f7" opacity=".8"/>
+      <line x1="188" y1="150" x2="188" y2="176" stroke="white" stroke-width="1.5"/>
+      <rect x="296" y="150" width="32" height="26" rx="3" fill="#b8e0f7" opacity=".8"/>
+      <line x1="312" y1="150" x2="312" y2="176" stroke="white" stroke-width="1.5"/>
+      <!-- Velké okno uprostřed 2.patra -->
+      <rect x="222" y="148" width="76" height="30" rx="3" fill="#b8e0f7" opacity=".85"/>
+      <line x1="260" y1="148" x2="260" y2="178" stroke="white" stroke-width="1.5"/>
+      <line x1="222" y1="163" x2="298" y2="163" stroke="white" stroke-width="1.5"/>
+      <!-- PATRO 1 — okna + dveře -->
+      <rect x="172" y="195" width="32" height="26" rx="3" fill="#b8e0f7" opacity=".8"/>
+      <line x1="188" y1="195" x2="188" y2="221" stroke="white" stroke-width="1.5"/>
+      <rect x="296" y="195" width="32" height="26" rx="3" fill="#b8e0f7" opacity=".8"/>
+      <line x1="312" y1="195" x2="312" y2="221" stroke="white" stroke-width="1.5"/>
+      <!-- Dveře -->
+      <rect x="237" y="192" width="46" height="38" rx="4" fill="#ffaa37"/>
+      <circle cx="276" cy="211" r="3" fill="#c47d00"/>
+      <rect x="237" y="192" width="46" height="8" rx="2" fill="#e8901a"/>
+      <!-- Schody -->
+      <rect x="229" y="228" width="62" height="4" rx="1" fill="#57693e"/>
+      <rect x="233" y="224" width="54" height="4" rx="1" fill="#6b7d3a"/>
+      <!-- Střecha plochá s vlajkou -->
+      <rect x="148" y="90" width="224" height="8" rx="3" fill="#57693e"/>
+
+
+      <!-- Lípa vlevo — vyšší, kulatá koruna -->
+      <rect x="86" y="175" width="10" height="52" rx="3" fill="#5c3d1e"/>
+      <!-- kmen viditelný -->
+      <rect x="88" y="195" width="6" height="32" rx="2" fill="#7a5030"/>
+      <!-- kulatá koruna lípy -->
+      <ellipse cx="91" cy="152" rx="35" ry="38" fill="#3aad65"/>
+      <ellipse cx="91" cy="148" rx="28" ry="30" fill="#4dc97a"/>
+      <ellipse cx="91" cy="142" rx="20" ry="22" fill="#5dda8a"/>
+      <!-- srdeční lísteček nahoře -->
+      <ellipse cx="91" cy="118" rx="10" ry="13" fill="#4dc97a"/>
+      <ellipse cx="79" cy="128" rx="9" ry="11" fill="#4dc97a"/>
+      <ellipse cx="103" cy="128" rx="9" ry="11" fill="#4dc97a"/>
+
+      <!-- Strom vpravo -->
+      <rect x="416" y="192" width="10" height="32" rx="3" fill="#7a5030"/>
+      <ellipse cx="421" cy="177" rx="24" ry="28" fill="#3dbd7a"/>
+      <ellipse cx="421" cy="166" rx="17" ry="20" fill="#4dd88a"/>
+
+      <!-- Létající písmena -->
+      <circle cx="58" cy="128" r="21" fill="#f05a6e" opacity=".92"/>
+      <text x="58" y="136" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-size="21" font-weight="800" fill="white">A</text>
+      <circle cx="460" cy="108" r="19" fill="#9b7fe8" opacity=".92"/>
+      <text x="460" y="116" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-size="19" font-weight="800" fill="white">B</text>
+      <circle cx="40" cy="188" r="17" fill="#ffaa37" opacity=".88"/>
+      <text x="40" y="195" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-size="16" font-weight="800" fill="white">Č</text>
+      <circle cx="482" cy="170" r="18" fill="#32a0d2" opacity=".88"/>
+      <text x="482" y="178" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-size="18" font-weight="800" fill="white">E</text>
+      <circle cx="108" cy="83" r="15" fill="#3dbd7a" opacity=".88"/>
+      <text x="108" y="89" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-size="14" font-weight="800" fill="white">Ž</text>
+      <circle cx="402" cy="73" r="15" fill="#f07e5a" opacity=".88"/>
+      <text x="402" y="79" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-size="14" font-weight="800" fill="white">Ř</text>
+
+      <!-- DÍTĚ VLEVO — holčička s culíky, červené šaty -->
+      <!-- tělo -->
+      <rect x="116" y="208" width="18" height="22" rx="4" fill="#f05a6e"/>
+      <!-- ruce -->
+      <line x1="116" y1="214" x2="106" y2="225" stroke="#fcd9aa" stroke-width="5" stroke-linecap="round"/>
+      <line x1="134" y1="214" x2="144" y2="225" stroke="#fcd9aa" stroke-width="5" stroke-linecap="round"/>
+      <!-- nohy -->
+      <line x1="121" y1="230" x2="118" y2="245" stroke="#4a3728" stroke-width="5" stroke-linecap="round"/>
+      <line x1="129" y1="230" x2="132" y2="245" stroke="#4a3728" stroke-width="5" stroke-linecap="round"/>
+      <!-- hlava -->
+      <circle cx="125" cy="198" r="13" fill="#fcd9aa"/>
+      <!-- vlasy — hnědé culíky -->
+      <ellipse cx="114" cy="195" rx="5" ry="8" fill="#5c3a1e"/>
+      <ellipse cx="136" cy="195" rx="5" ry="8" fill="#5c3a1e"/>
+      <ellipse cx="125" cy="188" rx="13" ry="6" fill="#5c3a1e"/>
+      <!-- obličej -->
+      <circle cx="121" cy="197" r="2" fill="#3a2010"/>
+      <circle cx="129" cy="197" r="2" fill="#3a2010"/>
+      <path d="M120,203 Q125,207 130,203" stroke="#c47060" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <!-- tváříčky -->
+      <circle cx="119" cy="200" r="3" fill="#f9b4a0" opacity=".6"/>
+      <circle cx="131" cy="200" r="3" fill="#f9b4a0" opacity=".6"/>
+
+      <!-- DÍTĚ VPRAVO — chlapeček, modrá trička -->
+      <!-- tělo -->
+      <rect x="378" y="207" width="18" height="22" rx="4" fill="#32a0d2"/>
+      <!-- ruce -->
+      <line x1="378" y1="213" x2="368" y2="224" stroke="#fcd9aa" stroke-width="5" stroke-linecap="round"/>
+      <line x1="396" y1="213" x2="406" y2="224" stroke="#fcd9aa" stroke-width="5" stroke-linecap="round"/>
+      <!-- nohy -->
+      <line x1="383" y1="229" x2="380" y2="244" stroke="#2c3e50" stroke-width="5" stroke-linecap="round"/>
+      <line x1="391" y1="229" x2="394" y2="244" stroke="#2c3e50" stroke-width="5" stroke-linecap="round"/>
+      <!-- hlava -->
+      <circle cx="387" cy="197" r="13" fill="#fcd9aa"/>
+      <!-- vlasy — tmavé krátké -->
+      <ellipse cx="387" cy="187" rx="13" ry="7" fill="#3a2010"/>
+      <rect x="374" y="186" width="26" height="7" rx="3" fill="#3a2010"/>
+      <!-- obličej -->
+      <circle cx="383" cy="196" r="2" fill="#3a2010"/>
+      <circle cx="391" cy="196" r="2" fill="#3a2010"/>
+      <path d="M382,202 Q387,206 392,202" stroke="#c47060" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <!-- tváříčky -->
+      <circle cx="381" cy="199" r="3" fill="#f9b4a0" opacity=".6"/>
+      <circle cx="393" cy="199" r="3" fill="#f9b4a0" opacity=".6"/>
+      <!-- čepice -->
+      <rect x="376" y="183" width="22" height="6" rx="3" fill="#f05a6e"/>
+      <rect x="372" y="185" width="30" height="4" rx="2" fill="#f07a8a"/>
+    </svg>
+  </div>
+</div>
+
+<!-- Wave divider -->
+<svg class="wave" viewBox="0 0 1440 50" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block;margin-top:-1px">
+  <path d="M0,30 C360,58 1080,2 1440,30 L1440,0 L0,0Z" fill="#5bc8ec"/>
+  <path d="M0,40 C480,12 960,54 1440,26 L1440,0 L0,0Z" fill="#32a0d2"/>
+</svg>
+
+<!-- MAIN -->
+<div class="main">
+  <div style="text-align:center;margin-bottom:1.5rem;">
+    <a href="prihlaseni.html" style="display:inline-flex;align-items:center;gap:.5rem;background:var(--m);color:white;padding:.75rem 2rem;border-radius:99px;font-size:1.1rem;font-weight:800;text-decoration:none;box-shadow:0 4px 14px rgba(50,160,210,.35);">
+      🔑 Přihlásit se
+    </a>
+    <div style="margin-top:.6rem;font-size:.82rem;color:#a0c4d8;font-weight:600">nebo vyber třídu níže</div>
+  </div>
+  <div class="sec-label">Vyber třídu</div>
+<div class="grade-grid">
+    <button class="gc" onclick="showGrade(1)" style="background:#ffaa37"><div class="gc-num">1.</div><div class="gc-lbl">třída</div><div class="gc-tag">brzy</div></button>
+    <a class="gc active" id="gc2" href="2trida.html" style="background:#32a0d2;text-decoration:none;display:block;"><div class="gc-num">2.</div><div class="gc-lbl">třída</div><div class="gc-tag">→</div></a>
+    <button class="gc" onclick="showGrade(3)" style="background:#ffaa37"><div class="gc-num">3.</div><div class="gc-lbl">třída</div><div class="gc-tag">brzy</div></button>
+    <button class="gc" onclick="showGrade(4)" style="background:#32a0d2"><div class="gc-num">4.</div><div class="gc-lbl">třída</div><div class="gc-tag">brzy</div></button>
+    <button class="gc" onclick="showGrade(5)" style="background:#ffaa37"><div class="gc-num">5.</div><div class="gc-lbl">třída</div><div class="gc-tag">brzy</div></button>
+  </div>
+
+  <!-- 2. třída -->
+  </div></div>
+        <div style="text-align:center;margin-top:2rem;color:#a0c4d8;font-size:.82rem;font-weight:700">
+    ZŠ a MŠ Lingua Universal · Litoměřice
+  </div>
+</div>
+
+<script>
+/* == NASTAVENÍ URL == 
+   Sem vlož správnou URL adresu stránky 2. třídy z tvého portálu.
+   Příklad: '2trida.html'
+   nebo jen název stránky pokud jsou ve stejné složce: 'index.html'
+*/
+var DRUHA_TRIDA_URL = '2trida.html';
+
+function showGrade(g){
+  if(g===2){window.location=DRUHA_TRIDA_URL;return;}
+  document.querySelectorAll('.gc').forEach(function(b,i){
+    b.classList.toggle('active',i+1===g);
+  });
+}
+</script>
+</body>
+</html>

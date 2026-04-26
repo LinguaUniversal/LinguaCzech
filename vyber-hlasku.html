@@ -1,0 +1,529 @@
+<title>Vyber hlásku — LinguaCzech</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--m:#32a0d2;--o:#ffaa37;--ms:#e8f4fb;--os:#fff8ee;--z:#16a34a;--zs:#dcfce7;--r:#dc2626;--rs:#fee2e2;--font:'Barlow Condensed',sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;}
+.hl{font-family:var(--font);max-width:700px;margin:1.5rem auto;padding:.5rem 1rem;}
+.mh{background:var(--m);color:white;border-radius:14px;padding:1.5rem;text-align:center;margin-bottom:1.5rem;}
+.mh h1{font-size:2rem;font-weight:700;}
+.mh p{margin:.4rem 0 0;opacity:.9;font-size:1rem;}
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.mk{background:white;border:2px solid #e5e7eb;border-radius:14px;padding:1.25rem 1rem;text-align:center;cursor:pointer;transition:all .15s;}
+.mk:hover{transform:translateY(-2px);filter:brightness(.95);}
+.mk-m{background:var(--ms);border-color:var(--m);}
+.mk-m h3{color:#1a5f7a;}
+.mk-o{background:var(--os);border-color:var(--o);}
+.mk-o h3{color:#b45309;}
+.mk h3{margin:0 0 .25rem;font-size:1.1rem;font-weight:700;}
+.mk p{font-size:.88rem;color:#6b7280;}
+.cv{display:none;}
+.nav{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;}
+.zpet{background:none;border:1.5px solid #d1d5db;border-radius:8px;padding:.4rem .9rem;cursor:pointer;font-size:.95rem;font-weight:600;color:#374151;font-family:var(--font);}
+.zpet:hover{background:#f3f4f6;}
+.tit{font-size:1.3rem;font-weight:700;color:#1f2937;}
+.ka{background:white;border:1.5px solid #e5e7eb;border-radius:12px;padding:1.5rem;margin-bottom:1rem;}
+.moz{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:.75rem;}
+.btn{flex:1;min-width:64px;padding:.8rem .5rem;border:1.5px solid #d1d5db;border-radius:8px;background:white;font-size:2.2rem;font-weight:700;cursor:pointer;transition:all .15s;font-family:var(--font);}
+.btn:hover:not(:disabled){border-color:var(--m);background:var(--ms);}
+.btn.ok{background:var(--zs);border-color:var(--z);color:#15803d;}
+.btn.err{background:var(--rs);border-color:var(--r);color:var(--r);}
+.btn:disabled{cursor:default;}
+.fb{margin-top:.75rem;font-size:.95rem;min-height:1.4rem;font-weight:600;}
+.fb.ok{color:var(--z);}
+.fb.err{color:var(--r);}
+.nxt{display:none;width:100%;margin-top:.75rem;padding:.75rem;background:var(--z);color:white;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:var(--font);}
+.nxt:hover{background:#15803d;}
+.res{display:none;text-align:center;background:var(--zs);border:2px solid var(--z);border-radius:12px;padding:2rem;}
+.res h2{color:#15803d;font-size:1.6rem;font-weight:700;}
+.znovu{margin-top:1rem;padding:.7rem 2rem;background:var(--m);color:white;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:var(--font);margin-right:.5rem;}
+.mbtn{padding:.7rem 2rem;background:white;color:#374151;border:1.5px solid #d1d5db;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;font-family:var(--font);}
+.pg{background:#e5e7eb;border-radius:99px;height:7px;margin-bottom:1.25rem;}
+.pgf{background:var(--m);height:7px;border-radius:99px;transition:width .3s;}
+.sk{display:flex;justify-content:center;gap:2rem;background:var(--os);border:1px solid #ffd48a;border-radius:10px;padding:.9rem;margin-bottom:1.25rem;}
+.skn{font-size:2rem;font-weight:700;color:var(--o);text-align:center;}
+.skl{font-size:.82rem;color:#6b7280;text-align:center;}
+.word-display{display:flex;align-items:flex-end;justify-content:center;gap:.05rem;font-size:3.2rem;font-weight:700;margin:1rem 0;letter-spacing:.03em;}
+.word-blank{display:inline-block;min-width:44px;border-bottom:4px solid var(--m);color:var(--m);text-align:center;}
+.res-row{display:flex;gap:1.5rem;justify-content:center;margin:.4rem 0 .8rem;flex-wrap:wrap;}
+.rs{text-align:center;min-width:70px;}
+.rsv{font-size:1.9rem;font-weight:700;color:var(--m);}
+.rsv.pts{color:var(--o);}
+.rsl{font-size:.78rem;color:#6b7280;margin-top:2px;}
+.scbg{position:fixed;top:10px;right:12px;background:var(--o);color:white;border-radius:99px;padding:.3rem .85rem;font-weight:700;font-size:1rem;font-family:var(--font);z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.18);pointer-events:none;}
+.trophy-bar{position:fixed;top:46px;right:12px;display:flex;gap:.25rem;z-index:200;background:rgba(255,255,255,.85);border-radius:99px;padding:.15rem .5rem;box-shadow:0 1px 6px rgba(0,0,0,.12);}
+.trp{font-size:1.5rem;opacity:.15;transition:opacity .3s,transform .4s;filter:grayscale(1);}
+.trp.earned{opacity:1;filter:none;}
+@keyframes trpop{0%{transform:scale(1)}40%{transform:scale(1.5)}100%{transform:scale(1)}}
+.trp.pop{animation:trpop .45s ease;}
+/* Set picker */
+.set-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.5rem;}
+.set-btn{padding:1.2rem .5rem;border:2px solid #d1d5db;border-radius:12px;background:white;font-size:2rem;font-weight:700;cursor:pointer;font-family:var(--font);transition:all .15s;text-align:center;letter-spacing:.1em;}
+.set-btn:hover{border-color:var(--m);background:var(--ms);transform:translateY(-1px);}
+/* Game */
+.gm-word{text-align:center;font-size:2.2rem;font-weight:700;margin:.5rem 0 .25rem;color:#1f2937;letter-spacing:.05em;font-family:var(--font);}
+.gm-blank{color:var(--m);border-bottom:3px solid var(--m);display:inline-block;min-width:32px;}
+.timer-bar-wrap{background:#e5e7eb;border-radius:99px;height:8px;margin-bottom:.5rem;overflow:hidden;}
+.timer-bar{height:8px;border-radius:99px;background:var(--z);transition:width .1s linear;}
+
+/* ── TOP BAR ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(90deg,#1a7fa8,#32a0d2);
+  padding:.45rem 1rem;margin-bottom:1rem;border-radius:10px;}
+.topbar-back{color:white;font-size:.9rem;font-weight:700;cursor:pointer;
+  text-decoration:none;display:flex;align-items:center;gap:.35rem;opacity:.92;}
+.topbar-back:hover{opacity:1;}
+.topbar-brand{color:rgba(255,255,255,.75);font-size:.78rem;font-weight:700;
+  letter-spacing:.5px;text-transform:uppercase;}
+</style>
+
+<div class="hl">
+<div class="scbg" id="scbg">⭐ 0 b.</div>
+<div class="trophy-bar"><span class="trp" id="tr1" title="100 bodů">🥉</span><span class="trp" id="tr2" title="150 bodů">🥈</span><span class="trp" id="tr3" title="200 bodů">🥇</span></div>
+
+<!-- MENU -->
+<div id="menu">
+  <div class="mh"><h1>Vyber hlásku</h1><p>Dlouhé a krátké samohlásky</p></div>
+  <div class="mg">
+    <div onclick="go('dk')" class="mk mk-m" style="grid-column:span 2"><h3>Dlouhá nebo krátká?</h3><p>a/á · e/é · i/í · y/ý</p></div>
+    <div onclick="go('ee')" class="mk mk-o"><h3>e nebo ě?</h3><p>Doplň správné e do slova</p></div>
+    <div onclick="go('uu')" class="mk mk-m"><h3>u, ú nebo ů?</h3><p>Rozeznávej tři podobné hlásky</p></div>
+    <div onclick="go('car')" class="mk mk-o" style="grid-column:span 2"><h3>🚗 Autíčka — u, ú, ů</h3><p>Projeď správným pruhem!</p></div>
+  </div>
+</div>
+
+<!-- CV1: DLOUHÁ/KRÁTKÁ -->
+<div class="cv" id="cv-dk">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">Dlouhá nebo krátká?</span></div>
+  <div id="dk-pick" class="ka">
+    <div style="font-size:1rem;font-weight:700;color:#374151;margin-bottom:.75rem">Vyber skupinu hlásek:</div>
+    <div class="set-grid">
+      <button class="set-btn" onclick="dkStart('a')">a / á</button>
+      <button class="set-btn" onclick="dkStart('e')">e / é</button>
+      <button class="set-btn" onclick="dkStart('i')">i / í</button>
+      <button class="set-btn" onclick="dkStart('y')">y / ý</button>
+    </div>
+  </div>
+  <div id="dk-ob" style="display:none">
+    <div class="sk"><div><div class="skn" id="dksp">0</div><div class="skl">správně</div></div><div><div class="skn" id="dkerr">0</div><div class="skl">chyby</div></div><div><div class="skn" id="dkci">1/10</div><div class="skl">otázka</div></div></div>
+    <div class="pg"><div class="pgf" id="dkpg" style="width:0%"></div></div>
+    <div class="ka">
+      <div class="word-display" id="dk-word"></div>
+      <div class="moz" id="dk-moz"></div>
+      <div class="fb" id="dk-fb"></div>
+      <button class="nxt" id="dk-nx" onclick="dkNext()">Další →</button>
+    </div>
+  </div>
+  <div class="res" id="dkres">
+    <div style="font-size:3rem" id="dkem">🎉</div><h2 id="dktx">Výborně!</h2><p id="dkpp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv pts" id="dksc2">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv pts" id="dktot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('dk')">Nová sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV2: E / Ě -->
+<div class="cv" id="cv-ee">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">e nebo ě?</span><span style="margin-left:auto;font-size:.9rem;color:#6b7280" id="ee-ci">1/10</span></div>
+  <div class="sk"><div><div class="skn" id="eesp">0</div><div class="skl">správně</div></div><div><div class="skn" id="eeerr">0</div><div class="skl">chyby</div></div></div>
+  <div class="pg"><div class="pgf" id="eepg" style="width:0%"></div></div>
+  <div class="ka" id="ee-ob">
+    <div class="word-display" id="ee-word"></div>
+    <div class="moz" id="ee-moz"></div>
+    <div class="fb" id="ee-fb"></div>
+    <button class="nxt" id="ee-nx" onclick="eeNext()">Další →</button>
+  </div>
+  <div class="res" id="eeres">
+    <div style="font-size:3rem" id="eeem">🎉</div><h2 id="eetx">Výborně!</h2><p id="eepp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv pts" id="eesc2">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv pts" id="eetot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('ee')">Znovu 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV3: U / Ú / Ů -->
+<div class="cv" id="cv-uu">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">u, ú nebo ů?</span><span style="margin-left:auto;font-size:.9rem;color:#6b7280" id="uu-ci">1/10</span></div>
+  <div class="sk"><div><div class="skn" id="uusp">0</div><div class="skl">správně</div></div><div><div class="skn" id="uuerr">0</div><div class="skl">chyby</div></div></div>
+  <div class="pg"><div class="pgf" id="uupg" style="width:0%"></div></div>
+  <div class="ka" id="uu-ob">
+    <div class="word-display" id="uu-word"></div>
+    <div class="moz" id="uu-moz"></div>
+    <div class="fb" id="uu-fb"></div>
+    <button class="nxt" id="uu-nx" onclick="uuNext()">Další →</button>
+  </div>
+  <div class="res" id="uures">
+    <div style="font-size:3rem" id="uuem">🎉</div><h2 id="uutx">Výborně!</h2><p id="uupp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv pts" id="uusc2">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv pts" id="uutot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('uu')">Znovu 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV4: AUTÍČKA -->
+<div class="cv" id="cv-car">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🚗 Autíčka</span></div>
+  <div id="car-start" class="ka" style="text-align:center;padding:1.5rem">
+    <div style="font-size:3rem">🚗</div>
+    <h3 style="margin:.4rem 0 .8rem;font-size:1.3rem">Projeď správným pruhem!</h3>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin:.8rem 0">
+      <div style="background:#e8f4fb;border:2px solid var(--m);border-radius:10px;padding:.6rem;text-align:center;font-size:2rem;font-weight:700;color:#1a5f7a;font-family:var(--font)">u<div style="font-size:.75rem;font-weight:600;color:#6b7280">krátké</div></div>
+      <div style="background:#fff8ee;border:2px solid var(--o);border-radius:10px;padding:.6rem;text-align:center;font-size:2rem;font-weight:700;color:#b45309;font-family:var(--font)">ú<div style="font-size:.75rem;font-weight:600;color:#6b7280">na začátku</div></div>
+      <div style="background:#f0fdf4;border:2px solid var(--z);border-radius:10px;padding:.6rem;text-align:center;font-size:2rem;font-weight:700;color:#15803d;font-family:var(--font)">ů<div style="font-size:.75rem;font-weight:600;color:#6b7280">uvnitř slova</div></div>
+    </div>
+    <p style="color:#6b7280;font-size:.88rem;margin:.5rem 0 1.2rem">Šipky ↑↓ nebo klik/tap na pruh</p>
+    <button class="znovu" onclick="carStart()">Hrát! 🚀</button>
+  </div>
+  <div id="car-play" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem;font-family:var(--font)">
+      <div id="car-lives" style="font-size:1.25rem">❤️❤️❤️</div>
+      <div style="font-weight:700;color:var(--m)">Skóre: <span id="carsc">0</span></div>
+    </div>
+    <canvas id="carcv" width="480" height="240" style="width:100%;border-radius:12px;border:2px solid #e5e7eb;display:block;touch-action:none;cursor:pointer"></canvas>
+    <div class="gm-word" id="car-word"></div>
+    <div style="text-align:center;color:#9ca3af;font-size:.82rem">↑↓ šipky · klik/tap na pruh</div>
+  </div>
+  <div class="res" id="car-over" style="display:none">
+    <div style="font-size:3rem" id="carem">🏁</div><h2 id="cartx">Konec!</h2><p id="carpp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv pts" id="carsc2">0</div><div class="rsl">správně</div></div><div class="rs"><div class="rsv pts" id="cartot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="carStart()">Znovu 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+</div>
+
+<script>
+/* ── GLOBALS ─────────────────────────────── */
+var gScore=0;
+try{gScore=parseInt(localStorage.getItem('vh_score'))||0;el('scbg').textContent='⭐ '+gScore+' b.';updateTrophies();}catch(e){}
+function addPts(pts,sid,tid){gScore+=pts;try{localStorage.setItem('vh_score',gScore);}catch(e){}el('scbg').textContent='⭐ '+gScore+' b.';updateTrophies();el(sid).textContent=pts;el(tid).textContent=gScore;}
+function updateTrophies(){
+  var b=Math.min(1,gScore/100);
+  var s=Math.min(1,Math.max(0,(gScore-100)/50));
+  var g=Math.min(1,Math.max(0,(gScore-150)/50));
+  [[b,'tr1'],[s,'tr2'],[g,'tr3']].forEach(function(t){
+    var p=t[0],e=el(t[1]);
+    e.style.opacity=(0.12+p*0.88).toFixed(2);
+    e.style.filter=p>=1?'none':'grayscale('+(1-p).toFixed(2)+') brightness('+(0.7+p*0.3).toFixed(2)+')';
+    if(p>=1&&!e.classList.contains('earned')){
+      e.classList.add('earned','pop');
+      setTimeout(function(){e.classList.remove('pop');},500);
+    }else if(p>=1)e.classList.add('earned');
+  });
+}
+function el(id){return document.getElementById(id);}
+function tx(id,v){el(id).textContent=v;}
+function sh(id){el(id).style.display='block';}
+function hi(id){el(id).style.display='none';}
+function pct(id,v){el(id).style.width=v+'%';}
+function mx(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=0|Math.random()*(i+1);var t=b[i];b[i]=b[j];b[j]=t;}return b;}
+function back(){sh('menu');['dk','ee','uu','car'].forEach(function(x){hi('cv-'+x);});}
+function go(t){hi('menu');['dk','ee','uu','car'].forEach(function(x){hi('cv-'+x);});sh('cv-'+t);
+  if(t==='dk'){hi('dk-ob');hi('dkres');sh('dk-pick');}
+  else if(t==='ee')eeI();else if(t==='uu')uuI();else if(t==='car')carI();}
+
+/* ── DATA ────────────────────────────────── */
+var DK_SETS={
+  a:[
+    {q:'m{_}ma',a:'á',full:'máma'},{q:'t{_}ta',a:'á',full:'táta'},
+    {q:'tr{_}va',a:'á',full:'tráva'},{q:'br{_}na',a:'á',full:'brána'},
+    {q:'r{_}no',a:'á',full:'ráno'},{q:'bl{_}to',a:'á',full:'bláto'},
+    {q:'sl{_}ma',a:'á',full:'sláma'},{q:'z{_}mek',a:'á',full:'zámek'},
+    {q:'p{_}s',a:'á',full:'pás'},{q:'v{_}za',a:'á',full:'váza'},
+    {q:'l{_}ska',a:'á',full:'láska'},{q:'p{_}ra',a:'á',full:'pára'},
+    {q:'s{_}dlo',a:'á',full:'sádlo'},{q:'kr{_}l',a:'á',full:'král'},
+    {q:'dr{_}k',a:'a',full:'drak'},{q:'m{_}lý',a:'a',full:'malý'},
+    {q:'zl{_}tý',a:'a',full:'zlatý'},{q:'v{_}ta',a:'a',full:'vata'},
+    {q:'r{_}k',a:'a',full:'rak'},{q:'z{_}hrada',a:'a',full:'zahrada'},
+    {q:'k{_}pr',a:'a',full:'kapr'},{q:'j{_}blko',a:'a',full:'jablko'},
+    {q:'t{_}ška',a:'a',full:'taška'},{q:'l{_}mpa',a:'a',full:'lampa'},
+  ],
+  e:[
+    {q:'l{_}to',a:'é',full:'léto'},{q:'l{_}tat',a:'é',full:'létat'},
+    {q:'p{_}ct',a:'é',full:'péct'},{q:'n{_}st',a:'é',full:'nést'},
+    {q:'cel{_}',a:'é',full:'celé'},{q:'v{_}st',a:'é',full:'vést'},
+    {q:'t{_}ct',a:'é',full:'téct'},{q:'vel{_}',a:'é',full:'velé'},
+    {q:'l{_}s',a:'e',full:'les'},{q:'p{_}s',a:'e',full:'pes'},
+    {q:'m{_}d',a:'e',full:'med'},{q:'d{_}n',a:'e',full:'den'},
+    {q:'hn{_}d',a:'e',full:'hned'},{q:'r{_}t',a:'e',full:'ret'},
+    {q:'t{_}n',a:'e',full:'ten'},{q:'s{_}n',a:'e',full:'sen'},
+    {q:'z{_}m',a:'e',full:'zem'},{q:'chl{_}b',a:'e',full:'chleb'},
+    {q:'p{_}klo',a:'e',full:'peklo'},{q:'h{_}zký',a:'e',full:'hezký'},
+  ],
+  i:[
+    {q:'b{_}lý',a:'í',full:'bílý'},{q:'l{_}ný',a:'í',full:'líný'},
+    {q:'s{_}la',a:'í',full:'síla'},{q:'p{_}seň',a:'í',full:'píseň'},
+    {q:'kn{_}ha',a:'í',full:'kniha'},{q:'v{_}la',a:'í',full:'víla'},
+    {q:'j{_}zda',a:'í',full:'jízda'},{q:'v{_}tr',a:'í',full:'vítr'},
+    {q:'s{_}to',a:'í',full:'síto'},{q:'m{_}sa',a:'í',full:'mísa'},
+    {q:'p{_}sek',a:'í',full:'písek'},{q:'r{_}ka',a:'í',full:'říká'},
+    {q:'l{_}st',a:'i',full:'list'},{q:'k{_}no',a:'i',full:'kino'},
+    {q:'m{_}ska',a:'i',full:'miska'},{q:'n{_}t',a:'i',full:'nit'},
+    {q:'p{_}lot',a:'i',full:'pilot'},{q:'l{_}pa',a:'i',full:'lipa'},
+    {q:'v{_}la',a:'i',full:'vila'},{q:'sk{_}ca',a:'i',full:'skica'},
+  ],
+  y:[
+    {q:'t{_}gr',a:'y',full:'tygr'},{q:'ch{_}ba',a:'y',full:'chyba'},
+    {q:'r{_}ba',a:'y',full:'ryba'},{q:'k{_}tka',a:'y',full:'kytka'},
+    {q:'h{_}ena',a:'y',full:'hyena'},{q:'n{_}lon',a:'y',full:'nylon'},
+    {q:'t{_}čka',a:'y',full:'tyčka'},{q:'ch{_}tit',a:'y',full:'chytit'},
+    {q:'h{_}mna',a:'y',full:'hymna'},{q:'r{_}tíř',a:'y',full:'rytíř'},
+    {q:'k{_}tara',a:'y',full:'kytara'},{q:'h{_}drant',a:'y',full:'hydrant'},
+    {q:'t{_}den',a:'ý',full:'týden'},{q:'b{_}k',a:'ý',full:'býk'},
+    {q:'v{_}let',a:'ý',full:'výlet'},{q:'dobr{_}',a:'ý',full:'dobrý'},
+    {q:'velk{_}',a:'ý',full:'velký'},{q:'mal{_}',a:'ý',full:'malý'},
+    {q:'nov{_}',a:'ý',full:'nový'},{q:'star{_}',a:'ý',full:'starý'},
+    {q:'kr{_}t',a:'ý',full:'krýt'},{q:'z{_}vat',a:'ý',full:'zývat'},
+  ]
+};
+
+var EE_SLOVA=[
+  {q:'m{_}sto',a:'ě',full:'město'},{q:'d{_}ti',a:'ě',full:'děti'},
+  {q:'n{_}co',a:'ě',full:'něco'},{q:'ob{_}d',a:'ě',full:'oběd'},
+  {q:'m{_}síc',a:'ě',full:'měsíc'},{q:'t{_}lo',a:'ě',full:'tělo'},
+  {q:'sv{_}tlo',a:'ě',full:'světlo'},{q:'p{_}t',a:'ě',full:'pět'},
+  {q:'kv{_}tina',a:'ě',full:'květina'},{q:'v{_}c',a:'ě',full:'věc'},
+  {q:'m{_}kký',a:'ě',full:'měkký'},{q:'v{_}tší',a:'ě',full:'větší'},
+  {q:'n{_}kde',a:'ě',full:'někde'},{q:'b{_}žet',a:'ě',full:'běžet'},
+  {q:'l{_}s',a:'e',full:'les'},{q:'p{_}s',a:'e',full:'pes'},
+  {q:'m{_}d',a:'e',full:'med'},{q:'d{_}n',a:'e',full:'den'},
+  {q:'r{_}t',a:'e',full:'ret'},{q:'hn{_}d',a:'e',full:'hned'},
+  {q:'t{_}n',a:'e',full:'ten'},{q:'s{_}n',a:'e',full:'sen'},
+  {q:'n{_}bo',a:'e',full:'nebo'},{q:'j{_}ště',a:'e',full:'ještě'},
+  {q:'l{_}tat',a:'e',full:'letat'},{q:'h{_}zký',a:'e',full:'hezký'},
+];
+
+var UU_SLOVA=[
+  {q:'d{_}m',a:'ů',full:'dům'},{q:'st{_}l',a:'ů',full:'stůl'},
+  {q:'k{_}ň',a:'ů',full:'kůň'},{q:'n{_}ž',a:'ů',full:'nůž'},
+  {q:'k{_}že',a:'ů',full:'kůže'},{q:'p{_}da',a:'ů',full:'půda'},
+  {q:'s{_}l',a:'ů',full:'sůl'},{q:'m{_}j',a:'ů',full:'můj'},
+  {q:'d{_}l',a:'ů',full:'důl'},{q:'h{_}l',a:'ů',full:'hůl'},
+  {q:'k{_}ra',a:'ů',full:'kůra'},{q:'t{_}ň',a:'ů',full:'tůň'},
+  {q:'{_}kol',a:'ú',full:'úkol'},{q:'{_}sta',a:'ú',full:'ústa'},
+  {q:'{_}nor',a:'ú',full:'únor'},{q:'{_}terý',a:'ú',full:'úterý'},
+  {q:'{_}l',a:'ú',full:'úl'},{q:'{_}směv',a:'ú',full:'úsměv'},
+  {q:'{_}žasný',a:'ú',full:'úžasný'},{q:'{_}tok',a:'ú',full:'útok'},
+  {q:'r{_}ka',a:'u',full:'ruka'},{q:'k{_}ře',a:'u',full:'kuře'},
+  {q:'b{_}ben',a:'u',full:'buben'},{q:'{_}cho',a:'u',full:'ucho'},
+  {q:'{_}lice',a:'u',full:'ulice'},{q:'m{_}ž',a:'u',full:'muž'},
+  {q:'sl{_}nce',a:'u',full:'slunce'},{q:'r{_}čník',a:'u',full:'ručník'},
+];
+
+/* ══ GENERIC ENGINE ══════════════════════════════ */
+function exInit(pool,n,ids){return{por:mx(pool).slice(0,n),i:0,sp:0,err:0,ids:ids};}
+function exShow(st){
+  var s=st.por[st.i];var ids=st.ids;
+  tx(ids.ci,(st.i+1)+'/'+st.por.length);
+  pct(ids.pg,st.i/st.por.length*100);
+  el(ids.fb).textContent='';el(ids.fb).className='fb';hi(ids.nx);
+  var wd=el(ids.word);wd.innerHTML='';
+  var pts=s.q.split('{_}');
+  wd.appendChild(document.createTextNode(pts[0]));
+  var bl=document.createElement('span');bl.className='word-blank';bl.id=ids.blank;bl.textContent='_';
+  wd.appendChild(bl);if(pts[1])wd.appendChild(document.createTextNode(pts[1]));
+  var m=el(ids.moz);m.innerHTML='';
+  ids.opts.forEach(function(v){
+    var b=document.createElement('button');b.className='btn';b.textContent=v;
+    b.onclick=function(){exAns(v,b,s,st);};m.appendChild(b);
+  });
+}
+function exAns(v,btn,s,st){
+  var ids=st.ids;
+  document.querySelectorAll('#'+ids.moz+' .btn').forEach(function(b){b.disabled=true;});
+  var fb=el(ids.fb);var bl=el(ids.blank);
+  if(v===s.a){
+    btn.classList.add('ok');bl.textContent=v;bl.style.color='#16a34a';bl.style.borderColor='#16a34a';
+    fb.textContent='✅ '+s.full;fb.className='fb ok';st.sp++;tx(ids.sp,st.sp);
+  }else{
+    btn.classList.add('err');bl.textContent=s.a;bl.style.color='#dc2626';bl.style.borderColor='#dc2626';
+    document.querySelectorAll('#'+ids.moz+' .btn').forEach(function(b){if(b.textContent===s.a)b.classList.add('ok');});
+    fb.textContent='❌ Správně: '+s.full;fb.className='fb err';st.err++;tx(ids.err,st.err);
+  }
+  sh(ids.nx);
+}
+function exEnd(st,em,txId,ppId,sc2Id,totId,obId,resId){
+  pct(st.ids.pg,100);hi(obId);sh(resId);
+  var pts=Math.max(0,10-st.err);
+  tx(ppId,'Správně: '+st.sp+' z '+st.por.length);
+  if(st.sp>=9){el(em).textContent='🏆';el(txId).textContent='Šampion!';}
+  else if(st.sp>=7){el(em).textContent='🎉';el(txId).textContent='Výborně!';}
+  else{el(em).textContent='💪';el(txId).textContent='Zkus znovu!';}
+  addPts(pts,sc2Id,totId);
+}
+
+/* ── CV1 ─────────────────────────────────────── */
+var dkSt;
+function dkStart(pair){
+  hi('dk-pick');sh('dk-ob');hi('dkres');
+  var opts=pair==='a'?['a','á']:pair==='e'?['e','é']:pair==='i'?['i','í']:['y','ý'];
+  dkSt=exInit(DK_SETS[pair],10,{ci:'dkci',pg:'dkpg',word:'dk-word',blank:'dk-bl',moz:'dk-moz',fb:'dk-fb',nx:'dk-nx',sp:'dksp',err:'dkerr',opts:opts});
+  tx('dksp',0);tx('dkerr',0);exShow(dkSt);
+}
+function dkNext(){dkSt.i++;if(dkSt.i>=dkSt.por.length)exEnd(dkSt,'dkem','dktx','dkpp','dksc2','dktot','dk-ob','dkres');else exShow(dkSt);}
+
+/* ── CV2 ─────────────────────────────────────── */
+var eeSt;
+function eeI(){
+  hi('eeres');sh('ee-ob');pct('eepg',0);tx('eesp',0);tx('eeerr',0);
+  eeSt=exInit(EE_SLOVA,10,{ci:'ee-ci',pg:'eepg',word:'ee-word',blank:'ee-bl',moz:'ee-moz',fb:'ee-fb',nx:'ee-nx',sp:'eesp',err:'eeerr',opts:['e','ě']});
+  exShow(eeSt);
+}
+function eeNext(){eeSt.i++;if(eeSt.i>=eeSt.por.length)exEnd(eeSt,'eeem','eetx','eepp','eesc2','eetot','ee-ob','eeres');else exShow(eeSt);}
+
+/* ── CV3 ─────────────────────────────────────── */
+var uuSt;
+function uuI(){
+  hi('uures');sh('uu-ob');pct('uupg',0);tx('uusp',0);tx('uuerr',0);
+  uuSt=exInit(UU_SLOVA,10,{ci:'uu-ci',pg:'uupg',word:'uu-word',blank:'uu-bl',moz:'uu-moz',fb:'uu-fb',nx:'uu-nx',sp:'uusp',err:'uuerr',opts:['u','ú','ů']});
+  exShow(uuSt);
+}
+function uuNext(){uuSt.i++;if(uuSt.i>=uuSt.por.length)exEnd(uuSt,'uuem','uutx','uupp','uusc2','uutot','uu-ob','uures');else exShow(uuSt);}
+
+/* ══ CAR GAME — učka míří ZPRAVA na auto ════════ */
+var CAR={running:false,lane:1,carY:0,lives:3,score:0,errs:0,
+         waves:[],speed:2.0,spawnTimer:0,spawnInt:170,
+         raf:null,hitFlash:0,okFlash:0,wIdx:0,words:[]};
+var CW=480,CH=240,CN=3;
+var UUL=['u','ú','ů'];  // labels for 3 lanes
+var LANE_BG=['#e8f4fb','#fff8ee','#f0fdf4'];
+var LANE_TC=['#1a5f7a','#b45309','#15803d'];
+var LANE_BC=['#32a0d2','#ffaa37','#16a34a'];
+function carLY(i){return Math.round(CH/CN*(i+.5));}
+var CAR_X=72;
+
+function carRR(ctx,x,y,w,h,r){
+  ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);
+  ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);
+  ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);
+  ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
+}
+function drawCar(ctx,cx,cy,hit){
+  var bc=hit?'#ef4444':'#32a0d2',dc=hit?'#b91c1c':'#1a7fa8';
+  // Shadow
+  ctx.fillStyle='rgba(0,0,0,.1)';ctx.beginPath();ctx.ellipse(cx+1,cy+13,22,5,0,0,Math.PI*2);ctx.fill();
+  // Body
+  ctx.fillStyle=bc;carRR(ctx,cx-24,cy-10,48,20,6);ctx.fill();
+  // Cabin
+  ctx.fillStyle=dc;carRR(ctx,cx-14,cy-21,28,13,5);ctx.fill();
+  // Windows
+  ctx.fillStyle='rgba(220,240,255,.9)';carRR(ctx,cx-12,cy-20,11,10,3);ctx.fill();carRR(ctx,cx+1,cy-20,11,10,3);ctx.fill();
+  // Headlight (facing right — car drives right)
+  ctx.fillStyle='#ffec6e';ctx.beginPath();ctx.ellipse(cx+25,cy-2,5,3,0,0,Math.PI*2);ctx.fill();
+  // Wheels
+  [cx-14,cx+14].forEach(function(wx){
+    ctx.fillStyle='#1f2937';ctx.beginPath();ctx.arc(wx,cy+11,7,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#9ca3af';ctx.beginPath();ctx.arc(wx,cy+11,3,0,Math.PI*2);ctx.fill();
+  });
+}
+function drawLetter(ctx,x,y,letter,lane,flash){
+  var r=28;
+  var fc=flash>0?'#dcfce7':flash<0?'#fee2e2':'white';
+  var bc=flash>0?'#16a34a':flash<0?'#dc2626':LANE_BC[lane];
+  var tc=flash>0?'#15803d':flash<0?'#dc2626':LANE_TC[lane];
+  ctx.fillStyle=fc;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle=bc;ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.stroke();
+  ctx.font='bold 30px Barlow Condensed,sans-serif';ctx.textAlign='center';ctx.fillStyle=tc;
+  ctx.fillText(letter,x,y+10);
+}
+function carDrawFrame(){
+  var ctx=el('carcv').getContext('2d');
+  ctx.clearRect(0,0,CW,CH);
+  // Road background — 3 lanes
+  for(var i=0;i<CN;i++){ctx.fillStyle=LANE_BG[i];ctx.fillRect(0,i*CH/CN,CW,CH/CN);}
+  // Lane dividers
+  ctx.strokeStyle='rgba(255,255,255,.6)';ctx.setLineDash([12,8]);ctx.lineWidth=2;
+  for(var i=1;i<CN;i++){ctx.beginPath();ctx.moveTo(0,i*CH/CN);ctx.lineTo(CW,i*CH/CN);ctx.stroke();}
+  ctx.setLineDash([]);
+  // Active lane glow
+  ctx.fillStyle='rgba(0,0,0,.05)';ctx.fillRect(0,CAR.lane*CH/CN,CW,CH/CN);
+  ctx.fillStyle=LANE_BC[CAR.lane];ctx.fillRect(CW-4,CAR.lane*CH/CN,4,CH/CN);
+  // Učka scrollující zprava doleva
+  CAR.waves.forEach(function(w){
+    w.letters.forEach(function(lt){
+      drawLetter(ctx,lt.x,carLY(lt.lane),lt.letter,lt.lane,lt.flash);
+      if(lt.flash>0)lt.flash--;else if(lt.flash<0)lt.flash++;
+    });
+  });
+  // Flashes
+  if(CAR.hitFlash>0){ctx.fillStyle='rgba(220,38,38,'+CAR.hitFlash/16*.25+')';ctx.fillRect(0,0,CW,CH);CAR.hitFlash--;}
+  if(CAR.okFlash>0){ctx.fillStyle='rgba(22,163,74,'+CAR.okFlash/12*.18+')';ctx.fillRect(0,0,CW,CH);CAR.okFlash--;}
+  // Car on left
+  var tY=carLY(CAR.lane);CAR.carY+=(tY-CAR.carY)*.22;
+  drawCar(ctx,CAR_X,CAR.carY,CAR.hitFlash>8);
+}
+function carLoop(){
+  if(!CAR.running)return;
+  CAR.spawnTimer++;
+  if(CAR.spawnTimer>=CAR.spawnInt){
+    CAR.spawnTimer=0;
+    var s=CAR.words[CAR.wIdx%CAR.words.length];CAR.wIdx++;
+    // Spawn vlnu: 3 učka v náhodných pruzích
+    var laneAssign=mx([0,1,2]); // lane[i] dostane UUL[i] (u/ú/ů)
+    var wave={answer:s.a,scored:false,letters:[]};
+    for(var i=0;i<CN;i++){
+      wave.letters.push({x:CW+36,lane:laneAssign[i],letter:UUL[i],flash:0});
+    }
+    CAR.waves.push(wave);
+    // Zobraz slovo pod plátnem
+    var html=s.q.replace('{_}','<span class="gm-blank">_</span>');
+    el('car-word').innerHTML=html;
+  }
+  // Move all letters left
+  CAR.waves.forEach(function(w){w.letters.forEach(function(lt){lt.x-=CAR.speed;});});
+  // Collision check
+  CAR.waves.forEach(function(w){
+    if(w.scored)return;
+    w.letters.forEach(function(lt){
+      if(lt.x<CAR_X+32&&lt.x>CAR_X-20&&lt.lane===CAR.lane){
+        w.scored=true;
+        if(lt.letter===w.answer){
+          lt.flash=15;CAR.okFlash=10;CAR.score++;tx('carsc',CAR.score);
+          if(CAR.score%5===0){CAR.speed=Math.min(5.5,CAR.speed+.25);CAR.spawnInt=Math.max(110,CAR.spawnInt-12);}
+        }else{
+          lt.flash=-15;CAR.hitFlash=16;CAR.errs++;CAR.lives--;
+          carUpdateLives();if(CAR.lives<=0){CAR.running=false;setTimeout(carOver,650);}
+        }
+      }
+    });
+  });
+  CAR.waves=CAR.waves.filter(function(w){return w.letters.some(function(lt){return lt.x>-60;});});
+  carDrawFrame();
+  CAR.raf=requestAnimationFrame(carLoop);
+}
+function carUpdateLives(){el('car-lives').textContent=['❤️❤️❤️','❤️❤️🖤','❤️🖤🖤','🖤🖤🖤'][Math.max(0,Math.min(3,3-CAR.lives))];}
+function carI(){el('car-start').style.display='block';hi('car-play');hi('car-over');}
+function carStart(){
+  if(CAR.raf)cancelAnimationFrame(CAR.raf);
+  CAR.words=mx(UU_SLOVA.slice());CAR.wIdx=0;
+  Object.assign(CAR,{running:true,lane:1,carY:0,lives:3,score:0,errs:0,waves:[],speed:2.0,spawnTimer:0,spawnInt:170,hitFlash:0,okFlash:0});
+  CAR.carY=carLY(1);tx('carsc',0);carUpdateLives();
+  el('car-start').style.display='none';sh('car-play');hi('car-over');
+  el('car-word').textContent='Připrav se…';
+  CAR.raf=requestAnimationFrame(carLoop);
+}
+function carOver(){
+  hi('car-play');sh('car-over');
+  var pts=Math.max(0,CAR.score-CAR.errs);
+  tx('carpp','Správně: '+CAR.score+' ✅  Chyby: '+CAR.errs+' ❌');
+  addPts(pts,'carsc2','cartot');
+  if(CAR.score>=12){el('carem').textContent='🏆';el('cartx').textContent='Šampion!';}
+  else if(CAR.score>=6){el('carem').textContent='🎉';el('cartx').textContent='Výborně!';}
+  else{el('carem').textContent='💪';el('cartx').textContent='Zkus znovu!';}
+}
+document.addEventListener('keydown',function(e){
+  if(!CAR.running)return;
+  if(e.key==='ArrowUp'&&CAR.lane>0){e.preventDefault();CAR.lane--;}
+  if(e.key==='ArrowDown'&&CAR.lane<CN-1){e.preventDefault();CAR.lane++;}
+});
+(function(){
+  function carTap(e){
+    if(!CAR.running)return;
+    var cv=el('carcv');var r=cv.getBoundingClientRect();
+    var cy=e.touches?e.touches[0].clientY:e.clientY;
+    CAR.lane=Math.min(CN-1,Math.floor(((cy-r.top)/r.height)*CN));
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    var cv=el('carcv');if(!cv)return;
+    cv.addEventListener('click',carTap);
+    cv.addEventListener('touchstart',function(e){e.preventDefault();carTap(e);},{passive:false});
+  });
+})();
+
+</script>

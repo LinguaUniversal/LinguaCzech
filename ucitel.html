@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard učitele — LinguaCzech</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+:root{--m:#32a0d2;--o:#ffaa37;--z:#16a34a;--r:#dc2626;--font:'Barlow Condensed',sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:#f0f7fc;}
+.wrap{max-width:960px;margin:0 auto;padding:1.5rem 1rem 3rem;}
+.hdr{background:linear-gradient(135deg,#1a7fa8,var(--m));border-radius:16px;padding:1.5rem;color:white;margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem;}
+.hdr-ico{font-size:2.5rem;}
+.hdr h1{font-size:1.8rem;font-weight:800;margin:0;}
+.hdr p{opacity:.85;font-size:.9rem;margin-top:.2rem;}
+.card{background:white;border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;box-shadow:0 2px 10px rgba(50,160,210,.08);border:1.5px solid #e5e7eb;}
+.card h2{font-size:1.1rem;font-weight:800;color:#1e3a4f;margin-bottom:1rem;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+@media(max-width:540px){.grid2{grid-template-columns:1fr;}}
+label{display:block;font-size:.78rem;font-weight:800;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem;}
+input,select,textarea{width:100%;padding:.6rem .8rem;border:1.5px solid #d1d5db;border-radius:8px;font-family:var(--font);font-size:.95rem;color:#1f2937;}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--m);}
+textarea{min-height:140px;resize:vertical;}
+.hint{font-size:.72rem;color:#9ca3af;margin-top:.25rem;}
+.gen-btn{width:100%;padding:.9rem;background:var(--m);color:white;border:none;border-radius:10px;font-size:1.1rem;font-weight:800;cursor:pointer;font-family:var(--font);}
+.gen-btn:hover{background:#2589b8;}
+
+/* Toolbar výstupu */
+.toolbar{display:flex;gap:.65rem;flex-wrap:wrap;align-items:center;margin-bottom:1.25rem;}
+.tbtn{display:flex;align-items:center;gap:.4rem;padding:.55rem 1.1rem;border:1.5px solid #d1d5db;border-radius:8px;background:white;font-family:var(--font);font-size:.9rem;font-weight:700;cursor:pointer;color:#374151;transition:all .12s;}
+.tbtn:hover{border-color:var(--m);color:var(--m);}
+.tbtn.blue{background:var(--m);color:white;border-color:var(--m);}
+.tbtn.blue:hover{background:#2589b8;}
+.tbtn.green{background:var(--z);color:white;border-color:var(--z);}
+.tbtn.green:hover{background:#15803d;}
+.tbtn.orange{background:var(--o);color:white;border-color:var(--o);}
+.count{background:var(--o);color:white;border-radius:99px;padding:.15rem .6rem;font-weight:800;font-size:.82rem;}
+
+/* KARTIČKY GRID — obrazovka */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;}
+
+/* Jednotlivá kartička */
+.sc{background:white;border:2px solid #d1d5db;border-radius:14px;padding:.9rem;display:flex;flex-direction:column;gap:.5rem;break-inside:avoid;}
+.sc-top{display:flex;justify-content:space-between;align-items:flex-start;}
+.sc-brand{font-size:.6rem;font-weight:800;color:#9ca3af;text-transform:uppercase;letter-spacing:.08em;}
+.sc-badge{font-size:.6rem;font-weight:700;padding:.12rem .45rem;border-radius:99px;background:#e0f2fe;color:#0369a1;}
+.sc-badge.ucitel{background:#fef3c7;color:#92400e;}
+.sc-name{font-size:1.3rem;font-weight:800;color:#1e3a4f;line-height:1.1;}
+.sc-trida{font-size:.75rem;color:#9ca3af;font-weight:600;margin-top:-.2rem;}
+.sc-row{display:flex;flex-direction:column;gap:.15rem;}
+.sc-lbl{font-size:.58rem;font-weight:800;color:#9ca3af;text-transform:uppercase;letter-spacing:.07em;}
+.sc-val{font-size:.88rem;font-weight:700;color:#374151;font-family:monospace;background:#f8fafc;padding:.22rem .5rem;border-radius:6px;border:1px solid #e5e7eb;letter-spacing:.04em;word-break:break-all;}
+.sc-qr{display:flex;justify-content:center;padding:.25rem 0;}
+.sc-qr canvas,.sc-qr img{border-radius:6px !important;}
+.sc-url{font-size:.55rem;color:#b0cfe0;text-align:center;word-break:break-all;}
+.sc-cut{border-top:1px dashed #e5e7eb;margin-top:.2rem;padding-top:.35rem;font-size:.55rem;color:#d1d5db;text-align:center;letter-spacing:.15em;}
+
+/* PDF oblast — skrytá na obrazovce, viditelná při PDF generování */
+#pdf-area{display:none;}
+.pdf-page{width:210mm;padding:8mm;background:white;}
+.pdf-grid{display:grid;grid-template-columns:1fr 1fr;gap:5mm;}
+.pdf-card{border:1.5px solid #d1d5db;border-radius:8px;padding:5mm;break-inside:avoid;page-break-inside:avoid;}
+.pdf-card .sc-name{font-size:16pt;font-weight:800;color:#1e3a4f;}
+.pdf-card .sc-brand{font-size:7pt;color:#9ca3af;}
+.pdf-card .sc-lbl{font-size:6.5pt;font-weight:800;color:#9ca3af;text-transform:uppercase;letter-spacing:.08em;}
+.pdf-card .sc-val{font-size:10pt;font-weight:700;font-family:monospace;background:#f8fafc;padding:2mm 3mm;border-radius:4px;border:1px solid #e5e7eb;}
+.pdf-card .sc-url{font-size:6pt;color:#b0cfe0;text-align:center;}
+.pdf-cut{border-top:1px dashed #ccc;margin-top:2mm;padding-top:2mm;font-size:6pt;color:#ccc;text-align:center;}
+
+@media print{
+  body{background:white;}
+  .hdr,.card.form-card,.toolbar{display:none!important;}
+  .cards-grid{grid-template-columns:1fr 1fr!important;gap:.4cm!important;}
+  .sc{border:1.5px solid #aaa!important;break-inside:avoid;page-break-inside:avoid;}
+  .wrap{padding:.5cm;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hdr">
+  <div class="hdr-ico">🎓</div>
+  <div><h1>Dashboard učitele</h1><p>Generátor přístupů · LinguaCzech</p></div>
+</div>
+
+<!-- FORMULÁŘ -->
+<div class="card form-card">
+  <h2>Nastavení</h2>
+  <div class="grid2">
+    <div>
+      <label>URL portálu (pro QR kód)</label>
+      <input id="url" value="https://linguauniversal.github.io/LinguaCzech/">
+      <div class="hint">Adresa zakódovaná do QR kódu</div>
+    </div>
+    <div>
+      <label>Role</label>
+      <select id="role">
+        <option value="zak">Žák</option>
+        <option value="ucitel">Učitel</option>
+      </select>
+    </div>
+  </div>
+  <div class="grid2" style="margin-bottom:1rem">
+    <div>
+      <label>Třída / skupina</label>
+      <input id="trida" value="2.A">
+    </div>
+    <div>
+      <label>Typ hesla</label>
+      <select id="pwdtype">
+        <option value="word">Slovo + číslo (modryPes42)</option>
+        <option value="pin">4-místný PIN</option>
+        <option value="rand">Náhodné 8 znaků</option>
+      </select>
+    </div>
+  </div>
+  <div style="margin-bottom:1rem">
+    <label>Jména žáků (každé jméno na nový řádek)</label>
+    <textarea id="names" placeholder="Jana Nováková&#10;Petr Svoboda&#10;Marie Horáčková&#10;Tomáš Dvořák"></textarea>
+    <div class="hint">Formát: Jméno Příjmení — diakritika nevadí</div>
+  </div>
+  <button class="gen-btn" onclick="generate()">⚡ Generovat přístupy</button>
+</div>
+
+<!-- VÝSTUP -->
+<div id="output" style="display:none">
+  <div class="toolbar">
+    <span style="font-weight:700;color:#374151">Vygenerováno: <span class="count" id="cnt">0</span></span>
+    <button class="tbtn green" onclick="downloadPDF()">📄 Stáhnout PDF</button>
+    <button class="tbtn blue" onclick="window.print()">🖨️ Tisknout</button>
+    <button class="tbtn" onclick="downloadCSV()">📥 CSV přístupy</button>
+    <button class="tbtn blue" onclick="downloadDataverse()">⬆️ Import do Dataverse</button>
+    <button class="tbtn" onclick="regenerate()">🔄 Nová hesla</button>
+  </div>
+  <div class="cards-grid" id="cards-grid"></div>
+</div>
+
+<!-- SKRYTÁ PDF OBLAST -->
+<div id="pdf-area"></div>
+
+</div>
+<script>
+var DATA=[], lastNames=[], lastRole='zak', lastUrl='', lastTrida='', lastPwdType='word';
+
+var COLORS=['modry','cerveny','zeleny','zlaty','fialovy','oranzovy','ruzovy','bily'];
+var ANIMALS=['pes','kocka','ryba','zajic','medved','vlk','drak','ptacek','myska','had'];
+
+function removeDia(s){
+  var m={'á':'a','č':'c','ď':'d','é':'e','ě':'e','í':'i','ň':'n','ó':'o','ř':'r','š':'s','ť':'t','ú':'u','ů':'u','ý':'y','ž':'z'};
+  return s.toLowerCase().split('').map(function(c){return m[c]||c;}).join('').replace(/[^a-z0-9]/g,'');
+}
+
+function makePwd(type){
+  if(type==='pin') return String(1000+Math.floor(Math.random()*9000));
+  if(type==='word'){
+    return COLORS[Math.floor(Math.random()*COLORS.length)]+
+           ANIMALS[Math.floor(Math.random()*ANIMALS.length)]+
+           (10+Math.floor(Math.random()*90));
+  }
+  var ch='abcdefghjkmnpqrstuvwxyz23456789';
+  var p='';for(var i=0;i<8;i++)p+=ch[Math.floor(Math.random()*ch.length)];
+  return p;
+}
+
+function makeUser(jmeno,prijmeni,used){
+  var base=removeDia(jmeno)+'.'+removeDia(prijmeni);
+  if(!used[base]){used[base]=1;return base;}
+  var n=2;while(used[base+n]){n++;}used[base+n]=1;return base+n;
+}
+
+function generate(){
+  lastNames=document.getElementById('names').value.trim().split('\n').filter(function(l){return l.trim();});
+  lastRole=document.getElementById('role').value;
+  lastUrl=document.getElementById('url').value.trim();
+  lastTrida=document.getElementById('trida').value.trim();
+  lastPwdType=document.getElementById('pwdtype').value;
+  buildCards(lastNames);
+}
+
+function regenerate(){buildCards(lastNames);}
+
+function buildCards(raw){
+  var used={};DATA=[];
+  raw.forEach(function(line){
+    var p=line.trim().split(/\s+/);
+    var j=p[0]||'',pr=p.slice(1).join(' ')||'';
+    if(!j)return;
+    DATA.push({name:line.trim(),jmeno:j,prijmeni:pr,
+      username:makeUser(j,pr,used),pwd:makePwd(lastPwdType)});
+  });
+
+  document.getElementById('cnt').textContent=DATA.length;
+  document.getElementById('output').style.display='block';
+
+  var grid=document.getElementById('cards-grid');grid.innerHTML='';
+  DATA.forEach(function(d,i){
+    var div=document.createElement('div');div.className='sc';
+    div.innerHTML=
+      '<div class="sc-top">'+
+        '<div class="sc-brand">LinguaCzech · '+esc(lastTrida)+'</div>'+
+        '<span class="sc-badge'+(lastRole==='ucitel'?' ucitel':'')+'">'+
+          (lastRole==='ucitel'?'Učitel':'Žák')+'</span>'+
+      '</div>'+
+      '<div class="sc-name">'+esc(d.name)+'</div>'+
+      '<div class="sc-trida">'+esc(lastTrida)+'</div>'+
+      '<div class="sc-row"><div class="sc-lbl">Přihlašovací jméno</div>'+
+        '<div class="sc-val">'+esc(d.username)+'</div></div>'+
+      '<div class="sc-row"><div class="sc-lbl">Heslo</div>'+
+        '<div class="sc-val">'+esc(d.pwd)+'</div></div>'+
+      '<div class="sc-qr" id="qr'+i+'"></div>'+
+      '<div class="sc-url">'+esc(lastUrl)+'</div>'+
+      '<div class="sc-cut">✂ ─ ─ ─ ─ ─ ─ ─ ─ ─</div>';
+    grid.appendChild(div);
+
+    try{new QRCode(document.getElementById('qr'+i),{
+      text:lastUrl,width:100,height:100,
+      colorDark:'#1e3a4f',colorLight:'#ffffff',
+      correctLevel:QRCode.CorrectLevel.M
+    });}catch(e){}
+  });
+}
+
+/* ── PDF ──────────────────────── */
+function downloadPDF(){
+  if(!DATA.length){alert('Nejprve vygeneruj přístupy.');return;}
+
+  // Sestavit PDF HTML
+  var pdfArea=document.getElementById('pdf-area');
+  pdfArea.innerHTML='';
+  pdfArea.style.display='block';
+
+  // Rozdělit na stránky po 4 kartičkách (2x2)
+  var perPage=4;
+  for(var p=0;p<Math.ceil(DATA.length/perPage);p++){
+    var page=document.createElement('div');
+    page.className='pdf-page';
+    var grid=document.createElement('div');grid.className='pdf-grid';
+    for(var j=p*perPage;j<Math.min((p+1)*perPage,DATA.length);j++){
+      var d=DATA[j];
+      var card=document.createElement('div');card.className='pdf-card';
+      card.innerHTML=
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2mm">'+
+          '<div class="sc-brand">LinguaCzech · '+esc(lastTrida)+'</div>'+
+          '<span class="sc-badge'+(lastRole==='ucitel'?' ucitel':'')+'">'+
+            (lastRole==='ucitel'?'Učitel':'Žák')+'</span>'+
+        '</div>'+
+        '<div class="sc-name" style="margin-bottom:1mm">'+esc(d.name)+'</div>'+
+        '<div style="margin-bottom:2.5mm">'+
+          '<div class="sc-lbl">Přihlašovací jméno</div>'+
+          '<div class="sc-val">'+esc(d.username)+'</div>'+
+        '</div>'+
+        '<div style="margin-bottom:2.5mm">'+
+          '<div class="sc-lbl">Heslo</div>'+
+          '<div class="sc-val" style="font-size:12pt;letter-spacing:.06em">'+esc(d.pwd)+'</div>'+
+        '</div>'+
+        '<div style="display:flex;align-items:center;gap:3mm">'+
+          '<div id="pdf-qr-'+j+'"></div>'+
+          '<div style="flex:1"><div class="sc-url">'+esc(lastUrl)+'</div>'+
+          '<div style="font-size:6pt;color:#9ca3af;margin-top:1mm">Naskenuj QR kód nebo zadej adresu</div></div>'+
+        '</div>'+
+        '<div class="pdf-cut">✂ ─ ─ ─ ─ ─ ─ ─ ─</div>';
+      grid.appendChild(card);
+      page.appendChild(grid);
+    }
+    pdfArea.appendChild(page);
+  }
+
+  // Generovat QR kódy v PDF oblasti
+  DATA.forEach(function(d,i){
+    var el=document.getElementById('pdf-qr-'+i);
+    if(el){try{new QRCode(el,{text:lastUrl,width:80,height:80,colorDark:'#1e3a4f',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});}catch(e){}}
+  });
+
+  // Počkat na QR kódy pak generovat PDF
+  setTimeout(function(){
+    var trida=lastTrida.replace(/\./g,'');
+    html2pdf().set({
+      margin:[5,5,5,5],
+      filename:'linguaczech-pristupy-'+trida+'.pdf',
+      image:{type:'jpeg',quality:0.98},
+      html2canvas:{scale:2,useCORS:true,letterRendering:true},
+      jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
+      pagebreak:{mode:['avoid-all','css','legacy']}
+    }).from(pdfArea).save().then(function(){
+      pdfArea.style.display='none';
+      pdfArea.innerHTML='';
+    });
+  },800);
+}
+
+/* ── CSV ──────────────────────── */
+function downloadCSV(){
+  if(!DATA.length)return;
+  var lines=['\ufeffJméno,Uživatelské jméno,Heslo,Role,Třída,Email (fiktivní)'];
+  DATA.forEach(function(d){
+    var email=d.username+'@ziak.linguaczech.cz';
+    lines.push([d.name,d.username,d.pwd,lastRole==='ucitel'?'Učitel':'Žák',lastTrida,email].join(','));
+  });
+  var blob=new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='linguaczech-pristupy-'+lastTrida.replace(/\./g,'')+'.csv';
+  a.click();
+}
+
+
+/* ── DATAVERSE EXCEL EXPORT ─────── */
+function downloadDataverse(){
+  if(!DATA.length){alert('Nejprve vygeneruj přístupy.');return;}
+  
+  // Sestavit CSV ve formátu pro Dataverse import kontaktů
+  var lines=[
+    // Hlavičky odpovídají sloupcům Dataverse tabulky Kontakt
+    'firstname,lastname,emailaddress1,new_username,new_password,new_role,new_trida'
+  ];
+  
+  DATA.forEach(function(d){
+    var email=d.username+'@ziak.linguaczech.cz';
+    lines.push([
+      csvCell(d.jmeno),
+      csvCell(d.prijmeni),
+      csvCell(email),
+      csvCell(d.username),
+      csvCell(d.pwd),
+      csvCell(lastRole==='ucitel'?'Učitel':'Žák'),
+      csvCell(lastTrida)
+    ].join(','));
+  });
+  
+  // Stáhnout jako CSV s BOM (Excel ho otevře správně s diakritikou)
+  var blob=new Blob(['﻿'+lines.join('\n')],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='dataverse-import-'+lastTrida.replace(/\./g,'')+'.csv';
+  a.click();
+  
+  // Zobrazit instrukce
+  showDataverseInstructions();
+}
+
+function csvCell(v){
+  v=String(v||'');
+  if(v.includes(',') || v.includes('"') || v.includes('\n'))
+    return '"'+v.replace(/"/g,'""')+'"';
+  return v;
+}
+
+function showDataverseInstructions(){
+  var modal=document.createElement('div');
+  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+  modal.innerHTML=
+    '<div style="background:white;border-radius:16px;padding:2rem;max-width:500px;width:100%;font-family:inherit;">'+
+    '<h2 style="font-size:1.3rem;font-weight:800;color:#1e3a4f;margin-bottom:1rem">⬆️ Jak importovat do Dataverse</h2>'+
+    '<ol style="padding-left:1.2rem;display:flex;flex-direction:column;gap:.6rem;font-size:.9rem;color:#374151">'+
+    '<li>Otevři <b>make.powerapps.com</b></li>'+
+    '<li>Levý panel → <b>Dataverse → Tabulky → Kontakt</b></li>'+
+    '<li>Horní menu → <b>Import → Import dat</b></li>'+
+    '<li>Nahraj stažený soubor <b>dataverse-import-'+lastTrida.replace(/\./g,'')+'.csv</b></li>'+
+    '<li>Namapuj sloupce:<br>'+
+    '<code style="background:#f8fafc;padding:.2rem .4rem;border-radius:4px;font-size:.8rem">firstname → Jméno, lastname → Příjmení, emailaddress1 → E-mail</code></li>'+
+    '<li>Klikni <b>Importovat</b> → všichni žáci se vytvoří najednou</li>'+
+    '<li>Zpět v <b>Portal Manageru → Webové role → Žák</b> → záložka <b>Kontakty</b> → <b>Přidat stávající</b> → vyber všechny importované</li>'+
+    '</ol>'+
+    '<button onclick="this.closest('div').parentElement.remove()" style="margin-top:1.25rem;width:100%;padding:.75rem;background:#32a0d2;color:white;border:none;border-radius:8px;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;">Rozumím ✓</button>'+
+    '</div>';
+  document.body.appendChild(modal);
+}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+</script>
+</body>
+</html>

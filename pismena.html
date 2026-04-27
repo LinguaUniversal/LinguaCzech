@@ -987,6 +987,7 @@ function trDone(){
 var ATG = {
   running:false, lane:1, carY:0, lives:3, score:0, errs:0,
   signs:[], speed:1.4, spawnTimer:0, spawnInt:130,
+  spawnCount:0, spawnsSinceCorrect:0,  /* sledování pro garantovaný spawn správné cedule */
   raf:null, hitFlash:0, okFlash:0,
   wordIdx:0, words:[],
   W:520, H:240, N:3,  /* 3 pruhy */
@@ -1016,6 +1017,8 @@ function autoStart(){
   ATG.speed = 1.4;
   ATG.spawnTimer = 0;
   ATG.spawnInt = 130;
+  ATG.spawnCount = 0;
+  ATG.spawnsSinceCorrect = 0;
   ATG.hitFlash = 0;
   ATG.okFlash = 0;
 
@@ -1162,56 +1165,78 @@ function autoLoop(){
   ATG.spawnTimer++;
   if(ATG.spawnTimer >= ATG.spawnInt){
     ATG.spawnTimer = 0;
-    /* 1× za interval přiletí 1 cedule do náhodného pruhu.
-       Občas (~50% šance) se vygeneruje "správná" cedule s aktuálním písmenem,
-       jinak špatná. Tím vznikne přirozený rytmus, kde se musíš
-       vyhýbat špatným a trefit správnou. */
     var item = ATG.words[ATG.wordIdx % ATG.words.length];
     var correct = item.l;
     var lane = Math.floor(Math.random() * ATG.N);
-    /* Pokud auto stojí v pruhu lane, vyber jiný pruh, abychom dali šanci */
-    /* (ale ne vždy, ať je hra trochu náročná) */
+
+    /* Logika spawnu:
+       - Sledujeme, kolik správných cedulí už pro toto slovo přiletělo
+       - GARANTUJEME alespoň 1 správnou cedule v každé "vlně" 4 spawnů
+       - Pokud poslední 3 byly špatné, další MUSÍ být správná */
     var letter;
-    var rnd = Math.random();
-    if(rnd < 0.45){
-      /* Správná cedule */
+    if(ATG.spawnCount % 4 === 0 || ATG.spawnsSinceCorrect >= 2){
+      /* Garantovaně správná */
       letter = correct;
+      ATG.spawnsSinceCorrect = 0;
+    } else if(Math.random() < 0.5){
+      /* Náhodně správná */
+      letter = correct;
+      ATG.spawnsSinceCorrect = 0;
     } else {
-      /* Špatná cedule — vyber náhodné jiné písmeno */
+      /* Špatná */
       var others = ABECEDA_VELKA.filter(function(x){return x !== correct;});
       letter = others[Math.floor(Math.random() * others.length)];
+      ATG.spawnsSinceCorrect++;
     }
+    ATG.spawnCount++;
+
     /* Zkontrolovat, že v této X-pozici nedáme dvě cedule příliš blízko sebe */
     var tooClose = ATG.signs.some(function(sg){ return sg.x > ATG.W - 50; });
     if(!tooClose){
-      ATG.signs.push({ x: ATG.W + 30, lane: lane, letter: letter, scored: false, flash: 0 });
+      /* DŮLEŽITÉ: Cedule si pamatuje, pro jaké slovo byla vytvořena.
+         Tím se vyhneme race-condition při změně slova. */
+      ATG.signs.push({
+        x: ATG.W + 30,
+        lane: lane,
+        letter: letter,
+        wordIdx: ATG.wordIdx,        // pro jaké slovo platí
+        scored: false,
+        flash: 0
+      });
     }
   }
 
   /* Posun cedulí doleva */
   ATG.signs.forEach(function(sg){ sg.x -= ATG.speed; });
 
-  /* Detekce kolize */
-  var item = ATG.words[ATG.wordIdx % ATG.words.length];
-  var correct = item.l;
+  /* Detekce kolize.
+     KLÍČOVÉ: vyhodnocuj proti slovu, pro které byla cedule vytvořena (sg.wordIdx),
+     NE proti aktuálnímu ATG.wordIdx — to se mohlo mezitím změnit. */
   ATG.signs.forEach(function(sg){
     if(!sg.scored && sg.x < ATG.X + 35 && sg.x > ATG.X - 25){
       if(sg.lane === ATG.lane){
         sg.scored = true;
-        if(sg.letter === correct){
+        /* Najdi slovo pro tuto cedule */
+        var sgItem = ATG.words[sg.wordIdx % ATG.words.length];
+        var sgCorrect = sgItem.l;
+        if(sg.letter === sgCorrect){
           /* Správně — projel správnou cedulí */
           sg.flash = 16;
           ATG.okFlash = 10;
           ATG.score += 1;
           el('autoSc').textContent = ATG.score;
           addPoints(10);
-          /* Další slovo */
-          ATG.wordIdx++;
-          autoShowWord();
-          /* Občas zrychlit */
-          if(ATG.score % 5 === 0){
-            ATG.speed = Math.min(4, ATG.speed + 0.2);
-            ATG.spawnInt = Math.max(80, ATG.spawnInt - 10);
+          /* Další slovo — ALE jen pokud cedule byla pro aktuální slovo */
+          if(sg.wordIdx === ATG.wordIdx){
+            ATG.wordIdx++;
+            autoShowWord();
+            ATG.spawnsSinceCorrect = 0;
+            ATG.spawnCount = 0;
+            /* Občas zrychlit */
+            if(ATG.score % 5 === 0){
+              ATG.speed = Math.min(4, ATG.speed + 0.2);
+              ATG.spawnInt = Math.max(80, ATG.spawnInt - 10);
+            }
           }
         } else {
           /* Špatně — narazil do špatné cedule */

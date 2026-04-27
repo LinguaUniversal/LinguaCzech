@@ -108,6 +108,12 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;}
 .trcw{position:relative;display:inline-block;border:2px solid #e5e7eb;border-radius:12px;overflow:hidden;background:#fafafa;touch-action:none;cursor:crosshair;}
 .trcw img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain;padding:15px;box-sizing:border-box;opacity:.35;pointer-events:none;user-select:none;}
 .trca{display:block;}
+/* Vzor tiskacího písmene — vykreslen jako velký text v pozadí */
+/* Vzor tiskacího písmene — vykreslen jako velký text v pozadí.
+   Verdana = systémové bezpatkové písmo, široké a dobře čitelné,
+   vhodné pro 1. třídu (děti učíme tvary písmen). */
+.ttGuide{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;font-family:Verdana,Geneva,sans-serif;font-weight:700;font-size:180px;line-height:1;color:#9ca3af;opacity:.30;pointer-events:none;user-select:none;}
+@media(max-width:600px){.ttGuide{font-size:150px;}}
 @media(max-width:600px){.trca{width:260px!important;height:200px!important;}.mg{grid-template-columns:1fr;}}
 .trhi{font-size:.9rem;color:#9ca3af;margin:.6rem 0 1rem;text-align:center;}
 .trbs{display:flex;gap:.75rem;}
@@ -166,37 +172,14 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;}
   <div class="topbar"><a href="1trida.html">← 1. třída</a><span>LinguaCzech</span></div>
   <div class="mh"><h1>Písmena</h1><p>1. ročník — vyber si cvičení</p></div>
   <div class="mg">
-    <div onclick="go('vt')" class="mk mk-m"><h3>Velká tiskací</h3><p>Z obrázku · ze zvuku · najdi písmeno</p></div>
-    <div onclick="go('par')" class="mk mk-o"><h3>Velké → malé</h3><p>Spoj páry tiskacích písmen</p></div>
     <div onclick="go('ph')" class="mk mk-m"><h3>První hláska</h3><p>Na co začíná obrázek?</p></div>
-    <div onclick="go('tr')" class="mk mk-o"><h3>Psací — obtahování</h3><p>Obtáhni psací písmeno</p></div>
+    <div onclick="go('par')" class="mk mk-o"><h3>Velké → malé</h3><p>Spoj páry tiskacích písmen</p></div>
+    <div onclick="go('tt')" class="mk mk-o"><h3>Tiskací — obtahování</h3><p>Obtáhni tiskací písmeno</p></div>
+    <div onclick="go('tr')" class="mk mk-m"><h3>Psací — obtahování</h3><p>Obtáhni psací písmeno</p></div>
     <div onclick="go('auto')" class="mk mk-m" style="grid-column:span 2"><h3>🚗 Hra auto</h3><p>Najeď do pruhu se správným písmenem</p></div>
   </div>
 </div>
 
-<!-- ============ CV1: VELKÁ TISKACÍ ============ -->
-<div class="cv" id="cv-vt">
-  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">Velká tiskací</span><span class="var" id="vtv">1/10</span></div>
-  <div class="sk"><div><div class="skn" id="vtbd">0</div><div class="skl">body</div></div><div><div class="skn" id="vtci">1/10</div><div class="skl">otázka</div></div><div><div class="skn" id="vtsp">0</div><div class="skl">správně</div></div></div>
-  <div class="pg"><div class="pgf" id="vtpg" style="width:0%"></div></div>
-  <div id="vtob">
-    <div class="ka">
-      <div class="q">Na jaké písmeno začíná slovo?</div>
-      <div class="picQ"><div class="emoji" id="vtPicEmoji" style="font-size:6rem">🐶</div></div>
-      <div class="btnGrid" id="vtopts"></div>
-      <div class="fb" id="vtfb"></div>
-    </div>
-    <button class="nxt" id="vtnx" onclick="vtNext()">Další →</button>
-  </div>
-  <div class="res" id="vtres">
-    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="vtpp"></p>
-    <div class="res-row" id="vtrow" style="display:none">
-      <div class="rs"><div class="rsv pts" id="vtsc">0</div><div class="rsl">body</div></div>
-      <div class="rs"><div class="rsv pts" id="vttot">0</div><div class="rsl">celkem ⭐</div></div>
-    </div>
-    <button class="znovu" onclick="vtRestart()">Znovu 🔄</button><button class="mbtn" onclick="back()">Menu</button>
-  </div>
-</div>
 
 <!-- ============ CV2: PÁROVÁNÍ velké → malé ============ -->
 <div class="cv" id="cv-par">
@@ -247,6 +230,40 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;}
       <div class="rs"><div class="rsv pts" id="phtot">0</div><div class="rsl">celkem ⭐</div></div>
     </div>
     <button class="znovu" onclick="go('ph')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- ============ CV-TT: TISKACÍ OBTAHOVÁNÍ ============ -->
+<div class="cv" id="cv-tt">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">Tiskací — obtahování</span><span class="var" id="ttv">0/0</span></div>
+  <div class="sk"><div><div class="skn" id="ttbd">0</div><div class="skl">body</div></div><div><div class="skn" id="ttci">0/0</div><div class="skl">písmeno</div></div></div>
+  <div class="pg"><div class="pgf" id="ttpg" style="width:0%"></div></div>
+  <div id="ttob">
+    <div class="lvlSwitch">
+      <button class="lvlBtn ttModeBtn on" data-mode="cap" onclick="ttSetMode('cap')"><span class="ico">🅰️</span>Velká tiskací</button>
+      <button class="lvlBtn ttModeBtn" data-mode="lower" onclick="ttSetMode('lower')"><span class="ico">a</span>Malá tiskací</button>
+    </div>
+    <div class="ka">
+      <div class="q">Vyber písmeno k obtahování</div>
+      <div class="trsel" id="ttsel"></div>
+      <div style="text-align:center">
+        <span class="big" id="ttbig" style="font-size:3rem;font-family:Verdana,Geneva,sans-serif;font-weight:700">A</span>
+        <div class="trcw" id="ttcw"><div class="ttGuide" id="ttGuide">A</div><canvas class="trca" id="ttca" width="300" height="240"></canvas></div>
+        <div class="trhi">Obtáhni tiskací písmeno prstem (na tabletu) nebo myší.</div>
+        <div class="trbs">
+          <button class="trcl" onclick="ttClear()">Vymazat</button>
+          <button class="trho" onclick="ttDone()">Hotovo ✓</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="res" id="ttres">
+    <div style="font-size:3rem">✏️</div><h2>Skvělá práce!</h2><p>Obtahla jsi všechna písmena v sadě.</p>
+    <div class="res-row" id="ttrow" style="display:none">
+      <div class="rs"><div class="rsv pts" id="ttsc">0</div><div class="rsl">body</div></div>
+      <div class="rs"><div class="rsv pts" id="tttot">0</div><div class="rsl">celkem ⭐</div></div>
+    </div>
+    <button class="znovu" onclick="ttStart()">Znovu 🔄</button><button class="mbtn" onclick="back()">Menu</button>
   </div>
 </div>
 
@@ -303,10 +320,9 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;}
 
   <!-- HRACÍ OBRAZOVKA -->
   <div id="auto-play" style="display:none;position:relative">
-    <!-- Návěstí -->
+    <!-- Návěstí — jen obrázek (žádné slovo, ať dítě hádá podle obrázku) -->
     <div class="autoSign">
-      <div class="autoSignWord" id="autoWord">PES</div>
-      <div class="autoSignPic" id="autoPic">🐶</div>
+      <div class="autoSignPic" id="autoPic" style="font-size:4rem">🐶</div>
     </div>
 
     <div class="autoLives">
@@ -380,9 +396,9 @@ function go(id){
   document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
   el('cv-'+id).style.display='block';
   window.scrollTo(0,0);
-  if(id==='vt') vtStart();
   if(id==='par') parStart();
   if(id==='ph') phStart();
+  if(id==='tt') ttStart();
   if(id==='tr') trStart();
   if(id==='auto') autoStartScreen();
 }
@@ -418,97 +434,6 @@ if(speechAvailable){ speechSynthesis.getVoices(); speechSynthesis.onvoiceschange
 function toLower(L){
   var map = {'Á':'á','Č':'č','Ď':'ď','É':'é','Ě':'ě','Í':'í','Ň':'ň','Ó':'ó','Ř':'ř','Š':'š','Ť':'ť','Ú':'ú','Ů':'ů','Ý':'ý','Ž':'ž'};
   return map[L] || L.toLowerCase();
-}
-
-/* ─────────────────────────────────────────────
-   CV1: VELKÁ TISKACÍ — obrázek a vyber první písmeno
-───────────────────────────────────────────── */
-var vtState = {seq:[], idx:0, body:0, sp:0, locked:false};
-
-function vtStart(){
-  /* Vybrat 10 různých slov, ideálně s různými prvními písmeny */
-  var pool = shuffle(PIC_DATA);
-  var seen = {};
-  var picked = [];
-  for(var i=0;i<pool.length && picked.length<10;i++){
-    if(!seen[pool[i].l]){
-      seen[pool[i].l] = true;
-      picked.push(pool[i]);
-    }
-  }
-  while(picked.length<10 && pool.length>picked.length){
-    picked.push(pool[picked.length]);
-  }
-  vtState = {seq:picked, idx:0, body:0, sp:0, locked:false};
-  el('vtres').style.display='none';
-  el('vtob').style.display='block';
-  vtRender();
-}
-function vtRestart(){ vtStart(); }
-function vtRender(){
-  var s=vtState;
-  if(s.idx>=s.seq.length){ vtFinish(); return; }
-  var item = s.seq[s.idx];
-  /* JEN obrázek — žádné slovo, žádný zvuk */
-  el('vtPicEmoji').textContent = item.pic;
-  el('vtv').textContent = (s.idx+1)+'/'+s.seq.length;
-  el('vtci').textContent = (s.idx+1)+'/'+s.seq.length;
-  el('vtbd').textContent = s.body;
-  el('vtsp').textContent = s.sp;
-  el('vtpg').style.width = ((s.idx)/s.seq.length*100)+'%';
-  el('vtfb').textContent = '';
-  el('vtfb').className = 'fb';
-  el('vtnx').style.display = 'none';
-  /* 4 možnosti: 1 správná + 3 jiná velká písmena */
-  var correct = item.l;
-  var others = shuffle(ABECEDA_VELKA.filter(function(x){return x!==correct;})).slice(0,3);
-  var opts = shuffle([correct].concat(others));
-  var box = el('vtopts'); box.innerHTML = '';
-  opts.forEach(function(o){
-    var b = document.createElement('button');
-    b.className='lbtn'; b.textContent=o;
-    b.onclick = function(){ vtAnswer(o, b, correct); };
-    box.appendChild(b);
-  });
-  s.locked = false;
-}
-function vtAnswer(picked, btn, correct){
-  var s=vtState;
-  if(s.locked) return;
-  s.locked = true;
-  var item = s.seq[s.idx];
-  if(picked===correct){
-    btn.classList.add('ok');
-    s.body += 5;
-    s.sp += 1;
-    addPoints(5);
-    el('vtfb').innerHTML = '✓ Správně! ' + item.pic + ' = <b>' + item.word + '</b> začíná na <b>'+correct+'</b>';
-    el('vtfb').className = 'fb ok';
-  } else {
-    btn.classList.add('err');
-    document.querySelectorAll('#vtopts .lbtn').forEach(function(b){
-      if(b.textContent===correct) b.classList.add('ok');
-    });
-    el('vtfb').innerHTML = item.pic + ' = <b>' + item.word + '</b> začíná na <b>'+correct+'</b>';
-    el('vtfb').className = 'fb err';
-  }
-  document.querySelectorAll('#vtopts .lbtn').forEach(function(b){b.disabled=true;});
-  el('vtbd').textContent = s.body;
-  el('vtsp').textContent = s.sp;
-  el('vtnx').style.display = 'block';
-}
-function vtNext(){
-  vtState.idx++;
-  vtRender();
-}
-function vtFinish(){
-  var s=vtState;
-  el('vtob').style.display='none';
-  el('vtres').style.display='block';
-  el('vtpp').textContent = 'Správně '+s.sp+' z '+s.seq.length+' · získala jsi '+s.body+' bodů.';
-  el('vtsc').textContent = s.body;
-  el('vttot').textContent = totalScore;
-  el('vtrow').style.display='flex';
 }
 
 
@@ -615,53 +540,81 @@ function parFinish(){
    CV4: PRVNÍ HLÁSKA (podle PDF kartiček)
 ───────────────────────────────────────────── */
 var PIC_DATA = [
-  // [emoji_alt, slovo, prvni_hlaska]
-  // P1
-  {pic:'🐶', word:'PES', l:'P'}, {pic:'🦁', word:'LEV', l:'L'},
-  {pic:'🚗', word:'AUTO', l:'A'}, {pic:'🚂', word:'VLAK', l:'V'},
-  // P2
-  {pic:'🔪', word:'NŮŽ', l:'N'}, {pic:'🪑', word:'STŮL', l:'S'},
-  {pic:'🐱', word:'KOČKA', l:'K'}, {pic:'🐷', word:'PRASE', l:'P'},
+  // [emoji, slovo, prvni_hlaska]
+  // Zvířata
+  {pic:'🐶', word:'PES', l:'P'},
+  {pic:'🦁', word:'LEV', l:'L'},
+  {pic:'🐱', word:'KOČKA', l:'K'},
+  {pic:'🐷', word:'PRASE', l:'P'},
   {pic:'🦚', word:'PÁV', l:'P'},
-  // P3
-  {pic:'🐴', word:'KŮŇ', l:'K'}, {pic:'🚢', word:'LOĎ', l:'L'},
-  {pic:'🌳', word:'STROM', l:'S'}, {pic:'🧂', word:'SŮL', l:'S'},
-  {pic:'🥣', word:'MÍSA', l:'M'},
-  // P4
-  {pic:'🧺', word:'KOŠ', l:'K'}, {pic:'🐦', word:'PTÁK', l:'P'},
-  {pic:'🐑', word:'OVCE', l:'O'}, {pic:'🐭', word:'MYŠ', l:'M'},
+  {pic:'🐴', word:'KŮŇ', l:'K'},
+  {pic:'🐦', word:'PTÁK', l:'P'},
+  {pic:'🐑', word:'OVCE', l:'O'},
+  {pic:'🐭', word:'MYŠ', l:'M'},
   {pic:'🐍', word:'HAD', l:'H'},
-  // P5
-  {pic:'☁️', word:'OBLAK', l:'O'}, {pic:'⚽', word:'MÍČ', l:'M'},
-  {pic:'🐸', word:'ŽÁBA', l:'Ž'}, {pic:'🪢', word:'LANO', l:'L'},
-  {pic:'🏠', word:'DŮM', l:'D'},
-  // P6
-  {pic:'🏰', word:'HRAD', l:'H'}, {pic:'🔑', word:'KLÍČ', l:'K'},
-  {pic:'🧣', word:'ŠÁLA', l:'Š'}, {pic:'🛁', word:'VANA', l:'V'},
-  {pic:'🦵', word:'NOHA', l:'N'},
-  // P7
-  {pic:'🐲', word:'DRAK', l:'D'}, {pic:'⛏️', word:'LOPATA', l:'L'},
-  {pic:'👟', word:'BOTA', l:'B'}, {pic:'🐘', word:'SLON', l:'S'},
-  {pic:'👃', word:'NOS', l:'N'},
-  // P8
-  {pic:'🪃', word:'PRAK', l:'P'}, {pic:'🐌', word:'ŠNEK', l:'Š'},
-  {pic:'🔔', word:'ZVON', l:'Z'}, {pic:'🚲', word:'KOLO', l:'K'},
-  {pic:'🏺', word:'VÁZA', l:'V'},
-  // P9
-  {pic:'🐐', word:'KOZA', l:'K'}, {pic:'🐠', word:'RYBA', l:'R'},
-  {pic:'🦛', word:'HROCH', l:'H'}, {pic:'⚔️', word:'MEČ', l:'M'},
-  // P10
-  {pic:'🐥', word:'KUŘE', l:'K'}, {pic:'🦉', word:'SOVA', l:'S'},
-  {pic:'🪚', word:'PILA', l:'P'}, {pic:'🧀', word:'SÝR', l:'S'},
+  {pic:'🐸', word:'ŽÁBA', l:'Ž'},
+  {pic:'🐲', word:'DRAK', l:'D'},
+  {pic:'🐘', word:'SLON', l:'S'},
+  {pic:'🐌', word:'ŠNEK', l:'Š'},
+  {pic:'🐐', word:'KOZA', l:'K'},
+  {pic:'🐠', word:'RYBA', l:'R'},
+  {pic:'🦛', word:'HROCH', l:'H'},
+  {pic:'🐥', word:'KUŘE', l:'K'},
+  {pic:'🦉', word:'SOVA', l:'S'},
   {pic:'🐝', word:'VČELA', l:'V'},
-  // P11
-  {pic:'👑', word:'KRÁL', l:'K'}, {pic:'🦙', word:'LAMA', l:'L'},
-  {pic:'👁️', word:'OKO', l:'O'}, {pic:'👂', word:'UCHO', l:'U'},
+  {pic:'🦙', word:'LAMA', l:'L'},
+  {pic:'🦆', word:'KACHNA', l:'K'},
+  {pic:'🦊', word:'LIŠKA', l:'L'},
+  {pic:'🦒', word:'ŽIRAFA', l:'Ž'},
+  {pic:'🐰', word:'ZAJÍC', l:'Z'},
+  {pic:'🐻', word:'MEDVĚD', l:'M'},
+  {pic:'🐺', word:'VLK', l:'V'},
+  {pic:'🦌', word:'JELEN', l:'J'},
+  {pic:'🦔', word:'JEŽEK', l:'J'},
+  {pic:'🦝', word:'MÝVAL', l:'M'},
+  {pic:'🦘', word:'KLOKAN', l:'K'},
+  // Doprava
+  {pic:'🚗', word:'AUTO', l:'A'},
+  {pic:'🚂', word:'VLAK', l:'V'},
+  {pic:'🚢', word:'LOĎ', l:'L'},
+  {pic:'🚲', word:'KOLO', l:'K'},
+  // Jídlo
+  {pic:'🧂', word:'SŮL', l:'S'},
+  {pic:'🥣', word:'MÍSA', l:'M'},
+  {pic:'🧀', word:'SÝR', l:'S'},
+  {pic:'🍎', word:'JABLKO', l:'J'},
+  {pic:'🍌', word:'BANÁN', l:'B'},
+  {pic:'🍓', word:'JAHODA', l:'J'},
+  // Příroda
+  {pic:'☁️', word:'MRAK', l:'M'},
+  {pic:'🌳', word:'STROM', l:'S'},
   {pic:'🍃', word:'LIST', l:'L'},
-  // P12
-  {pic:'🦆', word:'HUSA', l:'H'}, {pic:'🥁', word:'BUBEN', l:'B'},
-  {pic:'✋', word:'RUKA', l:'R'}, {pic:'🦷', word:'ZUB', l:'Z'},
-  {pic:'🦊', word:'LIŠKA', l:'L'}
+  {pic:'🌹', word:'RŮŽE', l:'R'},
+  {pic:'🌞', word:'SLUNCE', l:'S'},
+  // Předměty
+  {pic:'🔪', word:'NŮŽ', l:'N'},
+  {pic:'🪑', word:'ŽIDLE', l:'Ž'},
+  {pic:'🧺', word:'KOŠ', l:'K'},
+  {pic:'🏠', word:'DŮM', l:'D'},
+  {pic:'🏰', word:'HRAD', l:'H'},
+  {pic:'🔑', word:'KLÍČ', l:'K'},
+  {pic:'🧣', word:'ŠÁLA', l:'Š'},
+  {pic:'🛁', word:'VANA', l:'V'},
+  {pic:'👟', word:'BOTA', l:'B'},
+  {pic:'🔔', word:'ZVON', l:'Z'},
+  {pic:'🏺', word:'VÁZA', l:'V'},
+  {pic:'⚽', word:'MÍČ', l:'M'},
+  {pic:'🥁', word:'BUBEN', l:'B'},
+  {pic:'⚔️', word:'MEČ', l:'M'},
+  {pic:'🪚', word:'PILA', l:'P'},
+  {pic:'👑', word:'KRÁL', l:'K'},
+  // Tělo
+  {pic:'🦵', word:'NOHA', l:'N'},
+  {pic:'👃', word:'NOS', l:'N'},
+  {pic:'👁️', word:'OKO', l:'O'},
+  {pic:'👂', word:'UCHO', l:'U'},
+  {pic:'✋', word:'RUKA', l:'R'},
+  {pic:'🦷', word:'ZUB', l:'Z'}
 ];
 
 var phState = {seq:[], idx:0, body:0, sp:0, locked:false};
@@ -820,6 +773,105 @@ var trState = {letters:[], lower:[], idx:0, body:0, mode:'cap'};
 var TR_LETTERS_CAP   = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','R','S','T','U','V','Z'];
 var TR_LETTERS_LOWER = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','r','s','t','u','v','z'];
 
+/* ─────────────────────────────────────────────
+   CV-TT: TISKACÍ OBTAHOVÁNÍ
+   Vzor písmene se vykresluje přímo CSS jako velký text v pozadí.
+   Žádné PNG nepotřebujeme — tiskací jsou geometricky jednoduchá.
+───────────────────────────────────────────── */
+var ttState = {letters:[], idx:0, body:0, mode:'cap'};
+var ttCanvas, ttCtx, ttDrawing=false;
+
+function ttSetMode(m){
+  ttState.mode = m;
+  document.querySelectorAll('#cv-tt .ttModeBtn').forEach(function(b){
+    b.classList.toggle('on', b.dataset.mode === m);
+  });
+  ttStart();
+}
+function ttStart(){
+  var letters = (ttState.mode === 'lower') ? TR_LETTERS_LOWER : TR_LETTERS_CAP;
+  ttState = {letters: letters, idx:0, body:0, mode: ttState.mode || 'cap'};
+  document.querySelectorAll('#cv-tt .ttModeBtn').forEach(function(b){
+    b.classList.toggle('on', b.dataset.mode === ttState.mode);
+  });
+  el('ttres').style.display='none';
+  el('ttob').style.display='block';
+  /* Volič písmen */
+  var sel = el('ttsel'); sel.innerHTML='';
+  letters.forEach(function(L,i){
+    var b = document.createElement('button');
+    b.className='trsb'+(i===0?' on':''); b.textContent=L;
+    b.onclick=function(){ ttPick(i); };
+    sel.appendChild(b);
+  });
+  ttPick(0);
+}
+function ttPick(i){
+  ttState.idx = i;
+  document.querySelectorAll('#ttsel .trsb').forEach(function(b,j){
+    b.classList.toggle('on', j===i);
+  });
+  var letter = ttState.letters[i];
+  var isUpper = (ttState.mode !== 'lower');
+  el('ttbig').textContent = letter;
+  el('ttbig').style.color = isUpper ? 'var(--m)' : 'var(--o)';
+  el('ttci').textContent = (i+1)+'/'+ttState.letters.length;
+  el('ttv').textContent = (i+1)+'/'+ttState.letters.length;
+  el('ttpg').style.width = ((i+1)/ttState.letters.length*100)+'%';
+  /* Tiskací vzor: vykreslíme jako velký text v pozadí (CSS) */
+  el('ttGuide').textContent = letter;
+  ttClear();
+}
+function ttInit(){
+  ttCanvas = el('ttca');
+  if(!ttCanvas) return;
+  ttCtx = ttCanvas.getContext('2d');
+  ttCtx.lineWidth = 6;
+  ttCtx.lineCap = 'round';
+  ttCtx.lineJoin = 'round';
+  ttCtx.strokeStyle = '#32a0d2';
+  function getPos(e){
+    var r = ttCanvas.getBoundingClientRect();
+    var x,y;
+    if(e.touches){ x=e.touches[0].clientX-r.left; y=e.touches[0].clientY-r.top; }
+    else{ x=e.clientX-r.left; y=e.clientY-r.top; }
+    var sx = ttCanvas.width/r.width, sy = ttCanvas.height/r.height;
+    return {x:x*sx, y:y*sy};
+  }
+  function start(e){ e.preventDefault(); ttDrawing=true; var p=getPos(e); ttCtx.beginPath(); ttCtx.moveTo(p.x,p.y); }
+  function move(e){ if(!ttDrawing) return; e.preventDefault(); var p=getPos(e); ttCtx.lineTo(p.x,p.y); ttCtx.stroke(); }
+  function end(){ ttDrawing=false; }
+  ttCanvas.addEventListener('mousedown', start);
+  ttCanvas.addEventListener('mousemove', move);
+  ttCanvas.addEventListener('mouseup', end);
+  ttCanvas.addEventListener('mouseleave', end);
+  ttCanvas.addEventListener('touchstart', start, {passive:false});
+  ttCanvas.addEventListener('touchmove', move, {passive:false});
+  ttCanvas.addEventListener('touchend', end);
+}
+function ttClear(){
+  if(!ttCtx) return;
+  ttCtx.clearRect(0,0,ttCanvas.width,ttCanvas.height);
+}
+function ttDone(){
+  ttState.body += 5;
+  addPoints(5);
+  el('ttbd').textContent = ttState.body;
+  if(ttState.idx >= ttState.letters.length-1){
+    el('ttob').style.display='none';
+    el('ttres').style.display='block';
+    el('ttsc').textContent = ttState.body;
+    el('tttot').textContent = totalScore;
+    el('ttrow').style.display='flex';
+  } else {
+    ttPick(ttState.idx+1);
+  }
+}
+
+/* ─────────────────────────────────────────────
+   CV5: PSACÍ OBTAHOVÁNÍ
+───────────────────────────────────────────── */
+
 function trSetMode(m){
   trState.mode = m;
   document.querySelectorAll('#cv-tr .trModeBtn').forEach(function(b){
@@ -934,7 +986,7 @@ function trDone(){
 ───────────────────────────────────────────── */
 var ATG = {
   running:false, lane:1, carY:0, lives:3, score:0, errs:0,
-  signs:[], speed:1.5, spawnTimer:0, spawnInt:200,
+  signs:[], speed:1.4, spawnTimer:0, spawnInt:130,
   raf:null, hitFlash:0, okFlash:0,
   wordIdx:0, words:[],
   W:520, H:240, N:3,  /* 3 pruhy */
@@ -961,9 +1013,9 @@ function autoStart(){
   ATG.score = 0;
   ATG.errs = 0;
   ATG.signs = [];
-  ATG.speed = 1.6;
+  ATG.speed = 1.4;
   ATG.spawnTimer = 0;
-  ATG.spawnInt = 220;
+  ATG.spawnInt = 130;
   ATG.hitFlash = 0;
   ATG.okFlash = 0;
 
@@ -997,7 +1049,6 @@ function autoStart(){
 
 function autoShowWord(){
   var item = ATG.words[ATG.wordIdx % ATG.words.length];
-  el('autoWord').textContent = item.word;
   el('autoPic').textContent = item.pic;
 }
 
@@ -1111,14 +1162,29 @@ function autoLoop(){
   ATG.spawnTimer++;
   if(ATG.spawnTimer >= ATG.spawnInt){
     ATG.spawnTimer = 0;
-    /* Vytvořit sadu 3 cedulí — jedna je správná */
+    /* 1× za interval přiletí 1 cedule do náhodného pruhu.
+       Občas (~50% šance) se vygeneruje "správná" cedule s aktuálním písmenem,
+       jinak špatná. Tím vznikne přirozený rytmus, kde se musíš
+       vyhýbat špatným a trefit správnou. */
     var item = ATG.words[ATG.wordIdx % ATG.words.length];
     var correct = item.l;
-    var others = shuffle(ABECEDA_VELKA.filter(function(x){return x !== correct;})).slice(0, 2);
-    var letters = shuffle([correct].concat(others));
-    /* Každé písmeno do svého pruhu */
-    for(var i=0; i<ATG.N; i++){
-      ATG.signs.push({ x: ATG.W + 50, lane: i, letter: letters[i], scored: false, flash: 0 });
+    var lane = Math.floor(Math.random() * ATG.N);
+    /* Pokud auto stojí v pruhu lane, vyber jiný pruh, abychom dali šanci */
+    /* (ale ne vždy, ať je hra trochu náročná) */
+    var letter;
+    var rnd = Math.random();
+    if(rnd < 0.45){
+      /* Správná cedule */
+      letter = correct;
+    } else {
+      /* Špatná cedule — vyber náhodné jiné písmeno */
+      var others = ABECEDA_VELKA.filter(function(x){return x !== correct;});
+      letter = others[Math.floor(Math.random() * others.length)];
+    }
+    /* Zkontrolovat, že v této X-pozici nedáme dvě cedule příliš blízko sebe */
+    var tooClose = ATG.signs.some(function(sg){ return sg.x > ATG.W - 50; });
+    if(!tooClose){
+      ATG.signs.push({ x: ATG.W + 30, lane: lane, letter: letter, scored: false, flash: 0 });
     }
   }
 
@@ -1133,26 +1199,22 @@ function autoLoop(){
       if(sg.lane === ATG.lane){
         sg.scored = true;
         if(sg.letter === correct){
-          /* Správně */
+          /* Správně — projel správnou cedulí */
           sg.flash = 16;
           ATG.okFlash = 10;
           ATG.score += 1;
           el('autoSc').textContent = ATG.score;
           addPoints(10);
-          /* Označit ostatní cedule v této sadě jako vyřízené (aby je nezasáhlo) */
-          ATG.signs.forEach(function(other){
-            if(other !== sg && Math.abs(other.x - sg.x) < 60) other.scored = true;
-          });
           /* Další slovo */
           ATG.wordIdx++;
           autoShowWord();
           /* Občas zrychlit */
           if(ATG.score % 5 === 0){
             ATG.speed = Math.min(4, ATG.speed + 0.2);
-            ATG.spawnInt = Math.max(140, ATG.spawnInt - 12);
+            ATG.spawnInt = Math.max(80, ATG.spawnInt - 10);
           }
         } else {
-          /* Špatně — projel špatným písmenem */
+          /* Špatně — narazil do špatné cedule */
           sg.flash = -16;
           ATG.hitFlash = 18;
           ATG.errs++;
@@ -1205,6 +1267,7 @@ document.addEventListener('keydown', function(e){
 ───────────────────────────────────────────── */
 loadScore();
 trInit();
+ttInit();
 </script>
 </body>
 </html>

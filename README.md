@@ -10,6 +10,10 @@ https://linguauniversal.github.io/LinguaCzech/
 
 ## 📚 Obsah
 
+### 1. ročník (NOVÉ)
+- **Písmena** — velká tiskací, malá tiskací, párování velkých/malých, první hláska v obrázku, psací obtahování, hra auto
+- **Čtení** — krátká slova, dlouhá slova, čtení vět, porozumění (věta + otázka)
+
 ### 2. ročník
 - **Hlásky** — samohlásky/souhlásky, abeceda, velká/malá písmena, psací písmo
 - **Měkké a tvrdé** — rozdělování souhlásek, doplňování i/y
@@ -32,6 +36,9 @@ https://linguauniversal.github.io/LinguaCzech/
 | Soubor | Účel |
 |---|---|
 | `index.html` | Úvodní rozcestník (výběr ročníku) |
+| `1trida.html` | Přehled cvičení 1. třídy |
+| `pismena.html` | Cvičení písmen (1. třída) |
+| `cteni.html` | Cvičení čtení (1. třída) |
 | `2trida.html` | Přehled cvičení 2. třídy |
 | `hlasky.html` | Cvičení hlásek (vč. psacího písma) |
 | `mekke-tvrde.html` | Cvičení měkkých a tvrdých souhlásek |
@@ -43,3 +50,4 @@ https://linguauniversal.github.io/LinguaCzech/
 | `prihlaseni.html` | Lokální přihlášení žáka (jméno + PIN) |
 | `ucitel.html` | Učitelský generátor přístupů s PDF kartičkami |
 | `dashboard.html` | Přehled pokroku třídy s grafy |
+

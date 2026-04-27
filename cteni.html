@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Čtení — LinguaCzech</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --m:#32a0d2;--o:#ffaa37;
+  --ms:#e8f4fb;--os:#fff8ee;
+  --z:#16a34a;--zs:#dcfce7;
+  --r:#dc2626;--rs:#fee2e2;
+  --font:'Barlow Condensed',sans-serif;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:var(--font);background:#f0f7fc;}
+.hl{font-family:var(--font);max-width:700px;margin:1.5rem auto;padding:.5rem 1rem;}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(90deg,#1a7fa8,#32a0d2);
+  padding:.45rem 1rem;margin-bottom:1rem;border-radius:10px;}
+.topbar a{color:white;font-size:.9rem;font-weight:700;cursor:pointer;
+  text-decoration:none;display:flex;align-items:center;gap:.35rem;opacity:.92;}
+.topbar a:hover{opacity:1;}
+.topbar span{color:rgba(255,255,255,.75);font-size:.78rem;font-weight:700;
+  letter-spacing:.5px;text-transform:uppercase;}
+
+.scbg{position:fixed;top:10px;right:12px;background:var(--o);color:white;border-radius:99px;padding:.3rem .85rem;font-weight:700;font-size:1rem;font-family:var(--font);z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.18);pointer-events:none;}
+.trophy-bar{position:fixed;top:46px;right:12px;display:flex;gap:.25rem;z-index:200;background:rgba(255,255,255,.85);border-radius:99px;padding:.15rem .5rem;box-shadow:0 1px 6px rgba(0,0,0,.12);}
+.trp{font-size:1.5rem;opacity:.15;transition:opacity .3s,transform .4s;filter:grayscale(1);}
+.trp.earned{opacity:1;filter:none;}
+@keyframes trpop{0%{transform:scale(1)}40%{transform:scale(1.5)}100%{transform:scale(1)}}
+.trp.pop{animation:trpop .45s ease;}
+
+.mh{background:var(--m);color:white;border-radius:14px;padding:1.5rem;text-align:center;margin-bottom:1.5rem;}
+.mh h1{margin:0;font-size:2rem;font-weight:700;letter-spacing:.5px;}
+.mh p{margin:.4rem 0 0;opacity:.9;font-size:1rem;}
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.mk{background:white;border:2px solid #e5e7eb;border-radius:14px;padding:1.25rem 1rem;text-align:center;cursor:pointer;transition:all .15s;}
+.mk-m{background:var(--ms);border-color:var(--m);}
+.mk-m h3{color:#1a5f7a;}
+.mk-o{background:var(--os);border-color:var(--o);}
+.mk-o h3{color:#b45309;}
+.mk:hover{transform:translateY(-2px);filter:brightness(.95);}
+.mk h3{margin:0 0 .2rem;font-size:1.1rem;font-weight:700;color:#1f2937;}
+.mk p{margin:0;font-size:.9rem;color:#6b7280;}
+@media(max-width:600px){.mg{grid-template-columns:1fr;}}
+
+.cv{display:none;}
+.nav{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;}
+.zpet{background:none;border:1.5px solid #d1d5db;border-radius:8px;padding:.4rem .9rem;cursor:pointer;font-size:.95rem;font-weight:600;color:#374151;font-family:var(--font);}
+.zpet:hover{background:#f3f4f6;}
+.tit{font-size:1.3rem;font-weight:700;color:#1f2937;}
+.var{font-size:.82rem;background:var(--ms);color:var(--m);border-radius:99px;padding:.2rem .8rem;margin-left:auto;font-weight:600;}
+.sk{display:flex;justify-content:center;gap:2rem;background:var(--os);border:1px solid #ffd48a;border-radius:10px;padding:.9rem;margin-bottom:1.25rem;}
+.skn{font-size:2rem;font-weight:700;color:var(--o);text-align:center;}
+.skl{font-size:.82rem;color:#6b7280;text-align:center;}
+.pg{background:#e5e7eb;border-radius:99px;height:7px;margin-bottom:1.25rem;}
+.pgf{background:var(--m);height:7px;border-radius:99px;transition:width .3s;}
+.ka{background:white;border:1.5px solid #e5e7eb;border-radius:12px;padding:1.5rem;margin-bottom:1rem;}
+.q{font-size:1.05rem;font-weight:700;color:#1f2937;margin-bottom:1rem;text-align:center;}
+.fb{margin-top:.75rem;font-size:.95rem;min-height:1.4rem;font-weight:600;text-align:center;}
+.fb.ok{color:var(--z);}
+.fb.err{color:var(--r);}
+
+/* SLOVO BIG */
+.bigWord{font-size:3.5rem;font-weight:800;display:block;text-align:center;margin:.5rem 0 1.2rem;color:var(--m);line-height:1;letter-spacing:2px;}
+.bigSentence{font-size:1.6rem;font-weight:700;text-align:center;margin:1rem 0 1.2rem;color:#1f2937;line-height:1.4;background:var(--ms);padding:1rem;border-radius:10px;}
+
+/* OPCE — řádkové */
+.opts{display:flex;flex-direction:column;gap:.5rem;}
+.opt{padding:.9rem 1rem;border:2px solid #d1d5db;border-radius:10px;background:white;font-size:1.1rem;font-weight:600;cursor:pointer;text-align:left;font-family:var(--font);transition:all .15s;}
+.opt:hover:not(:disabled){border-color:var(--m);background:var(--ms);}
+.opt.ok{background:var(--zs);border-color:var(--z);color:#15803d;}
+.opt.err{background:var(--rs);border-color:var(--r);color:var(--r);}
+.opt:disabled{cursor:default;}
+
+/* "Přečetla jsem" tlačítka */
+.readBtns{display:flex;gap:.6rem;margin-top:1rem;}
+.readBtn{flex:1;padding:.9rem;border:2px solid var(--m);background:var(--ms);color:#1a5f7a;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;font-family:var(--font);}
+.readBtn:hover{background:var(--m);color:white;}
+.readBtn.skip{border-color:#d1d5db;background:white;color:#6b7280;}
+.readBtn.skip:hover{background:#f3f4f6;color:#374151;}
+
+.nxt{display:none;width:100%;margin-top:.75rem;padding:.75rem;background:var(--z);color:white;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:var(--font);}
+.nxt:hover{background:#15803d;}
+
+.res{display:none;text-align:center;background:var(--zs);border:2px solid var(--z);border-radius:12px;padding:2rem;}
+.res h2{color:#15803d;font-size:1.6rem;font-weight:700;margin:.5rem 0;}
+.res p{color:#374151;margin:.3rem 0;}
+.znovu{margin-top:1rem;padding:.7rem 2rem;background:var(--m);color:white;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;margin-right:.5rem;font-family:var(--font);}
+.znovu:hover{background:#2589b8;}
+.mbtn{padding:.7rem 2rem;background:white;color:#374151;border:1.5px solid #d1d5db;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;font-family:var(--font);}
+.res-row{display:flex;gap:1.5rem;justify-content:center;margin:.4rem 0 .8rem;flex-wrap:wrap;}
+.rs{text-align:center;min-width:70px;}
+.rsv{font-size:1.9rem;font-weight:700;color:var(--m);}
+.rsl{font-size:.78rem;color:#6b7280;margin-top:2px;}
+.rsv.pts{color:var(--o);}
+</style>
+</head>
+<body>
+<div class="hl">
+<div class="scbg" id="scbg">⭐ 0 b.</div>
+<div class="trophy-bar"><span class="trp" id="tr1" title="Bronzový pohár — 100 bodů">🥉</span><span class="trp" id="tr2" title="Stříbrný pohár — 150 bodů">🥈</span><span class="trp" id="tr3" title="Zlatý pohár — 200 bodů">🥇</span></div>
+
+<!-- MENU -->
+<div id="menu">
+  <div class="topbar"><a href="1trida.html">← 1. třída</a><span>LinguaCzech</span></div>
+  <div class="mh"><h1>Čtení</h1><p>1. ročník — vyber si cvičení</p></div>
+  <div class="mg">
+    <div onclick="go('ks')" class="mk mk-m"><h3>Krátká slova</h3><p>Pes, les, kolo, máma…</p></div>
+    <div onclick="go('ds')" class="mk mk-o"><h3>Dlouhá slova</h3><p>Jablko, motýl, koleno…</p></div>
+    <div onclick="go('vt')" class="mk mk-m" style="grid-column:span 2"><h3>Čtení vět</h3><p>Přečti větu nahlas — pak pokračuj</p></div>
+    <div onclick="go('po')" class="mk mk-o" style="grid-column:span 2"><h3>Porozumění — věta a otázka</h3><p>Přečti, odpověz na otázku</p></div>
+  </div>
+</div>
+
+<!-- ============ CV1: KRÁTKÁ SLOVA ============ -->
+<div class="cv" id="cv-ks">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">Krátká slova</span><span class="var" id="ksv">1/10</span></div>
+  <div class="sk"><div><div class="skn" id="ksbd">0</div><div class="skl">body</div></div><div><div class="skn" id="ksci">1/10</div><div class="skl">slovo</div></div></div>
+  <div class="pg"><div class="pgf" id="kspg" style="width:0%"></div></div>
+  <div id="ksob">
+    <div class="ka">
+      <div class="q">Přečti slovo nahlas:</div>
+      <span class="bigWord" id="ksw">PES</span>
+      <div class="readBtns">
+        <button class="readBtn skip" onclick="ksAns(false)">Neumím ↷</button>
+        <button class="readBtn" onclick="ksAns(true)">Přečetla jsem ✓</button>
+      </div>
+    </div>
+  </div>
+  <div class="res" id="ksres">
+    <div style="font-size:3rem">📖</div><h2>Hotovo!</h2><p id="kspp"></p>
+    <div class="res-row" id="ksrow" style="display:none">
+      <div class="rs"><div class="rsv pts" id="kssc">0</div><div class="rsl">body</div></div>
+      <div class="rs"><div class="rsv pts" id="kstot">0</div><div class="rsl">celkem ⭐</div></div>
+    </div>
+    <button class="znovu" onclick="go('ks')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- ============ CV2: DLOUHÁ SLOVA ============ -->
+<div class="cv" id="cv-ds">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">Dlouhá slova</span><span class="var" id="dsv">1/10</span></div>
+  <div class="sk"><div><div class="skn" id="dsbd">0</div><div class="skl">body</div></div><div><div class="skn" id="dsci">1/10</div><div class="skl">slovo</div></div></div>
+  <div class="pg"><div class="pgf" id="dspg" style="width:0%"></div></div>
+  <div id="dsob">
+    <div class="ka">
+      <div class="q">Přečti slovo nahlas:</div>
+      <span class="bigWord" id="dsw">JABLKO</span>
+      <div class="readBtns">
+        <button class="readBtn skip" onclick="dsAns(false)">Neumím ↷</button>
+        <button class="readBtn" onclick="dsAns(true)">Přečetla jsem ✓</button>
+      </div>
+    </div>
+  </div>
+  <div class="res" id="dsres">
+    <div style="font-size:3rem">📖</div><h2>Hotovo!</h2><p id="dspp"></p>
+    <div class="res-row" id="dsrow" style="display:none">
+      <div class="rs"><div class="rsv pts" id="dssc">0</div><div class="rsl">body</div></div>
+      <div class="rs"><div class="rsv pts" id="dstot">0</div><div class="rsl">celkem ⭐</div></div>
+    </div>
+    <button class="znovu" onclick="go('ds')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- ============ CV3: ČTENÍ VĚT ============ -->
+<div class="cv" id="cv-vt">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">Čtení vět</span><span class="var" id="vtv">1/8</span></div>
+  <div class="sk"><div><div class="skn" id="vtbd">0</div><div class="skl">body</div></div><div><div class="skn" id="vtci">1/8</div><div class="skl">věta</div></div></div>
+  <div class="pg"><div class="pgf" id="vtpg" style="width:0%"></div></div>
+  <div id="vtob">
+    <div class="ka">
+      <div class="q">Přečti větu nahlas:</div>
+      <div class="bigSentence" id="vts">PTÁČEK VESELE ZPÍVAL.</div>
+      <div class="readBtns">
+        <button class="readBtn skip" onclick="vtAns(false)">Neumím ↷</button>
+        <button class="readBtn" onclick="vtAns(true)">Přečetla jsem ✓</button>
+      </div>
+    </div>
+  </div>
+  <div class="res" id="vtres">
+    <div style="font-size:3rem">📖</div><h2>Skvělá práce!</h2><p id="vtpp"></p>
+    <div class="res-row" id="vtrow" style="display:none">
+      <div class="rs"><div class="rsv pts" id="vtsc">0</div><div class="rsl">body</div></div>
+      <div class="rs"><div class="rsv pts" id="vttot">0</div><div class="rsl">celkem ⭐</div></div>
+    </div>
+    <button class="znovu" onclick="go('vt')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- ============ CV4: POROZUMĚNÍ ============ -->
+<div class="cv" id="cv-po">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">Věta a otázka</span><span class="var" id="pov">1/8</span></div>
+  <div class="sk"><div><div class="skn" id="pobd">0</div><div class="skl">body</div></div><div><div class="skn" id="poci">1/8</div><div class="skl">otázka</div></div><div><div class="skn" id="posp">0</div><div class="skl">správně</div></div></div>
+  <div class="pg"><div class="pgf" id="popg" style="width:0%"></div></div>
+  <div id="poob">
+    <div class="ka">
+      <div class="q">Přečti a odpověz na otázku:</div>
+      <div class="bigSentence" id="pos">Pes Rex běží na zahradě.</div>
+      <div class="q" id="poq" style="margin-top:.5rem">Kdo běží?</div>
+      <div class="opts" id="poopts"></div>
+      <div class="fb" id="pofb"></div>
+    </div>
+    <button class="nxt" id="ponx" onclick="poNext()">Další →</button>
+  </div>
+  <div class="res" id="pores">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="popp"></p>
+    <div class="res-row" id="porow" style="display:none">
+      <div class="rs"><div class="rsv pts" id="posc">0</div><div class="rsl">body</div></div>
+      <div class="rs"><div class="rsv pts" id="potot">0</div><div class="rsl">celkem ⭐</div></div>
+    </div>
+    <button class="znovu" onclick="go('po')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+</div><!-- .hl -->
+
+<script>
+/* ── SDÍLENÉ ── */
+var SCORE_KEY = 'cteni_score';
+var totalScore = 0;
+var earnedTr = {tr1:false,tr2:false,tr3:false};
+
+function loadScore(){
+  try{ totalScore = parseInt(localStorage.getItem(SCORE_KEY))||0; }
+  catch(e){ totalScore = 0; }
+  updateScore();
+}
+function saveScore(){ try{ localStorage.setItem(SCORE_KEY, totalScore); }catch(e){} }
+function updateScore(){
+  document.getElementById('scbg').textContent = '⭐ '+totalScore+' b.';
+  if(totalScore>=100) document.getElementById('tr1').classList.add('earned');
+  if(totalScore>=150) document.getElementById('tr2').classList.add('earned');
+  if(totalScore>=200) document.getElementById('tr3').classList.add('earned');
+}
+function addPoints(n){ totalScore += n; saveScore(); updateScore(); }
+function el(id){ return document.getElementById(id); }
+function shuffle(a){ a = a.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+
+function back(){
+  document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
+  el('menu').style.display='block';
+  window.scrollTo(0,0);
+}
+function go(id){
+  el('menu').style.display='none';
+  document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
+  el('cv-'+id).style.display='block';
+  window.scrollTo(0,0);
+  if(id==='ks') ksStart();
+  if(id==='ds') dsStart();
+  if(id==='vt') vtStart();
+  if(id==='po') poStart();
+}
+
+/* ─────────────────────────────────────────────
+   DATA — z PDF kartiček
+───────────────────────────────────────────── */
+var KRATKA_SLOVA = [
+  // Č1-Č11 z PDF
+  'PES','LES','AUTO','MÁMA','BÁBA','KOLO','SYN','TETA','BOTA','OKNO',
+  'MYŠ','PERO','PTÁK','DĚDA','TÁTA','KOS','LASO','LOS','VLAK','MRAK',
+  'TELE','SNÍH','LÉTO','EMA','ZIMA','STŮL','NŮŽ','JARO','KOŤE','SELE',
+  'PÁV','KŮŇ','KLUK','BUK','LOĎ','KRA','LED','MÍSA','SŮL','CUKR',
+  'DEN','MUŽ','STÍN','ROK','SKOK','SLON','KRÁL','RÁJ','KLÍČ','PLES',
+  'SOB','LIST','RYBA','VODA','NOC','HUSA','PEPŘ','POLE','SUD','SOVA',
+  'DÁL','ZUB','DŮM','ŽÁBA','MED','HAD','SEN','NOHA','DRAK','LEV',
+  'NOS','KOZA','PLOT','TYČ','MOST','HRAD','MEČ','KRAB','RUKA','PÁN',
+  'HÁK','RÝŽE','VLK','ZUBY','HRÁCH','MLHA','HROCH','KRK','OKO','EVA'
+];
+
+var DLOUHA_SLOVA = [
+  // Č12-Č15 z PDF
+  'JABLKO','MOTÝL','LOPATA','KOŠÍK','MEDVĚD','SLUNCE',
+  'VÁNOCE','JAHODA','KOLENO','TRAKTOR','BABIČKA','MAMINKA',
+  'SNĚHULÁK','JEŽEK','KNÍŽKA','JELEN','BANÁN','MOTORKA',
+  'POKLADNA','ZÁCHOD','POLÉVKA','ZAHRADA','OBRAZ','ZVONEK'
+];
+
+var VETY = [
+  // Č16-Č27 z PDF
+  'PTÁČEK VESELE ZPÍVAL.',
+  'SLUNÍČKO SVÍTILO CELÝ DEN.',
+  'VEVERKA SBÍRALA OŘÍŠKY.',
+  'EVA MÁ RÁDA JAHODY.',
+  'SNĚHULÁK SE NA JAŘE ROZTÁL.',
+  'JEŽEK DUPE V LESE.',
+  'OPICE JEDÍ BANÁNY.',
+  'NA ZAHRADĚ ROSTE STROM.',
+  'NAMALUJ MI OBRAZ.',
+  'POLÉVKA JE MOC HORKÁ.',
+  'VE VĚŽI ZVONIL ZVON.',
+  'ŽIRAFA MÁ DLOUHÝ KRK.',
+  'DNES CELÝ DEN PRŠÍ.',
+  'MÁMA PEČE KOLÁČE.',
+  'MÁM RÁD PANDY.',
+  'HAJNÝ JE LESA PÁN.',
+  'TRPASLÍCI UMÍ ZLOBIT.',
+  'LIŠKA JE MAZANÁ A CHYTRÁ.',
+  'V NOCI SLUNCE NESVÍTÍ.',
+  'V LÉTĚ JE VELKÉ TEPLO.',
+  'UČÍM SE PLAVAT.',
+  'DĚTI CHODÍ DO ŠKOLY.',
+  'VŠICHNI MAJÍ RÁDI PRÁZDNINY.',
+  'SLON MÁ DLOUHÝ CHOBOT.',
+  'ŠNEK JE VELMI POMALÝ.',
+  'KŮŇ RÁD BĚHÁ.',
+  'TATÍNEK STAVÍ DŮM.',
+  'SOVA JE NOČNÍ PTÁK.'
+];
+
+/* Věty s otázkou — pro porozumění */
+var POROZUMENI = [
+  {s:'Pes Rex běží na zahradě.', q:'Kdo běží?', opts:['Rex','Máma','Auto'], a:0},
+  {s:'Eva má ráda jahody.', q:'Co má Eva ráda?', opts:['Banány','Jahody','Houby'], a:1},
+  {s:'Slunce svítí celý den.', q:'Co svítí?', opts:['Měsíc','Lampa','Slunce'], a:2},
+  {s:'Sněhulák se na jaře roztál.', q:'Kdy se sněhulák roztál?', opts:['V létě','Na jaře','V zimě'], a:1},
+  {s:'Žirafa má dlouhý krk.', q:'Co má žirafa dlouhé?', opts:['Nohy','Ocas','Krk'], a:2},
+  {s:'Máma peče koláče.', q:'Co dělá máma?', opts:['Vaří polévku','Peče koláče','Pere prádlo'], a:1},
+  {s:'Slon má dlouhý chobot.', q:'Co má slon dlouhé?', opts:['Uši','Chobot','Ocas'], a:1},
+  {s:'V noci slunce nesvítí.', q:'Co nesvítí v noci?', opts:['Měsíc','Hvězdy','Slunce'], a:2},
+  {s:'Děti chodí do školy.', q:'Kam chodí děti?', opts:['Do parku','Do školy','Do lesa'], a:1},
+  {s:'Liška je mazaná a chytrá.', q:'Jaká je liška?', opts:['Pomalá','Mazaná','Hloupá'], a:1},
+  {s:'Kůň rád běhá.', q:'Co rád dělá kůň?', opts:['Spí','Běhá','Pluje'], a:1},
+  {s:'Tatínek staví dům.', q:'Co staví tatínek?', opts:['Auto','Dům','Most'], a:1},
+  {s:'Sova je noční pták.', q:'Kdy létá sova?', opts:['Ráno','V noci','Odpoledne'], a:1},
+  {s:'Včely nám dávají med.', q:'Co dávají včely?', opts:['Mléko','Med','Máslo'], a:1},
+  {s:'Učím se plavat.', q:'Co se učím?', opts:['Tančit','Plavat','Kreslit'], a:1}
+];
+
+/* ─────────────────────────────────────────────
+   CV1: KRÁTKÁ SLOVA — "přečetla jsem"
+───────────────────────────────────────────── */
+var ksState = {seq:[], idx:0, body:0, done:0};
+function ksStart(){
+  ksState = {seq:shuffle(KRATKA_SLOVA).slice(0,10), idx:0, body:0, done:0};
+  el('ksres').style.display='none';
+  el('ksob').style.display='block';
+  ksRender();
+}
+function ksRender(){
+  var s=ksState;
+  if(s.idx>=s.seq.length){ ksFinish(); return; }
+  el('ksw').textContent = s.seq[s.idx];
+  el('ksv').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('ksci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('ksbd').textContent = s.body;
+  el('kspg').style.width = ((s.idx)/s.seq.length*100)+'%';
+}
+function ksAns(read){
+  var s=ksState;
+  if(read){
+    s.body += 5;
+    s.done += 1;
+    addPoints(5);
+  }
+  s.idx += 1;
+  ksRender();
+}
+function ksFinish(){
+  var s=ksState;
+  el('ksob').style.display='none';
+  el('ksres').style.display='block';
+  el('kspp').textContent = 'Přečetla jsi '+s.done+' z '+s.seq.length+' slov · '+s.body+' bodů.';
+  el('kssc').textContent = s.body;
+  el('kstot').textContent = totalScore;
+  el('ksrow').style.display='flex';
+}
+
+/* ─────────────────────────────────────────────
+   CV2: DLOUHÁ SLOVA
+───────────────────────────────────────────── */
+var dsState = {seq:[], idx:0, body:0, done:0};
+function dsStart(){
+  dsState = {seq:shuffle(DLOUHA_SLOVA).slice(0,10), idx:0, body:0, done:0};
+  el('dsres').style.display='none';
+  el('dsob').style.display='block';
+  dsRender();
+}
+function dsRender(){
+  var s=dsState;
+  if(s.idx>=s.seq.length){ dsFinish(); return; }
+  el('dsw').textContent = s.seq[s.idx];
+  el('dsv').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('dsci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('dsbd').textContent = s.body;
+  el('dspg').style.width = ((s.idx)/s.seq.length*100)+'%';
+}
+function dsAns(read){
+  var s=dsState;
+  if(read){
+    s.body += 7;
+    s.done += 1;
+    addPoints(7);
+  }
+  s.idx += 1;
+  dsRender();
+}
+function dsFinish(){
+  var s=dsState;
+  el('dsob').style.display='none';
+  el('dsres').style.display='block';
+  el('dspp').textContent = 'Přečetla jsi '+s.done+' z '+s.seq.length+' slov · '+s.body+' bodů.';
+  el('dssc').textContent = s.body;
+  el('dstot').textContent = totalScore;
+  el('dsrow').style.display='flex';
+}
+
+/* ─────────────────────────────────────────────
+   CV3: VĚTY
+───────────────────────────────────────────── */
+var vtStateR = {seq:[], idx:0, body:0, done:0};
+function vtStart(){
+  vtStateR = {seq:shuffle(VETY).slice(0,8), idx:0, body:0, done:0};
+  el('vtres').style.display='none';
+  el('vtob').style.display='block';
+  vtRender();
+}
+function vtRender(){
+  var s=vtStateR;
+  if(s.idx>=s.seq.length){ vtFinish(); return; }
+  el('vts').textContent = s.seq[s.idx];
+  el('vtv').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('vtci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('vtbd').textContent = s.body;
+  el('vtpg').style.width = ((s.idx)/s.seq.length*100)+'%';
+}
+function vtAns(read){
+  var s=vtStateR;
+  if(read){
+    s.body += 10;
+    s.done += 1;
+    addPoints(10);
+  }
+  s.idx += 1;
+  vtRender();
+}
+function vtFinish(){
+  var s=vtStateR;
+  el('vtob').style.display='none';
+  el('vtres').style.display='block';
+  el('vtpp').textContent = 'Přečetla jsi '+s.done+' z '+s.seq.length+' vět · '+s.body+' bodů.';
+  el('vtsc').textContent = s.body;
+  el('vttot').textContent = totalScore;
+  el('vtrow').style.display='flex';
+}
+
+/* ─────────────────────────────────────────────
+   CV4: POROZUMĚNÍ
+───────────────────────────────────────────── */
+var poState = {seq:[], idx:0, body:0, sp:0, locked:false};
+function poStart(){
+  poState = {seq:shuffle(POROZUMENI).slice(0,8), idx:0, body:0, sp:0, locked:false};
+  el('pores').style.display='none';
+  el('poob').style.display='block';
+  poRender();
+}
+function poRender(){
+  var s=poState;
+  if(s.idx>=s.seq.length){ poFinish(); return; }
+  var item = s.seq[s.idx];
+  el('pos').textContent = item.s;
+  el('poq').textContent = item.q;
+  el('pov').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('poci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('pobd').textContent = s.body;
+  el('posp').textContent = s.sp;
+  el('popg').style.width = ((s.idx)/s.seq.length*100)+'%';
+  el('pofb').textContent='';
+  el('pofb').className='fb';
+  el('ponx').style.display='none';
+  /* Vykreslit volby — pořadí náhodné, ale zapamatujeme si původní index správné */
+  var box = el('poopts'); box.innerHTML='';
+  var indexes = item.opts.map(function(_,i){return i;});
+  shuffle(indexes).forEach(function(origIdx){
+    var b = document.createElement('button');
+    b.className='opt'; b.textContent=item.opts[origIdx];
+    b.onclick = function(){ poAnswer(origIdx, b); };
+    box.appendChild(b);
+  });
+  s.locked = false;
+}
+function poAnswer(picked, btn){
+  var s=poState;
+  if(s.locked) return;
+  s.locked = true;
+  var item = s.seq[s.idx];
+  if(picked === item.a){
+    btn.classList.add('ok');
+    s.body += 10;
+    s.sp += 1;
+    addPoints(10);
+    el('pofb').textContent = 'Správně! ✓';
+    el('pofb').className = 'fb ok';
+  } else {
+    btn.classList.add('err');
+    /* Zvýraznit správnou */
+    document.querySelectorAll('#poopts .opt').forEach(function(b){
+      if(b.textContent === item.opts[item.a]) b.classList.add('ok');
+    });
+    el('pofb').textContent = 'Správná odpověď je '+item.opts[item.a];
+    el('pofb').className = 'fb err';
+  }
+  document.querySelectorAll('#poopts .opt').forEach(function(b){b.disabled=true;});
+  el('pobd').textContent = s.body;
+  el('posp').textContent = s.sp;
+  el('ponx').style.display='block';
+}
+function poNext(){ poState.idx++; poRender(); }
+function poFinish(){
+  var s=poState;
+  el('poob').style.display='none';
+  el('pores').style.display='block';
+  el('popp').textContent = 'Správně '+s.sp+' z '+s.seq.length+' · získala jsi '+s.body+' bodů.';
+  el('posc').textContent = s.body;
+  el('potot').textContent = totalScore;
+  el('porow').style.display='flex';
+}
+
+loadScore();
+</script>
+</body>
+</html>

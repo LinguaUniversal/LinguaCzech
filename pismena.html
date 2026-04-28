@@ -1169,22 +1169,30 @@ function autoLoop(){
     var correct = item.l;
     var lane = Math.floor(Math.random() * ATG.N);
 
+    /* Posledních pár písmen na obrazovce (abychom neopakovali) */
+    var recentLetters = ATG.signs.slice(-3).map(function(s){return s.letter;});
+
     /* Logika spawnu:
-       - Sledujeme, kolik správných cedulí už pro toto slovo přiletělo
-       - GARANTUJEME alespoň 1 správnou cedule v každé "vlně" 4 spawnů
-       - Pokud poslední 3 byly špatné, další MUSÍ být správná */
+       - GARANTUJEME alespoň 1 správnou cedule (po 2 špatných za sebou)
+       - Vyhýbáme se opakování stejného písmene těsně za sebou */
     var letter;
-    if(ATG.spawnCount % 4 === 0 || ATG.spawnsSinceCorrect >= 2){
+    if(ATG.spawnsSinceCorrect >= 2){
       /* Garantovaně správná */
       letter = correct;
       ATG.spawnsSinceCorrect = 0;
-    } else if(Math.random() < 0.5){
+    } else if(Math.random() < 0.45){
       /* Náhodně správná */
       letter = correct;
       ATG.spawnsSinceCorrect = 0;
     } else {
-      /* Špatná */
-      var others = ABECEDA_VELKA.filter(function(x){return x !== correct;});
+      /* Špatná — ale vyber takovou, která NENÍ na obrazovce */
+      var others = ABECEDA_VELKA.filter(function(x){
+        return x !== correct && recentLetters.indexOf(x) === -1;
+      });
+      /* Pokud by zbylo příliš málo (krajní případ), použij plnou abecedu */
+      if(others.length < 3){
+        others = ABECEDA_VELKA.filter(function(x){return x !== correct;});
+      }
       letter = others[Math.floor(Math.random() * others.length)];
       ATG.spawnsSinceCorrect++;
     }
@@ -1232,8 +1240,15 @@ function autoLoop(){
             autoShowWord();
             ATG.spawnsSinceCorrect = 0;
             ATG.spawnCount = 0;
-            /* Občas zrychlit */
-            if(ATG.score % 5 === 0){
+            /* Zrychlování:
+               - Do skóre 30: každé 5 správných pomalé zrychlení
+               - Od skóre 30: každé 2 správné rychlé zrychlení (výzva!) */
+            if(ATG.score >= 30){
+              if(ATG.score % 2 === 0){
+                ATG.speed = Math.min(6, ATG.speed + 0.3);
+                ATG.spawnInt = Math.max(60, ATG.spawnInt - 8);
+              }
+            } else if(ATG.score % 5 === 0){
               ATG.speed = Math.min(4, ATG.speed + 0.2);
               ATG.spawnInt = Math.max(80, ATG.spawnInt - 10);
             }

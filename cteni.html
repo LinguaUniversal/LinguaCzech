@@ -109,110 +109,58 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;}
   <div class="topbar"><a href="1trida.html">← 1. třída</a><span>LinguaCzech</span></div>
   <div class="mh"><h1>Čtení</h1><p>1. ročník — vyber si cvičení</p></div>
   <div class="mg">
-    <div onclick="go('ks')" class="mk mk-m"><h3>Krátká slova</h3><p>Pes, les, kolo, máma…</p></div>
-    <div onclick="go('ds')" class="mk mk-o"><h3>Dlouhá slova</h3><p>Jablko, motýl, koleno…</p></div>
-    <div onclick="go('vt')" class="mk mk-m" style="grid-column:span 2"><h3>Čtení vět</h3><p>Přečti větu nahlas — pak pokračuj</p></div>
-    <div onclick="go('po')" class="mk mk-o" style="grid-column:span 2"><h3>Porozumění — věta a otázka</h3><p>Přečti, odpověz na otázku</p></div>
+    <div onclick="go('povt')" class="mk mk-m" style="grid-column:span 2"><h3>Čtení s otázkou — VELKÁ</h3><p>Přečti VELKÝMI tiskacími a odpověz na otázku</p></div>
+    <div onclick="go('povm')" class="mk mk-o" style="grid-column:span 2"><h3>Čtení s otázkou — malá</h3><p>Přečti malými tiskacími a odpověz na otázku</p></div>
   </div>
 </div>
 
-<!-- ============ CV1: KRÁTKÁ SLOVA ============ -->
-<div class="cv" id="cv-ks">
-  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">Krátká slova</span><span class="var" id="ksv">1/10</span></div>
-  <div class="sk"><div><div class="skn" id="ksbd">0</div><div class="skl">body</div></div><div><div class="skn" id="ksci">1/10</div><div class="skl">slovo</div></div></div>
-  <div class="pg"><div class="pgf" id="kspg" style="width:0%"></div></div>
-  <div id="ksob">
-    <div class="ka">
-      <div class="q">Přečti slovo nahlas:</div>
-      <span class="bigWord" id="ksw">PES</span>
-      <div class="readBtns">
-        <button class="readBtn skip" onclick="ksAns(false)">Neumím ↷</button>
-        <button class="readBtn" onclick="ksAns(true)">Přečetla jsem ✓</button>
-      </div>
-    </div>
-  </div>
-  <div class="res" id="ksres">
-    <div style="font-size:3rem">📖</div><h2>Hotovo!</h2><p id="kspp"></p>
-    <div class="res-row" id="ksrow" style="display:none">
-      <div class="rs"><div class="rsv pts" id="kssc">0</div><div class="rsl">body</div></div>
-      <div class="rs"><div class="rsv pts" id="kstot">0</div><div class="rsl">celkem ⭐</div></div>
-    </div>
-    <button class="znovu" onclick="go('ks')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
-  </div>
-</div>
-
-<!-- ============ CV2: DLOUHÁ SLOVA ============ -->
-<div class="cv" id="cv-ds">
-  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">Dlouhá slova</span><span class="var" id="dsv">1/10</span></div>
-  <div class="sk"><div><div class="skn" id="dsbd">0</div><div class="skl">body</div></div><div><div class="skn" id="dsci">1/10</div><div class="skl">slovo</div></div></div>
-  <div class="pg"><div class="pgf" id="dspg" style="width:0%"></div></div>
-  <div id="dsob">
-    <div class="ka">
-      <div class="q">Přečti slovo nahlas:</div>
-      <span class="bigWord" id="dsw">JABLKO</span>
-      <div class="readBtns">
-        <button class="readBtn skip" onclick="dsAns(false)">Neumím ↷</button>
-        <button class="readBtn" onclick="dsAns(true)">Přečetla jsem ✓</button>
-      </div>
-    </div>
-  </div>
-  <div class="res" id="dsres">
-    <div style="font-size:3rem">📖</div><h2>Hotovo!</h2><p id="dspp"></p>
-    <div class="res-row" id="dsrow" style="display:none">
-      <div class="rs"><div class="rsv pts" id="dssc">0</div><div class="rsl">body</div></div>
-      <div class="rs"><div class="rsv pts" id="dstot">0</div><div class="rsl">celkem ⭐</div></div>
-    </div>
-    <button class="znovu" onclick="go('ds')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
-  </div>
-</div>
-
-<!-- ============ CV3: ČTENÍ VĚT ============ -->
-<div class="cv" id="cv-vt">
-  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">Čtení vět</span><span class="var" id="vtv">1/8</span></div>
-  <div class="sk"><div><div class="skn" id="vtbd">0</div><div class="skl">body</div></div><div><div class="skn" id="vtci">1/8</div><div class="skl">věta</div></div></div>
-  <div class="pg"><div class="pgf" id="vtpg" style="width:0%"></div></div>
-  <div id="vtob">
-    <div class="ka">
-      <div class="q">Přečti větu nahlas:</div>
-      <div class="bigSentence" id="vts">PTÁČEK VESELE ZPÍVAL.</div>
-      <div class="readBtns">
-        <button class="readBtn skip" onclick="vtAns(false)">Neumím ↷</button>
-        <button class="readBtn" onclick="vtAns(true)">Přečetla jsem ✓</button>
-      </div>
-    </div>
-  </div>
-  <div class="res" id="vtres">
-    <div style="font-size:3rem">📖</div><h2>Skvělá práce!</h2><p id="vtpp"></p>
-    <div class="res-row" id="vtrow" style="display:none">
-      <div class="rs"><div class="rsv pts" id="vtsc">0</div><div class="rsl">body</div></div>
-      <div class="rs"><div class="rsv pts" id="vttot">0</div><div class="rsl">celkem ⭐</div></div>
-    </div>
-    <button class="znovu" onclick="go('vt')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
-  </div>
-</div>
-
-<!-- ============ CV4: POROZUMĚNÍ ============ -->
-<div class="cv" id="cv-po">
-  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">Věta a otázka</span><span class="var" id="pov">1/8</span></div>
-  <div class="sk"><div><div class="skn" id="pobd">0</div><div class="skl">body</div></div><div><div class="skn" id="poci">1/8</div><div class="skl">otázka</div></div><div><div class="skn" id="posp">0</div><div class="skl">správně</div></div></div>
-  <div class="pg"><div class="pgf" id="popg" style="width:0%"></div></div>
-  <div id="poob">
+<!-- ============ CV: POROZUMĚNÍ S VELKOU TISKACÍ ============ -->
+<div class="cv" id="cv-povt">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">Čtení s otázkou — VELKÁ</span><span class="var" id="povtv">1/8</span></div>
+  <div class="sk"><div><div class="skn" id="povtbd">0</div><div class="skl">body</div></div><div><div class="skn" id="povtci">1/8</div><div class="skl">otázka</div></div><div><div class="skn" id="povtsp">0</div><div class="skl">správně</div></div></div>
+  <div class="pg"><div class="pgf" id="povtpg" style="width:0%"></div></div>
+  <div id="povtob">
     <div class="ka">
       <div class="q">Přečti a odpověz na otázku:</div>
-      <div class="bigSentence" id="pos">Pes Rex běží na zahradě.</div>
-      <div class="q" id="poq" style="margin-top:.5rem">Kdo běží?</div>
-      <div class="opts" id="poopts"></div>
-      <div class="fb" id="pofb"></div>
+      <div class="bigSentence" id="povts" style="font-family:Verdana,Geneva,sans-serif;font-weight:700;letter-spacing:1px">PES REX BĚŽÍ NA ZAHRADĚ.</div>
+      <div class="q" id="povtq" style="margin-top:.5rem;font-family:Verdana,Geneva,sans-serif">KDO BĚŽÍ?</div>
+      <div class="opts" id="povtopts"></div>
+      <div class="fb" id="povtfb"></div>
     </div>
-    <button class="nxt" id="ponx" onclick="poNext()">Další →</button>
+    <button class="nxt" id="povtnx" onclick="povtNext()">Další →</button>
   </div>
-  <div class="res" id="pores">
-    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="popp"></p>
-    <div class="res-row" id="porow" style="display:none">
-      <div class="rs"><div class="rsv pts" id="posc">0</div><div class="rsl">body</div></div>
-      <div class="rs"><div class="rsv pts" id="potot">0</div><div class="rsl">celkem ⭐</div></div>
+  <div class="res" id="povtres">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="povtpp"></p>
+    <div class="res-row" id="povtrow" style="display:none">
+      <div class="rs"><div class="rsv pts" id="povtsc">0</div><div class="rsl">body</div></div>
+      <div class="rs"><div class="rsv pts" id="povttot">0</div><div class="rsl">celkem ⭐</div></div>
     </div>
-    <button class="znovu" onclick="go('po')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+    <button class="znovu" onclick="go('povt')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- ============ CV: POROZUMĚNÍ S MALOU TISKACÍ ============ -->
+<div class="cv" id="cv-povm">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">Čtení s otázkou — malá</span><span class="var" id="povmv">1/8</span></div>
+  <div class="sk"><div><div class="skn" id="povmbd">0</div><div class="skl">body</div></div><div><div class="skn" id="povmci">1/8</div><div class="skl">otázka</div></div><div><div class="skn" id="povmsp">0</div><div class="skl">správně</div></div></div>
+  <div class="pg"><div class="pgf" id="povmpg" style="width:0%"></div></div>
+  <div id="povmob">
+    <div class="ka">
+      <div class="q">Přečti a odpověz na otázku:</div>
+      <div class="bigSentence" id="povms">Pes Rex běží na zahradě.</div>
+      <div class="q" id="povmq" style="margin-top:.5rem">Kdo běží?</div>
+      <div class="opts" id="povmopts"></div>
+      <div class="fb" id="povmfb"></div>
+    </div>
+    <button class="nxt" id="povmnx" onclick="povmNext()">Další →</button>
+  </div>
+  <div class="res" id="povmres">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="povmpp"></p>
+    <div class="res-row" id="povmrow" style="display:none">
+      <div class="rs"><div class="rsv pts" id="povmsc">0</div><div class="rsl">body</div></div>
+      <div class="rs"><div class="rsv pts" id="povmtot">0</div><div class="rsl">celkem ⭐</div></div>
+    </div>
+    <button class="znovu" onclick="go('povm')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
   </div>
 </div>
 
@@ -251,70 +199,17 @@ function go(id){
   document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
   el('cv-'+id).style.display='block';
   window.scrollTo(0,0);
-  if(id==='ks') ksStart();
-  if(id==='ds') dsStart();
-  if(id==='vt') vtStart();
-  if(id==='po') poStart();
+  if(id==='povt') povtStart();
+  if(id==='povm') povmStart();
 }
 
 /* ─────────────────────────────────────────────
    DATA — z PDF kartiček
 ───────────────────────────────────────────── */
-var KRATKA_SLOVA = [
-  // Č1-Č11 z PDF
-  'PES','LES','AUTO','MÁMA','BÁBA','KOLO','SYN','TETA','BOTA','OKNO',
-  'MYŠ','PERO','PTÁK','DĚDA','TÁTA','KOS','LASO','LOS','VLAK','MRAK',
-  'TELE','SNÍH','LÉTO','EMA','ZIMA','STŮL','NŮŽ','JARO','KOŤE','SELE',
-  'PÁV','KŮŇ','KLUK','BUK','LOĎ','KRA','LED','MÍSA','SŮL','CUKR',
-  'DEN','MUŽ','STÍN','ROK','SKOK','SLON','KRÁL','RÁJ','KLÍČ','PLES',
-  'SOB','LIST','RYBA','VODA','NOC','HUSA','PEPŘ','POLE','SUD','SOVA',
-  'DÁL','ZUB','DŮM','ŽÁBA','MED','HAD','SEN','NOHA','DRAK','LEV',
-  'NOS','KOZA','PLOT','TYČ','MOST','HRAD','MEČ','KRAB','RUKA','PÁN',
-  'HÁK','RÝŽE','VLK','ZUBY','HRÁCH','MLHA','HROCH','KRK','OKO','EVA'
-];
-
-var DLOUHA_SLOVA = [
-  // Č12-Č15 z PDF
-  'JABLKO','MOTÝL','LOPATA','KOŠÍK','MEDVĚD','SLUNCE',
-  'VÁNOCE','JAHODA','KOLENO','TRAKTOR','BABIČKA','MAMINKA',
-  'SNĚHULÁK','JEŽEK','KNÍŽKA','JELEN','BANÁN','MOTORKA',
-  'POKLADNA','ZÁCHOD','POLÉVKA','ZAHRADA','OBRAZ','ZVONEK'
-];
-
-var VETY = [
-  // Č16-Č27 z PDF
-  'PTÁČEK VESELE ZPÍVAL.',
-  'SLUNÍČKO SVÍTILO CELÝ DEN.',
-  'VEVERKA SBÍRALA OŘÍŠKY.',
-  'EVA MÁ RÁDA JAHODY.',
-  'SNĚHULÁK SE NA JAŘE ROZTÁL.',
-  'JEŽEK DUPE V LESE.',
-  'OPICE JEDÍ BANÁNY.',
-  'NA ZAHRADĚ ROSTE STROM.',
-  'NAMALUJ MI OBRAZ.',
-  'POLÉVKA JE MOC HORKÁ.',
-  'VE VĚŽI ZVONIL ZVON.',
-  'ŽIRAFA MÁ DLOUHÝ KRK.',
-  'DNES CELÝ DEN PRŠÍ.',
-  'MÁMA PEČE KOLÁČE.',
-  'MÁM RÁD PANDY.',
-  'HAJNÝ JE LESA PÁN.',
-  'TRPASLÍCI UMÍ ZLOBIT.',
-  'LIŠKA JE MAZANÁ A CHYTRÁ.',
-  'V NOCI SLUNCE NESVÍTÍ.',
-  'V LÉTĚ JE VELKÉ TEPLO.',
-  'UČÍM SE PLAVAT.',
-  'DĚTI CHODÍ DO ŠKOLY.',
-  'VŠICHNI MAJÍ RÁDI PRÁZDNINY.',
-  'SLON MÁ DLOUHÝ CHOBOT.',
-  'ŠNEK JE VELMI POMALÝ.',
-  'KŮŇ RÁD BĚHÁ.',
-  'TATÍNEK STAVÍ DŮM.',
-  'SOVA JE NOČNÍ PTÁK.'
-];
 
 /* Věty s otázkou — pro porozumění */
 var POROZUMENI = [
+  // Původní sada (15)
   {s:'Pes Rex běží na zahradě.', q:'Kdo běží?', opts:['Rex','Máma','Auto'], a:0},
   {s:'Eva má ráda jahody.', q:'Co má Eva ráda?', opts:['Banány','Jahody','Houby'], a:1},
   {s:'Slunce svítí celý den.', q:'Co svítí?', opts:['Měsíc','Lampa','Slunce'], a:2},
@@ -329,163 +224,80 @@ var POROZUMENI = [
   {s:'Tatínek staví dům.', q:'Co staví tatínek?', opts:['Auto','Dům','Most'], a:1},
   {s:'Sova je noční pták.', q:'Kdy létá sova?', opts:['Ráno','V noci','Odpoledne'], a:1},
   {s:'Včely nám dávají med.', q:'Co dávají včely?', opts:['Mléko','Med','Máslo'], a:1},
-  {s:'Učím se plavat.', q:'Co se učím?', opts:['Tančit','Plavat','Kreslit'], a:1}
+  {s:'Učím se plavat.', q:'Co se učím?', opts:['Tančit','Plavat','Kreslit'], a:1},
+  // Nové věty (18) — různé téma, jednoduchá struktura
+  {s:'Dnes svítí slunce.', q:'Co svítí?', opts:['Slunce','Lampa','Měsíc'], a:0},
+  {s:'V zimě padá sníh.', q:'Co padá v zimě?', opts:['Déšť','Sníh','Listí'], a:1},
+  {s:'Babička peče buchty.', q:'Co peče babička?', opts:['Chleba','Buchty','Koláč'], a:1},
+  {s:'Děda čte knihu.', q:'Kdo čte knihu?', opts:['Máma','Děda','Sestra'], a:1},
+  {s:'Kočka pije mléko.', q:'Co pije kočka?', opts:['Vodu','Mléko','Čaj'], a:1},
+  {s:'Pes spí v boudě.', q:'Kde spí pes?', opts:['V boudě','V kuchyni','Na zahradě'], a:0},
+  {s:'Ryba plave ve vodě.', q:'Kde plave ryba?', opts:['Na poli','Ve vodě','Na stromě'], a:1},
+  {s:'Pták zpívá na stromě.', q:'Kde zpívá pták?', opts:['Na stromě','Na střeše','V hnízdě'], a:0},
+  {s:'V létě jezdíme k moři.', q:'Kdy jezdíme k moři?', opts:['V zimě','V létě','Na podzim'], a:1},
+  {s:'Tom má rád zmrzlinu.', q:'Co má rád Tom?', opts:['Polévku','Zmrzlinu','Salát'], a:1},
+  {s:'Anna kreslí obrázek.', q:'Co dělá Anna?', opts:['Zpívá','Kreslí','Spí'], a:1},
+  {s:'Auto jede po silnici.', q:'Po čem jede auto?', opts:['Po vodě','Po silnici','Po nebi'], a:1},
+  {s:'Vlak jede po kolejích.', q:'Po čem jede vlak?', opts:['Po kolejích','Po silnici','Po moři'], a:0},
+  {s:'Letadlo letí na obloze.', q:'Kde letí letadlo?', opts:['Pod vodou','Na obloze','V tunelu'], a:1},
+  {s:'V parku rostou stromy.', q:'Co roste v parku?', opts:['Domy','Stromy','Auta'], a:1},
+  {s:'Mám rád čokoládu.', q:'Co mám rád?', opts:['Čokoládu','Cibuli','Citron'], a:0},
+  {s:'Doma je teplo.', q:'Jaké je doma?', opts:['Studené','Teplo','Mokré'], a:1},
+  {s:'Kniha leží na stole.', q:'Kde leží kniha?', opts:['Na stole','Pod postelí','Ve skříni'], a:0}
 ];
 
 /* ─────────────────────────────────────────────
-   CV1: KRÁTKÁ SLOVA — "přečetla jsem"
+   Generický stroj pro porozumění čtení
+   Můžeme použít jednu sadu kódu pro velké i malé tiskací,
+   liší se jen tím, jak se zobrazí věta + možnosti odpovědí.
 ───────────────────────────────────────────── */
-var ksState = {seq:[], idx:0, body:0, done:0};
-function ksStart(){
-  ksState = {seq:shuffle(KRATKA_SLOVA).slice(0,10), idx:0, body:0, done:0};
-  el('ksres').style.display='none';
-  el('ksob').style.display='block';
-  ksRender();
-}
-function ksRender(){
-  var s=ksState;
-  if(s.idx>=s.seq.length){ ksFinish(); return; }
-  el('ksw').textContent = s.seq[s.idx];
-  el('ksv').textContent = (s.idx+1)+'/'+s.seq.length;
-  el('ksci').textContent = (s.idx+1)+'/'+s.seq.length;
-  el('ksbd').textContent = s.body;
-  el('kspg').style.width = ((s.idx)/s.seq.length*100)+'%';
-}
-function ksAns(read){
-  var s=ksState;
-  if(read){
-    s.body += 5;
-    s.done += 1;
-    addPoints(5);
-  }
-  s.idx += 1;
-  ksRender();
-}
-function ksFinish(){
-  var s=ksState;
-  el('ksob').style.display='none';
-  el('ksres').style.display='block';
-  el('kspp').textContent = 'Přečetla jsi '+s.done+' z '+s.seq.length+' slov · '+s.body+' bodů.';
-  el('kssc').textContent = s.body;
-  el('kstot').textContent = totalScore;
-  el('ksrow').style.display='flex';
-}
 
-/* ─────────────────────────────────────────────
-   CV2: DLOUHÁ SLOVA
-───────────────────────────────────────────── */
-var dsState = {seq:[], idx:0, body:0, done:0};
-function dsStart(){
-  dsState = {seq:shuffle(DLOUHA_SLOVA).slice(0,10), idx:0, body:0, done:0};
-  el('dsres').style.display='none';
-  el('dsob').style.display='block';
-  dsRender();
-}
-function dsRender(){
-  var s=dsState;
-  if(s.idx>=s.seq.length){ dsFinish(); return; }
-  el('dsw').textContent = s.seq[s.idx];
-  el('dsv').textContent = (s.idx+1)+'/'+s.seq.length;
-  el('dsci').textContent = (s.idx+1)+'/'+s.seq.length;
-  el('dsbd').textContent = s.body;
-  el('dspg').style.width = ((s.idx)/s.seq.length*100)+'%';
-}
-function dsAns(read){
-  var s=dsState;
-  if(read){
-    s.body += 7;
-    s.done += 1;
-    addPoints(7);
-  }
-  s.idx += 1;
-  dsRender();
-}
-function dsFinish(){
-  var s=dsState;
-  el('dsob').style.display='none';
-  el('dsres').style.display='block';
-  el('dspp').textContent = 'Přečetla jsi '+s.done+' z '+s.seq.length+' slov · '+s.body+' bodů.';
-  el('dssc').textContent = s.body;
-  el('dstot').textContent = totalScore;
-  el('dsrow').style.display='flex';
-}
+/* Společný state */
+function makePoState(){ return {seq:[], idx:0, body:0, sp:0, locked:false}; }
+var povtState = makePoState();
+var povmState = makePoState();
 
-/* ─────────────────────────────────────────────
-   CV3: VĚTY
-───────────────────────────────────────────── */
-var vtStateR = {seq:[], idx:0, body:0, done:0};
-function vtStart(){
-  vtStateR = {seq:shuffle(VETY).slice(0,8), idx:0, body:0, done:0};
-  el('vtres').style.display='none';
-  el('vtob').style.display='block';
-  vtRender();
-}
-function vtRender(){
-  var s=vtStateR;
-  if(s.idx>=s.seq.length){ vtFinish(); return; }
-  el('vts').textContent = s.seq[s.idx];
-  el('vtv').textContent = (s.idx+1)+'/'+s.seq.length;
-  el('vtci').textContent = (s.idx+1)+'/'+s.seq.length;
-  el('vtbd').textContent = s.body;
-  el('vtpg').style.width = ((s.idx)/s.seq.length*100)+'%';
-}
-function vtAns(read){
-  var s=vtStateR;
-  if(read){
-    s.body += 10;
-    s.done += 1;
-    addPoints(10);
-  }
-  s.idx += 1;
-  vtRender();
-}
-function vtFinish(){
-  var s=vtStateR;
-  el('vtob').style.display='none';
-  el('vtres').style.display='block';
-  el('vtpp').textContent = 'Přečetla jsi '+s.done+' z '+s.seq.length+' vět · '+s.body+' bodů.';
-  el('vtsc').textContent = s.body;
-  el('vttot').textContent = totalScore;
-  el('vtrow').style.display='flex';
-}
+/* HORNÍ varianta = transformace textu (velké/malé) */
+function transformVT(s){ return s.toUpperCase(); }
+function transformVM(s){ return s; /* mixed case z PDF, jak bývá v učebnici */ }
 
-/* ─────────────────────────────────────────────
-   CV4: POROZUMĚNÍ
-───────────────────────────────────────────── */
-var poState = {seq:[], idx:0, body:0, sp:0, locked:false};
-function poStart(){
-  poState = {seq:shuffle(POROZUMENI).slice(0,8), idx:0, body:0, sp:0, locked:false};
-  el('pores').style.display='none';
-  el('poob').style.display='block';
-  poRender();
+/* === POROZUMĚNÍ — VELKÁ TISKACÍ === */
+function povtStart(){
+  povtState = {seq:shuffle(POROZUMENI).slice(0,8), idx:0, body:0, sp:0, locked:false};
+  el('povtres').style.display='none';
+  el('povtob').style.display='block';
+  povtRender();
 }
-function poRender(){
-  var s=poState;
-  if(s.idx>=s.seq.length){ poFinish(); return; }
+function povtRender(){
+  var s=povtState;
+  if(s.idx>=s.seq.length){ povtFinish(); return; }
   var item = s.seq[s.idx];
-  el('pos').textContent = item.s;
-  el('poq').textContent = item.q;
-  el('pov').textContent = (s.idx+1)+'/'+s.seq.length;
-  el('poci').textContent = (s.idx+1)+'/'+s.seq.length;
-  el('pobd').textContent = s.body;
-  el('posp').textContent = s.sp;
-  el('popg').style.width = ((s.idx)/s.seq.length*100)+'%';
-  el('pofb').textContent='';
-  el('pofb').className='fb';
-  el('ponx').style.display='none';
-  /* Vykreslit volby — pořadí náhodné, ale zapamatujeme si původní index správné */
-  var box = el('poopts'); box.innerHTML='';
+  el('povts').textContent = transformVT(item.s);
+  el('povtq').textContent = transformVT(item.q);
+  el('povtv').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('povtci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('povtbd').textContent = s.body;
+  el('povtsp').textContent = s.sp;
+  el('povtpg').style.width = ((s.idx)/s.seq.length*100)+'%';
+  el('povtfb').textContent='';
+  el('povtfb').className='fb';
+  el('povtnx').style.display='none';
+  /* Volby */
+  var box = el('povtopts'); box.innerHTML='';
   var indexes = item.opts.map(function(_,i){return i;});
   shuffle(indexes).forEach(function(origIdx){
     var b = document.createElement('button');
-    b.className='opt'; b.textContent=item.opts[origIdx];
-    b.onclick = function(){ poAnswer(origIdx, b); };
+    b.className='opt'; b.textContent=transformVT(item.opts[origIdx]);
+    b.style.fontFamily = 'Verdana, Geneva, sans-serif';
+    b.style.fontWeight = '700';
+    b.style.letterSpacing = '1px';
+    b.onclick = function(){ povtAnswer(origIdx, b); };
     box.appendChild(b);
   });
   s.locked = false;
 }
-function poAnswer(picked, btn){
-  var s=poState;
+function povtAnswer(picked, btn){
+  var s=povtState;
   if(s.locked) return;
   s.locked = true;
   var item = s.seq[s.idx];
@@ -494,31 +306,97 @@ function poAnswer(picked, btn){
     s.body += 10;
     s.sp += 1;
     addPoints(10);
-    el('pofb').textContent = 'Správně! ✓';
-    el('pofb').className = 'fb ok';
+    el('povtfb').textContent = 'Správně! ✓';
+    el('povtfb').className = 'fb ok';
   } else {
     btn.classList.add('err');
-    /* Zvýraznit správnou */
-    document.querySelectorAll('#poopts .opt').forEach(function(b){
-      if(b.textContent === item.opts[item.a]) b.classList.add('ok');
+    document.querySelectorAll('#povtopts .opt').forEach(function(b){
+      if(b.textContent === transformVT(item.opts[item.a])) b.classList.add('ok');
     });
-    el('pofb').textContent = 'Správná odpověď je '+item.opts[item.a];
-    el('pofb').className = 'fb err';
+    el('povtfb').textContent = 'Správná odpověď je '+transformVT(item.opts[item.a]);
+    el('povtfb').className = 'fb err';
   }
-  document.querySelectorAll('#poopts .opt').forEach(function(b){b.disabled=true;});
-  el('pobd').textContent = s.body;
-  el('posp').textContent = s.sp;
-  el('ponx').style.display='block';
+  document.querySelectorAll('#povtopts .opt').forEach(function(b){b.disabled=true;});
+  el('povtbd').textContent = s.body;
+  el('povtsp').textContent = s.sp;
+  el('povtnx').style.display='block';
 }
-function poNext(){ poState.idx++; poRender(); }
-function poFinish(){
-  var s=poState;
-  el('poob').style.display='none';
-  el('pores').style.display='block';
-  el('popp').textContent = 'Správně '+s.sp+' z '+s.seq.length+' · získala jsi '+s.body+' bodů.';
-  el('posc').textContent = s.body;
-  el('potot').textContent = totalScore;
-  el('porow').style.display='flex';
+function povtNext(){ povtState.idx++; povtRender(); }
+function povtFinish(){
+  var s=povtState;
+  el('povtob').style.display='none';
+  el('povtres').style.display='block';
+  el('povtpp').textContent = 'Správně '+s.sp+' z '+s.seq.length+' · získala jsi '+s.body+' bodů.';
+  el('povtsc').textContent = s.body;
+  el('povttot').textContent = totalScore;
+  el('povtrow').style.display='flex';
+}
+
+/* === POROZUMĚNÍ — MALÁ TISKACÍ === */
+function povmStart(){
+  povmState = {seq:shuffle(POROZUMENI).slice(0,8), idx:0, body:0, sp:0, locked:false};
+  el('povmres').style.display='none';
+  el('povmob').style.display='block';
+  povmRender();
+}
+function povmRender(){
+  var s=povmState;
+  if(s.idx>=s.seq.length){ povmFinish(); return; }
+  var item = s.seq[s.idx];
+  el('povms').textContent = transformVM(item.s);
+  el('povmq').textContent = transformVM(item.q);
+  el('povmv').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('povmci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('povmbd').textContent = s.body;
+  el('povmsp').textContent = s.sp;
+  el('povmpg').style.width = ((s.idx)/s.seq.length*100)+'%';
+  el('povmfb').textContent='';
+  el('povmfb').className='fb';
+  el('povmnx').style.display='none';
+  var box = el('povmopts'); box.innerHTML='';
+  var indexes = item.opts.map(function(_,i){return i;});
+  shuffle(indexes).forEach(function(origIdx){
+    var b = document.createElement('button');
+    b.className='opt'; b.textContent=transformVM(item.opts[origIdx]);
+    b.onclick = function(){ povmAnswer(origIdx, b); };
+    box.appendChild(b);
+  });
+  s.locked = false;
+}
+function povmAnswer(picked, btn){
+  var s=povmState;
+  if(s.locked) return;
+  s.locked = true;
+  var item = s.seq[s.idx];
+  if(picked === item.a){
+    btn.classList.add('ok');
+    s.body += 10;
+    s.sp += 1;
+    addPoints(10);
+    el('povmfb').textContent = 'Správně! ✓';
+    el('povmfb').className = 'fb ok';
+  } else {
+    btn.classList.add('err');
+    document.querySelectorAll('#povmopts .opt').forEach(function(b){
+      if(b.textContent === transformVM(item.opts[item.a])) b.classList.add('ok');
+    });
+    el('povmfb').textContent = 'Správná odpověď je '+transformVM(item.opts[item.a]);
+    el('povmfb').className = 'fb err';
+  }
+  document.querySelectorAll('#povmopts .opt').forEach(function(b){b.disabled=true;});
+  el('povmbd').textContent = s.body;
+  el('povmsp').textContent = s.sp;
+  el('povmnx').style.display='block';
+}
+function povmNext(){ povmState.idx++; povmRender(); }
+function povmFinish(){
+  var s=povmState;
+  el('povmob').style.display='none';
+  el('povmres').style.display='block';
+  el('povmpp').textContent = 'Správně '+s.sp+' z '+s.seq.length+' · získala jsi '+s.body+' bodů.';
+  el('povmsc').textContent = s.body;
+  el('povmtot').textContent = totalScore;
+  el('povmrow').style.display='flex';
 }
 
 loadScore();

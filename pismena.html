@@ -135,6 +135,21 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;}
 .gameOver{position:absolute;inset:0;background:rgba(255,255,255,.95);display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:1rem;border-radius:12px;}
 .gameOver h3{color:#15803d;font-size:1.6rem;margin:.5rem 0;}
 
+/* ČASOVÁ POSLOUPNOST */
+.tsGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;margin:.5rem 0 1rem;}
+@media(max-width:520px){.tsGrid{grid-template-columns:repeat(2,1fr);}}
+.tsCard{position:relative;background:white;border:2.5px solid #d1d5db;border-radius:12px;padding:.6rem;text-align:center;cursor:pointer;transition:all .15s;user-select:none;}
+.tsCard:hover{border-color:var(--m);background:var(--ms);transform:translateY(-2px);}
+.tsCard .ts-pic{font-size:3.5rem;line-height:1;margin:.3rem 0;}
+.tsCard .ts-lbl{font-size:.85rem;font-weight:700;color:#374151;}
+.tsCard.picked{border-color:var(--o);background:var(--os);cursor:default;}
+.tsCard.picked .ts-num{background:var(--o);color:white;}
+.tsCard.ok{border-color:var(--z);background:var(--zs);}
+.tsCard.ok .ts-num{background:var(--z);color:white;}
+.tsCard.err{border-color:var(--r);background:var(--rs);}
+.tsCard.err .ts-num{background:var(--r);color:white;}
+.ts-num{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:99px;background:#e5e7eb;color:#9ca3af;font-weight:800;font-size:.95rem;display:flex;align-items:center;justify-content:center;}
+
 /* OBRÁZKOVÉ KARTIČKY (první hláska) */
 .picCard{display:flex;flex-direction:column;align-items:center;}
 .picSvg{width:140px;height:140px;background:white;border:2px solid var(--ms);border-radius:14px;padding:10px;margin-bottom:.8rem;}
@@ -173,10 +188,12 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;}
   <div class="mh"><h1>Písmena</h1><p>1. ročník — vyber si cvičení</p></div>
   <div class="mg">
     <div onclick="go('ph')" class="mk mk-m"><h3>První hláska</h3><p>Na co začíná obrázek?</p></div>
+    <div onclick="go('pl')" class="mk mk-o"><h3>Poslední hláska</h3><p>Na co končí obrázek?</p></div>
+    <div onclick="go('ts')" class="mk mk-m"><h3>Co bylo dřív?</h3><p>Seřaď obrázky podle pořadí</p></div>
     <div onclick="go('par')" class="mk mk-o"><h3>Velké → malé</h3><p>Spoj páry tiskacích písmen</p></div>
     <div onclick="go('tt')" class="mk mk-o"><h3>Tiskací — obtahování</h3><p>Obtáhni tiskací písmeno</p></div>
     <div onclick="go('tr')" class="mk mk-m"><h3>Psací — obtahování</h3><p>Obtáhni psací písmeno</p></div>
-    <div onclick="go('auto')" class="mk mk-m" style="grid-column:span 2"><h3>🚗 Hra auto</h3><p>Najeď do pruhu se správným písmenem</p></div>
+    <div onclick="go('auto')" class="mk mk-o" style="grid-column:span 2"><h3>🚗 Hra auto</h3><p>Najeď do pruhu se správným písmenem</p></div>
   </div>
 </div>
 
@@ -230,6 +247,55 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;}
       <div class="rs"><div class="rsv pts" id="phtot">0</div><div class="rsl">celkem ⭐</div></div>
     </div>
     <button class="znovu" onclick="go('ph')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- ============ CV-PL: POSLEDNÍ HLÁSKA ============ -->
+<div class="cv" id="cv-pl">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">Poslední hláska</span><span class="var" id="plv">1/10</span></div>
+  <div class="sk"><div><div class="skn" id="plbd">0</div><div class="skl">body</div></div><div><div class="skn" id="plci">1/10</div><div class="skl">otázka</div></div><div><div class="skn" id="plsp">0</div><div class="skl">správně</div></div></div>
+  <div class="pg"><div class="pgf" id="plpg" style="width:0%"></div></div>
+  <div id="plob">
+    <div class="ka">
+      <div class="q">Na jaké písmeno končí slovo?</div>
+      <div class="picCard">
+        <div style="font-size:6rem;line-height:1;text-align:center;margin:.4rem 0 1.2rem;" id="plEmoji">🐶</div>
+      </div>
+      <div class="btnGrid" id="plopts"></div>
+      <div class="fb" id="plfb"></div>
+    </div>
+    <button class="nxt" id="plnx" onclick="plNext()">Další →</button>
+  </div>
+  <div class="res" id="plres">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="plpp"></p>
+    <div class="res-row" id="plrow" style="display:none">
+      <div class="rs"><div class="rsv pts" id="plsc">0</div><div class="rsl">body</div></div>
+      <div class="rs"><div class="rsv pts" id="pltot">0</div><div class="rsl">celkem ⭐</div></div>
+    </div>
+    <button class="znovu" onclick="go('pl')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- ============ CV-TS: ČASOVÁ POSLOUPNOST ============ -->
+<div class="cv" id="cv-ts">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">Co bylo dřív?</span><span class="var" id="tsv">1/5</span></div>
+  <div class="sk"><div><div class="skn" id="tsbd">0</div><div class="skl">body</div></div><div><div class="skn" id="tsci">1/5</div><div class="skl">sada</div></div><div><div class="skn" id="tssp">0</div><div class="skl">správně</div></div></div>
+  <div class="pg"><div class="pgf" id="tspg" style="width:0%"></div></div>
+  <div id="tsob">
+    <div class="ka">
+      <div class="q" id="tsq">Klikni na obrázky v pořadí, jak šly za sebou.</div>
+      <div class="tsGrid" id="tsGrid"></div>
+      <div class="fb" id="tsfb"></div>
+    </div>
+    <button class="nxt" id="tsnx" onclick="tsNext()">Další sada →</button>
+  </div>
+  <div class="res" id="tsres">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="tspp"></p>
+    <div class="res-row" id="tsrow" style="display:none">
+      <div class="rs"><div class="rsv pts" id="tssc">0</div><div class="rsl">body</div></div>
+      <div class="rs"><div class="rsv pts" id="tstot">0</div><div class="rsl">celkem ⭐</div></div>
+    </div>
+    <button class="znovu" onclick="go('ts')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
   </div>
 </div>
 
@@ -398,6 +464,8 @@ function go(id){
   window.scrollTo(0,0);
   if(id==='par') parStart();
   if(id==='ph') phStart();
+  if(id==='pl') plStart();
+  if(id==='ts') tsStart();
   if(id==='tt') ttStart();
   if(id==='tr') trStart();
   if(id==='auto') autoStartScreen();
@@ -685,6 +753,264 @@ function phFinish(){
   el('phsc').textContent = s.body;
   el('phtot').textContent = totalScore;
   el('phrow').style.display='flex';
+}
+
+/* ─────────────────────────────────────────────
+   CV-PL: POSLEDNÍ HLÁSKA
+   Stejný princip jako první hláska, jen se ptáme na poslední písmeno.
+   Diakritiku přípustně transformujeme na velké (Á → Á, ě → Ě).
+───────────────────────────────────────────── */
+function getLastLetter(word){
+  /* Vzít poslední znak slova a převést na velké */
+  if(!word || word.length === 0) return '';
+  var last = word.charAt(word.length - 1);
+  return last.toUpperCase();
+}
+/* Která česká velká písmena jsou v PIC_DATA jako poslední? Použijeme pro distractors */
+function buildLastLetterDistractors(correctLast){
+  /* Posbíráme všechna unikátní poslední písmena ze slov */
+  var seen = {};
+  PIC_DATA.forEach(function(it){
+    var L = getLastLetter(it.word);
+    if(L) seen[L] = true;
+  });
+  /* Plus všechna velká písmena z české abecedy */
+  ABECEDA_VELKA.forEach(function(L){ seen[L] = true; });
+  var pool = Object.keys(seen).filter(function(L){ return L !== correctLast; });
+  return pool;
+}
+
+var plState = {seq:[], idx:0, body:0, sp:0, locked:false};
+
+function plStart(){
+  /* Vybrat 10 různých slov, ideálně s různými posledními písmeny */
+  var pool = shuffle(PIC_DATA);
+  var seen = {};
+  var picked = [];
+  for(var i=0;i<pool.length && picked.length<10;i++){
+    var L = getLastLetter(pool[i].word);
+    if(!seen[L]){
+      seen[L] = true;
+      picked.push(pool[i]);
+    }
+  }
+  while(picked.length<10 && pool.length>picked.length){
+    picked.push(pool[picked.length]);
+  }
+  plState = {seq:picked, idx:0, body:0, sp:0, locked:false};
+  el('plres').style.display='none';
+  el('plob').style.display='block';
+  plRender();
+}
+function plRender(){
+  var s=plState;
+  if(s.idx>=s.seq.length){ plFinish(); return; }
+  var item = s.seq[s.idx];
+  el('plEmoji').textContent = item.pic;
+  el('plv').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('plci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('plbd').textContent = s.body;
+  el('plsp').textContent = s.sp;
+  el('plpg').style.width = ((s.idx)/s.seq.length*100)+'%';
+  el('plfb').textContent = '';
+  el('plfb').className = 'fb';
+  el('plnx').style.display = 'none';
+  /* 4 možnosti: 1 správná + 3 jiná písmena */
+  var correct = getLastLetter(item.word);
+  var pool = buildLastLetterDistractors(correct);
+  var others = shuffle(pool).slice(0, 3);
+  var opts = shuffle([correct].concat(others));
+  var box = el('plopts'); box.innerHTML = '';
+  opts.forEach(function(o){
+    var b = document.createElement('button');
+    b.className='lbtn'; b.textContent=o;
+    b.onclick = function(){ plAnswer(o, b); };
+    box.appendChild(b);
+  });
+  s.locked = false;
+}
+function plAnswer(picked, btn){
+  var s=plState;
+  if(s.locked) return;
+  s.locked = true;
+  var item = s.seq[s.idx];
+  var correct = getLastLetter(item.word);
+  if(picked === correct){
+    btn.classList.add('ok');
+    s.body += 8;
+    s.sp += 1;
+    addPoints(8);
+    el('plfb').innerHTML = '✓ Správně! ' + item.pic + ' = <b>' + item.word + '</b> končí na <b>'+correct+'</b>';
+    el('plfb').className = 'fb ok';
+  } else {
+    btn.classList.add('err');
+    document.querySelectorAll('#plopts .lbtn').forEach(function(b){
+      if(b.textContent === correct) b.classList.add('ok');
+    });
+    el('plfb').innerHTML = item.pic + ' = <b>' + item.word + '</b> končí na <b>'+correct+'</b>';
+    el('plfb').className = 'fb err';
+  }
+  document.querySelectorAll('#plopts .lbtn').forEach(function(b){b.disabled=true;});
+  el('plbd').textContent = s.body;
+  el('plsp').textContent = s.sp;
+  el('plnx').style.display = 'block';
+}
+function plNext(){ plState.idx++; plRender(); }
+function plFinish(){
+  var s=plState;
+  el('plob').style.display='none';
+  el('plres').style.display='block';
+  el('plpp').textContent = 'Správně '+s.sp+' z '+s.seq.length+' · získala jsi '+s.body+' bodů.';
+  el('plsc').textContent = s.body;
+  el('pltot').textContent = totalScore;
+  el('plrow').style.display='flex';
+}
+
+/* ─────────────────────────────────────────────
+   CV-TS: ČASOVÁ POSLOUPNOST
+   Sady 4 obrázků — dítě klika v pořadí, jak šly za sebou.
+   Každý klik: pokud správné pořadí → označí žlutě s číslem.
+   Pokud špatné → blikne červeně, ale počítá se jako chyba.
+───────────────────────────────────────────── */
+
+/* Sady 4 emoji + popis. Pořadí v poli = správné pořadí. */
+var TS_SADY = [
+  {q:'Jak roste kytička?', items:[
+    {pic:'🌱', lbl:'semínko'}, {pic:'🌿', lbl:'stonek'},
+    {pic:'🌷', lbl:'kytička'}, {pic:'🥀', lbl:'uvadne'}
+  ]},
+  {q:'Den od rána do večera?', items:[
+    {pic:'🌅', lbl:'svítání'}, {pic:'☀️', lbl:'poledne'},
+    {pic:'🌇', lbl:'západ'}, {pic:'🌙', lbl:'noc'}
+  ]},
+  {q:'Co bylo dřív u jablka?', items:[
+    {pic:'🌸', lbl:'květ'}, {pic:'🍏', lbl:'malé jablko'},
+    {pic:'🍎', lbl:'velké jablko'}, {pic:'🥧', lbl:'koláč'}
+  ]},
+  {q:'Jak roste motýl?', items:[
+    {pic:'🥚', lbl:'vajíčko'}, {pic:'🐛', lbl:'housenka'},
+    {pic:'🛌', lbl:'kukla'}, {pic:'🦋', lbl:'motýl'}
+  ]},
+  {q:'Co bylo dřív s mlékem?', items:[
+    {pic:'🐄', lbl:'kráva'}, {pic:'🥛', lbl:'mléko'},
+    {pic:'🍶', lbl:'jogurt'}, {pic:'🧀', lbl:'sýr'}
+  ]},
+  {q:'Jak vypadá život člověka?', items:[
+    {pic:'👶', lbl:'miminko'}, {pic:'🧒', lbl:'dítě'},
+    {pic:'🧑', lbl:'dospělý'}, {pic:'🧓', lbl:'dědeček'}
+  ]},
+  {q:'Co se nejdřív dělá při pečení?', items:[
+    {pic:'🥚', lbl:'rozbít vejce'}, {pic:'🥣', lbl:'míchat těsto'},
+    {pic:'🔥', lbl:'péct v troubě'}, {pic:'🎂', lbl:'hotový dort'}
+  ]},
+  {q:'Roční období od jara?', items:[
+    {pic:'🌷', lbl:'jaro'}, {pic:'☀️', lbl:'léto'},
+    {pic:'🍂', lbl:'podzim'}, {pic:'❄️', lbl:'zima'}
+  ]},
+  {q:'Co dělá člověk ráno?', items:[
+    {pic:'⏰', lbl:'budík zvoní'}, {pic:'🪥', lbl:'čistí zuby'},
+    {pic:'🥣', lbl:'snídá'}, {pic:'🎒', lbl:'jde do školy'}
+  ]},
+  {q:'Co bylo dřív u kuřete?', items:[
+    {pic:'🐔', lbl:'slepice'}, {pic:'🥚', lbl:'vajíčko'},
+    {pic:'🐣', lbl:'kuřátko vyklouzne'}, {pic:'🐤', lbl:'kuře'}
+  ]}
+];
+
+var tsState = {sady:[], idx:0, body:0, sp:0, picks:[], locked:false};
+
+function tsStart(){
+  /* Vybrat 5 náhodných sad */
+  tsState = {sady:shuffle(TS_SADY).slice(0,5), idx:0, body:0, sp:0, picks:[], locked:false};
+  el('tsres').style.display='none';
+  el('tsob').style.display='block';
+  tsRender();
+}
+function tsRender(){
+  var s = tsState;
+  if(s.idx >= s.sady.length){ tsFinish(); return; }
+  var sada = s.sady[s.idx];
+  el('tsq').textContent = sada.q;
+  el('tsv').textContent = (s.idx+1)+'/'+s.sady.length;
+  el('tsci').textContent = (s.idx+1)+'/'+s.sady.length;
+  el('tsbd').textContent = s.body;
+  el('tssp').textContent = s.sp;
+  el('tspg').style.width = ((s.idx)/s.sady.length*100)+'%';
+  el('tsfb').textContent = '';
+  el('tsfb').className = 'fb';
+  el('tsnx').style.display = 'none';
+  s.picks = [];
+  s.locked = false;
+
+  /* Vykreslit obrázky v náhodném pořadí
+     Každá kartička si pamatuje "correctOrder" (0=první, 1=druhá, …) */
+  var box = el('tsGrid'); box.innerHTML = '';
+  var indexes = sada.items.map(function(_,i){return i;});
+  shuffle(indexes).forEach(function(origIdx){
+    var item = sada.items[origIdx];
+    var card = document.createElement('div');
+    card.className = 'tsCard';
+    card.dataset.order = origIdx;
+    card.innerHTML = '<div class="ts-num"></div>' +
+                     '<div class="ts-pic">'+item.pic+'</div>' +
+                     '<div class="ts-lbl">'+item.lbl+'</div>';
+    card.onclick = function(){ tsClick(card); };
+    box.appendChild(card);
+  });
+}
+function tsClick(card){
+  var s = tsState;
+  if(s.locked) return;
+  if(card.classList.contains('picked')) return;
+
+  var expectedOrder = s.picks.length;       // jaké pořadí by měl mít tento klik
+  var cardOrder = parseInt(card.dataset.order);
+
+  if(cardOrder === expectedOrder){
+    /* Správný klik */
+    card.classList.add('picked');
+    card.querySelector('.ts-num').textContent = expectedOrder + 1;
+    s.picks.push(cardOrder);
+
+    if(s.picks.length === s.sady[s.idx].items.length){
+      /* Sada hotová — vše správně */
+      s.locked = true;
+      document.querySelectorAll('#tsGrid .tsCard').forEach(function(c){
+        c.classList.add('ok');
+      });
+      s.body += 10;
+      s.sp += 1;
+      addPoints(10);
+      el('tsfb').textContent = '✓ Výborně, správné pořadí!';
+      el('tsfb').className = 'fb ok';
+      el('tsbd').textContent = s.body;
+      el('tssp').textContent = s.sp;
+      el('tsnx').style.display = 'block';
+    }
+  } else {
+    /* Špatný klik — krátké blikne červeně, NEpočítá se */
+    card.classList.add('err');
+    el('tsfb').textContent = '✗ Toto teď není na řadě, zkus jiný obrázek.';
+    el('tsfb').className = 'fb err';
+    setTimeout(function(){
+      card.classList.remove('err');
+      el('tsfb').textContent = '';
+      el('tsfb').className = 'fb';
+    }, 700);
+  }
+}
+function tsNext(){
+  tsState.idx++;
+  tsRender();
+}
+function tsFinish(){
+  var s = tsState;
+  el('tsob').style.display='none';
+  el('tsres').style.display='block';
+  el('tspp').textContent = 'Správně '+s.sp+' z '+s.sady.length+' · získala jsi '+s.body+' bodů.';
+  el('tssc').textContent = s.body;
+  el('tstot').textContent = totalScore;
+  el('tsrow').style.display='flex';
 }
 
 /* ─────────────────────────────────────────────
@@ -1099,7 +1425,7 @@ function autoDrawSign(ctx, x, y, letter, flash){
   ctx.fillRect(x - w/2, y - h, w, h);
   ctx.strokeRect(x - w/2, y - h, w, h);
   /* Písmeno */
-  ctx.font = 'bold 28px Barlow Condensed,sans-serif';
+  ctx.font = 'bold 30px Verdana,Geneva,sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillStyle = flash > 0 ? '#15803d' : flash < 0 ? '#dc2626' : '#1f2937';
@@ -1241,12 +1567,12 @@ function autoLoop(){
             ATG.spawnsSinceCorrect = 0;
             ATG.spawnCount = 0;
             /* Zrychlování:
-               - Do skóre 30: každé 5 správných pomalé zrychlení
-               - Od skóre 30: každé 2 správné rychlé zrychlení (výzva!) */
-            if(ATG.score >= 30){
+               - Do skóre 20: každé 5 správných pomalé zrychlení
+               - Od skóre 20: každé 2 správné výrazně rychlejší zrychlení (výzva!) */
+            if(ATG.score >= 20){
               if(ATG.score % 2 === 0){
-                ATG.speed = Math.min(6, ATG.speed + 0.3);
-                ATG.spawnInt = Math.max(60, ATG.spawnInt - 8);
+                ATG.speed = Math.min(6, ATG.speed + 0.35);
+                ATG.spawnInt = Math.max(55, ATG.spawnInt - 10);
               }
             } else if(ATG.score % 5 === 0){
               ATG.speed = Math.min(4, ATG.speed + 0.2);

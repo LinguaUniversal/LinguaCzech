@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Čtení s porozuměním — LinguaCzech 2. třída</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --m:#32a0d2;--o:#ffaa37;
+  --ms:#e8f4fb;--os:#fff8ee;
+  --z:#16a34a;--zs:#dcfce7;
+  --r:#dc2626;--rs:#fee2e2;
+  --font:'Barlow Condensed',sans-serif;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:var(--font);background:#f0f7fc;}
+.hl{font-family:var(--font);max-width:760px;margin:1.5rem auto;padding:.5rem 1rem;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.4rem 0 1rem;}
+.topbar a{color:var(--m);text-decoration:none;font-weight:700;font-size:.95rem;}
+.topbar span{font-weight:800;color:var(--m);}
+.scbg{position:fixed;top:10px;right:12px;background:var(--o);color:white;border-radius:99px;padding:.3rem .85rem;font-weight:700;font-size:1rem;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.18);pointer-events:none;}
+.mh{text-align:center;margin:.5rem 0 1.2rem;}
+.mh h1{font-size:1.9rem;color:var(--m);font-weight:800;margin:0;}
+.mh p{color:#6b7280;margin:.3rem 0 0;}
+.mg{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem;}
+.mk{padding:1rem;border-radius:14px;cursor:pointer;text-align:center;transition:all .15s;border:2.5px solid transparent;background:white;}
+.mk:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08);}
+.mk-m{background:var(--ms);border-color:var(--m);}
+.mk-o{background:var(--os);border-color:var(--o);}
+.mk h3{font-size:1.1rem;font-weight:800;margin-bottom:.2rem;}
+.mk p{font-size:.85rem;color:#6b7280;margin:0;}
+.cv{display:none;}
+.nav{display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;}
+.zpet{background:white;border:1.5px solid #d1d5db;border-radius:8px;padding:.4rem .9rem;font-weight:600;cursor:pointer;font-family:var(--font);}
+.tit{font-size:1.1rem;font-weight:700;}
+.var{margin-left:auto;background:var(--ms);color:var(--m);border-radius:99px;padding:.2rem .8rem;font-weight:600;font-size:.85rem;}
+.sk{display:flex;justify-content:space-around;background:var(--os);border:1px solid #ffd48a;border-radius:10px;padding:.7rem;margin-bottom:.75rem;}
+.skn{font-size:1.4rem;font-weight:700;color:var(--o);text-align:center;}
+.skl{font-size:.75rem;color:#6b7280;text-align:center;}
+.pg{height:8px;background:#e5e7eb;border-radius:99px;overflow:hidden;margin-bottom:1rem;}
+.pgf{height:100%;background:var(--m);border-radius:99px;transition:width .3s;}
+.ka{background:white;border:1.5px solid #e5e7eb;border-radius:12px;padding:1rem;margin-bottom:1rem;}
+.q{font-weight:700;text-align:center;margin-bottom:.5rem;color:#374151;}
+.story{background:#fafafa;border-left:4px solid var(--m);border-radius:8px;padding:1rem 1.2rem;margin:1rem 0;font-family:Verdana,Geneva,sans-serif;font-size:1.1rem;line-height:1.7;color:#1f2937;}
+.question{font-size:1.05rem;font-weight:700;color:var(--m);text-align:center;margin:1rem 0 .8rem;}
+.opts{display:grid;gap:.5rem;}
+.opt{padding:.85rem 1rem;border:2px solid #d1d5db;border-radius:10px;background:white;font-family:Verdana,Geneva,sans-serif;font-size:1rem;font-weight:600;cursor:pointer;text-align:left;transition:all .12s;color:#1f2937;}
+.opt:hover:not(:disabled){border-color:var(--m);background:var(--ms);}
+.opt.ok{background:var(--zs);border-color:var(--z);color:var(--z);font-weight:800;}
+.opt.err{background:var(--rs);border-color:var(--r);color:var(--r);}
+.opt:disabled{cursor:default;}
+.fb{margin-top:.7rem;font-size:.95rem;min-height:1.2rem;font-weight:600;text-align:center;}
+.fb.ok{color:var(--z);}
+.fb.err{color:var(--r);}
+.nxt{display:none;width:100%;background:var(--m);color:white;border:none;border-radius:8px;padding:.85rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:var(--font);margin-top:.5rem;}
+.res{display:none;text-align:center;padding:2rem 1rem;}
+.res h2{color:var(--m);font-size:1.6rem;margin:.5rem 0;}
+.res-row{display:flex;gap:1rem;justify-content:center;margin:1rem 0;}
+.rs{background:var(--ms);border-radius:10px;padding:.75rem 1rem;}
+.rsv{font-size:1.4rem;font-weight:800;}
+.rsl{font-size:.8rem;color:#6b7280;}
+.znovu,.mbtn{padding:.7rem 1.2rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:.95rem;margin:.3rem;}
+.znovu{background:var(--m);color:white;border:none;}
+.mbtn{background:white;color:#374151;border:1.5px solid #d1d5db;}
+</style>
+</head>
+<body>
+<div class="scbg" id="scbg">⭐ 0 b.</div>
+<div class="hl">
+
+<!-- MENU -->
+<div id="menu">
+  <div class="topbar"><a href="2trida.html">← 2. třída</a><span>LinguaCzech</span></div>
+  <div class="mh"><h1>Čtení s porozuměním</h1><p>Přečti krátký text a odpověz na otázku</p></div>
+  <div class="mg">
+    <div onclick="go('por')" class="mk mk-m" style="grid-column:span 2"><h3>📖 Cvičení — Čtení s otázkou</h3><p>Krátký příběh + otázka k textu</p></div>
+    <div onclick="printChoice()" class="mk" style="grid-column:span 2;background:#f3f4f6;border:2px dashed #9ca3af"><h3 style="color:#374151">🖨️ Vytisknout pracovní list</h3><p style="color:#6b7280">PDF k procvičování doma — zadání + řešení na A4</p></div>
+  </div>
+</div>
+
+<!-- CV: ČTENÍ S POROZUMĚNÍM -->
+<div class="cv" id="cv-por">
+  <div class="nav">
+    <button class="zpet" onclick="back()">← Zpět</button>
+    <span class="tit">Čtení s porozuměním</span>
+    <span class="var" id="por-v">1/8</span>
+  </div>
+  <div class="sk">
+    <div><div class="skn" id="por-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="por-ci">1/8</div><div class="skl">otázka</div></div>
+    <div><div class="skn" id="por-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="por-pg" style="width:0%"></div></div>
+  <div id="por-ob">
+    <div class="ka">
+      <div class="q">Pozorně si přečti tento krátký příběh:</div>
+      <div class="story" id="por-s">—</div>
+      <div class="question" id="por-q">—</div>
+      <div class="opts" id="por-opts"></div>
+      <div class="fb" id="por-fb"></div>
+    </div>
+    <button class="nxt" id="por-nx" onclick="porNext()">Další →</button>
+  </div>
+  <div class="res" id="por-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="por-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="por-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="por-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('por')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+</div><!-- .hl -->
+
+<script>
+/* ── SDÍLENÉ ── */
+var SCORE_KEY = 'cteni2_score';
+var totalScore = 0;
+function loadScore(){
+  try{ totalScore = parseInt(localStorage.getItem(SCORE_KEY)) || 0; }catch(e){ totalScore = 0; }
+  el('scbg').textContent = '⭐ '+totalScore+' b.';
+}
+function saveScore(){
+  try{ localStorage.setItem(SCORE_KEY, String(totalScore)); }catch(e){}
+}
+function addPoints(n){ totalScore += n; saveScore(); el('scbg').textContent = '⭐ '+totalScore+' b.'; }
+function el(id){ return document.getElementById(id); }
+function shuffle(a){ a = a.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function back(){
+  document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
+  el('menu').style.display='block';
+  window.scrollTo(0,0);
+}
+function go(id){
+  el('menu').style.display='none';
+  document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
+  el('cv-'+id).style.display='block';
+  window.scrollTo(0,0);
+  if(id==='por') porStart();
+}
+
+/* ─────────────────────────────────────────────
+   POR: ČTENÍ S POROZUMĚNÍM
+   Krátké příběhy 2-3 věty + 1 otázka + 3 možnosti.
+───────────────────────────────────────────── */
+var PRIBEHY = [
+  {
+    s: 'V sobotu ráno přijel pošták. Vystoupil z modré dodávky a vhodil žlutou obálku do schránky.',
+    q: 'Jakou barvu měla obálka?',
+    opts: ['Modrou', 'Žlutou', 'Červenou'],
+    a: 1
+  },
+  {
+    s: 'Anna si koupila tři jablka, dva banány a jeden meloun. Doma snědla jedno jablko a banán.',
+    q: 'Kolik jablek měla Anna doma po svačině?',
+    opts: ['Jedno', 'Dvě', 'Tři'],
+    a: 1
+  },
+  {
+    s: 'V parku rostou tři velké duby a dvě břízy. Pod duby si Petr našel pět žaludů.',
+    q: 'Kolik stromů celkem roste v parku?',
+    opts: ['Tři', 'Pět', 'Dva'],
+    a: 1
+  },
+  {
+    s: 'Babička upekla buchty s mákem a tvarohem. Nejvíc dětem chutnaly ty s tvarohem, takže byly hned snědené.',
+    q: 'Které buchty dětem nejvíc chutnaly?',
+    opts: ['S mákem', 'S tvarohem', 'S povidly'],
+    a: 1
+  },
+  {
+    s: 'V neděli odpoledne pršelo. Tomáš proto zůstal doma a četl si v pokoji novou knížku o pirátech.',
+    q: 'Proč zůstal Tomáš doma?',
+    opts: ['Bylo mu zima', 'Pršelo', 'Byl nemocný'],
+    a: 1
+  },
+  {
+    s: 'Klára má dvě kočky. Jedna se jmenuje Mína a má bílou srst. Druhá je Cipíska a má černou srst s bílými ponožkami.',
+    q: 'Která kočka má bílé ponožky?',
+    opts: ['Mína', 'Cipíska', 'Obě'],
+    a: 1
+  },
+  {
+    s: 'V pondělí ráno jeli žáci na školní výlet do zoo. Nejdřív viděli žirafy, pak slony a nakonec opice.',
+    q: 'Které zvíře viděli žáci jako poslední?',
+    opts: ['Žirafy', 'Slony', 'Opice'],
+    a: 2
+  },
+  {
+    s: 'Tatínek koupil mamince k narozeninám červené růže. Maminka je dala do bílé vázy na stůl v kuchyni.',
+    q: 'Kam dala maminka růže?',
+    opts: ['Na okno', 'Do bílé vázy na stole', 'Do pokoje'],
+    a: 1
+  },
+  {
+    s: 'Honza vyšel z domu a šel do školy. Zapomněl si batoh, tak se musel vrátit domů. Do školy přišel pozdě.',
+    q: 'Co Honza zapomněl?',
+    opts: ['Knihu', 'Batoh', 'Svačinu'],
+    a: 1
+  },
+  {
+    s: 'Na obloze svítí dvě hvězdy a jeden měsíc. Měsíc je v úplňku a velmi jasný.',
+    q: 'Kolik hvězd svítí na obloze?',
+    opts: ['Jedna', 'Dvě', 'Tři'],
+    a: 1
+  },
+  {
+    s: 'Maminka uvařila polévku, knedlíky s omáčkou a k tomu jablkový kompot. Nejvíc Tomáškovi chutnal kompot.',
+    q: 'Co Tomáškovi nejvíc chutnalo?',
+    opts: ['Polévka', 'Knedlíky', 'Jablkový kompot'],
+    a: 2
+  },
+  {
+    s: 'Petr má kolo zelené barvy a Eva má kolo červené. Pojeli společně do parku za kamarády.',
+    q: 'Jakou barvu má Petrovo kolo?',
+    opts: ['Modrou', 'Zelenou', 'Červenou'],
+    a: 1
+  },
+  {
+    s: 'Včera v sobotu byl ve škole jarmark. Děti prodávaly koláče, perníky a domácí limonádu. Lenka si koupila dva perníky.',
+    q: 'Kdy byl ve škole jarmark?',
+    opts: ['V pátek', 'V sobotu', 'V neděli'],
+    a: 1
+  },
+  {
+    s: 'Na dvorku stojí dvě kola, jedna koloběžka a tři skútry. Všechno patří dětem ze sousedství.',
+    q: 'Kolik skútrů je na dvorku?',
+    opts: ['Dva', 'Tři', 'Čtyři'],
+    a: 1
+  },
+  {
+    s: 'Dědeček rád zahradničí. Pěstuje rajčata, okurky a papriky. Letos se mu nejlépe povedly papriky.',
+    q: 'Co se dědečkovi letos nejlépe povedlo?',
+    opts: ['Rajčata', 'Okurky', 'Papriky'],
+    a: 2
+  },
+  {
+    s: 'Každé ráno chodí Sára s pejskem Rexem na procházku. Rex má rád, když mu hodí míček. Sára mu ho hází kolem rybníka.',
+    q: 'Kde Sára háže Rexovi míček?',
+    opts: ['V parku', 'Kolem rybníka', 'Na hřišti'],
+    a: 1
+  },
+  {
+    s: 'V kuchyni voní teplé buchty. Maminka je vyndala z trouby a posypala moučkovým cukrem.',
+    q: 'Čím maminka posypala buchty?',
+    opts: ['Mákem', 'Moučkovým cukrem', 'Strouhanou čokoládou'],
+    a: 1
+  },
+  {
+    s: 'Kuba dostal k Vánocům knihu, švihadlo a stavebnici. Nejvíc se mu líbila stavebnice, postavil z ní letadlo.',
+    q: 'Co Kuba postavil ze stavebnice?',
+    opts: ['Auto', 'Letadlo', 'Loď'],
+    a: 1
+  }
+];
+
+var porSt = {seq:[], idx:0, body:0, sp:0, locked:false};
+
+function porStart(){
+  porSt = {seq: shuffle(PRIBEHY).slice(0, 8), idx:0, body:0, sp:0, locked:false};
+  el('por-res').style.display='none';
+  el('por-ob').style.display='block';
+  porRender();
+}
+function porRender(){
+  var s = porSt;
+  if(s.idx >= s.seq.length){ porFinish(); return; }
+  var item = s.seq[s.idx];
+  el('por-s').textContent = item.s;
+  el('por-q').textContent = item.q;
+  el('por-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('por-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('por-bd').textContent = s.body;
+  el('por-sp').textContent = s.sp;
+  el('por-pg').style.width = ((s.idx)/s.seq.length*100)+'%';
+  el('por-fb').textContent = '';
+  el('por-fb').className = 'fb';
+  el('por-nx').style.display = 'none';
+
+  /* Možnosti — náhodné pořadí, zachová správný index */
+  var box = el('por-opts'); box.innerHTML = '';
+  var indexes = item.opts.map(function(_,i){return i;});
+  shuffle(indexes).forEach(function(origIdx){
+    var b = document.createElement('button');
+    b.className = 'opt';
+    b.textContent = item.opts[origIdx];
+    b.onclick = function(){ porAnswer(origIdx, b); };
+    box.appendChild(b);
+  });
+  s.locked = false;
+}
+function porAnswer(picked, btn){
+  var s = porSt;
+  if(s.locked) return;
+  s.locked = true;
+  var item = s.seq[s.idx];
+  if(picked === item.a){
+    btn.classList.add('ok');
+    s.body += 10;
+    s.sp += 1;
+    addPoints(10);
+    el('por-fb').textContent = '✓ Správně! Pozorně sis text přečetla.';
+    el('por-fb').className = 'fb ok';
+  } else {
+    btn.classList.add('err');
+    /* Zvýraznit správnou */
+    document.querySelectorAll('#por-opts .opt').forEach(function(b){
+      if(b.textContent === item.opts[item.a]) b.classList.add('ok');
+    });
+    el('por-fb').textContent = '✗ Správná odpověď je: ' + item.opts[item.a];
+    el('por-fb').className = 'fb err';
+  }
+  document.querySelectorAll('#por-opts .opt').forEach(function(b){b.disabled=true;});
+  el('por-bd').textContent = s.body;
+  el('por-sp').textContent = s.sp;
+  el('por-nx').style.display = 'block';
+}
+function porNext(){ porSt.idx++; porRender(); }
+function porFinish(){
+  var s = porSt;
+  el('por-ob').style.display='none';
+  el('por-res').style.display='block';
+  el('por-pp').textContent = 'Správně '+s.sp+' z '+s.seq.length+' · získala jsi '+s.body+' bodů.';
+  el('por-sc').textContent = s.body;
+  el('por-tot').textContent = totalScore;
+}
+
+/* ─────────────────────────────────────────────
+   PRINT: pracovní list — text + otázka, A4
+───────────────────────────────────────────── */
+function printChoice(){
+  var html = '<div style="background:white;padding:1rem;border-radius:12px;max-width:380px;margin:0 auto;font-family:var(--font)">'+
+             '<h3 style="color:var(--m);margin-bottom:.8rem">🖨️ Vyber téma k tisku</h3>'+
+             '<button onclick="printWorksheet()" style="display:block;width:100%;padding:.7rem .9rem;margin:.3rem 0;background:#e8f4fb;border:1.5px solid var(--m);border-radius:8px;font-family:var(--font);font-weight:700;font-size:.95rem;color:#1a5f7a;cursor:pointer;text-align:left">📖 Čtení s porozuměním <span style="float:right;color:#9ca3af;font-weight:400">8 textů</span></button>'+
+             '<button onclick="closePrintChoice()" style="display:block;width:100%;padding:.6rem;margin-top:1rem;background:white;border:1.5px solid #d1d5db;border-radius:8px;font-family:var(--font);font-weight:600;cursor:pointer">Zavřít</button>'+
+             '</div>';
+  var overlay = document.createElement('div');
+  overlay.id = 'printOverlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:1rem';
+  overlay.innerHTML = html;
+  overlay.onclick = function(e){ if(e.target===overlay) closePrintChoice(); };
+  document.body.appendChild(overlay);
+}
+function closePrintChoice(){
+  var o = document.getElementById('printOverlay');
+  if(o) o.remove();
+}
+function printWorksheet(){
+  closePrintChoice();
+  /* Vyber 8 náhodných příběhů */
+  var picked = shuffle(PRIBEHY).slice(0, 8);
+  var w = window.open('', '_blank', 'width=900,height=1100');
+  if(!w){ alert('Prohlížeč zablokoval otevření okna. Povol prosím vyskakovací okna.'); return; }
+  w.document.write(printHTML(picked));
+  w.document.close();
+  setTimeout(function(){ try{ w.print(); }catch(e){} }, 500);
+}
+function printHTML(items){
+  var d = new Date();
+  var dateStr = d.getDate()+'.'+(d.getMonth()+1)+'.'+d.getFullYear();
+  /* Pro tištěný list dáme jen 4-5 textů, aby se to vešlo + řešení */
+  var picked = items.slice(0, 5);
+  var qHtml = '';
+  picked.forEach(function(it, i){
+    qHtml += '<div class="task">'+
+      '<div class="task-h"><span class="num">'+(i+1)+'.</span> Text:</div>'+
+      '<div class="task-text">'+it.s+'</div>'+
+      '<div class="task-q"><b>Otázka:</b> '+it.q+'</div>'+
+      '<div class="task-line">Odpověď: <span class="line"></span></div>'+
+      '</div>';
+  });
+  var aHtml = '';
+  picked.forEach(function(it, i){
+    aHtml += '<div class="sol-row"><span class="num">'+(i+1)+'.</span> '+it.opts[it.a]+'</div>';
+  });
+  return '<!doctype html><html lang="cs"><head><meta charset="utf-8">'+
+    '<title>Pracovní list — Čtení s porozuměním</title>'+
+    '<style>'+
+    '*{box-sizing:border-box;margin:0;padding:0;}'+
+    'body{font-family:"Barlow Condensed",Arial,sans-serif;color:#1f2937;padding:1rem;}'+
+    '.sheet{max-width:760px;margin:0 auto;}'+
+    '.head{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #32a0d2;padding-bottom:.4rem;margin-bottom:.6rem;}'+
+    '.brand{font-size:.95rem;font-weight:800;color:#32a0d2;}'+
+    '.meta{font-size:.85rem;color:#6b7280;}'+
+    '.title{font-size:1.4rem;font-weight:800;color:#32a0d2;text-align:center;margin:.5rem 0;}'+
+    '.instructions{background:#fff8ee;border-left:4px solid #ffaa37;padding:.5rem .75rem;border-radius:6px;font-size:.95rem;margin:.5rem 0;}'+
+    '.name-line{margin:.4rem 0;font-size:.9rem;color:#374151;}'+
+    '.name-line span{display:inline-block;border-bottom:1px solid #9ca3af;width:200px;height:1.2em;}'+
+    '.task{margin:.6rem 0;padding:.5rem .75rem;border-left:3px solid #32a0d2;background:#fafafa;border-radius:4px;}'+
+    '.task-h{font-size:.85rem;font-weight:700;color:#374151;margin-bottom:.2rem;}'+
+    '.task-text{font-family:Verdana,Geneva,sans-serif;font-size:1rem;line-height:1.5;margin:.2rem 0;color:#1f2937;}'+
+    '.task-q{font-family:Verdana,Geneva,sans-serif;font-size:.95rem;color:#32a0d2;margin:.3rem 0;}'+
+    '.task-line{font-size:.9rem;color:#374151;margin-top:.3rem;}'+
+    '.task-line .line{display:inline-block;border-bottom:1px solid #9ca3af;width:60%;height:1.2em;}'+
+    '.num{font-weight:800;color:#32a0d2;}'+
+    '.cut{margin:1.2rem 0 .8rem;border-top:2px dashed #9ca3af;text-align:center;color:#9ca3af;font-size:.85rem;position:relative;}'+
+    '.cut::before{content:"✂ rozstřihni";position:absolute;top:-.7rem;background:white;padding:0 .5rem;left:50%;transform:translateX(-50%);}'+
+    '.solution-head{background:#dcfce7;border-left:4px solid #16a34a;padding:.4rem .75rem;border-radius:6px;font-size:.95rem;font-weight:700;color:#15803d;margin:.4rem 0;}'+
+    '.sol-row{font-family:Verdana,Geneva,sans-serif;font-size:.95rem;line-height:1.6;padding:.1rem 0;}'+
+    '.toolbar{position:fixed;top:.5rem;right:.5rem;background:#32a0d2;color:white;padding:.5rem 1rem;border-radius:99px;border:none;font-family:inherit;font-weight:700;font-size:.95rem;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2);}'+
+    '@media print{.toolbar{display:none;}body{padding:.5cm;}.sheet{max-width:100%;}.task{break-inside:avoid;}}'+
+    '@page{size:A4;margin:1cm;}'+
+    '</style></head><body>'+
+    '<button class="toolbar" onclick="window.print()">🖨️ Vytisknout / Uložit PDF</button>'+
+    '<div class="sheet">'+
+      '<div class="head"><span class="brand">LinguaCzech · ZŠ Lingua Universal</span><span class="meta">2. třída · Čtení s porozuměním · '+dateStr+'</span></div>'+
+      '<div class="title">Čtení s porozuměním</div>'+
+      '<div class="name-line">Jméno: <span></span> &nbsp;&nbsp; Třída: <span style="width:80px"></span></div>'+
+      '<div class="instructions"><b>Pokyn:</b> Přečti si pozorně každý text a odpověz na otázku celou větou.</div>'+
+      qHtml+
+      '<div class="cut"></div>'+
+      '<div class="solution-head">✓ Klíč pro paní učitelku / rodiče</div>'+
+      aHtml+
+    '</div>'+
+    '</body></html>';
+}
+
+loadScore();
+</script>
+</body>
+</html>

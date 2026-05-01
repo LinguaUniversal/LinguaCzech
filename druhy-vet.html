@@ -118,6 +118,14 @@ body{font-family:var(--font);}
       <h3>Cvičení 2 — Správné znaménko</h3>
       <p>Vyber tečku, otazník nebo vykřičník</p>
     </div>
+    <div onclick="go('jeds')" class="mk mk-m" style="grid-column:span 2">
+      <h3>Cvičení 3 — Věta jednoduchá / Souvětí</h3>
+      <p>Klikni, jestli je to jednoduchá věta nebo souvětí</p>
+    </div>
+    <div onclick="printChoice()" class="mk" style="grid-column:span 2;background:#f3f4f6;border:2px dashed #9ca3af">
+      <h3 style="color:#374151">🖨️ Vytisknout pracovní list</h3>
+      <p style="color:#6b7280">PDF k procvičování doma — zadání + řešení na jedné A4</p>
+    </div>
   </div>
 </div>
 
@@ -173,6 +181,39 @@ body{font-family:var(--font);}
   </div>
 </div>
 
+<!-- CV3: VĚTA JEDNODUCHÁ / SOUVĚTÍ -->
+<div class="cv" id="cv-jeds">
+  <div class="nav">
+    <button class="zpet" onclick="back()">← Zpět</button>
+    <span class="tit">Věta jednoduchá / Souvětí</span>
+    <span class="ci" id="js-ci">1/8</span>
+  </div>
+  <div class="sk">
+    <div><div class="skn" id="js-sp">0</div><div class="skl">správně</div></div>
+    <div><div class="skn" id="js-err">0</div><div class="skl">chyby</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="js-pg" style="width:0%"></div></div>
+  <div class="ka" id="js-ob">
+    <div style="font-size:.88rem;color:#6b7280;text-align:center;margin-bottom:.5rem">Co je to za větu?</div>
+    <div class="veta-box" id="js-veta">—</div>
+    <div style="background:var(--ms);border-radius:8px;padding:.5rem .75rem;margin:.5rem 0;font-size:.85rem;color:#374151;line-height:1.5">
+      <b style="color:var(--m)">Věta jednoduchá</b> — má <b>jedno</b> sloveso (řekneš ji najednou).<br>
+      <b style="color:var(--m)">Souvětí</b> — má <b>dvě a více</b> sloves (spojuje dvě věty, často spojkou).
+    </div>
+    <div style="display:flex;gap:.6rem;margin-top:.8rem">
+      <button class="lbtn" style="flex:1;padding:1rem;font-size:1rem;font-weight:700;cursor:pointer;border-radius:8px;border:2px solid #d1d5db;background:white" onclick="jsAns('jednoducha',this)">Věta jednoduchá</button>
+      <button class="lbtn" style="flex:1;padding:1rem;font-size:1rem;font-weight:700;cursor:pointer;border-radius:8px;border:2px solid #d1d5db;background:white" onclick="jsAns('souveti',this)">Souvětí</button>
+    </div>
+    <div class="fb" id="js-fb"></div>
+    <button class="nxt" id="js-nx" onclick="jsNext()">Další →</button>
+  </div>
+  <div class="res" id="js-res">
+    <div style="font-size:3rem" id="js-em">🎉</div><h2 id="js-tx">Výborně!</h2><p id="js-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="js-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="js-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('jeds')">Znovu 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
 </div><!-- .hl -->
 <script>
 /* ── GLOBALS ──────────────────────── */
@@ -194,8 +235,8 @@ function sh(id){el(id).style.display='block';}
 function hi(id){el(id).style.display='none';}
 function pct(id,v){el(id).style.width=v+'%';}
 function mx(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=0|Math.random()*(i+1);var x=b[i];b[i]=b[j];b[j]=x;}return b;}
-function back(){sh('menu');hi('cv-druh');hi('cv-znam');}
-function go(t){hi('menu');hi('cv-druh');hi('cv-znam');sh('cv-'+t);if(t==='druh')dInit();else zInit();}
+function back(){sh('menu');hi('cv-druh');hi('cv-znam');hi('cv-jeds');}
+function go(t){hi('menu');hi('cv-druh');hi('cv-znam');hi('cv-jeds');sh('cv-'+t);if(t==='druh')dInit();else if(t==='znam')zInit();else jsInit();}
 
 /* ── DATA ─────────────────────────────
    druh: OZ=oznamovací  TA=tázací  RO=rozkazovací  PR=přací
@@ -365,6 +406,223 @@ function zNext(){
     else{el('z-em').textContent='💪';el('z-tx').textContent='Zkus znovu!';}
     addPts(pts,'z-sc','z-tot');
   }else zShow();
+}
+
+/* ─────────────────────────────────────────────
+   CV3: VĚTA JEDNODUCHÁ / SOUVĚTÍ
+   - každá věta je buď jednoduchá (1 sloveso) nebo souvětí (2+ slovesa, spojka)
+───────────────────────────────────────────── */
+var JS_DATA = [
+  /* Věta jednoduchá */
+  {s:'Pes běží za míčem.', typ:'jednoducha'},
+  {s:'Maminka vaří oběd.', typ:'jednoducha'},
+  {s:'Děti skáčou přes kaluž.', typ:'jednoducha'},
+  {s:'Petr čte zajímavou knihu.', typ:'jednoducha'},
+  {s:'Ryba pluje ve vodě.', typ:'jednoducha'},
+  {s:'Žirafa má dlouhý krk.', typ:'jednoducha'},
+  {s:'Kniha leží na stole.', typ:'jednoducha'},
+  {s:'Holub sedí na střeše.', typ:'jednoducha'},
+  {s:'Kočka spí na pohovce.', typ:'jednoducha'},
+  {s:'Anna maluje krásný obrázek.', typ:'jednoducha'},
+  {s:'Slunce svítí celý den.', typ:'jednoducha'},
+  {s:'Učitel napsal úkol na tabuli.', typ:'jednoducha'},
+  /* Souvětí */
+  {s:'Pes štěká a skáče.', typ:'souveti'},
+  {s:'Slunce svítí a ptáci zpívají.', typ:'souveti'},
+  {s:'Pršelo nebo sněžilo.', typ:'souveti'},
+  {s:'Chci jít ven, ale prší.', typ:'souveti'},
+  {s:'Vzal si deštník, protože pršelo.', typ:'souveti'},
+  {s:'Nemůžu spát, ale jsem unavená.', typ:'souveti'},
+  {s:'Šel spát, když dočetl knížku.', typ:'souveti'},
+  {s:'Učí se, aby měl dobré známky.', typ:'souveti'},
+  {s:'Nevím, jestli přijdu.', typ:'souveti'},
+  {s:'Pršelo, proto jsme zůstali doma.', typ:'souveti'},
+  {s:'Petr zpíval a Jana tancovala.', typ:'souveti'},
+  {s:'Sedíme v parku a čteme knihy.', typ:'souveti'}
+];
+
+var jsSt={seq:[],idx:0,sp:0,err:0,locked:false};
+function jsInit(){
+  jsSt={seq:mx(JS_DATA).slice(0,8),idx:0,sp:0,err:0,locked:false};
+  hi('js-res');sh('js-ob');jsShow();
+}
+function jsShow(){
+  var s=jsSt;
+  if(s.idx>=s.seq.length){jsFinish();return;}
+  var item=s.seq[s.idx];
+  el('js-veta').textContent=item.s;
+  tx('js-ci',(s.idx+1)+'/'+s.seq.length);
+  tx('js-sp',s.sp);tx('js-err',s.err);
+  pct('js-pg',(s.idx)/s.seq.length*100);
+  el('js-fb').textContent='';el('js-fb').className='fb';
+  hi('js-nx');
+  document.querySelectorAll('#cv-jeds .lbtn').forEach(function(b){
+    b.disabled=false;b.style.background='white';b.style.borderColor='#d1d5db';b.style.color='#374151';
+  });
+  s.locked=false;
+}
+function jsAns(picked,btn){
+  var s=jsSt;
+  if(s.locked)return;
+  s.locked=true;
+  var item=s.seq[s.idx];
+  if(picked===item.typ){
+    btn.style.background='var(--zs)';btn.style.borderColor='var(--z)';btn.style.color='var(--z)';
+    s.sp++;
+    el('js-fb').textContent='✓ Správně! Tato věta je '+(item.typ==='jednoducha'?'jednoduchá (jedno sloveso)':'souvětí (dvě věty)')+'.';
+    el('js-fb').className='fb ok';
+  } else {
+    btn.style.background='var(--rs)';btn.style.borderColor='var(--r)';btn.style.color='var(--r)';
+    /* Zvýraznit správnou */
+    document.querySelectorAll('#cv-jeds .lbtn').forEach(function(b){
+      var bTyp = b.textContent.trim().toLowerCase().indexOf('jednoduch')>=0 ? 'jednoducha' : 'souveti';
+      if(bTyp===item.typ){
+        b.style.background='var(--zs)';b.style.borderColor='var(--z)';b.style.color='var(--z)';
+      }
+    });
+    s.err++;
+    el('js-fb').textContent='✗ Tato věta je '+(item.typ==='jednoducha'?'jednoduchá':'souvětí')+'.';
+    el('js-fb').className='fb err';
+  }
+  document.querySelectorAll('#cv-jeds .lbtn').forEach(function(b){b.disabled=true;});
+  tx('js-sp',s.sp);tx('js-err',s.err);
+  sh('js-nx');
+}
+function jsNext(){jsSt.idx++;jsShow();}
+function jsFinish(){
+  var s=jsSt;
+  hi('js-ob');sh('js-res');
+  var pts=s.sp*5;
+  tx('js-pp','Správně '+s.sp+' z '+s.seq.length+' · získala jsi '+pts+' bodů.');
+  if(s.sp>=7){el('js-em').textContent='🏆';el('js-tx').textContent='Šampion!';}
+  else if(s.sp>=5){el('js-em').textContent='🎉';el('js-tx').textContent='Výborně!';}
+  else{el('js-em').textContent='💪';el('js-tx').textContent='Zkus znovu!';}
+  addPts(pts,'js-sc','js-tot');
+}
+
+/* ─────────────────────────────────────────────
+   PRINT: pracovní listy k tisku
+───────────────────────────────────────────── */
+function printChoice(){
+  var topics = [
+    {key:'druh', label:'Druh věty (oznam./táz./rozk./přací)', count:10},
+    {key:'znam', label:'Správné znaménko (. ? !)', count:10},
+    {key:'jeds', label:'Věta jednoduchá / souvětí', count:8}
+  ];
+  var html = '<div style="background:white;padding:1rem;border-radius:12px;max-width:380px;margin:0 auto;font-family:var(--font)">'+
+             '<h3 style="color:var(--m);margin-bottom:.8rem">🖨️ Vyber téma k tisku</h3>';
+  topics.forEach(function(t){
+    html += '<button onclick="printWorksheet(\''+t.key+'\')" style="display:block;width:100%;padding:.7rem .9rem;margin:.3rem 0;background:#e8f4fb;border:1.5px solid var(--m);border-radius:8px;font-family:var(--font);font-weight:700;font-size:.95rem;color:#1a5f7a;cursor:pointer;text-align:left">'+t.label+' <span style="float:right;color:#9ca3af;font-weight:400">'+t.count+' úkolů</span></button>';
+  });
+  html += '<button onclick="closePrintChoice()" style="display:block;width:100%;padding:.6rem;margin-top:1rem;background:white;border:1.5px solid #d1d5db;border-radius:8px;font-family:var(--font);font-weight:600;cursor:pointer">Zavřít</button>';
+  html += '</div>';
+  var overlay = document.createElement('div');
+  overlay.id = 'printOverlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:1rem';
+  overlay.innerHTML = html;
+  overlay.onclick = function(e){ if(e.target===overlay) closePrintChoice(); };
+  document.body.appendChild(overlay);
+}
+function closePrintChoice(){
+  var o = document.getElementById('printOverlay');
+  if(o) o.remove();
+}
+
+function printWorksheet(topicKey){
+  closePrintChoice();
+  var data = printGetData(topicKey);
+  var w = window.open('', '_blank', 'width=900,height=1100');
+  if(!w){ alert('Prohlížeč zablokoval otevření okna. Povol prosím vyskakovací okna.'); return; }
+  w.document.write(printHTML(data));
+  w.document.close();
+  setTimeout(function(){ try{ w.print(); }catch(e){} }, 500);
+}
+
+function printGetData(key){
+  var DRUH_LABELS = {OZ:'OZNAMOVACÍ',TA:'TÁZACÍ',RO:'ROZKAZOVACÍ',PR:'PŘACÍ'};
+  if(key==='druh'){
+    var picked = mx(VETY).slice(0, 10);
+    var items = picked.map(function(it){
+      return {q:it.v+it.znam+'  ___________________', a:it.v+it.znam+'  →  '+DRUH_LABELS[it.druh]};
+    });
+    return {
+      title:'Druh věty',
+      instructions:'U každé věty napiš, jestli je oznamovací, tázací, rozkazovací nebo přací.',
+      topic:'Druhy vět',
+      items:items
+    };
+  }
+  if(key==='znam'){
+    var picked = mx(VETY).slice(0, 10);
+    var items = picked.map(function(it){
+      return {q:it.v+'_____', a:it.v+' <b>'+it.znam+'</b>'};
+    });
+    return {
+      title:'Doplň správné znaménko',
+      instructions:'Doplň na konec každé věty správné znaménko (. ? !).',
+      topic:'Znaménka',
+      items:items
+    };
+  }
+  if(key==='jeds'){
+    var picked = mx(JS_DATA).slice(0, 8);
+    var items = picked.map(function(it){
+      return {q:it.s+'  ____________________', a:it.s+'  →  '+(it.typ==='jednoducha'?'JEDNODUCHÁ':'SOUVĚTÍ')};
+    });
+    return {
+      title:'Věta jednoduchá / Souvětí',
+      instructions:'U každé věty napiš, jestli je věta jednoduchá nebo souvětí.',
+      topic:'Druhy vět',
+      items:items
+    };
+  }
+}
+
+function printHTML(data){
+  var d = new Date();
+  var dateStr = d.getDate()+'.'+(d.getMonth()+1)+'.'+d.getFullYear();
+  var qHtml = '';
+  data.items.forEach(function(it, i){
+    qHtml += '<div class="task"><span class="num">'+(i+1)+'.</span> '+it.q+'</div>';
+  });
+  var aHtml = '';
+  data.items.forEach(function(it, i){
+    aHtml += '<div class="task"><span class="num">'+(i+1)+'.</span> '+it.a+'</div>';
+  });
+  return '<!doctype html><html lang="cs"><head><meta charset="utf-8">'+
+    '<title>Pracovní list — '+data.title+'</title>'+
+    '<style>'+
+    '*{box-sizing:border-box;margin:0;padding:0;}'+
+    'body{font-family:"Barlow Condensed",Arial,sans-serif;color:#1f2937;padding:1rem;}'+
+    '.sheet{max-width:760px;margin:0 auto;}'+
+    '.head{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #32a0d2;padding-bottom:.4rem;margin-bottom:.6rem;}'+
+    '.brand{font-size:.95rem;font-weight:800;color:#32a0d2;}'+
+    '.meta{font-size:.85rem;color:#6b7280;}'+
+    '.title{font-size:1.4rem;font-weight:800;color:#32a0d2;text-align:center;margin:.5rem 0;}'+
+    '.instructions{background:#fff8ee;border-left:4px solid #ffaa37;padding:.5rem .75rem;border-radius:6px;font-size:.95rem;margin:.5rem 0;}'+
+    '.name-line{margin:.4rem 0;font-size:.9rem;color:#374151;}'+
+    '.name-line span{display:inline-block;border-bottom:1px solid #9ca3af;width:200px;height:1.2em;}'+
+    '.task{font-size:1.05rem;line-height:1.9;padding:.1rem 0;font-family:Verdana,Geneva,sans-serif;}'+
+    '.num{font-weight:800;color:#32a0d2;display:inline-block;min-width:1.5rem;}'+
+    '.cut{margin:1.5rem 0 1rem;border-top:2px dashed #9ca3af;text-align:center;color:#9ca3af;font-size:.85rem;position:relative;}'+
+    '.cut::before{content:"✂ rozstřihni";position:absolute;top:-.7rem;background:white;padding:0 .5rem;left:50%;transform:translateX(-50%);}'+
+    '.solution-head{background:#dcfce7;border-left:4px solid #16a34a;padding:.4rem .75rem;border-radius:6px;font-size:.95rem;font-weight:700;color:#15803d;margin:.5rem 0;}'+
+    '.toolbar{position:fixed;top:.5rem;right:.5rem;background:#32a0d2;color:white;padding:.5rem 1rem;border-radius:99px;border:none;font-family:inherit;font-weight:700;font-size:.95rem;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2);}'+
+    '@media print{.toolbar{display:none;}body{padding:.5cm;}.sheet{max-width:100%;}}'+
+    '@page{size:A4;margin:1cm;}'+
+    '</style></head><body>'+
+    '<button class="toolbar" onclick="window.print()">🖨️ Vytisknout / Uložit PDF</button>'+
+    '<div class="sheet">'+
+      '<div class="head"><span class="brand">LinguaCzech · ZŠ Lingua Universal</span><span class="meta">'+data.topic+' · '+dateStr+'</span></div>'+
+      '<div class="title">'+data.title+'</div>'+
+      '<div class="name-line">Jméno: <span></span> &nbsp;&nbsp; Třída: <span style="width:80px"></span></div>'+
+      '<div class="instructions"><b>Pokyn:</b> '+data.instructions+'</div>'+
+      qHtml+
+      '<div class="cut"></div>'+
+      '<div class="solution-head">✓ Klíč pro paní učitelku / rodiče</div>'+
+      aHtml+
+    '</div>'+
+    '</body></html>';
 }
 </script>
 </body>

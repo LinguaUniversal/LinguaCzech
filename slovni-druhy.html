@@ -103,6 +103,18 @@ body{font-family:var(--font);}
     <div onclick="go('CP')" class="mk mk-g"><h3>Spojky a Předložky</h3><p>2 druhy</p></div>
     <div onclick="go('ALL')" class="mk mk-o"><h3>Všechny druhy</h3><p>4 druhy — těžší</p></div>
   </div>
+
+  <div class="sec">Speciální cvičení</div>
+  <div class="mg mg-2">
+    <div onclick="go('SPSV')" class="mk mk-o" style="grid-column:span 2"><h3>Spojuje slova nebo věty?</h3><p>Co spojka spojuje v této větě?</p></div>
+    <div onclick="go('VLJ')" class="mk mk-m"><h3>Vlastní jména</h3><p>Klikni na vlastní jméno</p></div>
+    <div onclick="go('ZEM')" class="mk mk-g"><h3>Zeměpisné názvy</h3><p>Klikni na město, ulici, řeku</p></div>
+  </div>
+
+  <div class="sec">Pro tisk</div>
+  <div class="mg mg-2">
+    <div onclick="printChoice()" class="mk" style="grid-column:span 2;background:#f3f4f6;border:2px dashed #9ca3af"><h3 style="color:#374151">🖨️ Vytisknout pracovní list</h3><p style="color:#6b7280">PDF k procvičování doma — zadání + řešení na jedné A4</p></div>
+  </div>
 </div>
 
 <!-- HLEDÁNÍ VE VĚTÁCH -->
@@ -147,6 +159,71 @@ body{font-family:var(--font);}
     <button class="znovu" onclick="go(CUR_TYPE)">Znovu 🔄</button><button class="mbtn" onclick="back()">Menu</button>
   </div>
 </div>
+
+<!-- ============ SPSV: SPOJUJE SLOVA / VĚTY? ============ -->
+<div class="cv" id="cv-spsv">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">Spojuje slova nebo věty?</span><span class="ci" id="spsv-ci">1/8</span></div>
+  <div class="sk"><div class="sk-i"><div class="sk-n" id="spsv-bd">0</div><div class="sk-l">body</div></div><div class="sk-i"><div class="sk-n" id="spsv-sp">0</div><div class="sk-l">správně</div></div></div>
+  <div class="pg"><div class="pgf" id="spsv-pg" style="width:0%"></div></div>
+  <div id="spsv-ob">
+    <div class="ka">
+      <div class="q">Co spojka <b id="spsv-c" style="color:var(--o)">a</b> v této větě spojuje?</div>
+      <div class="bigSentence" id="spsv-s" style="font-family:Verdana,Geneva,sans-serif;font-size:1.3rem;font-weight:700;text-align:center;margin:1.2rem 0;line-height:1.5">Pes a kočka jsou přátelé.</div>
+      <div style="display:flex;gap:.6rem;margin:1rem 0;">
+        <button class="lbtn" style="flex:1;padding:1rem;font-size:1.1rem" onclick="spsvAns('slova',this)">Slova</button>
+        <button class="lbtn" style="flex:1;padding:1rem;font-size:1.1rem" onclick="spsvAns('vety',this)">Věty</button>
+      </div>
+      <div class="fb" id="spsv-fb"></div>
+    </div>
+    <button class="nxt" id="spsv-nx" onclick="spsvNext()">Další →</button>
+  </div>
+  <div class="res" id="spsv-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="spsv-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="spsv-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="spsv-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('SPSV')">Znovu 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- ============ VLJ: VLASTNÍ JMÉNA ============ -->
+<div class="cv" id="cv-vlj">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">Najdi vlastní jméno</span><span class="ci" id="vlj-ci">1/8</span></div>
+  <div class="sk"><div class="sk-i"><div class="sk-n" id="vlj-bd">0</div><div class="sk-l">body</div></div><div class="sk-i"><div class="sk-n" id="vlj-sp">0</div><div class="sk-l">správně</div></div></div>
+  <div class="pg"><div class="pgf" id="vlj-pg" style="width:0%"></div></div>
+  <div id="vlj-ob">
+    <div class="ka">
+      <div class="q">Klikni na <b style="color:var(--m)">vlastní jméno</b> ve větě:</div>
+      <div id="vlj-s" style="text-align:center;margin:1.2rem 0;font-size:1.25rem;font-weight:600;line-height:1.8;font-family:Verdana,Geneva,sans-serif"></div>
+      <div class="fb" id="vlj-fb"></div>
+    </div>
+    <button class="nxt" id="vlj-nx" onclick="vljNext()">Další →</button>
+  </div>
+  <div class="res" id="vlj-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="vlj-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="vlj-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="vlj-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('VLJ')">Znovu 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- ============ ZEM: ZEMĚPISNÉ NÁZVY ============ -->
+<div class="cv" id="cv-zem">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">Najdi zeměpisný název</span><span class="ci" id="zem-ci">1/8</span></div>
+  <div class="sk"><div class="sk-i"><div class="sk-n" id="zem-bd">0</div><div class="sk-l">body</div></div><div class="sk-i"><div class="sk-n" id="zem-sp">0</div><div class="sk-l">správně</div></div></div>
+  <div class="pg"><div class="pgf" id="zem-pg" style="width:0%"></div></div>
+  <div id="zem-ob">
+    <div class="ka">
+      <div class="q">Klikni na <b style="color:var(--m)">zeměpisný název</b> (město, ulice, řeka...):</div>
+      <div id="zem-s" style="text-align:center;margin:1.2rem 0;font-size:1.25rem;font-weight:600;line-height:1.8;font-family:Verdana,Geneva,sans-serif"></div>
+      <div class="fb" id="zem-fb"></div>
+    </div>
+    <button class="nxt" id="zem-nx" onclick="zemNext()">Další →</button>
+  </div>
+  <div class="res" id="zem-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="zem-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="zem-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="zem-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('ZEM')">Znovu 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
 </div>
 
 <script>
@@ -169,10 +246,13 @@ function sh(id){el(id).style.display='block';}
 function hi(id){el(id).style.display='none';}
 function pct(id,v){el(id).style.width=v+'%';}
 function mx(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=0|Math.random()*(i+1);var x=b[i];b[i]=b[j];b[j]=x;}return b;}
-function back(){sh('menu');hi('cv-sent');hi('cv-rz');}
+function back(){sh('menu');hi('cv-sent');hi('cv-rz');hi('cv-spsv');hi('cv-vlj');hi('cv-zem');}
 function go(type){
-  CUR_TYPE=type;hi('menu');hi('cv-sent');hi('cv-rz');
+  CUR_TYPE=type;hi('menu');hi('cv-sent');hi('cv-rz');hi('cv-spsv');hi('cv-vlj');hi('cv-zem');
   if(type==='V'||type==='N'||type==='C'||type==='P'){sh('cv-sent');sInit(type);}
+  else if(type==='SPSV'){sh('cv-spsv');spsvInit();}
+  else if(type==='VLJ'){sh('cv-vlj');vljInit();}
+  else if(type==='ZEM'){sh('cv-zem');zemInit();}
   else{sh('cv-rz');rzInit(type);}
 }
 
@@ -180,6 +260,7 @@ function go(type){
    t: V=sloveso C=spojka N=podstatné jméno P=předložka O=ostatní
    ─────────────────────────────────── */
 var D=[
+  // Bez spojek (jen N, V, P, O)
   [{w:'Pes',t:'N'},{w:'běží',t:'V'},{w:'za',t:'P'},{w:'míčem.',t:'N'}],
   [{w:'Maminka',t:'N'},{w:'vaří',t:'V'},{w:'oběd.',t:'N'}],
   [{w:'Děti',t:'N'},{w:'skáčou',t:'V'},{w:'přes',t:'P'},{w:'kaluž.',t:'N'}],
@@ -190,26 +271,55 @@ var D=[
   [{w:'Ježek',t:'N'},{w:'hledá',t:'V'},{w:'houby',t:'N'},{w:'v',t:'P'},{w:'lese.',t:'N'}],
   [{w:'Holka',t:'N'},{w:'maluje',t:'V'},{w:'červený',t:'O'},{w:'dům.',t:'N'}],
   [{w:'Ryba',t:'N'},{w:'pluje',t:'V'},{w:'ve',t:'P'},{w:'vodě.',t:'N'}],
+  // Spojka A
   [{w:'Pes',t:'N'},{w:'štěká',t:'V'},{w:'a',t:'C'},{w:'skáče.',t:'V'}],
   [{w:'Děti',t:'N'},{w:'zpívají',t:'V'},{w:'a',t:'C'},{w:'tancují.',t:'V'}],
   [{w:'Slunce',t:'N'},{w:'svítí',t:'V'},{w:'a',t:'C'},{w:'ptáci',t:'N'},{w:'zpívají.',t:'V'}],
   [{w:'Vítr',t:'N'},{w:'fouká',t:'V'},{w:'a',t:'C'},{w:'stromy',t:'N'},{w:'se',t:'O'},{w:'ohýbají.',t:'V'}],
-  [{w:'Pršelo',t:'V'},{w:'nebo',t:'C'},{w:'sněžilo.',t:'V'}],
   [{w:'Mám',t:'V'},{w:'psa',t:'N'},{w:'a',t:'C'},{w:'kočku.',t:'N'}],
-  [{w:'Chci',t:'V'},{w:'jít',t:'V'},{w:'ven,',t:'O'},{w:'ale',t:'C'},{w:'prší.',t:'V'}],
-  [{w:'Vzal',t:'V'},{w:'si',t:'O'},{w:'deštník,',t:'O'},{w:'protože',t:'C'},{w:'pršelo.',t:'V'}],
   [{w:'Kamarád',t:'N'},{w:'a',t:'C'},{w:'já',t:'O'},{w:'hrajeme',t:'V'},{w:'fotbal.',t:'N'}],
   [{w:'Maminka',t:'N'},{w:'koupila',t:'V'},{w:'mléko',t:'N'},{w:'a',t:'C'},{w:'chléb.',t:'N'}],
-  [{w:'Petr',t:'N'},{w:'nebo',t:'C'},{w:'Jana',t:'N'},{w:'přinesou',t:'V'},{w:'míč.',t:'N'}],
   [{w:'Děti',t:'N'},{w:'a',t:'C'},{w:'učitelé',t:'N'},{w:'jdou',t:'V'},{w:'na',t:'P'},{w:'výlet.',t:'N'}],
-  [{w:'Jím',t:'V'},{w:'zeleninu,',t:'N'},{w:'protože',t:'C'},{w:'je',t:'V'},{w:'zdravá.',t:'O'}],
+  [{w:'Pes',t:'N'},{w:'a',t:'C'},{w:'kočka',t:'N'},{w:'jsou',t:'V'},{w:'přátelé.',t:'N'}],
+  [{w:'Petr',t:'N'},{w:'zpíval',t:'V'},{w:'a',t:'C'},{w:'Jana',t:'N'},{w:'tancovala.',t:'V'}],
+  // Spojka I
+  [{w:'Maminka',t:'N'},{w:'i',t:'C'},{w:'tatínek',t:'N'},{w:'pracují.',t:'V'}],
+  [{w:'V',t:'P'},{w:'lese',t:'N'},{w:'rostou',t:'V'},{w:'borůvky',t:'N'},{w:'i',t:'C'},{w:'maliny.',t:'N'}],
+  [{w:'Petr',t:'N'},{w:'umí',t:'V'},{w:'plavat',t:'V'},{w:'i',t:'C'},{w:'lyžovat.',t:'V'}],
+  // Spojka ALE
+  [{w:'Chci',t:'V'},{w:'jít',t:'V'},{w:'ven,',t:'O'},{w:'ale',t:'C'},{w:'prší.',t:'V'}],
   [{w:'Nemůžu',t:'V'},{w:'spát,',t:'V'},{w:'ale',t:'C'},{w:'jsem',t:'V'},{w:'unavená.',t:'O'}],
+  [{w:'Snažím',t:'V'},{w:'se,',t:'O'},{w:'ale',t:'C'},{w:'nejde',t:'V'},{w:'to.',t:'O'}],
+  // Spojka NEBO
+  [{w:'Pršelo',t:'V'},{w:'nebo',t:'C'},{w:'sněžilo.',t:'V'}],
+  [{w:'Petr',t:'N'},{w:'nebo',t:'C'},{w:'Jana',t:'N'},{w:'přinesou',t:'V'},{w:'míč.',t:'N'}],
+  [{w:'Dáš',t:'V'},{w:'si',t:'O'},{w:'čaj',t:'N'},{w:'nebo',t:'C'},{w:'kávu?',t:'N'}],
+  // Spojka PROTOŽE
+  [{w:'Vzal',t:'V'},{w:'si',t:'O'},{w:'deštník,',t:'O'},{w:'protože',t:'C'},{w:'pršelo.',t:'V'}],
+  [{w:'Jím',t:'V'},{w:'zeleninu,',t:'N'},{w:'protože',t:'C'},{w:'je',t:'V'},{w:'zdravá.',t:'O'}],
+  [{w:'Oblékl',t:'V'},{w:'se,',t:'O'},{w:'protože',t:'C'},{w:'bylo',t:'V'},{w:'chladno.',t:'O'}],
+  // Spojka PROTO
+  [{w:'Pršelo,',t:'V'},{w:'proto',t:'C'},{w:'jsme',t:'V'},{w:'zůstali',t:'V'},{w:'doma.',t:'O'}],
+  [{w:'Jsem',t:'V'},{w:'unavená,',t:'O'},{w:'proto',t:'C'},{w:'půjdu',t:'V'},{w:'spát.',t:'V'}],
+  [{w:'Měl',t:'V'},{w:'hlad,',t:'O'},{w:'proto',t:'C'},{w:'snědl',t:'V'},{w:'jablko.',t:'N'}],
+  // Spojka KDYŽ
+  [{w:'Šel',t:'V'},{w:'spát,',t:'V'},{w:'když',t:'C'},{w:'dočetl',t:'V'},{w:'knížku.',t:'N'}],
+  [{w:'Když',t:'C'},{w:'svítí',t:'V'},{w:'slunce,',t:'N'},{w:'jdeme',t:'V'},{w:'ven.',t:'O'}],
+  [{w:'Smála',t:'V'},{w:'se,',t:'O'},{w:'když',t:'C'},{w:'ho',t:'O'},{w:'uviděla.',t:'V'}],
+  // Spojka ABY
+  [{w:'Učí',t:'V'},{w:'se,',t:'O'},{w:'aby',t:'C'},{w:'měl',t:'V'},{w:'dobré',t:'O'},{w:'známky.',t:'N'}],
+  [{w:'Sportuje,',t:'V'},{w:'aby',t:'C'},{w:'byl',t:'V'},{w:'zdravý.',t:'O'}],
+  [{w:'Volám',t:'V'},{w:'mámě,',t:'N'},{w:'aby',t:'C'},{w:'přišla',t:'V'},{w:'pro',t:'P'},{w:'mě.',t:'O'}],
+  // Spojka JESTLI
+  [{w:'Nevím,',t:'V'},{w:'jestli',t:'C'},{w:'přijdu.',t:'V'}],
+  [{w:'Zeptej',t:'V'},{w:'se,',t:'O'},{w:'jestli',t:'C'},{w:'má',t:'V'},{w:'čas.',t:'N'}],
+  [{w:'Půjdeme',t:'V'},{w:'ven,',t:'O'},{w:'jestli',t:'C'},{w:'nebude',t:'V'},{w:'pršet.',t:'V'}],
+  // Bez spojek - další (pro varietu)
   [{w:'Škola',t:'N'},{w:'začíná',t:'V'},{w:'ráno.',t:'O'}],
   [{w:'Kytka',t:'N'},{w:'roste',t:'V'},{w:'v',t:'P'},{w:'zahradě.',t:'N'}],
   [{w:'Holub',t:'N'},{w:'sedí',t:'V'},{w:'na',t:'P'},{w:'střeše.',t:'N'}],
   [{w:'Teta',t:'N'},{w:'přijede',t:'V'},{w:'vlakem',t:'N'},{w:'z',t:'P'},{w:'Prahy.',t:'N'}],
   [{w:'Žirafa',t:'N'},{w:'žere',t:'V'},{w:'listy',t:'N'},{w:'ze',t:'P'},{w:'stromu.',t:'N'}],
-  [{w:'Pes',t:'N'},{w:'a',t:'C'},{w:'kočka',t:'N'},{w:'jsou',t:'V'},{w:'přátelé.',t:'N'}],
   [{w:'Chlapec',t:'N'},{w:'hodil',t:'V'},{w:'míč',t:'N'},{w:'přes',t:'P'},{w:'plot.',t:'N'}],
   [{w:'Motýl',t:'N'},{w:'poletuje',t:'V'},{w:'nad',t:'P'},{w:'loukou.',t:'N'}],
   [{w:'Učitel',t:'N'},{w:'napsal',t:'V'},{w:'úkol',t:'N'},{w:'na',t:'P'},{w:'tabuli.',t:'N'}],
@@ -223,17 +333,6 @@ var D=[
   [{w:'Sedíme',t:'V'},{w:'u',t:'P'},{w:'okna',t:'N'},{w:'ve',t:'P'},{w:'třídě.',t:'N'}],
   [{w:'Vlaštovka',t:'N'},{w:'letí',t:'V'},{w:'přes',t:'P'},{w:'rybník.',t:'N'}],
   [{w:'Houby',t:'N'},{w:'rostou',t:'V'},{w:'v',t:'P'},{w:'lese',t:'N'},{w:'pod',t:'P'},{w:'stromy.',t:'N'}],
-  [{w:'Petr',t:'N'},{w:'zpíval',t:'V'},{w:'a',t:'C'},{w:'Jana',t:'N'},{w:'tancovala.',t:'V'}],
-  [{w:'Bylo',t:'V'},{w:'horko,',t:'O'},{w:'a',t:'C'},{w:'tak',t:'O'},{w:'jsme',t:'V'},{w:'šli',t:'V'},{w:'plavat.',t:'V'}],
-  [{w:'Pospíchala,',t:'V'},{w:'a',t:'C'},{w:'přesto',t:'O'},{w:'přišla',t:'V'},{w:'pozdě.',t:'O'}],
-  [{w:'Maminka',t:'N'},{w:'řekla,',t:'V'},{w:'že',t:'C'},{w:'přijde',t:'V'},{w:'brzy.',t:'O'}],
-  [{w:'Oblékl',t:'V'},{w:'se,',t:'O'},{w:'protože',t:'C'},{w:'bylo',t:'V'},{w:'chladno.',t:'O'}],
-  [{w:'Šel',t:'V'},{w:'spát,',t:'V'},{w:'když',t:'C'},{w:'dočetl',t:'V'},{w:'knížku.',t:'N'}],
-  [{w:'Učí',t:'V'},{w:'se,',t:'O'},{w:'aby',t:'C'},{w:'měl',t:'V'},{w:'dobré',t:'O'},{w:'známky.',t:'N'}],
-  [{w:'Počkej,',t:'V'},{w:'dokud',t:'C'},{w:'nepřijde',t:'V'},{w:'učitel.',t:'N'}],
-  [{w:'Přišel',t:'V'},{w:'dřív,',t:'O'},{w:'než',t:'C'},{w:'zazvonil',t:'V'},{w:'zvonek.',t:'N'}],
-  [{w:'Vím,',t:'V'},{w:'že',t:'C'},{w:'máš',t:'V'},{w:'pravdu.',t:'N'}],
-  [{w:'Jel',t:'V'},{w:'rychle,',t:'O'},{w:'takže',t:'C'},{w:'přijel',t:'V'},{w:'včas.',t:'O'}],
   [{w:'Přijela',t:'V'},{w:'teta',t:'N'},{w:'z',t:'P'},{w:'Prahy',t:'N'},{w:'a',t:'C'},{w:'přinesla',t:'V'},{w:'dort.',t:'N'}],
   [{w:'Sedíme',t:'V'},{w:'v',t:'P'},{w:'parku',t:'N'},{w:'a',t:'C'},{w:'čteme',t:'V'},{w:'knihy.',t:'N'}],
 ];
@@ -253,10 +352,9 @@ var SLOVA=[
   {w:'letí',t:'V'},{w:'roste',t:'V'},{w:'plave',t:'V'},
   {w:'sedí',t:'V'},{w:'kreslí',t:'V'},{w:'pomáhá',t:'V'},
   {w:'přichází',t:'V'},{w:'ví',t:'V'},{w:'říká',t:'V'},
-  {w:'a',t:'C'},{w:'ale',t:'C'},{w:'nebo',t:'C'},
-  {w:'protože',t:'C'},{w:'když',t:'C'},{w:'aby',t:'C'},
-  {w:'že',t:'C'},{w:'i',t:'C'},{w:'ani',t:'C'},
-  {w:'dokud',t:'C'},{w:'než',t:'C'},{w:'takže',t:'C'},
+  {w:'a',t:'C'},{w:'i',t:'C'},{w:'ale',t:'C'},
+  {w:'nebo',t:'C'},{w:'proto',t:'C'},{w:'protože',t:'C'},
+  {w:'když',t:'C'},{w:'aby',t:'C'},{w:'jestli',t:'C'},
   {w:'na',t:'P'},{w:'v',t:'P'},{w:'za',t:'P'},
   {w:'před',t:'P'},{w:'pod',t:'P'},{w:'nad',t:'P'},
   {w:'přes',t:'P'},{w:'do',t:'P'},{w:'z',t:'P'},
@@ -400,6 +498,490 @@ function rzNext(){
     else{el('rz-em').textContent='💪';el('rz-tx').textContent='Zkus znovu!';}
     addPts(pts,'rz-sc','rz-tot');
   }else rzShow();
+}
+
+/* ─────────────────────────────────────────────
+   SPSV: Spojuje slova / spojuje věty?
+───────────────────────────────────────────── */
+
+/* Sady vět: každá má větu, spojku, a typ "slova" nebo "vety" */
+var SPSV_DATA = [
+  // Spojuje slova
+  {s:'Pes a kočka jsou přátelé.', c:'a', typ:'slova'},
+  {s:'Maminka koupila mléko a chléb.', c:'a', typ:'slova'},
+  {s:'Mám psa a kočku.', c:'a', typ:'slova'},
+  {s:'Petr nebo Jana přinesou míč.', c:'nebo', typ:'slova'},
+  {s:'Děti a učitelé jdou na výlet.', c:'a', typ:'slova'},
+  {s:'V lese rostou borůvky i maliny.', c:'i', typ:'slova'},
+  {s:'Maminka i tatínek pracují.', c:'i', typ:'slova'},
+  {s:'Petr umí plavat i lyžovat.', c:'i', typ:'slova'},
+  {s:'Dáš si čaj nebo kávu?', c:'nebo', typ:'slova'},
+  {s:'Kamarád a já hrajeme fotbal.', c:'a', typ:'slova'},
+  // Spojuje věty
+  {s:'Pes štěká a skáče.', c:'a', typ:'vety'},
+  {s:'Děti zpívají a tancují.', c:'a', typ:'vety'},
+  {s:'Slunce svítí a ptáci zpívají.', c:'a', typ:'vety'},
+  {s:'Pršelo nebo sněžilo.', c:'nebo', typ:'vety'},
+  {s:'Chci jít ven, ale prší.', c:'ale', typ:'vety'},
+  {s:'Vzal si deštník, protože pršelo.', c:'protože', typ:'vety'},
+  {s:'Pršelo, proto jsme zůstali doma.', c:'proto', typ:'vety'},
+  {s:'Jsem unavená, proto půjdu spát.', c:'proto', typ:'vety'},
+  {s:'Učí se, aby měl dobré známky.', c:'aby', typ:'vety'},
+  {s:'Šel spát, když dočetl knížku.', c:'když', typ:'vety'},
+  {s:'Nevím, jestli přijdu.', c:'jestli', typ:'vety'},
+  {s:'Petr zpíval a Jana tancovala.', c:'a', typ:'vety'},
+  {s:'Jím zeleninu, protože je zdravá.', c:'protože', typ:'vety'},
+  {s:'Půjdeme ven, jestli nebude pršet.', c:'jestli', typ:'vety'}
+];
+
+var spsvSt = {seq:[], idx:0, body:0, sp:0, locked:false};
+
+function spsvInit(){
+  spsvSt = {seq: mx(SPSV_DATA).slice(0, 8), idx:0, body:0, sp:0, locked:false};
+  hi('spsv-res'); sh('spsv-ob');
+  spsvShow();
+}
+function spsvShow(){
+  var s = spsvSt;
+  if(s.idx >= s.seq.length){ spsvFinish(); return; }
+  var item = s.seq[s.idx];
+  /* Zvýrazníme spojku ve větě */
+  var html = item.s.replace(new RegExp('\\b'+item.c+'\\b'), '<span style="color:var(--o);font-weight:800;background:#fff8ee;padding:0 .3rem;border-radius:6px">'+item.c+'</span>');
+  el('spsv-s').innerHTML = html;
+  el('spsv-c').textContent = item.c;
+  tx('spsv-ci', (s.idx+1)+'/'+s.seq.length);
+  tx('spsv-bd', s.body);
+  tx('spsv-sp', s.sp);
+  pct('spsv-pg', (s.idx)/s.seq.length*100);
+  el('spsv-fb').textContent = '';
+  el('spsv-fb').className = 'fb';
+  hi('spsv-nx');
+  document.querySelectorAll('#cv-spsv .lbtn').forEach(function(b){b.disabled=false;b.classList.remove('ok','err');});
+  s.locked = false;
+}
+function spsvAns(picked, btn){
+  var s = spsvSt;
+  if(s.locked) return;
+  s.locked = true;
+  var item = s.seq[s.idx];
+  if(picked === item.typ){
+    btn.classList.add('ok');
+    s.body += 8; s.sp += 1; addPts(8,'spsv-sc','spsv-tot');
+    el('spsv-fb').textContent = '✓ Správně!';
+    el('spsv-fb').className = 'fb ok';
+  } else {
+    btn.classList.add('err');
+    /* Zvýraznit správnou */
+    document.querySelectorAll('#cv-spsv .lbtn').forEach(function(b){
+      if(b.textContent.toLowerCase() === (item.typ === 'slova' ? 'slova' : 'věty')) b.classList.add('ok');
+    });
+    el('spsv-fb').textContent = '✗ Spojka „' + item.c + '" tady spojuje ' + (item.typ === 'slova' ? 'slova' : 'věty') + '.';
+    el('spsv-fb').className = 'fb err';
+  }
+  document.querySelectorAll('#cv-spsv .lbtn').forEach(function(b){b.disabled=true;});
+  tx('spsv-bd', s.body); tx('spsv-sp', s.sp);
+  sh('spsv-nx');
+}
+function spsvNext(){ spsvSt.idx++; spsvShow(); }
+function spsvFinish(){
+  var s = spsvSt;
+  hi('spsv-ob'); sh('spsv-res');
+  tx('spsv-pp', 'Správně '+s.sp+' z '+s.seq.length+' · získala jsi '+s.body+' bodů.');
+}
+
+/* ─────────────────────────────────────────────
+   VLJ: Vlastní jména
+   - každá věta má 1 vlastní jméno
+   - musí mít aspoň jedno další slovo s velkým písmenem
+     (typicky první slovo věty), aby bylo poznání skutečnou výzvou
+───────────────────────────────────────────── */
+
+/* Věty: words = [{w:'Petr', vl:true}, ...] - vl=true znamená správná odpověď */
+var VLJ_DATA = [
+  /* Věty s 1 osobním vlastním jménem (NE zeměpisné).
+     Heuristika: slovo s velkým písmenem mimo začátek věty = vlastní.
+     Pokud nic, pak začátek = vlastní (jméno na začátku věty). */
+  [{w:'Anna'},{w:'maluje'},{w:'krásný'},{w:'obrázek.'}],
+  [{w:'Naše'},{w:'kočka'},{w:'Micka'},{w:'spí.'}],
+  [{w:'Dnes'},{w:'jsme'},{w:'viděli'},{w:'Tomáše.'}],
+  [{w:'Karel'},{w:'umí'},{w:'plavat.'}],
+  [{w:'Můj'},{w:'pejsek'},{w:'Rex'},{w:'štěká.'}],
+  [{w:'Včera'},{w:'volala'},{w:'Klára.'}],
+  [{w:'Naše'},{w:'sousedka'},{w:'Lenka'},{w:'peče'},{w:'koláče.'}],
+  [{w:'Pavel'},{w:'sedí'},{w:'na'},{w:'lavičce.'}],
+  [{w:'Můj'},{w:'kamarád'},{w:'Honza'},{w:'má'},{w:'kolo.'}],
+  [{w:'Maminka'},{w:'volala'},{w:'Adélu.'}],
+  [{w:'Včera'},{w:'jsem'},{w:'pomáhala'},{w:'Martě.'}],
+  [{w:'Náš'},{w:'pes'},{w:'Punťa'},{w:'rád'},{w:'běhá.'}]
+];
+
+/* Označit, kde je vlastní jméno (poslední slovo nebo to s velkým písmenem v polovině) */
+function vljPrep(){
+  return VLJ_DATA.map(function(sentence){
+    /* Najít vlastní jméno: slovo začínající velkým písmenem, KROMĚ prvního slova */
+    var marked = sentence.map(function(w, idx){
+      var word = w.w;
+      var clean = word.replace(/[.,!?;:]/g,'');
+      var startsUpper = clean[0] && clean[0] === clean[0].toUpperCase() && clean[0] !== clean[0].toLowerCase();
+      var isProper = startsUpper && idx > 0;
+      /* Speciální case: pokud první slovo je samo o sobě vlastní jméno (např. Anna, Petr, Karel...)
+         a další slova mají všechna malé písmeno, pak první slovo IS proper.
+         Heuristika: pokud žádné jiné slovo nemá velké písmeno, první je vlastní. */
+      return {w: word, vl: isProper};
+    });
+    /* Pokud žádné slovo nemá vl=true (případ "Petr maluje obrázek." - jen první je velké),
+       označ první slovo jako vlastní jméno. */
+    var hasAny = marked.some(function(w){return w.vl;});
+    if(!hasAny && marked[0]){
+      marked[0].vl = true;
+    }
+    return marked;
+  });
+}
+
+var vljSt = {seq:[], idx:0, body:0, sp:0, locked:false};
+
+function vljInit(){
+  vljSt = {seq: mx(vljPrep()).slice(0, 8), idx:0, body:0, sp:0, locked:false};
+  hi('vlj-res'); sh('vlj-ob');
+  vljShow();
+}
+function vljShow(){
+  var s = vljSt;
+  if(s.idx >= s.seq.length){ vljFinish(); return; }
+  var sentence = s.seq[s.idx];
+  var box = el('vlj-s');
+  box.innerHTML = '';
+  sentence.forEach(function(w, i){
+    var span = document.createElement('span');
+    span.style.cursor = 'pointer';
+    span.style.padding = '.3rem .5rem';
+    span.style.borderRadius = '6px';
+    span.style.transition = 'background .15s';
+    span.style.display = 'inline-block';
+    span.style.margin = '.1rem';
+    span.textContent = w.w;
+    span.onmouseover = function(){ if(!s.locked) span.style.background = 'var(--ms)'; };
+    span.onmouseout = function(){ if(!s.locked) span.style.background = ''; };
+    span.onclick = function(){ vljAns(w, span); };
+    box.appendChild(span);
+    box.appendChild(document.createTextNode(' '));
+  });
+  tx('vlj-ci', (s.idx+1)+'/'+s.seq.length);
+  tx('vlj-bd', s.body);
+  tx('vlj-sp', s.sp);
+  pct('vlj-pg', (s.idx)/s.seq.length*100);
+  el('vlj-fb').textContent = '';
+  el('vlj-fb').className = 'fb';
+  hi('vlj-nx');
+  s.locked = false;
+}
+function vljAns(w, span){
+  var s = vljSt;
+  if(s.locked) return;
+  s.locked = true;
+  if(w.vl){
+    span.style.background = 'var(--zs)';
+    span.style.color = 'var(--z)';
+    span.style.fontWeight = '800';
+    s.body += 8; s.sp += 1; addPts(8,'vlj-sc','vlj-tot');
+    el('vlj-fb').textContent = '✓ Správně! „' + w.w.replace(/[.,!?;:]/g,'') + '" je vlastní jméno.';
+    el('vlj-fb').className = 'fb ok';
+  } else {
+    span.style.background = 'var(--rs)';
+    span.style.color = 'var(--r)';
+    /* Zvýraznit správnou */
+    var sentence = s.seq[s.idx];
+    var spans = el('vlj-s').querySelectorAll('span');
+    sentence.forEach(function(w2, i){
+      if(w2.vl){
+        spans[i].style.background = 'var(--zs)';
+        spans[i].style.color = 'var(--z)';
+        spans[i].style.fontWeight = '800';
+      }
+    });
+    el('vlj-fb').textContent = '✗ Vlastní jméno bylo zvýrazněné zeleně.';
+    el('vlj-fb').className = 'fb err';
+  }
+  tx('vlj-bd', s.body); tx('vlj-sp', s.sp);
+  sh('vlj-nx');
+}
+function vljNext(){ vljSt.idx++; vljShow(); }
+function vljFinish(){
+  var s = vljSt;
+  hi('vlj-ob'); sh('vlj-res');
+  tx('vlj-pp', 'Správně '+s.sp+' z '+s.seq.length+' · získala jsi '+s.body+' bodů.');
+}
+
+/* ─────────────────────────────────────────────
+   ZEM: Zeměpisné názvy
+   - každá věta má 1 zeměpisný název (město, řeka, ulice, hora...)
+   - věta začíná velkým slovem které NENÍ zeměpisný název
+───────────────────────────────────────────── */
+
+var ZEM_DATA = [
+  /* Format: [{w:'slovo', zem:true/false}], aspoň jedno z=true (zeměpisný název) */
+  [{w:'Petr'},{w:'jede'},{w:'do'},{w:'Brna.',zem:true}],
+  [{w:'Dnes'},{w:'se'},{w:'Katka'},{w:'stěhuje'},{w:'do'},{w:'Kaštové',zem:true},{w:'ulice.',zem:true}],
+  [{w:'Pojedeme'},{w:'autem'},{w:'do'},{w:'Prahy.',zem:true}],
+  [{w:'Naše'},{w:'řeka'},{w:'se'},{w:'jmenuje'},{w:'Vltava.',zem:true}],
+  [{w:'Babička'},{w:'bydlí'},{w:'v'},{w:'Litoměřicích.',zem:true}],
+  [{w:'Vlak'},{w:'jede'},{w:'do'},{w:'Berlína.',zem:true}],
+  [{w:'V'},{w:'létě'},{w:'jezdíme'},{w:'k'},{w:'moři'},{w:'do'},{w:'Chorvatska.',zem:true}],
+  [{w:'Naše'},{w:'škola'},{w:'je'},{w:'na'},{w:'Sokolovské',zem:true},{w:'ulici.',zem:true}],
+  [{w:'Dědeček'},{w:'pochází'},{w:'z'},{w:'Olomouce.',zem:true}],
+  [{w:'Sněžka',zem:true},{w:'je'},{w:'nejvyšší'},{w:'hora.'}],
+  [{w:'Tatínek'},{w:'pracuje'},{w:'v'},{w:'Plzni.',zem:true}],
+  [{w:'Lyžujeme'},{w:'v'},{w:'Krkonoších.',zem:true}],
+  [{w:'Jedeme'},{w:'na'},{w:'výlet'},{w:'do'},{w:'Polska.',zem:true}],
+  [{w:'Maminka'},{w:'koupila'},{w:'dům'},{w:'v'},{w:'Lipové',zem:true},{w:'ulici.',zem:true}]
+];
+
+var zemSt = {seq:[], idx:0, body:0, sp:0, locked:false};
+
+function zemInit(){
+  zemSt = {seq: mx(ZEM_DATA).slice(0, 8), idx:0, body:0, sp:0, locked:false};
+  hi('zem-res'); sh('zem-ob');
+  zemShow();
+}
+function zemShow(){
+  var s = zemSt;
+  if(s.idx >= s.seq.length){ zemFinish(); return; }
+  var sentence = s.seq[s.idx];
+  var box = el('zem-s');
+  box.innerHTML = '';
+  sentence.forEach(function(w, i){
+    var span = document.createElement('span');
+    span.style.cursor = 'pointer';
+    span.style.padding = '.3rem .5rem';
+    span.style.borderRadius = '6px';
+    span.style.transition = 'background .15s';
+    span.style.display = 'inline-block';
+    span.style.margin = '.1rem';
+    span.textContent = w.w;
+    span.onmouseover = function(){ if(!s.locked) span.style.background = 'var(--ms)'; };
+    span.onmouseout = function(){ if(!s.locked) span.style.background = ''; };
+    span.onclick = function(){ zemAns(w, span, sentence); };
+    box.appendChild(span);
+    box.appendChild(document.createTextNode(' '));
+  });
+  tx('zem-ci', (s.idx+1)+'/'+s.seq.length);
+  tx('zem-bd', s.body);
+  tx('zem-sp', s.sp);
+  pct('zem-pg', (s.idx)/s.seq.length*100);
+  el('zem-fb').textContent = '';
+  el('zem-fb').className = 'fb';
+  hi('zem-nx');
+  s.locked = false;
+}
+function zemAns(w, span, sentence){
+  var s = zemSt;
+  if(s.locked) return;
+  s.locked = true;
+  if(w.zem){
+    span.style.background = 'var(--zs)';
+    span.style.color = 'var(--z)';
+    span.style.fontWeight = '800';
+    /* Zvýraznit i ostatní zeměpisné názvy v této větě (např. "Kaštové ulice") */
+    var spans = el('zem-s').querySelectorAll('span');
+    sentence.forEach(function(w2, i){
+      if(w2.zem && spans[i] !== span){
+        spans[i].style.background = 'var(--zs)';
+        spans[i].style.color = 'var(--z)';
+        spans[i].style.fontWeight = '800';
+      }
+    });
+    s.body += 8; s.sp += 1; addPts(8,'zem-sc','zem-tot');
+    el('zem-fb').textContent = '✓ Správně!';
+    el('zem-fb').className = 'fb ok';
+  } else {
+    span.style.background = 'var(--rs)';
+    span.style.color = 'var(--r)';
+    /* Zvýraznit správné */
+    var spans = el('zem-s').querySelectorAll('span');
+    sentence.forEach(function(w2, i){
+      if(w2.zem){
+        spans[i].style.background = 'var(--zs)';
+        spans[i].style.color = 'var(--z)';
+        spans[i].style.fontWeight = '800';
+      }
+    });
+    el('zem-fb').textContent = '✗ Zeměpisný název je zvýrazněný zeleně.';
+    el('zem-fb').className = 'fb err';
+  }
+  tx('zem-bd', s.body); tx('zem-sp', s.sp);
+  sh('zem-nx');
+}
+function zemNext(){ zemSt.idx++; zemShow(); }
+function zemFinish(){
+  var s = zemSt;
+  hi('zem-ob'); sh('zem-res');
+  tx('zem-pp', 'Správně '+s.sp+' z '+s.seq.length+' · získala jsi '+s.body+' bodů.');
+}
+
+/* ─────────────────────────────────────────────
+   PRINT: pracovní listy k tisku
+   - otevře nové okno s tisknutelnou A4
+   - horní polovina: zadání pro žáka
+   - spodní polovina: řešení pro rodiče (oddělené čarou na rozstřižení)
+───────────────────────────────────────────── */
+
+function printChoice(){
+  /* Zeptá se, které cvičení vytisknout */
+  var topics = [
+    {key:'V', label:'Slovesa — najdi ve větách', count:10},
+    {key:'N', label:'Podstatná jména — najdi ve větách', count:10},
+    {key:'C', label:'Spojky — najdi ve větách', count:10},
+    {key:'P', label:'Předložky — najdi ve větách', count:10},
+    {key:'SPSV', label:'Spojuje slova nebo věty?', count:8},
+    {key:'VLJ', label:'Najdi vlastní jméno', count:8},
+    {key:'ZEM', label:'Najdi zeměpisný název', count:8}
+  ];
+  var html = '<div style="background:white;padding:1rem;border-radius:12px;max-width:380px;margin:0 auto">'+
+             '<h3 style="color:var(--m);margin-bottom:.8rem">🖨️ Vyber téma k tisku</h3>';
+  topics.forEach(function(t){
+    html += '<button onclick="printWorksheet(\''+t.key+'\')" style="display:block;width:100%;padding:.7rem .9rem;margin:.3rem 0;background:var(--ms);border:1.5px solid var(--m);border-radius:8px;font-family:var(--font);font-weight:700;font-size:.95rem;color:#1a5f7a;cursor:pointer;text-align:left">'+t.label+' <span style="float:right;color:#9ca3af;font-weight:400">'+t.count+' úkolů</span></button>';
+  });
+  html += '<button onclick="closePrintChoice()" style="display:block;width:100%;padding:.6rem;margin-top:1rem;background:white;border:1.5px solid #d1d5db;border-radius:8px;font-family:var(--font);font-weight:600;cursor:pointer">Zavřít</button>';
+  html += '</div>';
+  /* Overlay */
+  var overlay = document.createElement('div');
+  overlay.id = 'printOverlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:1rem';
+  overlay.innerHTML = html;
+  overlay.onclick = function(e){ if(e.target===overlay) closePrintChoice(); };
+  document.body.appendChild(overlay);
+}
+function closePrintChoice(){
+  var o = document.getElementById('printOverlay');
+  if(o) o.remove();
+}
+
+function printWorksheet(topicKey){
+  closePrintChoice();
+  var data = printGetData(topicKey);
+  var w = window.open('', '_blank', 'width=900,height=1100');
+  if(!w){ alert('Prohlížeč zablokoval otevření okna. Povol prosím vyskakovací okna pro tuto stránku.'); return; }
+  w.document.write(printHTML(data));
+  w.document.close();
+  /* Auto-trigger print after content loads */
+  setTimeout(function(){ try{ w.print(); }catch(e){} }, 500);
+}
+
+function printGetData(key){
+  /* Vrátí: {title, instructions, items: [{q, a}], legenda} */
+  if(key==='V' || key==='N' || key==='C' || key==='P'){
+    var labels = {V:'sloves',N:'podstatných jmen',C:'spojek',P:'předložek'};
+    var titles = {V:'Slovesa',N:'Podstatná jména',C:'Spojky',P:'Předložky'};
+    var pool = D.filter(function(s){return s.some(function(w){return w.t===key;});});
+    var picked = mx(pool).slice(0, 10);
+    var items = picked.map(function(sentence){
+      /* zadání: celá věta, řešení: stejná věta s podtrženými cílovými slovy */
+      var q = sentence.map(function(w){return w.w;}).join(' ');
+      var a = sentence.map(function(w){
+        return w.t===key ? '<u><b>'+w.w+'</b></u>' : w.w;
+      }).join(' ');
+      return {q:q, a:a};
+    });
+    return {
+      title:'Najdi všechna '+labels[key]+' ve větě',
+      instructions:'Podtrhni nebo zakroužkuj všechna '+labels[key]+' v každé větě.',
+      topic:titles[key],
+      items:items
+    };
+  }
+  if(key==='SPSV'){
+    var picked = mx(SPSV_DATA).slice(0, 8);
+    var items = picked.map(function(item){
+      return {q:item.s+'  ____________________', a:item.s+'  →  spojuje '+(item.typ==='slova'?'SLOVA':'VĚTY')};
+    });
+    return {
+      title:'Spojuje slova nebo věty?',
+      instructions:'U každé věty napiš, co spojka spojuje (slova / věty).',
+      topic:'Spojky',
+      items:items
+    };
+  }
+  if(key==='VLJ'){
+    var picked = mx(vljPrep()).slice(0, 8);
+    var items = picked.map(function(sentence){
+      var q = sentence.map(function(w){return w.w;}).join(' ');
+      var a = sentence.map(function(w){
+        return w.vl ? '<u><b>'+w.w+'</b></u>' : w.w;
+      }).join(' ');
+      return {q:q, a:a};
+    });
+    return {
+      title:'Najdi vlastní jméno',
+      instructions:'Podtrhni nebo zakroužkuj vlastní jméno v každé větě.',
+      topic:'Vlastní jména',
+      items:items
+    };
+  }
+  if(key==='ZEM'){
+    var picked = mx(ZEM_DATA).slice(0, 8);
+    var items = picked.map(function(sentence){
+      var q = sentence.map(function(w){return w.w;}).join(' ');
+      var a = sentence.map(function(w){
+        return w.zem ? '<u><b>'+w.w+'</b></u>' : w.w;
+      }).join(' ');
+      return {q:q, a:a};
+    });
+    return {
+      title:'Najdi zeměpisný název',
+      instructions:'Podtrhni nebo zakroužkuj zeměpisné názvy (města, ulice, řeky, hory).',
+      topic:'Zeměpisné názvy',
+      items:items
+    };
+  }
+}
+
+function printHTML(data){
+  var d = new Date();
+  var dateStr = d.getDate()+'.'+(d.getMonth()+1)+'.'+d.getFullYear();
+  var qHtml = '';
+  data.items.forEach(function(it, i){
+    qHtml += '<div class="task"><span class="num">'+(i+1)+'.</span> '+it.q+'</div>';
+  });
+  var aHtml = '';
+  data.items.forEach(function(it, i){
+    aHtml += '<div class="task"><span class="num">'+(i+1)+'.</span> '+it.a+'</div>';
+  });
+  return '<!doctype html><html lang="cs"><head><meta charset="utf-8">'+
+    '<title>Pracovní list — '+data.title+'</title>'+
+    '<style>'+
+    '*{box-sizing:border-box;margin:0;padding:0;}'+
+    'body{font-family:"Barlow Condensed",Arial,sans-serif;color:#1f2937;padding:1rem;}'+
+    '.sheet{max-width:760px;margin:0 auto;}'+
+    '.head{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #32a0d2;padding-bottom:.4rem;margin-bottom:.6rem;}'+
+    '.brand{font-size:.95rem;font-weight:800;color:#32a0d2;}'+
+    '.meta{font-size:.85rem;color:#6b7280;}'+
+    '.title{font-size:1.4rem;font-weight:800;color:#32a0d2;text-align:center;margin:.5rem 0;}'+
+    '.subtitle{font-size:.95rem;text-align:center;color:#6b7280;margin-bottom:.4rem;}'+
+    '.instructions{background:#fff8ee;border-left:4px solid #ffaa37;padding:.5rem .75rem;border-radius:6px;font-size:.95rem;margin:.5rem 0;}'+
+    '.name-line{margin:.4rem 0;font-size:.9rem;color:#374151;}'+
+    '.name-line span{display:inline-block;border-bottom:1px solid #9ca3af;width:200px;height:1.2em;}'+
+    '.task{font-size:1.05rem;line-height:1.9;padding:.1rem 0;font-family:Verdana,Geneva,sans-serif;}'+
+    '.num{font-weight:800;color:#32a0d2;display:inline-block;min-width:1.5rem;}'+
+    '.cut{margin:1.5rem 0 1rem;border-top:2px dashed #9ca3af;text-align:center;color:#9ca3af;font-size:.85rem;position:relative;}'+
+    '.cut::before{content:"✂ rozstřihni";position:absolute;top:-.7rem;background:white;padding:0 .5rem;left:50%;transform:translateX(-50%);}'+
+    '.solution-head{background:#dcfce7;border-left:4px solid #16a34a;padding:.4rem .75rem;border-radius:6px;font-size:.95rem;font-weight:700;color:#15803d;margin:.5rem 0;}'+
+    '.toolbar{position:fixed;top:.5rem;right:.5rem;background:#32a0d2;color:white;padding:.5rem 1rem;border-radius:99px;border:none;font-family:inherit;font-weight:700;font-size:.95rem;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2);}'+
+    '@media print{.toolbar{display:none;}body{padding:.5cm;}.sheet{max-width:100%;}}'+
+    '@page{size:A4;margin:1cm;}'+
+    '</style></head><body>'+
+    '<button class="toolbar" onclick="window.print()">🖨️ Vytisknout / Uložit PDF</button>'+
+    '<div class="sheet">'+
+      '<div class="head"><span class="brand">LinguaCzech · ZŠ Lingua Universal</span><span class="meta">'+data.topic+' · '+dateStr+'</span></div>'+
+      '<div class="title">'+data.title+'</div>'+
+      '<div class="name-line">Jméno: <span></span> &nbsp;&nbsp; Třída: <span style="width:80px"></span></div>'+
+      '<div class="instructions"><b>Pokyn:</b> '+data.instructions+'</div>'+
+      qHtml+
+      '<div class="cut"></div>'+
+      '<div class="solution-head">✓ Klíč pro paní učitelku / rodiče</div>'+
+      aHtml+
+    '</div>'+
+    '</body></html>';
 }
 </script>
 </body>

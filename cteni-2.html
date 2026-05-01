@@ -63,6 +63,28 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;}
 .znovu,.mbtn{padding:.7rem 1.2rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:.95rem;margin:.3rem;}
 .znovu{background:var(--m);color:white;border:none;}
 .mbtn{background:white;color:#374151;border:1.5px solid #d1d5db;}
+
+/* SEŘAĎ PŘÍBĚH */
+.serSent{display:flex;flex-direction:column;gap:.55rem;margin:1rem 0;}
+.serCard{position:relative;background:white;border:2.5px solid #d1d5db;border-radius:12px;padding:.8rem 1rem;cursor:pointer;font-family:Verdana,Geneva,sans-serif;font-size:1rem;line-height:1.5;color:#1f2937;transition:all .15s;user-select:none;}
+.serCard:hover{border-color:var(--m);background:var(--ms);}
+.serCard.picked{border-color:var(--o);background:var(--os);cursor:default;padding-right:3rem;}
+.serCard.picked .ser-num{background:var(--o);color:white;}
+.serCard.ok{border-color:var(--z);background:var(--zs);}
+.serCard.ok .ser-num{background:var(--z);color:white;}
+.serCard.err{border-color:var(--r);background:var(--rs);animation:serErr .35s;}
+@keyframes serErr{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.ser-num{position:absolute;top:50%;right:8px;transform:translateY(-50%);width:28px;height:28px;border-radius:99px;background:#e5e7eb;color:#9ca3af;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;}
+
+/* DOPLŇ ZÁVĚR */
+.doplStory{background:#fafafa;border-left:4px solid var(--m);border-radius:8px;padding:1rem 1.2rem;margin:1rem 0;font-family:Verdana,Geneva,sans-serif;font-size:1.05rem;line-height:1.7;color:#1f2937;}
+.doplDots{color:var(--o);font-weight:800;letter-spacing:2px;}
+.doplOpts{display:grid;gap:.5rem;}
+.doplOpt{padding:.85rem 1rem;border:2px solid #d1d5db;border-radius:10px;background:white;font-family:Verdana,Geneva,sans-serif;font-size:1rem;font-weight:600;cursor:pointer;text-align:left;transition:all .12s;color:#1f2937;}
+.doplOpt:hover:not(:disabled){border-color:var(--m);background:var(--ms);}
+.doplOpt.ok{background:var(--zs);border-color:var(--z);color:var(--z);font-weight:800;}
+.doplOpt.err{background:var(--rs);border-color:var(--r);color:var(--r);}
+.doplOpt:disabled{cursor:default;}
 </style>
 </head>
 <body>
@@ -74,7 +96,9 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;}
   <div class="topbar"><a href="2trida.html">← 2. třída</a><span>LinguaCzech</span></div>
   <div class="mh"><h1>Čtení s porozuměním</h1><p>Přečti krátký text a odpověz na otázku</p></div>
   <div class="mg">
-    <div onclick="go('por')" class="mk mk-m" style="grid-column:span 2"><h3>📖 Cvičení — Čtení s otázkou</h3><p>Krátký příběh + otázka k textu</p></div>
+    <div onclick="go('por')" class="mk mk-m" style="grid-column:span 2"><h3>📖 Čtení s otázkou</h3><p>Krátký příběh + otázka k textu</p></div>
+    <div onclick="go('serad')" class="mk mk-o" style="grid-column:span 2"><h3>🔢 Seřaď příběh</h3><p>Klikni na věty v pořadí, jak za sebou jdou</p></div>
+    <div onclick="go('doplnit')" class="mk mk-m" style="grid-column:span 2"><h3>✏️ Doplň závěr příběhu</h3><p>Vyber, jak příběh logicky končí</p></div>
     <div onclick="printChoice()" class="mk" style="grid-column:span 2;background:#f3f4f6;border:2px dashed #9ca3af"><h3 style="color:#374151">🖨️ Vytisknout pracovní list</h3><p style="color:#6b7280">PDF k procvičování doma — zadání + řešení na A4</p></div>
   </div>
 </div>
@@ -109,6 +133,64 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;}
   </div>
 </div>
 
+<!-- CV: SEŘAĎ PŘÍBĚH -->
+<div class="cv" id="cv-serad">
+  <div class="nav">
+    <button class="zpet" onclick="back()">← Zpět</button>
+    <span class="tit">Seřaď příběh</span>
+    <span class="var" id="ser-v">1/5</span>
+  </div>
+  <div class="sk">
+    <div><div class="skn" id="ser-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="ser-ci">1/5</div><div class="skl">sada</div></div>
+    <div><div class="skn" id="ser-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="ser-pg" style="width:0%"></div></div>
+  <div id="ser-ob">
+    <div class="ka">
+      <div class="q">Klikni na věty v pořadí, jak za sebou logicky jdou (1, 2, 3...).</div>
+      <div class="serSent" id="ser-sent"></div>
+      <div class="fb" id="ser-fb"></div>
+    </div>
+    <button class="nxt" id="ser-nx" onclick="serNext()">Další sada →</button>
+  </div>
+  <div class="res" id="ser-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="ser-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="ser-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="ser-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('serad')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV: DOPLŇ ZÁVĚR -->
+<div class="cv" id="cv-doplnit">
+  <div class="nav">
+    <button class="zpet" onclick="back()">← Zpět</button>
+    <span class="tit">Doplň závěr příběhu</span>
+    <span class="var" id="dop-v">1/8</span>
+  </div>
+  <div class="sk">
+    <div><div class="skn" id="dop-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="dop-ci">1/8</div><div class="skl">otázka</div></div>
+    <div><div class="skn" id="dop-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="dop-pg" style="width:0%"></div></div>
+  <div id="dop-ob">
+    <div class="ka">
+      <div class="q">Přečti si text a vyber, jak logicky končí:</div>
+      <div class="doplStory" id="dop-s">—</div>
+      <div class="question" style="margin:.6rem 0">Jak příběh pokračuje?</div>
+      <div class="doplOpts" id="dop-opts"></div>
+      <div class="fb" id="dop-fb"></div>
+    </div>
+    <button class="nxt" id="dop-nx" onclick="dopNext()">Další →</button>
+  </div>
+  <div class="res" id="dop-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="dop-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="dop-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="dop-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('doplnit')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
 </div><!-- .hl -->
 
 <script>
@@ -136,6 +218,8 @@ function go(id){
   el('cv-'+id).style.display='block';
   window.scrollTo(0,0);
   if(id==='por') porStart();
+  if(id==='serad') serStart();
+  if(id==='doplnit') dopStart();
 }
 
 /* ─────────────────────────────────────────────
@@ -325,14 +409,305 @@ function porFinish(){
 }
 
 /* ─────────────────────────────────────────────
+   SER: SEŘAĎ PŘÍBĚH
+   Sady 4 vět - dítě klika v pořadí 1-4.
+   Špatný klik = blikne červeně (NEpočítá se jako fail).
+   Správné dokončení = .ok + 10 bodů + další sada.
+───────────────────────────────────────────── */
+var PRIBEHY_SERAZ = [
+  /* Každá sada: 4 věty ve správném pořadí. Sada se zobrazí v náhodném pořadí, dítě klika 1-4. */
+  [
+    'Maminka uvařila polévku.',
+    'Posadili jsme se k stolu.',
+    'Tatínek přinesl chleba.',
+    'Po obědě jsme šli ven.'
+  ],
+  [
+    'Honza vstal a oblékl se.',
+    'V kuchyni se nasnídal.',
+    'Vzal si batoh a šel do školy.',
+    'Ve škole už čekala paní učitelka.'
+  ],
+  [
+    'Anička dostala k Vánocům semínka.',
+    'Zasadila je do květináče.',
+    'Každý den je zalévala.',
+    'Za měsíc vykvetla krásná kytička.'
+  ],
+  [
+    'Pršelo a venku byla zima.',
+    'Maminka navrhla, že upečeme buchty.',
+    'Společně jsme zadělali těsto.',
+    'Vůně buchet se rozléhala celým bytem.'
+  ],
+  [
+    'Tomáš zaslechl štěkání.',
+    'Vyšel ven a viděl pejska.',
+    'Pejsek měl zraněnou nohu.',
+    'Tomáš ho odnesl k veterináři.'
+  ],
+  [
+    'V sobotu jsme jeli k babičce.',
+    'Babička nás přivítala s buchtami.',
+    'Po obědě jsme se šli projít do lesa.',
+    'Večer jsme se vrátili domů.'
+  ],
+  [
+    'Ráno svítilo slunce.',
+    'Petr si vzal kolo a vyjel ven.',
+    'Najednou se na obloze začala stahovat mračna.',
+    'Stihl se vrátit domů, než začalo pršet.'
+  ],
+  [
+    'Klára si chtěla upéct dort.',
+    'Nakoupila všechny suroviny.',
+    'Doma postupovala podle receptu.',
+    'Dort se povedl a všem chutnal.'
+  ],
+  [
+    'Martin si v parku našel zranéného ptáčka.',
+    'Vzal ho opatrně do dlaní.',
+    'Přinesl ho domů a uložil do krabice.',
+    'Druhý den ho odnesli do záchranné stanice.'
+  ],
+  [
+    'V neděli ráno se rodina sešla u snídaně.',
+    'Tatínek navrhl výlet do zoo.',
+    'Všichni se rychle připravili.',
+    'V zoo strávili krásný den.'
+  ]
+];
+
+var serSt = {sady:[], idx:0, body:0, sp:0, picks:[], locked:false};
+
+function serStart(){
+  serSt = {sady: shuffle(PRIBEHY_SERAZ).slice(0, 5), idx:0, body:0, sp:0, picks:[], locked:false};
+  el('ser-res').style.display='none';
+  el('ser-ob').style.display='block';
+  serRender();
+}
+function serRender(){
+  var s = serSt;
+  if(s.idx >= s.sady.length){ serFinish(); return; }
+  var sada = s.sady[s.idx];
+  el('ser-v').textContent = (s.idx+1)+'/'+s.sady.length;
+  el('ser-ci').textContent = (s.idx+1)+'/'+s.sady.length;
+  el('ser-bd').textContent = s.body;
+  el('ser-sp').textContent = s.sp;
+  el('ser-pg').style.width = ((s.idx)/s.sady.length*100)+'%';
+  el('ser-fb').textContent = '';
+  el('ser-fb').className = 'fb';
+  el('ser-nx').style.display = 'none';
+  s.picks = [];
+  s.locked = false;
+
+  /* Vykreslit věty v náhodném pořadí.
+     Každá kartička si pamatuje "correctOrder" (0=první, 1=druhá, ...). */
+  var box = el('ser-sent'); box.innerHTML = '';
+  var indexes = sada.map(function(_,i){return i;});
+  shuffle(indexes).forEach(function(origIdx){
+    var card = document.createElement('div');
+    card.className = 'serCard';
+    card.dataset.order = origIdx;
+    card.innerHTML = '<span>'+sada[origIdx]+'</span><div class="ser-num"></div>';
+    card.onclick = function(){ serClick(card); };
+    box.appendChild(card);
+  });
+}
+function serClick(card){
+  var s = serSt;
+  if(s.locked) return;
+  if(card.classList.contains('picked')) return;
+
+  var expectedOrder = s.picks.length;
+  var cardOrder = parseInt(card.dataset.order);
+
+  if(cardOrder === expectedOrder){
+    /* Správný klik */
+    card.classList.add('picked');
+    card.querySelector('.ser-num').textContent = expectedOrder + 1;
+    s.picks.push(cardOrder);
+
+    if(s.picks.length === s.sady[s.idx].length){
+      /* Sada hotová */
+      s.locked = true;
+      document.querySelectorAll('#ser-sent .serCard').forEach(function(c){
+        c.classList.add('ok');
+      });
+      s.body += 10;
+      s.sp += 1;
+      addPoints(10);
+      el('ser-fb').textContent = '✓ Výborně, správné pořadí!';
+      el('ser-fb').className = 'fb ok';
+      el('ser-bd').textContent = s.body;
+      el('ser-sp').textContent = s.sp;
+      el('ser-nx').style.display = 'block';
+    }
+  } else {
+    /* Špatný klik — krátké blikne červeně, NEpočítá se */
+    card.classList.add('err');
+    el('ser-fb').textContent = '✗ Toto teď není na řadě, zkus jinou větu.';
+    el('ser-fb').className = 'fb err';
+    setTimeout(function(){
+      card.classList.remove('err');
+      el('ser-fb').textContent = '';
+      el('ser-fb').className = 'fb';
+    }, 700);
+  }
+}
+function serNext(){ serSt.idx++; serRender(); }
+function serFinish(){
+  var s = serSt;
+  el('ser-ob').style.display='none';
+  el('ser-res').style.display='block';
+  el('ser-pp').textContent = 'Správně '+s.sp+' z '+s.sady.length+' · získala jsi '+s.body+' bodů.';
+  el('ser-sc').textContent = s.body;
+  el('ser-tot').textContent = totalScore;
+}
+
+/* ─────────────────────────────────────────────
+   DOP: DOPLŇ ZÁVĚR PŘÍBĚHU
+   Text bez poslední věty + 3 možnosti, jen jedna logicky pasuje.
+───────────────────────────────────────────── */
+var DOPLN_PRIBEHY = [
+  {
+    s: 'Anička a Tonda se domluvili, že půjdou do kina. V neděli dávali jejich oblíbený film. Domluvili se, že se sejdou půl hodiny před začátkem.',
+    opts: ['a půjdou do skateparku.', 'budou si číst.', 'koupí si popcorn.'],
+    a: 2
+  },
+  {
+    s: 'Maminka uvařila k obědu polévku. Postavila ji na stůl a zavolala děti. Děti přiběhly z pokoje a posadily se.',
+    opts: ['Pak začaly pojídat polévku lžičkou.', 'Sebraly si knížky a šly číst.', 'Vyběhly hned ven do parku.'],
+    a: 0
+  },
+  {
+    s: 'Tomáš se chystal na výlet. Sbalil si batoh, vzal si svačinu a láhev s vodou. Ráno si oblékl pohodlné oblečení a obul boty.',
+    opts: ['Šel se znovu vyspat.', 'Vyrazil ven do přírody.', 'Otevřel si učebnici a začal se učit.'],
+    a: 1
+  },
+  {
+    s: 'V sobotu pršelo celý den. Děti seděly doma a nemohly ven. Maminka jim navrhla, že si zahrají společenskou hru.',
+    opts: ['Děti šly hned ven hrát fotbal.', 'Děti se nadšeně sešly u stolu.', 'Děti šly spát.'],
+    a: 1
+  },
+  {
+    s: 'Eva dostala k narozeninám malé štěně. Pojmenovala ho Bobík. Hned první den ho naučila sedět.',
+    opts: ['Bobík ji už nikdy neposlechl.', 'Eva byla pyšná, jak rychle se učí.', 'Eva ho hned vrátila.'],
+    a: 1
+  },
+  {
+    s: 'V parku Honza zaslechl pláč. Šel se podívat blíž a uviděl malou holčičku, která se ztratila. Holčička hledala maminku.',
+    opts: ['Honza si jí nevšímal a šel dál.', 'Honza ji odvedl na nejbližší stanici, kde jí pomohli.', 'Honza si s ní začal hrát na schovávanou.'],
+    a: 1
+  },
+  {
+    s: 'Klára chtěla mamince nakreslit obrázek. Vzala si pastelky a velký papír. Přemýšlela, co nakreslí.',
+    opts: ['Nakreslila krásnou zahradu s květinami.', 'Hodila pastelky do koše.', 'Šla si raději hrát.'],
+    a: 0
+  },
+  {
+    s: 'V zimě napadlo hodně sněhu. Děti vyběhly ven s lopatami. Začaly stavět velkého sněhuláka.',
+    opts: ['Sněhulák roztál během minuty.', 'Sněhuláka pojmenovaly Sněhurák a vyfotily se s ním.', 'Děti se vrátily domů a šly spát.'],
+    a: 1
+  },
+  {
+    s: 'Petr si v lese našel krásnou šišku. Zvedl ji ze země a prohlédl si ji. Doma chtěl udělat z šišek zvířátka.',
+    opts: ['Hodil ji zpátky do lesa.', 'Sebral další šišky a všechny si donesl domů.', 'Snědl ji.'],
+    a: 1
+  },
+  {
+    s: 'Babička pekla buchty s povidly. Voněly po celém domě. Děti přiběhly do kuchyně a olizovaly si rty.',
+    opts: ['Děti utekly z kuchyně.', 'Babička každému dala jednu teplou buchtu.', 'Babička schovala buchty do skříně.'],
+    a: 1
+  }
+];
+
+var dopSt = {seq:[], idx:0, body:0, sp:0, locked:false};
+
+function dopStart(){
+  dopSt = {seq: shuffle(DOPLN_PRIBEHY).slice(0, 8), idx:0, body:0, sp:0, locked:false};
+  el('dop-res').style.display='none';
+  el('dop-ob').style.display='block';
+  dopRender();
+}
+function dopRender(){
+  var s = dopSt;
+  if(s.idx >= s.seq.length){ dopFinish(); return; }
+  var item = s.seq[s.idx];
+  /* Zobraz text + tři tečky */
+  el('dop-s').innerHTML = item.s + ' <span class="doplDots">...</span>';
+  el('dop-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('dop-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('dop-bd').textContent = s.body;
+  el('dop-sp').textContent = s.sp;
+  el('dop-pg').style.width = ((s.idx)/s.seq.length*100)+'%';
+  el('dop-fb').textContent = '';
+  el('dop-fb').className = 'fb';
+  el('dop-nx').style.display = 'none';
+
+  /* Možnosti náhodně */
+  var box = el('dop-opts'); box.innerHTML = '';
+  var indexes = item.opts.map(function(_,i){return i;});
+  shuffle(indexes).forEach(function(origIdx){
+    var b = document.createElement('button');
+    b.className = 'doplOpt';
+    b.textContent = item.opts[origIdx];
+    b.onclick = function(){ dopAnswer(origIdx, b); };
+    box.appendChild(b);
+  });
+  s.locked = false;
+}
+function dopAnswer(picked, btn){
+  var s = dopSt;
+  if(s.locked) return;
+  s.locked = true;
+  var item = s.seq[s.idx];
+  if(picked === item.a){
+    btn.classList.add('ok');
+    s.body += 10;
+    s.sp += 1;
+    addPoints(10);
+    el('dop-fb').textContent = '✓ Správně! Tahle věta logicky navazuje na příběh.';
+    el('dop-fb').className = 'fb ok';
+  } else {
+    btn.classList.add('err');
+    document.querySelectorAll('#dop-opts .doplOpt').forEach(function(b){
+      if(b.textContent === item.opts[item.a]) b.classList.add('ok');
+    });
+    el('dop-fb').textContent = '✗ Logické pokračování je: ' + item.opts[item.a];
+    el('dop-fb').className = 'fb err';
+  }
+  document.querySelectorAll('#dop-opts .doplOpt').forEach(function(b){b.disabled=true;});
+  el('dop-bd').textContent = s.body;
+  el('dop-sp').textContent = s.sp;
+  el('dop-nx').style.display = 'block';
+}
+function dopNext(){ dopSt.idx++; dopRender(); }
+function dopFinish(){
+  var s = dopSt;
+  el('dop-ob').style.display='none';
+  el('dop-res').style.display='block';
+  el('dop-pp').textContent = 'Správně '+s.sp+' z '+s.seq.length+' · získala jsi '+s.body+' bodů.';
+  el('dop-sc').textContent = s.body;
+  el('dop-tot').textContent = totalScore;
+}
+
+/* ─────────────────────────────────────────────
    PRINT: pracovní list — text + otázka, A4
 ───────────────────────────────────────────── */
 function printChoice(){
+  var topics = [
+    {key:'por', label:'📖 Čtení s porozuměním', count:'5 textů'},
+    {key:'serad', label:'🔢 Seřaď příběh', count:'4 sady'},
+    {key:'doplnit', label:'✏️ Doplň závěr', count:'5 textů'}
+  ];
   var html = '<div style="background:white;padding:1rem;border-radius:12px;max-width:380px;margin:0 auto;font-family:var(--font)">'+
-             '<h3 style="color:var(--m);margin-bottom:.8rem">🖨️ Vyber téma k tisku</h3>'+
-             '<button onclick="printWorksheet()" style="display:block;width:100%;padding:.7rem .9rem;margin:.3rem 0;background:#e8f4fb;border:1.5px solid var(--m);border-radius:8px;font-family:var(--font);font-weight:700;font-size:.95rem;color:#1a5f7a;cursor:pointer;text-align:left">📖 Čtení s porozuměním <span style="float:right;color:#9ca3af;font-weight:400">8 textů</span></button>'+
-             '<button onclick="closePrintChoice()" style="display:block;width:100%;padding:.6rem;margin-top:1rem;background:white;border:1.5px solid #d1d5db;border-radius:8px;font-family:var(--font);font-weight:600;cursor:pointer">Zavřít</button>'+
-             '</div>';
+             '<h3 style="color:var(--m);margin-bottom:.8rem">🖨️ Vyber téma k tisku</h3>';
+  topics.forEach(function(t){
+    html += '<button onclick="printWorksheet(\''+t.key+'\')" style="display:block;width:100%;padding:.7rem .9rem;margin:.3rem 0;background:#e8f4fb;border:1.5px solid var(--m);border-radius:8px;font-family:var(--font);font-weight:700;font-size:.95rem;color:#1a5f7a;cursor:pointer;text-align:left">'+t.label+' <span style="float:right;color:#9ca3af;font-weight:400">'+t.count+'</span></button>';
+  });
+  html += '<button onclick="closePrintChoice()" style="display:block;width:100%;padding:.6rem;margin-top:1rem;background:white;border:1.5px solid #d1d5db;border-radius:8px;font-family:var(--font);font-weight:600;cursor:pointer">Zavřít</button>';
+  html += '</div>';
   var overlay = document.createElement('div');
   overlay.id = 'printOverlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:1rem';
@@ -344,36 +719,91 @@ function closePrintChoice(){
   var o = document.getElementById('printOverlay');
   if(o) o.remove();
 }
-function printWorksheet(){
+function printWorksheet(topicKey){
   closePrintChoice();
-  /* Vyber 8 náhodných příběhů */
-  var picked = shuffle(PRIBEHY).slice(0, 8);
+  var data = printGetData(topicKey);
   var w = window.open('', '_blank', 'width=900,height=1100');
   if(!w){ alert('Prohlížeč zablokoval otevření okna. Povol prosím vyskakovací okna.'); return; }
-  w.document.write(printHTML(picked));
+  w.document.write(printHTML(data));
   w.document.close();
   setTimeout(function(){ try{ w.print(); }catch(e){} }, 500);
 }
-function printHTML(items){
+function printGetData(key){
+  if(key==='por'){
+    var picked = shuffle(PRIBEHY).slice(0, 5);
+    var qHtml = '';
+    picked.forEach(function(it, i){
+      qHtml += '<div class="task">'+
+        '<div class="task-h"><span class="num">'+(i+1)+'.</span> Text:</div>'+
+        '<div class="task-text">'+it.s+'</div>'+
+        '<div class="task-q"><b>Otázka:</b> '+it.q+'</div>'+
+        '<div class="task-line">Odpověď: <span class="line"></span></div>'+
+        '</div>';
+    });
+    var aHtml = '';
+    picked.forEach(function(it, i){
+      aHtml += '<div class="sol-row"><span class="num">'+(i+1)+'.</span> '+it.opts[it.a]+'</div>';
+    });
+    return {
+      title:'Čtení s porozuměním',
+      instructions:'Přečti si pozorně každý text a odpověz na otázku celou větou.',
+      qHtml:qHtml, aHtml:aHtml
+    };
+  }
+  if(key==='serad'){
+    var picked = shuffle(PRIBEHY_SERAZ).slice(0, 4);
+    var qHtml = '';
+    picked.forEach(function(sada, i){
+      /* Věty zamíchané, dítě napíše pořadí (1, 2, 3, 4) */
+      var shuffled = shuffle(sada.map(function(s,idx){return {s:s, ord:idx};}));
+      qHtml += '<div class="task">'+
+        '<div class="task-h"><span class="num">'+(i+1)+'.</span> Seřaď věty (napiš číslo 1—'+sada.length+'):</div>';
+      shuffled.forEach(function(item){
+        qHtml += '<div class="task-text" style="margin:.2rem 0"><span style="display:inline-block;width:1.6rem;height:1.6rem;border:1.5px solid #9ca3af;border-radius:4px;text-align:center;vertical-align:middle;margin-right:.4rem">&nbsp;</span>'+item.s+'</div>';
+      });
+      qHtml += '</div>';
+    });
+    var aHtml = '';
+    picked.forEach(function(sada, i){
+      aHtml += '<div class="sol-row"><span class="num">'+(i+1)+'.</span> Pořadí: '+sada.map(function(s,idx){return (idx+1)+') '+s;}).join(' → ')+'</div>';
+    });
+    return {
+      title:'Seřaď příběh',
+      instructions:'Doplň před každou větu číslo, jak za sebou věty jdou (1, 2, 3, 4).',
+      qHtml:qHtml, aHtml:aHtml
+    };
+  }
+  if(key==='doplnit'){
+    var picked = shuffle(DOPLN_PRIBEHY).slice(0, 5);
+    var qHtml = '';
+    picked.forEach(function(it, i){
+      qHtml += '<div class="task">'+
+        '<div class="task-h"><span class="num">'+(i+1)+'.</span> Text:</div>'+
+        '<div class="task-text">'+it.s+' <span style="color:#ffaa37;font-weight:800">...</span></div>'+
+        '<div class="task-q"><b>Vyber, jak příběh logicky končí (zakroužkuj):</b></div>';
+      it.opts.forEach(function(opt, oIdx){
+        var letter = String.fromCharCode(97+oIdx); // a, b, c
+        qHtml += '<div class="task-text" style="margin:.15rem 0">&nbsp;&nbsp;<b>'+letter+')</b> '+opt+'</div>';
+      });
+      qHtml += '</div>';
+    });
+    var aHtml = '';
+    picked.forEach(function(it, i){
+      var letter = String.fromCharCode(97+it.a);
+      aHtml += '<div class="sol-row"><span class="num">'+(i+1)+'.</span> Správně: <b>'+letter+')</b> '+it.opts[it.a]+'</div>';
+    });
+    return {
+      title:'Doplň závěr příběhu',
+      instructions:'Přečti si text a zakroužkuj písmeno před větou, která logicky pasuje na konec.',
+      qHtml:qHtml, aHtml:aHtml
+    };
+  }
+}
+function printHTML(data){
   var d = new Date();
   var dateStr = d.getDate()+'.'+(d.getMonth()+1)+'.'+d.getFullYear();
-  /* Pro tištěný list dáme jen 4-5 textů, aby se to vešlo + řešení */
-  var picked = items.slice(0, 5);
-  var qHtml = '';
-  picked.forEach(function(it, i){
-    qHtml += '<div class="task">'+
-      '<div class="task-h"><span class="num">'+(i+1)+'.</span> Text:</div>'+
-      '<div class="task-text">'+it.s+'</div>'+
-      '<div class="task-q"><b>Otázka:</b> '+it.q+'</div>'+
-      '<div class="task-line">Odpověď: <span class="line"></span></div>'+
-      '</div>';
-  });
-  var aHtml = '';
-  picked.forEach(function(it, i){
-    aHtml += '<div class="sol-row"><span class="num">'+(i+1)+'.</span> '+it.opts[it.a]+'</div>';
-  });
   return '<!doctype html><html lang="cs"><head><meta charset="utf-8">'+
-    '<title>Pracovní list — Čtení s porozuměním</title>'+
+    '<title>Pracovní list — '+data.title+'</title>'+
     '<style>'+
     '*{box-sizing:border-box;margin:0;padding:0;}'+
     'body{font-family:"Barlow Condensed",Arial,sans-serif;color:#1f2937;padding:1rem;}'+
@@ -402,14 +832,14 @@ function printHTML(items){
     '</style></head><body>'+
     '<button class="toolbar" onclick="window.print()">🖨️ Vytisknout / Uložit PDF</button>'+
     '<div class="sheet">'+
-      '<div class="head"><span class="brand">LinguaCzech · ZŠ Lingua Universal</span><span class="meta">2. třída · Čtení s porozuměním · '+dateStr+'</span></div>'+
-      '<div class="title">Čtení s porozuměním</div>'+
+      '<div class="head"><span class="brand">LinguaCzech · ZŠ Lingua Universal</span><span class="meta">2. třída · '+data.title+' · '+dateStr+'</span></div>'+
+      '<div class="title">'+data.title+'</div>'+
       '<div class="name-line">Jméno: <span></span> &nbsp;&nbsp; Třída: <span style="width:80px"></span></div>'+
-      '<div class="instructions"><b>Pokyn:</b> Přečti si pozorně každý text a odpověz na otázku celou větou.</div>'+
-      qHtml+
+      '<div class="instructions"><b>Pokyn:</b> '+data.instructions+'</div>'+
+      data.qHtml+
       '<div class="cut"></div>'+
       '<div class="solution-head">✓ Klíč pro paní učitelku / rodiče</div>'+
-      aHtml+
+      data.aHtml+
     '</div>'+
     '</body></html>';
 }

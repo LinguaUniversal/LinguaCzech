@@ -118,6 +118,23 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
 .pribBtn.err{background:var(--rs);border-color:var(--r);color:var(--r);}
 .pribBtn:disabled{cursor:default;opacity:.7;}
 
+/* Křížovka */
+.krizGrid{display:inline-grid;gap:0;background:#374151;padding:2px;border-radius:6px;margin:0 auto;}
+.krizCell{position:relative;width:38px;height:38px;background:#374151;display:flex;align-items:center;justify-content:center;}
+.krizCell.empty{background:#374151;}
+.krizCell.fill{background:white;}
+.krizCell.fill input{width:100%;height:100%;border:1.5px solid #d1d5db;border-radius:0;text-align:center;font-family:Verdana,Geneva,sans-serif;font-size:1.1rem;font-weight:700;color:#1f2937;text-transform:uppercase;outline:none;background:white;padding:0;}
+.krizCell.fill input:focus{border-color:var(--m);background:var(--ms);}
+.krizCell.fill input.ok{background:var(--zs);border-color:var(--z);color:var(--z);}
+.krizCell.fill input.err{background:var(--rs);border-color:var(--r);color:var(--r);}
+.krizCell .krizNum{position:absolute;top:1px;left:2px;font-size:.55rem;font-weight:700;color:#6b7280;font-family:var(--font);line-height:1;pointer-events:none;}
+.krizClues{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:1rem 0;font-size:.9rem;}
+.krizClueBox{background:white;border:1.5px solid #d1d5db;border-radius:8px;padding:.6rem .8rem;}
+.krizClueBox h4{color:var(--m);font-size:.95rem;font-weight:800;margin-bottom:.4rem;}
+.krizClueBox ol{padding-left:1.4rem;line-height:1.6;}
+.krizClueBox li{margin:.2rem 0;color:#374151;}
+.krizClueBox li.done{text-decoration:line-through;color:#9ca3af;}
+
 /* Hra autíčko */
 .gameWrap{position:relative;background:#1a3550;border-radius:12px;overflow:hidden;margin:.5rem 0;border:2px solid var(--m);}
 .gameInfo{display:flex;justify-content:space-between;padding:.5rem .8rem;background:rgba(0,0,0,.3);color:white;font-weight:700;}
@@ -146,7 +163,8 @@ canvas#gameCv{display:block;width:100%;height:280px;background:linear-gradient(1
     <div onclick="go('pex')" class="mk mk-m"><h3>🃏 Pexeso</h3><p>Spoj vyjm. slovo s odvozeným</p></div>
     <div onclick="go('hom')" class="mk mk-o"><h3>🎭 Dvojice významů</h3><p>mýt × mít, být × bít...</p></div>
     <div onclick="go('prib')" class="mk mk-m"><h3>🌳 Příbuzné? Ano/Ne</h3><p>Patří slovo k vyjmenovanému?</p></div>
-    <div onclick="go('hra')" class="mk mk-o"><h3>🚗 Hra autíčko</h3><p>Najeď do pruhu y nebo i</p></div>
+    <div onclick="go('hra')" class="mk mk-o"><h3>🦖 T-rex žere Y</h3><p>Žer slova s Y, vyhni se těm s I</p></div>
+    <div onclick="go('kriz')" class="mk mk-p" style="grid-column:span 2"><h3>🧩 Křížovka</h3><p>Vylušti křížovku z vyjmenovaných slov</p></div>
     <div onclick="printChoice()" class="mk" style="grid-column:span 2;background:#f3f4f6;border:2px dashed #9ca3af"><h3 style="color:#374151">🖨️ Vytisknout pracovní list</h3><p style="color:#6b7280">PDF k procvičování doma — zadání + řešení na A4</p></div>
   </div>
 </div>
@@ -182,7 +200,6 @@ canvas#gameCv{display:block;width:100%;height:280px;background:linear-gradient(1
         <button class="dopBtn" onclick="dopAns('ý',this)">ý</button>
         <button class="dopBtn" onclick="dopAns('í',this)">í</button>
       </div>
-      <div class="dopHint" id="dop-hint" style="display:none"></div>
       <div class="fb" id="dop-fb"></div>
     </div>
     <button class="nxt" id="dop-nx" onclick="dopNext()">Další →</button>
@@ -295,39 +312,69 @@ canvas#gameCv{display:block;width:100%;height:280px;background:linear-gradient(1
   </div>
 </div>
 
-<!-- CV: HRA AUTÍČKO Y/I -->
+<!-- CV: KŘÍŽOVKA -->
+<div class="cv" id="cv-kriz">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🧩 Křížovka</span></div>
+  <div class="ka">
+    <div class="q" style="margin-bottom:.4rem">Doplň slova do mřížky podle nápověd. Tajenka se objeví <b style="color:var(--m)">žlutě</b>.</div>
+    <div style="text-align:center;margin:.8rem 0">
+      <div id="kriz-grid-wrap"></div>
+    </div>
+    <div class="krizClues" id="kriz-clues">
+      <div class="krizClueBox">
+        <h4>↓ Svisle</h4>
+        <ol id="kriz-down"></ol>
+      </div>
+      <div class="krizClueBox">
+        <h4>→ Vodorovně</h4>
+        <ol id="kriz-across"></ol>
+      </div>
+    </div>
+    <div style="display:flex;gap:.5rem;margin-top:.6rem">
+      <button class="mbtn" style="flex:1" onclick="krizCheck()">Zkontrolovat ✓</button>
+      <button class="mbtn" style="flex:1" onclick="krizClear()">Smazat 🧽</button>
+      <button class="mbtn" style="flex:1" onclick="krizReveal()">Ukázat řešení</button>
+    </div>
+    <div class="fb" id="kriz-fb"></div>
+  </div>
+</div>
+
+<!-- CV: HRA T-REX Y/I -->
 <div class="cv" id="cv-hra">
-  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🚗 Hra autíčko</span></div>
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🦖 T-rex žere Y</span></div>
   <div id="hra-intro">
     <div class="ka" style="text-align:center">
-      <div style="font-size:3rem">🚗</div>
-      <h3 style="color:var(--m);margin:.5rem 0">Y nebo I?</h3>
-      <p style="color:#6b7280;line-height:1.6;margin:.5rem 0">Slovo padá obrazovkou. Najeď autem do správného pruhu — <b>vlevo Y, vpravo I</b>. Pozor na životy!</p>
+      <div style="font-size:3.5rem">🦖</div>
+      <h3 style="color:var(--m);margin:.5rem 0">T-rex se učí vyjmenovaná slova!</h3>
+      <p style="color:#6b7280;line-height:1.6;margin:.5rem 0;text-align:left;padding:0 .5rem">
+        T-rex běhá po louce a chce sníst slova s <b style="color:var(--z)">Y/Ý</b> (vyjmenovaná a příbuzná).<br>
+        Slovům s <b style="color:var(--r)">I/Í</b> se musí vyhnout!<br><br>
+        Slova přijíždí zprava. T-rex skáče mezi 3 pruhy — pomocí <b>tlačítek</b> nebo <b>kláves ↑↓</b>, nebo klepni na pruh.
+      </p>
+      <p style="color:#6b7280;font-size:.85rem;margin:.5rem 0">3 životy ❤️❤️❤️ · za každé správně sežrané Y → bod</p>
       <button class="znovu" onclick="hraStart()">▶ Začít hru</button>
     </div>
   </div>
   <div id="hra-play" style="display:none">
-    <div class="gameWrap">
-      <div class="gameInfo">
-        <span>🏆 <span id="hra-sc">0</span></span>
-        <span class="gameLives" id="hra-lv">❤️❤️❤️</span>
+    <div style="background:white;border:2px solid #d1d5db;border-radius:12px;padding:.8rem;margin:.5rem 0">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;font-weight:700">
+        <span>🏆 <span id="hra-sc">0</span> b.</span>
+        <span id="hra-lv">❤️❤️❤️</span>
       </div>
-      <div style="position:relative">
-        <canvas id="gameCv" width="600" height="280"></canvas>
-        <div class="gameWord" id="hra-w">slovo</div>
-      </div>
-      <div class="gameCtrl">
-        <button onclick="hraMove(-1)">◀ Y</button>
-        <button onclick="hraMove(1)">I ▶</button>
+      <canvas id="gameCv" width="480" height="240" style="width:100%;border-radius:10px;display:block;touch-action:none;cursor:pointer;background:linear-gradient(180deg,#a7d8e8 0%,#c8e6c9 50%,#a5d6a7 100%)"></canvas>
+      <div style="display:flex;gap:.4rem;margin-top:.5rem">
+        <button class="lbtn" style="flex:1;padding:.7rem;font-weight:700;font-size:.9rem;border:1.5px solid #d1d5db;background:white;border-radius:8px;cursor:pointer;font-family:var(--font)" onclick="hraMove(-1)">▲ Nahoru</button>
+        <button class="lbtn" style="flex:1;padding:.7rem;font-weight:700;font-size:.9rem;border:1.5px solid #d1d5db;background:white;border-radius:8px;cursor:pointer;font-family:var(--font)" onclick="hraMove(1)">▼ Dolů</button>
       </div>
     </div>
-    <div class="gameOver" id="hra-over">
-      <div style="font-size:3rem">🏆</div>
-      <h3 style="color:var(--m)">Hra skončila!</h3>
-      <p>Skóre: <b id="hra-fin">0</b> bodů</p>
-      <button class="znovu" onclick="hraStart()">Hrát znovu 🔄</button>
-      <button class="mbtn" onclick="back()">Menu</button>
-    </div>
+  </div>
+  <div class="gameOver" id="hra-over" style="display:none">
+    <div style="font-size:3rem">🦖</div>
+    <h3 style="color:var(--m)" id="hra-tx">Hra skončila!</h3>
+    <p id="hra-pp"></p>
+    <p>Skóre: <b id="hra-fin">0</b> bodů</p>
+    <button class="znovu" onclick="hraStart()">Hrát znovu 🔄</button>
+    <button class="mbtn" onclick="back()">Menu</button>
   </div>
 </div>
 
@@ -364,6 +411,7 @@ function go(id){
   if(id==='pex') pexStart();
   if(id==='hom') homStart();
   if(id==='prib') prbStart();
+  if(id==='kriz') krizStart();
   if(id==='hra') hraIntro();
 }
 
@@ -571,7 +619,6 @@ function dopRender(){
   el('dop-pg').style.width = ((s.idx)/s.seq.length*100)+'%';
   el('dop-fb').textContent = '';
   el('dop-fb').className = 'fb';
-  el('dop-hint').style.display = 'none';
   el('dop-nx').style.display = 'none';
   document.querySelectorAll('#cv-dop .dopBtn').forEach(function(b){
     b.disabled=false; b.classList.remove('ok','err');
@@ -599,9 +646,7 @@ function dopAns(picked, btn){
     el('dop-fb').innerHTML = '✗ Správně je <b>'+item.full+'</b>.';
     el('dop-fb').className = 'fb err';
   }
-  /* Nápověda — vyjm. slovo, na které se odkazuje */
-  el('dop-hint').innerHTML = '💡 <b>Proč?</b> Slovo se odvozuje od vyjmenovaného slova <b>'+item.root+'</b>.';
-  el('dop-hint').style.display = 'block';
+  /* Nápověda zrušena - žák se naučí přes opakování */
   document.querySelectorAll('#cv-dop .dopBtn').forEach(function(b){b.disabled=true;});
   el('dop-bd').textContent = s.body;
   el('dop-sp').textContent = s.sp;
@@ -923,7 +968,7 @@ function homRender(){
   item.pair.forEach(function(opt, i){
     var card = document.createElement('div');
     card.className = 'homOpt';
-    card.innerHTML = '<div class="hom-w">'+opt.w+'</div><div class="hom-m">'+opt.m+'</div>';
+    card.innerHTML = '<div class="hom-w">'+opt.w+'</div>';
     card.onclick = function(){ homAns(i, card, item); };
     box.appendChild(card);
   });
@@ -944,7 +989,7 @@ function homAns(picked, card, item){
   if(picked === item.correct){
     card.classList.add('ok');
     s.body += 10; s.sp += 1; addPoints(10);
-    el('hom-fb').innerHTML = '✓ Správně! Slovo <b>'+item.pair[picked].w+'</b> ('+item.pair[picked].m+').';
+    el('hom-fb').innerHTML = '✓ Správně! Slovo <b>'+item.pair[picked].w+'</b>.';
     el('hom-fb').className = 'fb ok';
   } else {
     card.classList.add('err');
@@ -952,7 +997,7 @@ function homAns(picked, card, item){
     document.querySelectorAll('#hom-c .homOpt').forEach(function(c, i){
       if(i === item.correct) c.classList.add('ok');
     });
-    el('hom-fb').innerHTML = '✗ Správně je <b>'+item.pair[item.correct].w+'</b> ('+item.pair[item.correct].m+').';
+    el('hom-fb').innerHTML = '✗ Správně je <b>'+item.pair[item.correct].w+'</b>.';
     el('hom-fb').className = 'fb err';
   }
   el('hom-bd').textContent = s.body;
@@ -1105,16 +1150,338 @@ function prbFinish(){
 }
 
 /* ─────────────────────────────────────────────
-   CV-HRA: Hra autíčko Y/I
-   Slovo padá z vrcholu, hráč najede do pruhu Y nebo I.
+   CV-KRIZ: KŘÍŽOVKA
+   Mřížka 8 sloupců × N řad. Buňky:
+     - prázdná (' ') = černá / neviditelná
+     - písmeno = vyplnitelná buňka
+   Slova jsou vodorovně (across) i svisle (down).
+   Tajenka v 1. sloupci (prostřední řada) zformuje slovo.
 ───────────────────────────────────────────── */
-var HRA = {
-  running:false, score:0, lives:3,
-  carX:0, carLane:0,    // 0=levý (Y), 1=pravý (I)
-  word:null, wordY:0,
-  raf:null, ctx:null, w:600, h:280,
-  pool: []
+
+/* Statická křížovka - pevná mřížka 9 řad × 8 sloupců.
+   Tajenka v 5. sloupci (index 4) shora dolů: VYJMENOVÁNO ... ne, tak velké slovo se nevejde.
+   Pojďme na něco kratší: TAJENKA = slovo ve sloupci.
+   Klasický formát: každé slovo do řádku (vodorovně), z některých písmen složí tajenku ve svislém sloupci.
+*/
+var KRIZ = {
+  /* 7 řádků - každý je 1 vyjmenované slovo, písmeno na pozici tajenky tvoří slovo dolů */
+  /* Tajenka: BYDLENÍ - asi moc dlouhé. Pokus: PYTEL */
+  /* Vyber 5 vyjm. slov, kde písmeno na pozici X tvoří dolů "PYTEL" - moc obtížné navrhnout */
+  /* Jednodušeji: všechna slova mají Y na stejné pozici (např. 2. písmeno) */
+  /* Ale to je nudné. Pojďme: každé slovo má přesně písmeno tajenky na sloupci. */
+  /* Tajenka: BYSTRÝ - 6 písmen */
+  /* Slova musí mít: B na pozici X v slově 1, Y na pos X v slově 2, S na pos X v slově 3, atd */
+  /* Reálně: udělám to klasicky - tajenka přes 5. sloupec, slova s různou délkou */
+  /* Tajenka HMYZ (4 znaky) → 4 slova:
+     1. BÝK     → na pozici X je H? ne, máme býk = BÝK = B,Ý,K. Jak na H?
+     Nejjednodušší: tajenka tvoří slovo z některých vodorovných písmen.
+     Pojďme s tajenkou MYŠ (3 řady):
+       1. UMYJ (4 písmena) - M na pozici 2
+       2. SYTÝ (4 písmena) - Y na pozici 2
+       3. NÝŠ - neexistuje
+     Lepší: tajenka VYŠŠÍ ne. Místo toho dělám klasickou křížovku se 2 dimenzemi.
+  */
+  /* PROZATÍMNÍ: 5 vodorovných slov, 1 svislé tajenka (1. písmena tvoří) */
+  rows: [
+    /* Každý řádek: {clue: 'náv', word: 'SLOVO'}. Tajenka = první písmena. */
+    {clue:'Pták s velkýma očima, létá v noci', word:'VÝR'},
+    {clue:'Část nohy pod kolenem', word:'LÝTKO'},
+    {clue:'Druh listnatého stromu, na kterém roste ovoce', word:'JABLOŇ'},  // J - není vyjm., ale potřeba pro tajenku VLAJKA
+    /* Ne, takhle to dělat netřeba. Předělám: */
+  ],
+  /* Vlastní design: jeden vyjmenovaný "kostr" - slovo svisle, kolem něj vodorovná slova */
+  /* SVISLE: VYJMENOVANÁ (12 písmen) - moc dlouhé.
+     Použiju kratší: TAJENKA = 'BYLINY' (6 znaků), tedy 6 vodorovných slov, jejichž X-té písmeno tvoří 'BYLINY' */
+  /* Pro start: vytvořím 6 řádků, tajenka = 'BYLINY', tajenka v 1. sloupci */
+  layout: [
+    /* Vodorovná slova - každé začíná v 1. sloupci, písmeno na pozici 0 tvoří tajenku */
+    /* Tajenka 'BYLINY' není moc nápaditá. Použiju 'JAZYKY' (Z-řada): J,A,Z,Y,K,Y */
+    /* Pojďme na klasiku: tajenka 'BYTOST' (6 vyjm. slov v sobě): */
+  ]
 };
+
+/* PŘEDĚLÁM CELOU KŘÍŽOVKU pomocí jednoduchého layout-grid stylu */
+/* Každé slovo má začátek (řádek, sloupec, směr "across"/"down") a délku. */
+/* Slova:
+   1. Across, řádek 0: BÝK (3) - "Samec krávy"  (B,Ý,K)
+   2. Down,   sloupec 1: BYDLET (6) - "Mít domov"  (Y,Ý,T,L,E,T)
+   3. Across, řádek 2: SYR (3) - "Mléčný výrobek (správně sýr)" - ne, ÝR ne
+   
+   Tohle je hodně náročné na ruční tvorbu. Pojďme udělat JEDNODUCHOU křížovku:
+*/
+
+var KRIZ_DEF = {
+  /* Křížovka 11 sloupců × 9 řad. Konzistentní křížící se vyjmenovaná slova.
+     # = černá, písmeno = bílá k vyplnění.
+     
+     Slova:
+       1A MLÝN    řádek 1, sloupce 1-4    (M,L,Ý,N)
+       2D BÝK     sloupec 3, řády 0-2     (B,Ý,K)             — kříží 1A na (1,3)=Ý
+       3A PYTEL   řádek 3, sloupce 4-8    (P,Y,T,E,L)
+       4D KOPYTO  sloupec 6, řády 3-8     (K,O,P,Y,T,O)        — kříží 3A na (3,6)=T (ne, T je v PYTEL pozice 2 = sloupec 6 ✓)
+                                                                ALE KOPYTO[2]=P, ne T. Špatně.
+       
+     Pojďme znova:
+       1A MLÝN     řádek 1, sloupce 1-4   (M,L,Ý,N)
+       2D BÝK      sloupec 3, řády 0-2    kříží MLÝN na (1,3)=Ý ✓
+       3A PYTEL    řádek 4, sloupce 1-5   (P,Y,T,E,L)            — žádné křížení, samostatné  
+       4D LYŽE     sloupec 1, řády 4-7    (P,?,?,?) - LYŽE na (4,1)=P? ale L by mělo být. ŠPATNĚ.
+       
+     Řešení: PYTEL je na řádku 4 sloupce 1-5. Pak na (4,1)=P. Aby tam šlo svislé slovo začínající P, musí to být něco s P na začátku.
+       4D PYL      sloupec 1, řády 4-6    (P,Y,L) — kříží PYTEL na (4,1)=P ✓
+       5A LYSÝ     řádek 6, sloupce 1-4   (L,Y,S,Ý)            — kříží PYL na (6,1)=L ✓
+     
+     Final křížovka:
+       Mřížka 9 řad × 6 sloupců (0..5):
+       1A MLÝN    (1,1-4)
+       2D BÝK     (0-2, 3)  → kříží Ý
+       3A PYTEL   (4, 1-5)
+       4D PYL     (4-6, 1)  → kříží P na (4,1)
+       5A LYSÝ    (6, 1-4)  → kříží L na (6,1)
+  */
+  grid: [
+    /*           col   0    1    2    3    4    5  */
+    /* row 0 */ ['#','#','#', 'B','#','#'],
+    /* row 1 */ ['#','M', 'L','Ý','N','#'],   /* 1A: MLÝN */
+    /* row 2 */ ['#','#','#', 'K','#','#'],
+    /* row 3 */ ['#','#','#','#','#','#'],
+    /* row 4 */ ['#', 'P','Y', 'T','E','L'],  /* 3A: PYTEL */
+    /* row 5 */ ['#', 'Y','#','#','#','#'],
+    /* row 6 */ ['#', 'L','Y','S','Ý','#'],   /* 5A: LYSÝ — kříží 4D PYL na L */
+    /* row 7 */ ['#','#','#','#','#','#'],
+    /* row 8 */ ['#','#','#','#','#','#']
+  ],
+  clues_across: [
+    {row:1, col:1, num:1, word:'MLÝN', clue:'Stavba, kde se mele obilí na mouku'},
+    {row:4, col:1, num:3, word:'PYTEL', clue:'Pytlík na mouku nebo brambory'},
+    {row:6, col:1, num:5, word:'LYSÝ', clue:'Holohlavý (bez vlasů)'}
+  ],
+  clues_down: [
+    {row:0, col:3, num:2, word:'BÝK', clue:'Samec krávy'},
+    {row:4, col:1, num:4, word:'PYL', clue:'Žlutý prach z květin (jaro)'}
+  ]
+};
+
+var krizState = {inputs:[]};
+
+function krizStart(){
+  krizRender();
+  el('kriz-fb').textContent = '';
+  el('kriz-fb').className = 'fb';
+}
+
+function krizRender(){
+  var def = KRIZ_DEF;
+  var grid = def.grid;
+  var rows = grid.length;
+  var cols = grid[0].length;
+
+  /* Sestavit číslování - které buňky mají číslo? Začátek vodorovného nebo svislého slova. */
+  var nums = {};
+  def.clues_across.forEach(function(c){ nums[c.row+','+c.col] = c.num; });
+  def.clues_down.forEach(function(c){
+    var k = c.row+','+c.col;
+    if(!nums[k]) nums[k] = c.num;
+  });
+
+  /* Vykreslit mřížku */
+  var wrap = el('kriz-grid-wrap');
+  wrap.innerHTML = '';
+  var gridDiv = document.createElement('div');
+  gridDiv.className = 'krizGrid';
+  gridDiv.style.gridTemplateColumns = 'repeat('+cols+', 38px)';
+
+  krizState.inputs = [];
+  for(var r=0; r<rows; r++){
+    for(var c=0; c<cols; c++){
+      var cell = document.createElement('div');
+      var content = grid[r][c];
+      if(content === '#'){
+        cell.className = 'krizCell empty';
+      } else {
+        cell.className = 'krizCell fill';
+        var inp = document.createElement('input');
+        inp.maxLength = 1;
+        inp.dataset.row = r;
+        inp.dataset.col = c;
+        inp.dataset.expected = content;
+        inp.oninput = function(e){
+          this.value = (this.value || '').toUpperCase();
+          if(this.value.length === 1){
+            /* Skoč na další input */
+            krizFocusNext(parseInt(this.dataset.row), parseInt(this.dataset.col));
+          }
+          krizCheckSilent();
+        };
+        cell.appendChild(inp);
+        krizState.inputs.push(inp);
+        if(nums[r+','+c]){
+          var nb = document.createElement('span');
+          nb.className = 'krizNum';
+          nb.textContent = nums[r+','+c];
+          cell.appendChild(nb);
+        }
+      }
+      gridDiv.appendChild(cell);
+    }
+  }
+  wrap.appendChild(gridDiv);
+
+  /* Nápovědy */
+  var across = el('kriz-across');
+  across.innerHTML = '';
+  def.clues_across.forEach(function(c){
+    var li = document.createElement('li');
+    li.value = c.num;
+    li.textContent = c.clue;
+    li.dataset.id = 'a'+c.num;
+    across.appendChild(li);
+  });
+  var down = el('kriz-down');
+  down.innerHTML = '';
+  def.clues_down.forEach(function(c){
+    var li = document.createElement('li');
+    li.value = c.num;
+    li.textContent = c.clue;
+    li.dataset.id = 'd'+c.num;
+    down.appendChild(li);
+  });
+}
+
+/* Skok na další input v mřížce */
+function krizFocusNext(r, c){
+  var cols = KRIZ_DEF.grid[0].length;
+  /* Najdi další buňku napravo, pokud existuje a je vyplnitelná, jinak zkus dolů */
+  for(var i=c+1; i<cols; i++){
+    if(KRIZ_DEF.grid[r][i] !== '#'){
+      var inp = krizState.inputs.find(function(x){return parseInt(x.dataset.row)===r && parseInt(x.dataset.col)===i;});
+      if(inp){ inp.focus(); return; }
+    }
+    if(KRIZ_DEF.grid[r][i] === '#') break;
+  }
+  /* Jinak: zkus dolů */
+  for(var i=r+1; i<KRIZ_DEF.grid.length; i++){
+    if(KRIZ_DEF.grid[i][c] !== '#'){
+      var inp = krizState.inputs.find(function(x){return parseInt(x.dataset.row)===i && parseInt(x.dataset.col)===c;});
+      if(inp){ inp.focus(); return; }
+    }
+    if(KRIZ_DEF.grid[i][c] === '#') break;
+  }
+}
+
+/* Kontrola - vrátí počet správných */
+function krizCheckSilent(){
+  var ok = 0, total = krizState.inputs.length;
+  krizState.inputs.forEach(function(inp){
+    if(inp.value.toUpperCase() === inp.dataset.expected.toUpperCase()) ok++;
+  });
+  if(ok === total){
+    /* Zelená všechno */
+    krizState.inputs.forEach(function(inp){
+      inp.classList.add('ok');
+      inp.classList.remove('err');
+    });
+    el('kriz-fb').innerHTML = '🎉 <b>Výborně!</b> Vyřešila jsi celou křížovku!';
+    el('kriz-fb').className = 'fb ok';
+    /* Body 1× za vyřešenou křížovku */
+    if(!krizState.solved){
+      krizState.solved = true;
+      addPoints(30);
+    }
+  }
+  return ok;
+}
+
+function krizCheck(){
+  var ok = 0, total = krizState.inputs.length;
+  krizState.inputs.forEach(function(inp){
+    inp.classList.remove('ok','err');
+    if(!inp.value){
+      /* Prázdná - nekontrolujem */
+    } else if(inp.value.toUpperCase() === inp.dataset.expected.toUpperCase()){
+      inp.classList.add('ok');
+      ok++;
+    } else {
+      inp.classList.add('err');
+    }
+  });
+  if(ok === total){
+    el('kriz-fb').innerHTML = '🎉 <b>Výborně!</b> Vyřešila jsi celou křížovku!';
+    el('kriz-fb').className = 'fb ok';
+    if(!krizState.solved){
+      krizState.solved = true;
+      addPoints(30);
+    }
+  } else {
+    el('kriz-fb').innerHTML = 'Správně '+ok+' z '+total+' písmen. Chyby jsou červené, opravy zkus znovu.';
+    el('kriz-fb').className = 'fb';
+  }
+}
+
+function krizClear(){
+  krizState.inputs.forEach(function(inp){
+    inp.value = '';
+    inp.classList.remove('ok','err');
+  });
+  el('kriz-fb').textContent = '';
+  el('kriz-fb').className = 'fb';
+  krizState.solved = false;
+}
+
+function krizReveal(){
+  if(!confirm('Opravdu chceš vidět celé řešení? Nebudeš si moct dále luštit.')) return;
+  krizState.inputs.forEach(function(inp){
+    inp.value = inp.dataset.expected;
+    inp.classList.add('ok');
+    inp.classList.remove('err');
+    inp.disabled = true;
+  });
+  el('kriz-fb').innerHTML = '👀 Řešení odhaleno. Klikni <b>Smazat</b> pro nový pokus.';
+  el('kriz-fb').className = 'fb';
+}
+
+/* ─────────────────────────────────────────────
+   CV-HRA: T-rex žere Y
+   - 3 pruhy, slova přijíždí zprava, T-rex stojí vlevo
+   - Slova s Y/Ý = ŽER (správně, +1 bod)
+   - Slova s I/Í = NEJEZ (vyhni se, jinak chyba a -1 život)
+───────────────────────────────────────────── */
+
+/* Pool slov s Y/Ý — vyjmenovaná a příbuzná */
+var HRA_POOL_Y = DOP_DATA.filter(function(d){
+  return d.a === 'y' || d.a === 'ý';
+}).map(function(d){return d.full;});
+
+/* Pool slov s I/Í — běžná česká slova, NEpříbuzná k vyjmenovaným.
+   Pozor: vybírám jen slova, kde I/Í je po obojetné souhlásce (b/l/m/p/s/v/z),
+   aby pravopisná logika dávala smysl. */
+var HRA_POOL_I = [
+  /* B + i/í */
+  'bílý','bít','bidlo','biják','bizon','blízko','bít se',
+  /* L + i/í */
+  'liška','liška','lidé','lít','lípa','líný','líbat',
+  /* M + i/í */
+  'míč','mít','milý','minulý','mince','milovat','minuta',
+  /* P + i/í */
+  'pivo','pilný','pilot','písek','pivnice','pikat','piknik',
+  /* S + i/í */
+  'silný','síla','sirka','sirup','sivý','sice',
+  /* V + i/í */
+  'vidět','vítr','vítat','vinout','viník','vinný',
+  /* Z + i/í */
+  'zima','zítra','zima','zívat'
+];
+
+var HRA = {
+  running:false, lane:1, lives:3, score:0, errs:0,
+  words:[], speed:2.0, spawnTimer:0, spawnInterval:90,
+  raf:null, hitFlash:0, scoreFlash:0,
+  trexY:0
+};
+var HRA_W = 480, HRA_H = 240, HRA_LANES = 3;
+var HRA_LANE_H = HRA_H / HRA_LANES;
+function hraLaneY(i){ return i*HRA_LANE_H + HRA_LANE_H/2; }
+var HRA_TREX_X = 60;
 
 function hraIntro(){
   el('hra-intro').style.display='block';
@@ -1122,109 +1489,334 @@ function hraIntro(){
   el('hra-over').style.display='none';
 }
 function hraStart(){
+  if(HRA.raf) cancelAnimationFrame(HRA.raf);
+  Object.assign(HRA, {
+    running:true, lane:1, lives:3, score:0, errs:0,
+    words:[], speed:2.2, spawnTimer:0, spawnInterval:75,
+    hitFlash:0, scoreFlash:0
+  });
+  HRA.trexY = hraLaneY(1);
+  el('hra-sc').textContent = '0';
+  el('hra-lv').textContent = '❤️❤️❤️';
   el('hra-intro').style.display='none';
   el('hra-play').style.display='block';
   el('hra-over').style.display='none';
-  HRA.score = 0;
-  HRA.lives = 3;
-  HRA.running = true;
-  HRA.carLane = 0;
-  HRA.carX = HRA.w * 0.25;
-  /* Zamíchat seznam slov */
-  HRA.pool = shuffle(DOP_DATA.filter(function(d){
-    return d.a === 'y' || d.a === 'i' || d.a === 'ý' || d.a === 'í';
-  }));
-  HRA.poolIdx = 0;
-  el('hra-sc').textContent = '0';
-  el('hra-lv').textContent = '❤️❤️❤️';
-  HRA.ctx = el('gameCv').getContext('2d');
-  hraSpawn();
-  hraLoop();
-}
-function hraSpawn(){
-  if(HRA.poolIdx >= HRA.pool.length) HRA.poolIdx = 0;
-  var item = HRA.pool[HRA.poolIdx++];
-  HRA.word = item;
-  HRA.wordY = -30;
-  el('hra-w').textContent = makeGap(item.full, item.a);
+  HRA.raf = requestAnimationFrame(hraLoop);
 }
 function hraMove(dir){
   if(!HRA.running) return;
-  HRA.carLane = Math.max(0, Math.min(1, HRA.carLane + dir));
-  HRA.carX = HRA.w * (HRA.carLane === 0 ? 0.25 : 0.75);
-}
-function hraLoop(){
-  if(!HRA.running) return;
-  var ctx = HRA.ctx;
-  /* Background */
-  ctx.fillStyle = '#1a3550';
-  ctx.fillRect(0,0,HRA.w,HRA.h);
-  /* Pruhy: Y vlevo, I vpravo */
-  ctx.fillStyle = 'rgba(255,255,255,.05)';
-  ctx.fillRect(0, 0, HRA.w/2, HRA.h);
-  ctx.strokeStyle = 'rgba(255,255,255,.3)';
-  ctx.lineWidth = 2;
-  ctx.setLineDash([10,10]);
-  ctx.beginPath();
-  ctx.moveTo(HRA.w/2, 0);
-  ctx.lineTo(HRA.w/2, HRA.h);
-  ctx.stroke();
-  ctx.setLineDash([]);
-  /* Labels Y/I dole */
-  ctx.font = 'bold 30px Verdana';
-  ctx.textAlign = 'center';
-  ctx.fillStyle = 'rgba(50,160,210,.5)';
-  ctx.fillText('Y', HRA.w*0.25, HRA.h - 10);
-  ctx.fillStyle = 'rgba(255,170,55,.5)';
-  ctx.fillText('I', HRA.w*0.75, HRA.h - 10);
-  /* Slovo padá */
-  if(HRA.word){
-    HRA.wordY += 2.5;
-    ctx.font = 'bold 26px Verdana';
-    ctx.fillStyle = 'white';
-    ctx.fillText(makeGap(HRA.word.full, HRA.word.a), HRA.w/2, HRA.wordY);
-    /* Pokud spadlo úplně dolů (do auta) */
-    if(HRA.wordY > HRA.h - 50){
-      /* Detekovat, do kterého pruhu spadlo - podle carLane */
-      var isY = (HRA.word.a === 'y' || HRA.word.a === 'ý');
-      var isI = (HRA.word.a === 'i' || HRA.word.a === 'í');
-      var correct = (HRA.carLane === 0 && isY) || (HRA.carLane === 1 && isI);
-      if(correct){
-        HRA.score += 5;
-        addPoints(5);
-        el('hra-sc').textContent = HRA.score;
-        /* Zrychluj postupně - méně potřeba */
-      } else {
-        HRA.lives--;
-        var hearts = '';
-        for(var i=0;i<HRA.lives;i++) hearts += '❤️';
-        el('hra-lv').textContent = hearts;
-      }
-      if(HRA.lives <= 0){
-        hraStop();
-        el('hra-fin').textContent = HRA.score;
-        el('hra-over').style.display='block';
-        el('gameCv').style.display='none';
-        return;
-      }
-      hraSpawn();
-    }
-  }
-  /* Auto */
-  ctx.font = '40px sans-serif';
-  ctx.fillText('🚗', HRA.carX, HRA.h - 25);
-  HRA.raf = requestAnimationFrame(hraLoop);
+  HRA.lane = Math.max(0, Math.min(HRA_LANES-1, HRA.lane + dir));
 }
 function hraStop(){
   HRA.running = false;
   if(HRA.raf) cancelAnimationFrame(HRA.raf);
+  HRA.raf = null;
 }
 
-/* Klávesnice */
-window.addEventListener('keydown', function(e){
+/* Pomocné: zaoblený obdélník */
+function hraRR(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r); ctx.lineTo(x+w,y+h-r);
+  ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h); ctx.lineTo(x+r,y+h);
+  ctx.quadraticCurveTo(x,y+h,x,y+h-r); ctx.lineTo(x,y+r);
+  ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
+}
+
+/* Vykresli T-rexe (zelený dinosaurus s velkými zuby) */
+function hraDrawTrex(ctx, cx, cy){
+  /* Stín */
+  ctx.fillStyle = 'rgba(0,0,0,.15)';
+  ctx.beginPath();
+  ctx.ellipse(cx+5, cy+30, 28, 6, 0, 0, Math.PI*2);
+  ctx.fill();
+
+  /* Tělo (oválné) */
+  ctx.fillStyle = HRA.hitFlash > 0 ? '#dc2626' : '#2d8e3f';
+  ctx.beginPath();
+  ctx.ellipse(cx, cy+5, 22, 18, 0, 0, Math.PI*2);
+  ctx.fill();
+
+  /* Krk + hlava */
+  ctx.fillStyle = HRA.hitFlash > 0 ? '#b91c1c' : '#26723a';
+  /* Krk - elipsa nahoru */
+  ctx.beginPath();
+  ctx.ellipse(cx+10, cy-10, 10, 14, -.3, 0, Math.PI*2);
+  ctx.fill();
+  /* Hlava */
+  ctx.fillStyle = HRA.hitFlash > 0 ? '#dc2626' : '#2d8e3f';
+  ctx.beginPath();
+  ctx.ellipse(cx+22, cy-15, 16, 12, 0, 0, Math.PI*2);
+  ctx.fill();
+
+  /* Tlama (otevřená pusa - trojúhelník dolů) */
+  ctx.fillStyle = '#1f5e2a';
+  ctx.beginPath();
+  ctx.moveTo(cx+30, cy-15);
+  ctx.lineTo(cx+38, cy-10);
+  ctx.lineTo(cx+30, cy-7);
+  ctx.closePath();
+  ctx.fill();
+
+  /* Zuby (bílé trojúhelníky) */
+  ctx.fillStyle = 'white';
+  /* Horní zub */
+  ctx.beginPath();
+  ctx.moveTo(cx+33, cy-13);
+  ctx.lineTo(cx+35, cy-13);
+  ctx.lineTo(cx+34, cy-10);
+  ctx.closePath();
+  ctx.fill();
+  /* Dolní zub */
+  ctx.beginPath();
+  ctx.moveTo(cx+33, cy-9);
+  ctx.lineTo(cx+35, cy-9);
+  ctx.lineTo(cx+34, cy-12);
+  ctx.closePath();
+  ctx.fill();
+
+  /* Oko */
+  ctx.fillStyle = 'white';
+  ctx.beginPath();
+  ctx.arc(cx+24, cy-19, 3, 0, Math.PI*2);
+  ctx.fill();
+  ctx.fillStyle = '#1f2937';
+  ctx.beginPath();
+  ctx.arc(cx+25, cy-19, 1.5, 0, Math.PI*2);
+  ctx.fill();
+
+  /* Ocas (zužující se trojúhelník) */
+  ctx.fillStyle = HRA.hitFlash > 0 ? '#b91c1c' : '#26723a';
+  ctx.beginPath();
+  ctx.moveTo(cx-20, cy);
+  ctx.lineTo(cx-35, cy-3);
+  ctx.lineTo(cx-35, cy+3);
+  ctx.closePath();
+  ctx.fill();
+
+  /* Malé "ručičky" */
+  ctx.fillStyle = HRA.hitFlash > 0 ? '#b91c1c' : '#26723a';
+  ctx.beginPath();
+  ctx.ellipse(cx+5, cy, 4, 6, 0, 0, Math.PI*2);
+  ctx.fill();
+
+  /* Nohy (2 oválky pod tělem) */
+  ctx.fillStyle = HRA.hitFlash > 0 ? '#7f1d1d' : '#1f5e2a';
+  ctx.beginPath();
+  ctx.ellipse(cx-5, cy+22, 5, 8, 0, 0, Math.PI*2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(cx+8, cy+22, 5, 8, 0, 0, Math.PI*2);
+  ctx.fill();
+}
+
+/* Vykresli pozadí — louka s pruhy + tráva */
+function hraDrawBackground(ctx){
+  /* Vrstvený gradient pozadí už je v CSS */
+  ctx.clearRect(0, 0, HRA_W, HRA_H);
+
+  /* Pruhy - jemně střídavé barvy louky */
+  var laneCs = ['rgba(167, 224, 207, 0.4)', 'rgba(187, 224, 167, 0.4)', 'rgba(167, 224, 207, 0.4)'];
+  for(var i=0; i<HRA_LANES; i++){
+    ctx.fillStyle = laneCs[i];
+    ctx.fillRect(0, i*HRA_LANE_H, HRA_W, HRA_LANE_H);
+  }
+
+  /* Pruh oddělovače - tečkované */
+  ctx.strokeStyle = 'rgba(60,140,80,.3)';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([6, 8]);
+  for(var i=1; i<HRA_LANES; i++){
+    ctx.beginPath();
+    ctx.moveTo(0, i*HRA_LANE_H);
+    ctx.lineTo(HRA_W, i*HRA_LANE_H);
+    ctx.stroke();
+  }
+  ctx.setLineDash([]);
+
+  /* Aktivní pruh - jemné zvýraznění */
+  ctx.fillStyle = 'rgba(50,140,80,.10)';
+  ctx.fillRect(0, HRA.lane*HRA_LANE_H, HRA_W, HRA_LANE_H);
+  ctx.fillStyle = '#2d8e3f';
+  ctx.fillRect(0, HRA.lane*HRA_LANE_H, 4, HRA_LANE_H);
+
+  /* Trávník - drobné čárky */
+  ctx.strokeStyle = 'rgba(50,120,60,.4)';
+  ctx.lineWidth = 1.5;
+  for(var i=0; i<25; i++){
+    var gx = (HRA.frameCount*0.5 + i*30) % (HRA_W+30) - 15;
+    var gy = HRA_H - 8 + Math.sin(i)*3;
+    ctx.beginPath();
+    ctx.moveTo(gx, gy);
+    ctx.lineTo(gx+2, gy-5);
+    ctx.stroke();
+  }
+}
+
+/* Vykresli slovo (bublinu) */
+function hraDrawWord(ctx, w){
+  var lx = w.x, ly = hraLaneY(w.lane);
+  var isY = w.kind === 'y'; // y/ý
+  /* Barvy podle stavu */
+  var fc, bc, tc;
+  if(w.flash > 0){ fc = '#dcfce7'; bc = '#16a34a'; tc = '#15803d'; }       /* správně sežrané */
+  else if(w.flash < 0){ fc = '#fee2e2'; bc = '#dc2626'; tc = '#dc2626'; }   /* chyba — sežral i */
+  else if(isY){ fc = '#dcfce7'; bc = '#16a34a'; tc = '#15803d'; }           /* zelené Y - dobré */
+  else { fc = '#fee2e2'; bc = '#dc2626'; tc = '#dc2626'; }                  /* červené I - špatné */
+
+  /* Měření textu pro adaptivní šířku */
+  ctx.font = 'bold 22px Verdana';
+  var textW = ctx.measureText(w.text).width;
+  var bw = Math.max(70, textW + 24);
+  var bh = 38;
+
+  /* Bublina */
+  ctx.fillStyle = fc;
+  hraRR(ctx, lx-bw/2, ly-bh/2, bw, bh, 12);
+  ctx.fill();
+  ctx.strokeStyle = bc;
+  ctx.lineWidth = 2.5;
+  hraRR(ctx, lx-bw/2, ly-bh/2, bw, bh, 12);
+  ctx.stroke();
+
+  /* Text */
+  ctx.fillStyle = tc;
+  ctx.textAlign = 'center';
+  ctx.fillText(w.text, lx, ly+8);
+
+  if(w.flash > 0) w.flash--;
+  else if(w.flash < 0) w.flash++;
+}
+
+function hraLoop(){
   if(!HRA.running) return;
-  if(e.key === 'ArrowLeft') hraMove(-1);
-  if(e.key === 'ArrowRight') hraMove(1);
+  HRA.frameCount = (HRA.frameCount || 0) + 1;
+  var ctx = el('gameCv').getContext('2d');
+
+  hraDrawBackground(ctx);
+
+  /* Spawn */
+  HRA.spawnTimer++;
+  if(HRA.spawnTimer >= HRA.spawnInterval){
+    HRA.spawnTimer = 0;
+    /* Náhodný pruh */
+    var lane = Math.floor(Math.random() * HRA_LANES);
+    /* 60% Y / 40% I — víc dobrých než zlých */
+    var isY = Math.random() < 0.6;
+    var pool = isY ? HRA_POOL_Y : HRA_POOL_I;
+    var text = pool[Math.floor(Math.random() * pool.length)];
+    HRA.words.push({
+      text: text,
+      kind: isY ? 'y' : 'i',
+      x: HRA_W + 50,
+      lane: lane,
+      scored: false,
+      flash: 0
+    });
+  }
+
+  /* Posun slov + kolize */
+  HRA.words.forEach(function(w){ w.x -= HRA.speed; });
+  HRA.words.forEach(function(w){
+    if(!w.scored && w.x < HRA_TREX_X+30 && w.x > HRA_TREX_X-30){
+      if(w.lane === HRA.lane){
+        w.scored = true;
+        if(w.kind === 'y'){
+          /* Sežral Y - správně! */
+          HRA.score++;
+          el('hra-sc').textContent = HRA.score;
+          addPoints(2);
+          w.flash = 16;
+          HRA.scoreFlash = 12;
+          /* Zrychli */
+          if(HRA.score % 5 === 0){
+            HRA.speed += 0.35;
+            HRA.spawnInterval = Math.max(35, HRA.spawnInterval - 5);
+          }
+        } else {
+          /* Sežral I - chyba! */
+          w.flash = -16;
+          HRA.hitFlash = 18;
+          HRA.errs++;
+          HRA.lives--;
+          hraUpdateLives();
+          if(HRA.lives <= 0){
+            HRA.running = false;
+            setTimeout(hraOver, 700);
+          }
+        }
+      }
+    }
+    /* Slovo prošlo bez sežrání */
+    if(!w.scored && w.x < HRA_TREX_X - 50){
+      w.scored = true;
+      if(w.kind === 'y'){
+        /* Y prošlo nesežrané - škoda, ale bez penalty */
+      }
+      /* I prošlo - správně! Vyhnul se. */
+    }
+  });
+  HRA.words = HRA.words.filter(function(w){ return w.x > -80; });
+
+  /* Vykresli slova */
+  HRA.words.forEach(function(w){ hraDrawWord(ctx, w); });
+
+  /* Hit flash překryv */
+  if(HRA.hitFlash > 0){
+    ctx.fillStyle = 'rgba(220,38,38,'+(HRA.hitFlash/18*.3)+')';
+    ctx.fillRect(0, 0, HRA_W, HRA_H);
+    HRA.hitFlash--;
+  }
+  if(HRA.scoreFlash > 0){
+    ctx.fillStyle = 'rgba(22,163,74,'+(HRA.scoreFlash/12*.20)+')';
+    ctx.fillRect(0, 0, HRA_W, HRA_H);
+    HRA.scoreFlash--;
+  }
+
+  /* T-rex - animovaný Y */
+  var tgtY = hraLaneY(HRA.lane);
+  HRA.trexY += (tgtY - HRA.trexY) * 0.22;
+  hraDrawTrex(ctx, HRA_TREX_X, HRA.trexY);
+
+  HRA.raf = requestAnimationFrame(hraLoop);
+}
+
+function hraUpdateLives(){
+  var h = ['❤️❤️❤️','❤️❤️🖤','❤️🖤🖤','🖤🖤🖤'];
+  el('hra-lv').textContent = h[Math.max(0, Math.min(3, 3-HRA.lives))];
+}
+
+function hraOver(){
+  el('hra-play').style.display = 'none';
+  el('hra-over').style.display = 'block';
+  el('hra-fin').textContent = HRA.score;
+  el('hra-pp').textContent = 'Sežrala jsi '+HRA.score+' Y · spletla se '+HRA.errs+'×';
+  if(HRA.score >= 20){ el('hra-tx').textContent = '🏆 Šampion!'; }
+  else if(HRA.score >= 10){ el('hra-tx').textContent = '🎉 Výborně!'; }
+  else { el('hra-tx').textContent = '💪 Zkus znovu!'; }
+}
+
+/* Klávesnice ↑↓ */
+document.addEventListener('keydown', function(e){
+  if(!HRA.running) return;
+  if(e.key === 'ArrowUp' && HRA.lane > 0){ e.preventDefault(); HRA.lane--; }
+  if(e.key === 'ArrowDown' && HRA.lane < HRA_LANES-1){ e.preventDefault(); HRA.lane++; }
+});
+
+/* Click / touch — tap na pruh */
+document.addEventListener('DOMContentLoaded', function(){
+  var cv = el('gameCv');
+  if(!cv) return;
+  function tap(e){
+    if(!HRA.running) return;
+    var r = cv.getBoundingClientRect();
+    var cy = e.touches ? e.touches[0].clientY : e.clientY;
+    var rel = (cy - r.top) / r.height;
+    HRA.lane = Math.min(HRA_LANES-1, Math.floor(rel * HRA_LANES));
+  }
+  cv.addEventListener('click', tap);
+  cv.addEventListener('touchstart', function(e){ e.preventDefault(); tap(e); }, {passive:false});
 });
 
 /* ─────────────────────────────────────────────
@@ -1339,7 +1931,7 @@ function printGetData(key){
     var aHtml = '';
     picked.forEach(function(it,i){
       var letter = it.correct === 0 ? 'a' : 'b';
-      aHtml += '<div class="task"><span class="num">'+(i+1)+'.</span> <b>'+letter+')</b> '+it.pair[it.correct].w+' &nbsp;<span style="color:#9ca3af;font-size:.85rem">('+it.pair[it.correct].m+')</span></div>';
+      aHtml += '<div class="task"><span class="num">'+(i+1)+'.</span> <b>'+letter+')</b> '+it.pair[it.correct].w+'</div>';
     });
     return {title:'Dvojice významů', topic:'Vyjmenovaná slova', instructions:'V každé větě zakroužkuj správné slovo. Záleží na významu — některá slova zní podobně, ale znamenají něco jiného.', qHtml:qHtml, aHtml:aHtml};
   }

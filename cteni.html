@@ -97,6 +97,30 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;}
 .rsv{font-size:1.9rem;font-weight:700;color:var(--m);}
 .rsl{font-size:.78rem;color:#6b7280;margin-top:2px;}
 .rsv.pts{color:var(--o);}
+
+/* NAHRÁVÁNÍ ČTENÍ */
+.recBox{background:white;border:2px solid #e5e7eb;border-radius:12px;padding:1.5rem;text-align:center;}
+.recWord{font-size:2.6rem;font-weight:700;color:var(--m);font-family:Verdana,Geneva,sans-serif;letter-spacing:2px;margin:1rem 0 1.5rem;line-height:1.4;min-height:3.2rem;}
+.recBtn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;background:var(--r);color:white;border:none;border-radius:99px;padding:1rem 1.8rem;font-size:1.15rem;font-weight:800;cursor:pointer;font-family:var(--font);box-shadow:0 4px 14px rgba(220,38,38,.3);transition:all .15s;}
+.recBtn:hover{filter:brightness(1.05);}
+.recBtn.recording{background:#7f1d1d;animation:recPulse 1.4s infinite;}
+.recBtn.stopped{background:var(--z);box-shadow:0 4px 14px rgba(22,163,74,.3);}
+@keyframes recPulse{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.55);}50%{box-shadow:0 0 0 14px rgba(220,38,38,0);}}
+.recStatus{font-size:1rem;font-weight:700;margin:1rem 0;color:#6b7280;}
+.recStatus.live{color:var(--r);}
+.recTime{font-size:1.5rem;font-weight:800;color:var(--r);font-family:Verdana,Geneva,sans-serif;}
+.recDot{display:inline-block;width:14px;height:14px;border-radius:99px;background:var(--r);margin-right:.4rem;animation:recBlink 1s infinite;}
+@keyframes recBlink{50%{opacity:.3;}}
+.recPlay{margin-top:1rem;width:100%;}
+.recPlay audio{width:100%;border-radius:8px;}
+.recDownload{display:inline-block;background:var(--m);color:white;border:none;border-radius:99px;padding:.9rem 1.5rem;font-size:1rem;font-weight:800;cursor:pointer;font-family:var(--font);text-decoration:none;margin:.5rem;}
+.recDownload:hover{filter:brightness(1.1);}
+.recRedo{display:inline-block;background:white;color:#374151;border:1.5px solid #d1d5db;border-radius:99px;padding:.9rem 1.5rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:var(--font);margin:.5rem;}
+.recRedo:hover{background:#f3f4f6;}
+.recHelp{background:var(--ms);border-left:4px solid var(--m);padding:.8rem 1rem;border-radius:8px;margin:1rem 0;text-align:left;font-size:.92rem;color:#374151;line-height:1.5;}
+.recHelp b{color:var(--m);}
+.recList{background:#f9fafb;border-radius:8px;padding:.75rem;margin-top:.8rem;font-family:Verdana,Geneva,sans-serif;font-weight:700;font-size:1.15rem;color:#374151;letter-spacing:1px;line-height:1.8;}
+.recError{background:var(--rs);border-left:4px solid var(--r);padding:.8rem 1rem;border-radius:8px;margin:1rem 0;text-align:left;font-size:.92rem;color:var(--r);}
 </style>
 </head>
 <body>
@@ -111,6 +135,11 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;}
   <div class="mg">
     <div onclick="go('povt')" class="mk mk-m" style="grid-column:span 2"><h3>Čtení s otázkou — VELKÁ</h3><p>Přečti VELKÝMI tiskacími a odpověz na otázku</p></div>
     <div onclick="go('povm')" class="mk mk-o" style="grid-column:span 2"><h3>Čtení s otázkou — malá</h3><p>Přečti malými tiskacími a odpověz na otázku</p></div>
+    <div onclick="go('rec')" class="mk mk-m" style="grid-column:span 2"><h3>🎤 Nahraj čtení</h3><p>Přečti slova a věty nahlas — pošli paní učitelce</p></div>
+    <div onclick="printChoice()" class="mk" style="grid-column:span 2;background:#f3f4f6;border:2px dashed #9ca3af">
+      <h3 style="color:#374151">🖨️ Vytisknout pracovní list</h3>
+      <p style="color:#6b7280">PDF k procvičování doma — zadání + řešení na A4</p>
+    </div>
   </div>
 </div>
 
@@ -164,6 +193,53 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;}
   </div>
 </div>
 
+<!-- ============ CV-REC: NAHRÁVÁNÍ ČTENÍ ============ -->
+<div class="cv" id="cv-rec">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🎤 Nahraj čtení</span></div>
+
+  <!-- ÚVODNÍ OBRAZOVKA -->
+  <div id="rec-intro" class="recBox">
+    <div style="font-size:3rem">🎤</div>
+    <h3 style="margin:.5rem 0 1rem;font-size:1.25rem;color:#1f2937">Nahraj si svoje čtení!</h3>
+    <div class="recHelp">
+      Stiskni <b>Začít nahrávat</b>, čti slova a věty nahlas.<br>
+      Až budeš hotová, stiskni <b>Stop</b> a stáhni si soubor — ten pak pošli paní učitelce.
+    </div>
+    <div id="rec-error" class="recError" style="display:none"></div>
+    <button class="recBtn" id="rec-start" onclick="recStart()">🎤 Začít nahrávat</button>
+  </div>
+
+  <!-- HRACÍ OBRAZOVKA -->
+  <div id="rec-play" style="display:none">
+    <div class="recBox">
+      <div class="recStatus live"><span class="recDot"></span>NAHRÁVÁM <span class="recTime" id="recTime">0:00</span></div>
+      <div class="recWord" id="recWord">PES</div>
+      <div class="recList" id="recList">PES · LES · KOLO · MÁMA · TÁTA</div>
+      <button class="recBtn recording" onclick="recStop()">⏹ Stop</button>
+      <div style="margin-top:1rem;font-size:.85rem;color:#9ca3af">Až přečteš všechna slova, klikni Stop.</div>
+    </div>
+  </div>
+
+  <!-- VÝSLEDEK + STAŽENÍ -->
+  <div id="rec-done" style="display:none">
+    <div class="recBox">
+      <div style="font-size:3rem">✅</div>
+      <h3 style="margin:.5rem 0;font-size:1.3rem;color:var(--z)">Nahrávka hotová!</h3>
+      <p style="color:#6b7280;margin:0 0 .5rem">Délka: <b id="recFinalTime">0:00</b></p>
+      <div class="recPlay" id="recPlayer"></div>
+      <div class="recHelp" style="margin-top:1.2rem">
+        📌 <b>Co teď?</b><br>
+        1) Stiskni <b>Stáhnout nahrávku</b> — soubor se uloží na tablet/počítač<br>
+        2) Pošli ho paní učitelce přes email nebo Bakaláře<br>
+        3) Soubor se jmenuje například <b>cteni-2026-04-28.webm</b>
+      </div>
+      <a class="recDownload" id="recDl" download="cteni.webm">📥 Stáhnout nahrávku</a>
+      <button class="recRedo" onclick="recReset()">🔄 Nahrát znovu</button>
+      <button class="mbtn" onclick="back()" style="margin:.5rem">Menu</button>
+    </div>
+  </div>
+</div>
+
 </div><!-- .hl -->
 
 <script>
@@ -190,6 +266,10 @@ function shuffle(a){ a = a.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.fl
 function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
 
 function back(){
+  /* Zastavit aktivní nahrávání, pokud běží */
+  if(typeof RECST !== 'undefined' && RECST.recording){
+    try{ recStop(); }catch(e){}
+  }
   document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
   el('menu').style.display='block';
   window.scrollTo(0,0);
@@ -201,6 +281,7 @@ function go(id){
   window.scrollTo(0,0);
   if(id==='povt') povtStart();
   if(id==='povm') povmStart();
+  if(id==='rec') recIntro();
 }
 
 /* ─────────────────────────────────────────────
@@ -397,6 +478,319 @@ function povmFinish(){
   el('povmsc').textContent = s.body;
   el('povmtot').textContent = totalScore;
   el('povmrow').style.display='flex';
+}
+
+/* ─────────────────────────────────────────────
+   CV-REC: NAHRÁVÁNÍ ČTENÍ (MediaRecorder API)
+   Funguje na Chrome, Safari, Firefox, Edge (HTTPS).
+   Po dokončení nahrávky vznikne soubor ke stažení.
+───────────────────────────────────────────── */
+
+/* Sada slov + vět ke čtení (mix krátkých a dlouhých) */
+var REC_TEXTS = [
+  'PES · LES · KOLO · MÁMA · TÁTA',
+  'OKO · UCHO · NOS · RUKA · NOHA',
+  'JABLKO · BANÁN · JAHODA',
+  'AUTO JEDE.',
+  'MÁMA PEČE KOLÁČ.',
+  'PES BĚŽÍ NA ZAHRADĚ.',
+  'V LÉTĚ JE TEPLO.',
+  'V ZIMĚ PADÁ SNÍH.',
+  'Děti chodí do školy.',
+  'Slunce svítí celý den.',
+  'Žirafa má dlouhý krk.'
+];
+
+/* State pro nahrávání */
+var RECST = {
+  stream: null,
+  recorder: null,
+  chunks: [],
+  recording: false,
+  startTime: 0,
+  timerInterval: null,
+  blob: null,
+  blobUrl: null,
+  mimeType: '',
+  fileExt: 'webm'
+};
+
+function recIntro(){
+  el('rec-intro').style.display = 'block';
+  el('rec-play').style.display = 'none';
+  el('rec-done').style.display = 'none';
+  el('rec-error').style.display = 'none';
+  /* Vyplnit ukázkový text v intro */
+  if(el('recList')){
+    el('recList').innerHTML = REC_TEXTS.slice(0,5).join('<br>');
+  }
+}
+
+function recError(msg){
+  el('rec-error').textContent = '⚠️ ' + msg;
+  el('rec-error').style.display = 'block';
+}
+
+function recStart(){
+  el('rec-error').style.display = 'none';
+
+  /* Zkontrolovat dostupnost MediaRecorder API */
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    recError('Tvůj prohlížeč nepodporuje nahrávání. Zkus jiný prohlížeč (Chrome, Safari, Edge).');
+    return;
+  }
+  if(typeof MediaRecorder === 'undefined'){
+    recError('Tvůj prohlížeč nepodporuje MediaRecorder. Zkus jiný prohlížeč.');
+    return;
+  }
+
+  /* Požádat o mikrofon */
+  navigator.mediaDevices.getUserMedia({audio:true})
+    .then(function(stream){
+      RECST.stream = stream;
+      RECST.chunks = [];
+
+      /* Zvolit MIME typ — webm preferujeme, fallback na mp4 (Safari) */
+      var mimeType = '';
+      if(MediaRecorder.isTypeSupported('audio/webm;codecs=opus')){
+        mimeType = 'audio/webm;codecs=opus';
+        RECST.fileExt = 'webm';
+      } else if(MediaRecorder.isTypeSupported('audio/webm')){
+        mimeType = 'audio/webm';
+        RECST.fileExt = 'webm';
+      } else if(MediaRecorder.isTypeSupported('audio/mp4')){
+        mimeType = 'audio/mp4';
+        RECST.fileExt = 'm4a';
+      } else {
+        mimeType = ''; // Default
+        RECST.fileExt = 'webm';
+      }
+      RECST.mimeType = mimeType;
+
+      try {
+        RECST.recorder = mimeType ? new MediaRecorder(stream, {mimeType: mimeType}) : new MediaRecorder(stream);
+      } catch(e){
+        recError('Nepodařilo se spustit nahrávání: ' + e.message);
+        recCleanup();
+        return;
+      }
+
+      RECST.recorder.ondataavailable = function(e){
+        if(e.data && e.data.size > 0) RECST.chunks.push(e.data);
+      };
+      RECST.recorder.onstop = function(){
+        recFinalize();
+      };
+
+      RECST.recorder.start();
+      RECST.recording = true;
+      RECST.startTime = Date.now();
+
+      /* Přepnout obrazovku */
+      el('rec-intro').style.display = 'none';
+      el('rec-play').style.display = 'block';
+      el('rec-done').style.display = 'none';
+
+      /* Nastavit ukázkový text */
+      el('recWord').textContent = '🗣️ Čti nahlas';
+      el('recList').innerHTML = REC_TEXTS.join('<br>');
+
+      /* Spustit timer */
+      recUpdateTimer();
+      RECST.timerInterval = setInterval(recUpdateTimer, 500);
+    })
+    .catch(function(err){
+      var msg = 'Nepodařilo se získat přístup k mikrofonu.';
+      if(err && err.name === 'NotAllowedError'){
+        msg = 'Mikrofon byl zamítnut. Povol prosím mikrofon v nastavení prohlížeče.';
+      } else if(err && err.name === 'NotFoundError'){
+        msg = 'Nenašel jsem žádný mikrofon. Zkontroluj připojení.';
+      }
+      recError(msg);
+    });
+}
+
+function recUpdateTimer(){
+  if(!RECST.recording) return;
+  var sec = Math.floor((Date.now() - RECST.startTime) / 1000);
+  var mm = Math.floor(sec / 60);
+  var ss = sec % 60;
+  var s = mm + ':' + (ss < 10 ? '0' : '') + ss;
+  if(el('recTime')) el('recTime').textContent = s;
+}
+
+function recStop(){
+  if(!RECST.recording) return;
+  RECST.recording = false;
+  if(RECST.timerInterval){
+    clearInterval(RECST.timerInterval);
+    RECST.timerInterval = null;
+  }
+  if(RECST.recorder && RECST.recorder.state !== 'inactive'){
+    try{ RECST.recorder.stop(); }catch(e){}
+  }
+}
+
+function recFinalize(){
+  /* Zastavit stream (vypne kontrolku mikrofonu) */
+  if(RECST.stream){
+    RECST.stream.getTracks().forEach(function(t){ t.stop(); });
+  }
+
+  /* Vytvořit blob ze všech chunků */
+  var type = RECST.mimeType || 'audio/webm';
+  var blob = new Blob(RECST.chunks, {type: type});
+  RECST.blob = blob;
+
+  /* URL pro přehrávání */
+  if(RECST.blobUrl){ try{ URL.revokeObjectURL(RECST.blobUrl); }catch(e){} }
+  RECST.blobUrl = URL.createObjectURL(blob);
+
+  /* Spočítat finální čas */
+  var sec = Math.floor((Date.now() - RECST.startTime) / 1000);
+  var mm = Math.floor(sec / 60);
+  var ss = sec % 60;
+  el('recFinalTime').textContent = mm + ':' + (ss < 10 ? '0' : '') + ss;
+
+  /* Vytvořit přehrávač */
+  var player = el('recPlayer');
+  player.innerHTML = '';
+  var audio = document.createElement('audio');
+  audio.controls = true;
+  audio.src = RECST.blobUrl;
+  player.appendChild(audio);
+
+  /* Připravit download odkaz */
+  var d = new Date();
+  var pad = function(n){return n<10?'0'+n:''+n;};
+  var fname = 'cteni-' + d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate())
+              + '-' + pad(d.getHours()) + pad(d.getMinutes()) + '.' + RECST.fileExt;
+  var dl = el('recDl');
+  dl.href = RECST.blobUrl;
+  dl.download = fname;
+  dl.textContent = '📥 Stáhnout: ' + fname;
+
+  /* Přepnout obrazovku */
+  el('rec-intro').style.display = 'none';
+  el('rec-play').style.display = 'none';
+  el('rec-done').style.display = 'block';
+
+  /* Body za dokončené nahrávání */
+  addPoints(15);
+}
+
+function recReset(){
+  /* Vrátit zpět na intro, zachovat stažený soubor (možnost ho dokončit) */
+  recCleanup();
+  recIntro();
+}
+
+function recCleanup(){
+  if(RECST.stream){
+    try{ RECST.stream.getTracks().forEach(function(t){ t.stop(); }); }catch(e){}
+    RECST.stream = null;
+  }
+  if(RECST.timerInterval){
+    clearInterval(RECST.timerInterval);
+    RECST.timerInterval = null;
+  }
+  RECST.recorder = null;
+  RECST.chunks = [];
+  RECST.recording = false;
+}
+
+/* ─────────────────────────────────────────────
+   PRINT KIT — pracovní listy k tisku
+───────────────────────────────────────────── */
+var PRINT_TOPICS = [
+  {key:'povt', label:'📖 Čtení s otázkou — VELKÁ', count:'5 textů'},
+  {key:'povm', label:'📖 Čtení s otázkou — malá', count:'5 textů'}
+];
+function printChoice(){
+  var html = '<div style="background:white;padding:1rem;border-radius:12px;max-width:380px;margin:0 auto;font-family:var(--font)">'+
+             '<h3 style="color:var(--m);margin-bottom:.8rem">🖨️ Vyber téma k tisku</h3>';
+  PRINT_TOPICS.forEach(function(t){
+    html += '<button onclick="printWorksheet(\''+t.key+'\')" style="display:block;width:100%;padding:.7rem .9rem;margin:.3rem 0;background:#e8f4fb;border:1.5px solid var(--m);border-radius:8px;font-family:var(--font);font-weight:700;font-size:.95rem;color:#1a5f7a;cursor:pointer;text-align:left">'+t.label+' <span style="float:right;color:#9ca3af;font-weight:400">'+(t.count||'')+'</span></button>';
+  });
+  html += '<button onclick="closePrintChoice()" style="display:block;width:100%;padding:.6rem;margin-top:1rem;background:white;border:1.5px solid #d1d5db;border-radius:8px;font-family:var(--font);font-weight:600;cursor:pointer">Zavřít</button>';
+  html += '</div>';
+  var overlay = document.createElement('div');
+  overlay.id = 'printOverlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:1rem';
+  overlay.innerHTML = html;
+  overlay.onclick = function(e){ if(e.target===overlay) closePrintChoice(); };
+  document.body.appendChild(overlay);
+}
+function closePrintChoice(){ var o=document.getElementById('printOverlay'); if(o)o.remove(); }
+function printWorksheet(key){
+  closePrintChoice();
+  var data = printGetData(key);
+  var w = window.open('','_blank','width=900,height=1100');
+  if(!w){ alert('Prohlížeč zablokoval otevření okna.'); return; }
+  w.document.write(printHTML(data));
+  w.document.close();
+  setTimeout(function(){ try{ w.print(); }catch(e){} }, 500);
+}
+
+function printGetData(key){
+  var transform = key === 'povt' ? function(s){return s.toUpperCase();} : function(s){return s;};
+  var picked = shuffle(POROZUMENI).slice(0, 5);
+  var qHtml = '';
+  picked.forEach(function(it,i){
+    qHtml += '<div class="task" style="margin:.6rem 0;padding:.5rem .75rem;border-left:3px solid #32a0d2;background:#fafafa;border-radius:4px">'+
+      '<div style="font-size:.85rem;font-weight:700;color:#374151;margin-bottom:.2rem"><span class="num">'+(i+1)+'.</span> Text:</div>'+
+      '<div style="font-family:Verdana,Geneva,sans-serif;font-size:1rem;line-height:1.5;margin:.2rem 0">'+transform(it.s)+'</div>'+
+      '<div style="font-family:Verdana,Geneva,sans-serif;font-size:.95rem;color:#32a0d2;margin:.3rem 0"><b>Otázka:</b> '+transform(it.q)+'</div>'+
+      '<div style="font-size:.9rem;color:#374151;margin-top:.3rem">Odpověď: <span style="display:inline-block;border-bottom:1px solid #9ca3af;width:60%;height:1.2em"></span></div>'+
+      '</div>';
+  });
+  var aHtml = '';
+  picked.forEach(function(it,i){
+    aHtml += '<div class="task"><span class="num">'+(i+1)+'.</span> '+transform(it.opts[it.a])+'</div>';
+  });
+  return {
+    title: key==='povt' ? 'Čtení s porozuměním (VELKÁ)' : 'Čtení s porozuměním (malá)',
+    topic: '1. třída · Čtení',
+    instructions: key==='povt' ? 'Přečti si pozorně každý text a odpověz na otázku.' : 'Přečti si pozorně každý text a odpověz na otázku celou větou.',
+    qHtml: qHtml,
+    aHtml: aHtml
+  };
+}
+
+function printHTML(data){
+  var d=new Date(); var dateStr=d.getDate()+'.'+(d.getMonth()+1)+'.'+d.getFullYear();
+  return '<!doctype html><html lang="cs"><head><meta charset="utf-8"><title>Pracovní list — '+data.title+'</title><style>'+
+    '*{box-sizing:border-box;margin:0;padding:0;}'+
+    'body{font-family:"Barlow Condensed",Arial,sans-serif;color:#1f2937;padding:1rem;}'+
+    '.sheet{max-width:760px;margin:0 auto;}'+
+    '.head{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #32a0d2;padding-bottom:.4rem;margin-bottom:.6rem;}'+
+    '.brand{font-size:.95rem;font-weight:800;color:#32a0d2;}'+
+    '.meta{font-size:.85rem;color:#6b7280;}'+
+    '.title{font-size:1.4rem;font-weight:800;color:#32a0d2;text-align:center;margin:.5rem 0;}'+
+    '.instructions{background:#fff8ee;border-left:4px solid #ffaa37;padding:.5rem .75rem;border-radius:6px;font-size:.95rem;margin:.5rem 0;}'+
+    '.name-line{margin:.4rem 0;font-size:.9rem;color:#374151;}'+
+    '.name-line span{display:inline-block;border-bottom:1px solid #9ca3af;width:200px;height:1.2em;}'+
+    '.task{font-size:1.05rem;line-height:1.7;padding:.1rem 0;}'+
+    '.num{font-weight:800;color:#32a0d2;display:inline-block;min-width:1.5rem;}'+
+    '.cut{margin:1.5rem 0 1rem;border-top:2px dashed #9ca3af;text-align:center;color:#9ca3af;font-size:.85rem;position:relative;}'+
+    '.cut::before{content:"✂ rozstřihni";position:absolute;top:-.7rem;background:white;padding:0 .5rem;left:50%;transform:translateX(-50%);}'+
+    '.solution-head{background:#dcfce7;border-left:4px solid #16a34a;padding:.4rem .75rem;border-radius:6px;font-size:.95rem;font-weight:700;color:#15803d;margin:.5rem 0;}'+
+    '.toolbar{position:fixed;top:.5rem;right:.5rem;background:#32a0d2;color:white;padding:.5rem 1rem;border-radius:99px;border:none;font-family:inherit;font-weight:700;font-size:.95rem;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2);}'+
+    '@media print{.toolbar{display:none;}body{padding:.5cm;}.sheet{max-width:100%;}}'+
+    '@page{size:A4;margin:1cm;}'+
+    '</style></head><body>'+
+    '<button class="toolbar" onclick="window.print()">🖨️ Vytisknout / Uložit PDF</button>'+
+    '<div class="sheet">'+
+      '<div class="head"><span class="brand">LinguaCzech · ZŠ Lingua Universal</span><span class="meta">'+(data.topic||data.title)+' · '+dateStr+'</span></div>'+
+      '<div class="title">'+data.title+'</div>'+
+      '<div class="name-line">Jméno: <span></span> &nbsp;&nbsp; Třída: <span style="width:80px"></span></div>'+
+      '<div class="instructions"><b>Pokyn:</b> '+data.instructions+'</div>'+
+      data.qHtml+
+      '<div class="cut"></div>'+
+      '<div class="solution-head">✓ Klíč pro paní učitelku / rodiče</div>'+
+      data.aHtml+
+    '</div>'+
+    '</body></html>';
 }
 
 loadScore();

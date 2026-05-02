@@ -106,6 +106,10 @@
     <div onclick="go('dd')" class="mk mk-m" style="grid-column:span 2"><h3>Rozdělování</h3><p>Roztřiď souhlásky na tvrdé a měkké</p></div>
     <div onclick="go('fi')" class="mk mk-o"><h3>Doplňování i/y</h3><p>Doplň i / y / í / ý do slova</p></div>
     <div onclick="go('plane')" class="mk mk-m"><h3>✈️ Letadlo</h3><p>Proletí správným obláčkem!</p></div>
+    <div onclick="printChoice()" class="mk" style="grid-column:span 2;background:#f3f4f6;border:2px dashed #9ca3af">
+      <h3 style="color:#374151">🖨️ Vytisknout pracovní list</h3>
+      <p style="color:#6b7280">PDF k procvičování doma — zadání + řešení na A4</p>
+    </div>
   </div>
 </div>
 
@@ -568,6 +572,117 @@ function updateTrophies(){
       setTimeout(function(){e.classList.remove('pop');},500);
     }
   });
+}
+
+/* ─────────────────────────────────────────────
+   PRINT KIT — pracovní listy k tisku
+───────────────────────────────────────────── */
+var PRINT_TOPICS = [
+  {key:'dd',  label:'Roztřiď: tvrdá / měkká souhláska', count:'12 souhlásek'},
+  {key:'fi',  label:'Doplň i / y / í / ý do slova',     count:'15 slov'},
+  {key:'mix', label:'Smíšený list (přepiš správně)',    count:'15 slov'}
+];
+function printChoice(){
+  var html = '<div style="background:white;padding:1rem;border-radius:12px;max-width:380px;margin:0 auto;font-family:var(--font)">'+
+             '<h3 style="color:var(--m);margin-bottom:.8rem">🖨️ Vyber téma k tisku</h3>';
+  PRINT_TOPICS.forEach(function(t){
+    html += '<button onclick="printWorksheet(\''+t.key+'\')" style="display:block;width:100%;padding:.7rem .9rem;margin:.3rem 0;background:#e8f4fb;border:1.5px solid var(--m);border-radius:8px;font-family:var(--font);font-weight:700;font-size:.95rem;color:#1a5f7a;cursor:pointer;text-align:left">'+t.label+' <span style="float:right;color:#9ca3af;font-weight:400">'+(t.count||'')+'</span></button>';
+  });
+  html += '<button onclick="closePrintChoice()" style="display:block;width:100%;padding:.6rem;margin-top:1rem;background:white;border:1.5px solid #d1d5db;border-radius:8px;font-family:var(--font);font-weight:600;cursor:pointer">Zavřít</button>';
+  html += '</div>';
+  var overlay = document.createElement('div');
+  overlay.id = 'printOverlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:1rem';
+  overlay.innerHTML = html;
+  overlay.onclick = function(e){ if(e.target===overlay) closePrintChoice(); };
+  document.body.appendChild(overlay);
+}
+function closePrintChoice(){ var o=document.getElementById('printOverlay'); if(o)o.remove(); }
+function printWorksheet(key){
+  closePrintChoice();
+  var data = printGetData(key);
+  var w = window.open('','_blank','width=900,height=1100');
+  if(!w){ alert('Prohlížeč zablokoval otevření okna.'); return; }
+  w.document.write(printHTML(data));
+  w.document.close();
+  setTimeout(function(){ try{ w.print(); }catch(e){} }, 500);
+}
+function _shf(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=0|Math.random()*(i+1);var x=b[i];b[i]=b[j];b[j]=x;}return b;}
+
+function printGetData(key){
+  if(key==='dd'){
+    /* Roztřídit souhlásky — TVRDÉ a MĚKKÉ smíchat */
+    var pool = TVRDE.concat(MEKKE);
+    var picked = _shf(pool).slice(0, 12);
+    var qHtml = '<div class="task" style="font-size:1.5rem;letter-spacing:.7rem;text-align:center;margin:1rem 0;background:white;border:2px dashed #9ca3af;padding:1rem;border-radius:8px">'+picked.join('  ')+'</div>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.5rem">'+
+        '<div style="border:2px solid #32a0d2;border-radius:8px;padding:.5rem;min-height:6rem;background:#e8f4fb"><b style="color:#32a0d2">TVRDÉ</b></div>'+
+        '<div style="border:2px solid #ffaa37;border-radius:8px;padding:.5rem;min-height:6rem;background:#fff8ee"><b style="color:#ffaa37">MĚKKÉ</b></div>'+
+      '</div>';
+    var aHtml = '<div class="task"><b>Tvrdé:</b> '+TVRDE.filter(function(x){return picked.indexOf(x)>=0;}).join(', ')+'</div>'+
+                '<div class="task"><b>Měkké:</b> '+MEKKE.filter(function(x){return picked.indexOf(x)>=0;}).join(', ')+'</div>';
+    return {title:'Tvrdé a měkké souhlásky', topic:'Souhlásky', instructions:'Napiš každou souhlásku do správného sloupce.', qHtml:qHtml, aHtml:aHtml};
+  }
+  if(key==='fi'){
+    var picked = _shf(SLOVA).slice(0, 15);
+    var qHtml = '';
+    picked.forEach(function(it,i){
+      qHtml += '<div class="task"><span class="num">'+(i+1)+'.</span> '+it.q.replace('{_}','<u>____</u>')+'</div>';
+    });
+    var aHtml = '';
+    picked.forEach(function(it,i){
+      aHtml += '<div class="task"><span class="num">'+(i+1)+'.</span> '+it.full+' <span style="color:#9ca3af">('+it.typ+'+'+it.a+')</span></div>';
+    });
+    return {title:'Doplň i / y / í / ý', topic:'Měkké a tvrdé', instructions:'Doplň i, y, í, nebo ý.', qHtml:qHtml, aHtml:aHtml};
+  }
+  if(key==='mix'){
+    var picked = _shf(SLOVA).slice(0, 15);
+    var qHtml = '<div class="task" style="margin:.6rem 0">Přepiš správně každé slovo na řádek:</div>';
+    picked.forEach(function(it,i){
+      qHtml += '<div class="task" style="border-bottom:1px solid #d1d5db;padding:.5rem 0;font-size:1.1rem"><span class="num">'+(i+1)+'.</span> '+it.q.replace('{_}','___')+' &rarr; ____________</div>';
+    });
+    var aHtml = '';
+    picked.forEach(function(it,i){
+      aHtml += '<div class="task"><span class="num">'+(i+1)+'.</span> '+it.full+'</div>';
+    });
+    return {title:'Měkké a tvrdé — přepiš', topic:'Měkké a tvrdé', instructions:'Přepiš každé slovo a doplň správné i/y.', qHtml:qHtml, aHtml:aHtml};
+  }
+}
+
+function printHTML(data){
+  var d=new Date(); var dateStr=d.getDate()+'.'+(d.getMonth()+1)+'.'+d.getFullYear();
+  return '<!doctype html><html lang="cs"><head><meta charset="utf-8"><title>Pracovní list — '+data.title+'</title><style>'+
+    '*{box-sizing:border-box;margin:0;padding:0;}'+
+    'body{font-family:"Barlow Condensed",Arial,sans-serif;color:#1f2937;padding:1rem;}'+
+    '.sheet{max-width:760px;margin:0 auto;}'+
+    '.head{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #32a0d2;padding-bottom:.4rem;margin-bottom:.6rem;}'+
+    '.brand{font-size:.95rem;font-weight:800;color:#32a0d2;}'+
+    '.meta{font-size:.85rem;color:#6b7280;}'+
+    '.title{font-size:1.4rem;font-weight:800;color:#32a0d2;text-align:center;margin:.5rem 0;}'+
+    '.instructions{background:#fff8ee;border-left:4px solid #ffaa37;padding:.5rem .75rem;border-radius:6px;font-size:.95rem;margin:.5rem 0;}'+
+    '.name-line{margin:.4rem 0;font-size:.9rem;color:#374151;}'+
+    '.name-line span{display:inline-block;border-bottom:1px solid #9ca3af;width:200px;height:1.2em;}'+
+    '.task{font-size:1.05rem;line-height:1.9;padding:.1rem 0;font-family:Verdana,Geneva,sans-serif;}'+
+    '.num{font-weight:800;color:#32a0d2;display:inline-block;min-width:1.5rem;}'+
+    '.cut{margin:1.5rem 0 1rem;border-top:2px dashed #9ca3af;text-align:center;color:#9ca3af;font-size:.85rem;position:relative;}'+
+    '.cut::before{content:"✂ rozstřihni";position:absolute;top:-.7rem;background:white;padding:0 .5rem;left:50%;transform:translateX(-50%);}'+
+    '.solution-head{background:#dcfce7;border-left:4px solid #16a34a;padding:.4rem .75rem;border-radius:6px;font-size:.95rem;font-weight:700;color:#15803d;margin:.5rem 0;}'+
+    '.toolbar{position:fixed;top:.5rem;right:.5rem;background:#32a0d2;color:white;padding:.5rem 1rem;border-radius:99px;border:none;font-family:inherit;font-weight:700;font-size:.95rem;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2);}'+
+    '@media print{.toolbar{display:none;}body{padding:.5cm;}.sheet{max-width:100%;}}'+
+    '@page{size:A4;margin:1cm;}'+
+    '</style></head><body>'+
+    '<button class="toolbar" onclick="window.print()">🖨️ Vytisknout / Uložit PDF</button>'+
+    '<div class="sheet">'+
+      '<div class="head"><span class="brand">LinguaCzech · ZŠ Lingua Universal</span><span class="meta">'+(data.topic||data.title)+' · '+dateStr+'</span></div>'+
+      '<div class="title">'+data.title+'</div>'+
+      '<div class="name-line">Jméno: <span></span> &nbsp;&nbsp; Třída: <span style="width:80px"></span></div>'+
+      '<div class="instructions"><b>Pokyn:</b> '+data.instructions+'</div>'+
+      data.qHtml+
+      '<div class="cut"></div>'+
+      '<div class="solution-head">✓ Klíč pro paní učitelku / rodiče</div>'+
+      data.aHtml+
+    '</div>'+
+    '</body></html>';
 }
 
 </script>

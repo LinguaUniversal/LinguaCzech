@@ -194,6 +194,10 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;}
     <div onclick="go('tt')" class="mk mk-o"><h3>Tiskací — obtahování</h3><p>Obtáhni tiskací písmeno</p></div>
     <div onclick="go('tr')" class="mk mk-m"><h3>Psací — obtahování</h3><p>Obtáhni psací písmeno</p></div>
     <div onclick="go('auto')" class="mk mk-o" style="grid-column:span 2"><h3>🚗 Hra auto</h3><p>Najeď do pruhu se správným písmenem</p></div>
+    <div onclick="printChoice()" class="mk" style="grid-column:span 2;background:#f3f4f6;border:2px dashed #9ca3af">
+      <h3 style="color:#374151">🖨️ Vytisknout pracovní list</h3>
+      <p style="color:#6b7280">PDF k procvičování doma — vyber písmena k obtahování</p>
+    </div>
   </div>
 </div>
 
@@ -1627,6 +1631,173 @@ document.addEventListener('keydown', function(e){
     if(e.key === 'ArrowDown'){ ATG.lane = Math.min(ATG.N-1, ATG.lane + 1); e.preventDefault(); }
   }
 });
+
+/* ─────────────────────────────────────────────
+   PRINT KIT — pracovní listy k tisku
+   - Pro psací obtahování (tr): výběr písmen + řádek pro každé
+   - Pro tiskací obtahování (tt): stejné, ale s velkým bezpatkovým fontem
+───────────────────────────────────────────── */
+var PRINT_TOPICS = [
+  {key:'tr',  label:'Psací abeceda — obtahování', count:'výběr písmen'},
+  {key:'tt',  label:'Tiskací abeceda — obtahování', count:'výběr písmen'}
+];
+function printChoice(){
+  var html = '<div style="background:white;padding:1rem;border-radius:12px;max-width:380px;margin:0 auto;font-family:var(--font)">'+
+             '<h3 style="color:var(--m);margin-bottom:.8rem">🖨️ Vyber téma k tisku</h3>';
+  PRINT_TOPICS.forEach(function(t){
+    html += '<button onclick="printOpenSelect(\''+t.key+'\')" style="display:block;width:100%;padding:.7rem .9rem;margin:.3rem 0;background:#e8f4fb;border:1.5px solid var(--m);border-radius:8px;font-family:var(--font);font-weight:700;font-size:.95rem;color:#1a5f7a;cursor:pointer;text-align:left">'+t.label+' <span style="float:right;color:#9ca3af;font-weight:400">'+(t.count||'')+'</span></button>';
+  });
+  html += '<button onclick="closePrintChoice()" style="display:block;width:100%;padding:.6rem;margin-top:1rem;background:white;border:1.5px solid #d1d5db;border-radius:8px;font-family:var(--font);font-weight:600;cursor:pointer">Zavřít</button>';
+  html += '</div>';
+  var overlay = document.createElement('div');
+  overlay.id = 'printOverlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:1rem';
+  overlay.innerHTML = html;
+  overlay.onclick = function(e){ if(e.target===overlay) closePrintChoice(); };
+  document.body.appendChild(overlay);
+}
+function closePrintChoice(){ var o=document.getElementById('printOverlay'); if(o)o.remove(); }
+
+/* Aktuální typ pro výběr (tr=psací, tt=tiskací) */
+var _printMode = 'tr';
+
+function printOpenSelect(mode){
+  _printMode = mode;
+  closePrintChoice();
+  var caps, lowers;
+  if(mode === 'tr'){
+    /* PSACÍ: čerpáme z IMG_DATA */
+    caps = []; lowers = [];
+    Object.keys(IMG_DATA).forEach(function(k){
+      var m = k.match(/^([A-Za-zÁÉÍÓÚÝÄČĎĚŇŘŠŤŮŽáéíóúýäčďěňřšťůž]+)_(cap|lower)$/);
+      if(m){
+        if(m[2]==='cap') caps.push(m[1]);
+        else lowers.push(m[1]);
+      }
+    });
+    caps.sort(); lowers.sort();
+  } else {
+    /* TISKACÍ: použijeme abecedu */
+    caps = TR_LETTERS_CAP || ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','R','S','T','U','V','Z'];
+    lowers = TR_LETTERS_LOWER || ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','r','s','t','u','v','z'];
+  }
+
+  var title = mode === 'tr' ? 'Psací abeceda — obtahování' : 'Tiskací abeceda — obtahování';
+  var html = '<div style="background:white;padding:1rem;border-radius:12px;max-width:520px;width:100%;margin:0 auto;font-family:var(--font);max-height:85vh;overflow-y:auto">'+
+             '<h3 style="color:var(--m);margin-bottom:.6rem">🖨️ '+title+'</h3>'+
+             '<p style="color:#6b7280;font-size:.9rem;margin-bottom:.8rem">Vyber písmena, která chceš procvičit. Každé bude na vlastním řádku k obtahování.</p>';
+  if(caps.length){
+    html += '<div style="font-weight:700;color:#374151;margin:.5rem 0 .3rem">Velká:</div>';
+    html += '<div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.6rem">';
+    caps.forEach(function(L){
+      html += '<label style="display:inline-flex;align-items:center;gap:.25rem;padding:.3rem .55rem;background:#e8f4fb;border:1.5px solid var(--m);border-radius:8px;cursor:pointer;font-weight:700;color:#1a5f7a;font-size:.95rem">'+
+              '<input type="checkbox" class="pickletr-cap" value="'+L+'" style="cursor:pointer">'+L+'</label>';
+    });
+    html += '</div>';
+  }
+  if(lowers.length){
+    html += '<div style="font-weight:700;color:#374151;margin:.5rem 0 .3rem">Malá:</div>';
+    html += '<div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.6rem">';
+    lowers.forEach(function(L){
+      html += '<label style="display:inline-flex;align-items:center;gap:.25rem;padding:.3rem .55rem;background:#fff8ee;border:1.5px solid var(--o);border-radius:8px;cursor:pointer;font-weight:700;color:#b45309;font-size:.95rem">'+
+              '<input type="checkbox" class="pickletr-lower" value="'+L+'" style="cursor:pointer">'+L+'</label>';
+    });
+    html += '</div>';
+  }
+  html += '<div style="display:flex;gap:.5rem;margin-top:1rem">'+
+          '<button onclick="pickletrSelectAll(true)" style="flex:1;padding:.5rem;background:white;border:1.5px solid #d1d5db;border-radius:8px;font-family:var(--font);font-weight:600;cursor:pointer">Vybrat vše</button>'+
+          '<button onclick="pickletrSelectAll(false)" style="flex:1;padding:.5rem;background:white;border:1.5px solid #d1d5db;border-radius:8px;font-family:var(--font);font-weight:600;cursor:pointer">Zrušit</button>'+
+          '</div>'+
+          '<button onclick="pickletrGenerate()" style="display:block;width:100%;padding:.8rem;margin-top:1rem;background:var(--m);color:white;border:none;border-radius:8px;font-family:var(--font);font-weight:700;font-size:1rem;cursor:pointer">🖨️ Vytvořit pracovní list</button>'+
+          '<button onclick="closePrintChoice()" style="display:block;width:100%;padding:.6rem;margin-top:.5rem;background:white;border:1.5px solid #d1d5db;border-radius:8px;font-family:var(--font);font-weight:600;cursor:pointer">Zavřít</button>'+
+          '</div>';
+
+  var overlay = document.createElement('div');
+  overlay.id = 'printOverlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:1rem';
+  overlay.innerHTML = html;
+  overlay.onclick = function(e){ if(e.target===overlay) closePrintChoice(); };
+  document.body.appendChild(overlay);
+}
+function pickletrSelectAll(on){
+  document.querySelectorAll('#printOverlay input[type="checkbox"]').forEach(function(cb){ cb.checked = on; });
+}
+function pickletrGenerate(){
+  var picked = [];
+  document.querySelectorAll('#printOverlay .pickletr-cap:checked').forEach(function(cb){ picked.push({letter:cb.value, type:'cap'}); });
+  document.querySelectorAll('#printOverlay .pickletr-lower:checked').forEach(function(cb){ picked.push({letter:cb.value, type:'lower'}); });
+  if(picked.length === 0){
+    alert('Vyber nejdřív aspoň jedno písmeno.');
+    return;
+  }
+  closePrintChoice();
+  var w = window.open('','_blank','width=900,height=1100');
+  if(!w){ alert('Prohlížeč zablokoval otevření okna.'); return; }
+  w.document.write(printLetterHTML(picked, _printMode));
+  w.document.close();
+  setTimeout(function(){ try{ w.print(); }catch(e){} }, 500);
+}
+
+function printLetterHTML(letters, mode){
+  var d=new Date(); var dateStr=d.getDate()+'.'+(d.getMonth()+1)+'.'+d.getFullYear();
+  var title = mode === 'tr' ? 'Psací písmo — obtahování' : 'Tiskací písmo — obtahování';
+  var rowsHtml = '';
+  letters.forEach(function(L){
+    if(mode === 'tr'){
+      /* Psací — používáme IMG_DATA s base64 PNG */
+      var key = L.letter + '_' + L.type;
+      var img = IMG_DATA[key] || '';
+      rowsHtml += '<div class="row">'+
+                    '<div class="row-letter"><img src="'+img+'" alt="'+L.letter+'"></div>'+
+                    '<div class="row-line">'+
+                      '<img src="'+img+'" alt=""><img src="'+img+'" alt=""><img src="'+img+'" alt=""><img src="'+img+'" alt=""><img src="'+img+'" alt="">'+
+                    '</div>'+
+                  '</div>';
+    } else {
+      /* Tiskací — používáme Verdanu jako velký text */
+      rowsHtml += '<div class="row">'+
+                    '<div class="row-letter row-letter-text">'+L.letter+'</div>'+
+                    '<div class="row-line row-line-text">'+
+                      '<span>'+L.letter+'</span><span>'+L.letter+'</span><span>'+L.letter+'</span><span>'+L.letter+'</span><span>'+L.letter+'</span>'+
+                    '</div>'+
+                  '</div>';
+    }
+  });
+  return '<!doctype html><html lang="cs"><head><meta charset="utf-8"><title>'+title+'</title><style>'+
+    '*{box-sizing:border-box;margin:0;padding:0;}'+
+    'body{font-family:"Barlow Condensed",Arial,sans-serif;color:#1f2937;padding:1rem;}'+
+    '.sheet{max-width:760px;margin:0 auto;}'+
+    '.head{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #32a0d2;padding-bottom:.4rem;margin-bottom:.6rem;}'+
+    '.brand{font-size:.95rem;font-weight:800;color:#32a0d2;}'+
+    '.meta{font-size:.85rem;color:#6b7280;}'+
+    '.title{font-size:1.4rem;font-weight:800;color:#32a0d2;text-align:center;margin:.5rem 0;}'+
+    '.instructions{background:#fff8ee;border-left:4px solid #ffaa37;padding:.5rem .75rem;border-radius:6px;font-size:.95rem;margin:.5rem 0;}'+
+    '.name-line{margin:.4rem 0;font-size:.9rem;color:#374151;}'+
+    '.name-line span{display:inline-block;border-bottom:1px solid #9ca3af;width:200px;height:1.2em;}'+
+    /* Řádky */
+    '.row{display:flex;align-items:center;gap:.5rem;border-bottom:1px solid #e5e7eb;padding:.4rem 0;page-break-inside:avoid;}'+
+    '.row-letter{flex:0 0 70px;border-right:2px solid #32a0d2;padding-right:.5rem;height:60px;display:flex;align-items:center;justify-content:center;}'+
+    '.row-letter img{max-height:55px;max-width:65px;}'+
+    '.row-letter-text{font-family:Verdana,Geneva,sans-serif;font-weight:700;font-size:2.2rem;color:#32a0d2;}'+
+    '.row-line{flex:1;height:60px;background:'+
+      'repeating-linear-gradient(to bottom,transparent 0,transparent 5px,#bcd 5px,#bcd 6px,transparent 6px,transparent 27px,#bcd 27px,#bcd 28px,transparent 28px,transparent 54px,#bcd 54px,#bcd 55px);'+
+      'display:flex;align-items:center;justify-content:space-around;padding:0 .5rem;}'+
+    '.row-line img{max-height:42px;max-width:48px;opacity:.30;filter:grayscale(.8);}'+
+    '.row-line-text span{font-family:Verdana,Geneva,sans-serif;font-weight:700;font-size:2rem;color:#9ca3af;opacity:.30;}'+
+    '.toolbar{position:fixed;top:.5rem;right:.5rem;background:#32a0d2;color:white;padding:.5rem 1rem;border-radius:99px;border:none;font-family:inherit;font-weight:700;font-size:.95rem;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2);}'+
+    '@media print{.toolbar{display:none;}body{padding:.4cm;}.sheet{max-width:100%;}}'+
+    '@page{size:A4;margin:1cm;}'+
+    '</style></head><body>'+
+    '<button class="toolbar" onclick="window.print()">🖨️ Vytisknout / Uložit PDF</button>'+
+    '<div class="sheet">'+
+      '<div class="head"><span class="brand">LinguaCzech · ZŠ Lingua Universal</span><span class="meta">'+title+' · '+dateStr+'</span></div>'+
+      '<div class="title">'+title+'</div>'+
+      '<div class="name-line">Jméno: <span></span> &nbsp;&nbsp; Třída: <span style="width:80px"></span></div>'+
+      '<div class="instructions"><b>Pokyn:</b> Obtáhni každé písmeno tužkou. Sleduj směr tahu a zkus tahat plynule.</div>'+
+      rowsHtml+
+    '</div>'+
+    '</body></html>';
+}
 
 /* ─────────────────────────────────────────────
    INIT

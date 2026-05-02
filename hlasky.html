@@ -180,6 +180,10 @@
     <div onclick="go('ps')" class="mk mk-o"><h3>Psací písmo — poznávání</h3><p>Poznáš psací písmeno z učebnice?</p></div>
     <div onclick="go('tr')" style="grid-column:span 2" class="mk mk-m"><h3>Psaní písmen — obtahování</h3><p>Obtáhni psací písmeno prstem nebo myší</p></div>
     <div onclick="go('game')" style="grid-column:span 2" class="mk mk-o"><h3>🚗 Závodní abeceda</h3><p>Přejeď do správného pruhu — samohláska nebo souhláska?</p></div>
+    <div onclick="printChoice()" class="mk" style="grid-column:span 2;background:#f3f4f6;border:2px dashed #9ca3af">
+      <h3 style="color:#374151">🖨️ Vytisknout pracovní list</h3>
+      <p style="color:#6b7280">PDF k procvičování doma — zadání + řešení na A4</p>
+    </div>
   </div>
 </div>
 
@@ -696,6 +700,264 @@ function updateTrophies(){
       setTimeout(function(){e.classList.remove('pop');},500);
     }
   });
+}
+
+/* ─────────────────────────────────────────────
+   PRINT KIT — speciální pro hlasky.html
+   Pro psací obtahování má speciální výběr písmen
+───────────────────────────────────────────── */
+var PRINT_TOPICS_HLASKY = [
+  {key:'s1',  label:'Samohlásky / souhlásky (rozřaď)', count:'15 písmen'},
+  {key:'abc', label:'Abeceda (seřaď písmena)',          count:'10 písmen'},
+  {key:'ch',  label:'Chybějící písmeno v abecedě',      count:'10 řad'},
+  {key:'tr',  label:'Psací abeceda — obtahování',       count:'výběr písmen'}
+];
+
+function printChoice(){
+  var html = '<div style="background:white;padding:1rem;border-radius:12px;max-width:380px;margin:0 auto;font-family:var(--font);max-height:80vh;overflow-y:auto">'+
+             '<h3 style="color:var(--m);margin-bottom:.8rem">🖨️ Vyber téma k tisku</h3>';
+  PRINT_TOPICS_HLASKY.forEach(function(t){
+    html += '<button onclick="printWorksheet(\''+t.key+'\')" style="display:block;width:100%;padding:.7rem .9rem;margin:.3rem 0;background:#e8f4fb;border:1.5px solid var(--m);border-radius:8px;font-family:var(--font);font-weight:700;font-size:.95rem;color:#1a5f7a;cursor:pointer;text-align:left">'+t.label+' <span style="float:right;color:#9ca3af;font-weight:400">'+(t.count||'')+'</span></button>';
+  });
+  html += '<button onclick="closePrintChoice()" style="display:block;width:100%;padding:.6rem;margin-top:1rem;background:white;border:1.5px solid #d1d5db;border-radius:8px;font-family:var(--font);font-weight:600;cursor:pointer">Zavřít</button>';
+  html += '</div>';
+  var overlay = document.createElement('div');
+  overlay.id = 'printOverlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:1rem';
+  overlay.innerHTML = html;
+  overlay.onclick = function(e){ if(e.target===overlay) closePrintChoice(); };
+  document.body.appendChild(overlay);
+}
+function closePrintChoice(){ var o=document.getElementById('printOverlay'); if(o)o.remove(); }
+function printWorksheet(key){
+  closePrintChoice();
+  if(key==='tr'){
+    /* SPECIÁLNÍ — pro psací obtahování zobrazíme nejdřív výběr písmen */
+    printPsaciSelect();
+    return;
+  }
+  var data = printGetData(key);
+  var w = window.open('','_blank','width=900,height=1100');
+  if(!w){ alert('Prohlížeč zablokoval otevření okna.'); return; }
+  w.document.write(printHTML(data));
+  w.document.close();
+  setTimeout(function(){ try{ w.print(); }catch(e){} }, 500);
+}
+function _shf(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=0|Math.random()*(i+1);var x=b[i];b[i]=b[j];b[j]=x;}return b;}
+
+/* ────────────────────────────────────
+   PSACÍ OBTAHOVÁNÍ — výběr písmen pro tisk
+   Na zařízení je IMG_DATA s psacími písmeny.
+   Necháme rodiče vybrat, která chce na list.
+──────────────────────────────────── */
+function printPsaciSelect(){
+  /* Z IMG_DATA klíčů typu "A_cap", "a_lower" extrahujeme dostupná písmena */
+  var caps = [], lowers = [];
+  Object.keys(IMG_DATA).forEach(function(k){
+    var m = k.match(/^([A-Za-zÁÉÍÓÚÝÄČĎĚŇŘŠŤŮŽáéíóúýäčďěňřšťůž]+)_(cap|lower)$/);
+    if(m){
+      if(m[2]==='cap') caps.push(m[1]);
+      else lowers.push(m[1]);
+    }
+  });
+  caps.sort(); lowers.sort();
+
+  var html = '<div style="background:white;padding:1rem;border-radius:12px;max-width:520px;width:100%;margin:0 auto;font-family:var(--font);max-height:85vh;overflow-y:auto">'+
+             '<h3 style="color:var(--m);margin-bottom:.6rem">🖨️ Psací abeceda — obtahování</h3>'+
+             '<p style="color:#6b7280;font-size:.9rem;margin-bottom:.8rem">Vyber písmena, která chceš procvičit. Každé bude na vlastním řádku k obtahování.</p>';
+  if(caps.length){
+    html += '<div style="font-weight:700;color:#374151;margin:.5rem 0 .3rem">Velká psací:</div>';
+    html += '<div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.6rem">';
+    caps.forEach(function(L){
+      html += '<label style="display:inline-flex;align-items:center;gap:.25rem;padding:.3rem .5rem;background:#e8f4fb;border:1.5px solid var(--m);border-radius:8px;cursor:pointer;font-weight:700;color:#1a5f7a">'+
+              '<input type="checkbox" class="psaci-cap" value="'+L+'" style="cursor:pointer">'+L+'</label>';
+    });
+    html += '</div>';
+  }
+  if(lowers.length){
+    html += '<div style="font-weight:700;color:#374151;margin:.5rem 0 .3rem">Malá psací:</div>';
+    html += '<div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.6rem">';
+    lowers.forEach(function(L){
+      html += '<label style="display:inline-flex;align-items:center;gap:.25rem;padding:.3rem .5rem;background:#fff8ee;border:1.5px solid var(--o);border-radius:8px;cursor:pointer;font-weight:700;color:#b45309">'+
+              '<input type="checkbox" class="psaci-lower" value="'+L+'" style="cursor:pointer">'+L+'</label>';
+    });
+    html += '</div>';
+  }
+  if(!caps.length && !lowers.length){
+    html += '<p style="color:#dc2626">Žádná psací písmena nejsou k dispozici.</p>';
+  }
+  html += '<div style="display:flex;gap:.5rem;margin-top:1rem">'+
+          '<button onclick="psaciSelectAll(true)" style="flex:1;padding:.5rem;background:white;border:1.5px solid #d1d5db;border-radius:8px;font-family:var(--font);font-weight:600;cursor:pointer">Vybrat vše</button>'+
+          '<button onclick="psaciSelectAll(false)" style="flex:1;padding:.5rem;background:white;border:1.5px solid #d1d5db;border-radius:8px;font-family:var(--font);font-weight:600;cursor:pointer">Zrušit</button>'+
+          '</div>'+
+          '<button onclick="psaciGenerate()" style="display:block;width:100%;padding:.8rem;margin-top:1rem;background:var(--m);color:white;border:none;border-radius:8px;font-family:var(--font);font-weight:700;font-size:1rem;cursor:pointer">🖨️ Vytvořit pracovní list</button>'+
+          '<button onclick="closePrintChoice()" style="display:block;width:100%;padding:.6rem;margin-top:.5rem;background:white;border:1.5px solid #d1d5db;border-radius:8px;font-family:var(--font);font-weight:600;cursor:pointer">Zavřít</button>'+
+          '</div>';
+  closePrintChoice();
+  var overlay = document.createElement('div');
+  overlay.id = 'printOverlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:1rem';
+  overlay.innerHTML = html;
+  overlay.onclick = function(e){ if(e.target===overlay) closePrintChoice(); };
+  document.body.appendChild(overlay);
+}
+function psaciSelectAll(on){
+  document.querySelectorAll('#printOverlay input[type="checkbox"]').forEach(function(cb){ cb.checked = on; });
+}
+function psaciGenerate(){
+  var picked = [];
+  document.querySelectorAll('#printOverlay .psaci-cap:checked').forEach(function(cb){ picked.push({letter:cb.value, type:'cap'}); });
+  document.querySelectorAll('#printOverlay .psaci-lower:checked').forEach(function(cb){ picked.push({letter:cb.value, type:'lower'}); });
+  if(picked.length === 0){
+    alert('Vyber nejdřív aspoň jedno písmeno.');
+    return;
+  }
+  closePrintChoice();
+  var w = window.open('','_blank','width=900,height=1100');
+  if(!w){ alert('Prohlížeč zablokoval otevření okna.'); return; }
+  w.document.write(printPsaciHTML(picked));
+  w.document.close();
+  setTimeout(function(){ try{ w.print(); }catch(e){} }, 500);
+}
+
+function printPsaciHTML(letters){
+  var d=new Date(); var dateStr=d.getDate()+'.'+(d.getMonth()+1)+'.'+d.getFullYear();
+  var rowsHtml = '';
+  letters.forEach(function(L){
+    var key = L.letter + '_' + L.type;
+    var img = IMG_DATA[key] || '';
+    var label = L.type === 'cap' ? L.letter : L.letter;
+    rowsHtml += '<div class="row">'+
+                  '<div class="row-letter"><img src="'+img+'" alt="'+label+'"></div>'+
+                  '<div class="row-line">'+
+                    /* Vzor světlým inkoustem - 5 stejných obrázků */
+                    '<img src="'+img+'" alt=""><img src="'+img+'" alt=""><img src="'+img+'" alt=""><img src="'+img+'" alt=""><img src="'+img+'" alt="">'+
+                  '</div>'+
+                '</div>';
+  });
+  return '<!doctype html><html lang="cs"><head><meta charset="utf-8"><title>Psací abeceda — obtahování</title><style>'+
+    '*{box-sizing:border-box;margin:0;padding:0;}'+
+    'body{font-family:"Barlow Condensed",Arial,sans-serif;color:#1f2937;padding:1rem;}'+
+    '.sheet{max-width:760px;margin:0 auto;}'+
+    '.head{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #32a0d2;padding-bottom:.4rem;margin-bottom:.6rem;}'+
+    '.brand{font-size:.95rem;font-weight:800;color:#32a0d2;}'+
+    '.meta{font-size:.85rem;color:#6b7280;}'+
+    '.title{font-size:1.4rem;font-weight:800;color:#32a0d2;text-align:center;margin:.5rem 0;}'+
+    '.instructions{background:#fff8ee;border-left:4px solid #ffaa37;padding:.5rem .75rem;border-radius:6px;font-size:.95rem;margin:.5rem 0;}'+
+    '.name-line{margin:.4rem 0;font-size:.9rem;color:#374151;}'+
+    '.name-line span{display:inline-block;border-bottom:1px solid #9ca3af;width:200px;height:1.2em;}'+
+    /* Řádek = vzor + linkovaná oblast s světlými písmeny k obtahování */
+    '.row{display:flex;align-items:center;gap:.5rem;border-bottom:1px solid #e5e7eb;padding:.4rem 0;page-break-inside:avoid;}'+
+    '.row-letter{flex:0 0 60px;border-right:2px solid var(--m,#32a0d2);padding-right:.5rem;height:55px;display:flex;align-items:center;justify-content:center;}'+
+    '.row-letter img{max-height:50px;max-width:55px;}'+
+    /* Linkovaná část — 4 lajny: top, dvě střední, bottom (jako sešit) */
+    '.row-line{flex:1;height:55px;background:'+
+      'repeating-linear-gradient(to bottom,transparent 0,transparent 5px,#bcd 5px,#bcd 6px,transparent 6px,transparent 24px,#bcd 24px,#bcd 25px,transparent 25px,transparent 49px,#bcd 49px,#bcd 50px);'+
+      'display:flex;align-items:center;justify-content:space-around;padding:0 .5rem;position:relative;}'+
+    '.row-line img{max-height:38px;max-width:42px;opacity:.30;filter:grayscale(.8);}'+
+    '.toolbar{position:fixed;top:.5rem;right:.5rem;background:#32a0d2;color:white;padding:.5rem 1rem;border-radius:99px;border:none;font-family:inherit;font-weight:700;font-size:.95rem;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2);}'+
+    '@media print{.toolbar{display:none;}body{padding:.4cm;}.sheet{max-width:100%;}}'+
+    '@page{size:A4;margin:1cm;}'+
+    '</style></head><body>'+
+    '<button class="toolbar" onclick="window.print()">🖨️ Vytisknout / Uložit PDF</button>'+
+    '<div class="sheet">'+
+      '<div class="head"><span class="brand">LinguaCzech · ZŠ Lingua Universal</span><span class="meta">Psací abeceda · '+dateStr+'</span></div>'+
+      '<div class="title">Psací písmo — obtahování</div>'+
+      '<div class="name-line">Jméno: <span></span> &nbsp;&nbsp; Třída: <span style="width:80px"></span></div>'+
+      '<div class="instructions"><b>Pokyn:</b> Obtáhni každé písmeno tužkou. Sleduj směr tahu a zkus tahat plynule.</div>'+
+      rowsHtml+
+    '</div>'+
+    '</body></html>';
+}
+
+function printGetData(key){
+  if(key==='s1'){
+    /* Samohlásky/souhlásky - směs písmen */
+    var pool = ABS.concat(['Á','É','Í','Ó','Ú','Ý','Ů','Č','Š','Ž','Ř','Ť','Ď','Ň']);
+    var picked = _shf(pool).slice(0, 15);
+    var qHtml = '<div class="task" style="font-size:1.5rem;letter-spacing:.5rem;text-align:center;margin:1rem 0;background:white;border:2px dashed #9ca3af;padding:1rem;border-radius:8px">'+picked.join('  ')+'</div>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.5rem">'+
+        '<div style="border:2px solid #32a0d2;border-radius:8px;padding:.5rem;min-height:6rem;background:#e8f4fb"><b style="color:#32a0d2">SAMOHLÁSKY</b></div>'+
+        '<div style="border:2px solid #ffaa37;border-radius:8px;padding:.5rem;min-height:6rem;background:#fff8ee"><b style="color:#ffaa37">SOUHLÁSKY</b></div>'+
+      '</div>';
+    var sams = picked.filter(function(L){return SAM.has(L);});
+    var sous = picked.filter(function(L){return !SAM.has(L);});
+    var aHtml = '<div class="task"><b>Samohlásky:</b> '+sams.join(', ')+'</div>'+
+                '<div class="task"><b>Souhlásky:</b> '+sous.join(', ')+'</div>';
+    return {title:'Samohlásky a souhlásky', topic:'Hlásky', instructions:'Napiš každé písmeno do správného sloupce.', qHtml:qHtml, aHtml:aHtml};
+  }
+  if(key==='abc'){
+    /* Abeceda - vyber 10 písmen, dítě napíše čísla 1-10 v pořadí */
+    var picked = _shf(ABS).slice(0, 10);
+    /* Správné pořadí podle ABS */
+    var sorted = picked.slice().sort(function(a,b){ return ABS.indexOf(a) - ABS.indexOf(b); });
+    var qHtml = '<div class="task" style="margin:.5rem 0">Před každé písmeno napiš číslo, jak za sebou jdou v abecedě (1—'+picked.length+').</div>';
+    qHtml += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin:.5rem 0">';
+    picked.forEach(function(L){
+      qHtml += '<div style="border:1.5px solid #d1d5db;border-radius:8px;padding:.6rem;font-size:1.3rem;font-weight:700;text-align:center"><span style="display:inline-block;width:1.6rem;height:1.6rem;border:1.5px solid #9ca3af;border-radius:4px;margin-right:.5rem">&nbsp;</span>'+L+'</div>';
+    });
+    qHtml += '</div>';
+    var aHtml = '<div class="task">Správné pořadí: '+sorted.map(function(L,i){return (i+1)+') '+L;}).join(' &rarr; ')+'</div>';
+    return {title:'Seřaď abecedu', topic:'Abeceda', instructions:'Doplň číslo k písmenu, jak za sebou jdou v abecedě.', qHtml:qHtml, aHtml:aHtml};
+  }
+  if(key==='ch'){
+    /* Chybějící písmeno: 8 řad po 5 písmenech, vždy jedno chybí */
+    var rows = [];
+    for(var r=0; r<8; r++){
+      var startIdx = Math.floor(Math.random() * (ABS.length - 5));
+      var seq = ABS.slice(startIdx, startIdx+5);
+      var missIdx = 1 + Math.floor(Math.random() * 3); // 1-3, NE první nebo poslední
+      var missing = seq[missIdx];
+      var visible = seq.slice();
+      visible[missIdx] = '_';
+      rows.push({visible:visible, missing:missing});
+    }
+    var qHtml = '<div class="task" style="margin:.5rem 0">Doplň chybějící písmeno do prázdného místa:</div>';
+    rows.forEach(function(r,i){
+      qHtml += '<div class="task" style="font-size:1.4rem;letter-spacing:.5rem;padding:.4rem"><span class="num">'+(i+1)+'.</span> '+r.visible.join('  ')+'</div>';
+    });
+    var aHtml = '';
+    rows.forEach(function(r,i){
+      aHtml += '<div class="task"><span class="num">'+(i+1)+'.</span> '+r.visible.join(' ')+' &rarr; <b>'+r.missing+'</b></div>';
+    });
+    return {title:'Chybějící písmeno v abecedě', topic:'Abeceda', instructions:'Najdi a napiš chybějící písmeno na prázdné místo.', qHtml:qHtml, aHtml:aHtml};
+  }
+}
+
+function printHTML(data){
+  var d=new Date(); var dateStr=d.getDate()+'.'+(d.getMonth()+1)+'.'+d.getFullYear();
+  return '<!doctype html><html lang="cs"><head><meta charset="utf-8"><title>Pracovní list — '+data.title+'</title><style>'+
+    '*{box-sizing:border-box;margin:0;padding:0;}'+
+    'body{font-family:"Barlow Condensed",Arial,sans-serif;color:#1f2937;padding:1rem;}'+
+    '.sheet{max-width:760px;margin:0 auto;}'+
+    '.head{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #32a0d2;padding-bottom:.4rem;margin-bottom:.6rem;}'+
+    '.brand{font-size:.95rem;font-weight:800;color:#32a0d2;}'+
+    '.meta{font-size:.85rem;color:#6b7280;}'+
+    '.title{font-size:1.4rem;font-weight:800;color:#32a0d2;text-align:center;margin:.5rem 0;}'+
+    '.instructions{background:#fff8ee;border-left:4px solid #ffaa37;padding:.5rem .75rem;border-radius:6px;font-size:.95rem;margin:.5rem 0;}'+
+    '.name-line{margin:.4rem 0;font-size:.9rem;color:#374151;}'+
+    '.name-line span{display:inline-block;border-bottom:1px solid #9ca3af;width:200px;height:1.2em;}'+
+    '.task{font-size:1.05rem;line-height:1.7;padding:.1rem 0;font-family:Verdana,Geneva,sans-serif;}'+
+    '.num{font-weight:800;color:#32a0d2;display:inline-block;min-width:1.5rem;}'+
+    '.cut{margin:1.5rem 0 1rem;border-top:2px dashed #9ca3af;text-align:center;color:#9ca3af;font-size:.85rem;position:relative;}'+
+    '.cut::before{content:"✂ rozstřihni";position:absolute;top:-.7rem;background:white;padding:0 .5rem;left:50%;transform:translateX(-50%);}'+
+    '.solution-head{background:#dcfce7;border-left:4px solid #16a34a;padding:.4rem .75rem;border-radius:6px;font-size:.95rem;font-weight:700;color:#15803d;margin:.5rem 0;}'+
+    '.toolbar{position:fixed;top:.5rem;right:.5rem;background:#32a0d2;color:white;padding:.5rem 1rem;border-radius:99px;border:none;font-family:inherit;font-weight:700;font-size:.95rem;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2);}'+
+    '@media print{.toolbar{display:none;}body{padding:.5cm;}.sheet{max-width:100%;}}'+
+    '@page{size:A4;margin:1cm;}'+
+    '</style></head><body>'+
+    '<button class="toolbar" onclick="window.print()">🖨️ Vytisknout / Uložit PDF</button>'+
+    '<div class="sheet">'+
+      '<div class="head"><span class="brand">LinguaCzech · ZŠ Lingua Universal</span><span class="meta">'+(data.topic||data.title)+' · '+dateStr+'</span></div>'+
+      '<div class="title">'+data.title+'</div>'+
+      '<div class="name-line">Jméno: <span></span> &nbsp;&nbsp; Třída: <span style="width:80px"></span></div>'+
+      '<div class="instructions"><b>Pokyn:</b> '+data.instructions+'</div>'+
+      data.qHtml+
+      '<div class="cut"></div>'+
+      '<div class="solution-head">✓ Klíč pro paní učitelku / rodiče</div>'+
+      data.aHtml+
+    '</div>'+
+    '</body></html>';
 }
 
 </script>

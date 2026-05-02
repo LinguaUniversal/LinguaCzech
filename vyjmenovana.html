@@ -382,7 +382,7 @@ canvas#gameCv{display:block;width:100%;height:280px;background:linear-gradient(1
 
 <!-- CV: HRA T-REX Y/I -->
 <div class="cv" id="cv-hra">
-  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🦖 T-rex doplňuje y/i</span><span class="var">v32</span></div>
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🦖 T-rex doplňuje y/i</span><span class="var">v33</span></div>
   <div id="hra-intro">
     <div class="ka" style="text-align:center">
       <div style="font-size:3.5rem">🦖</div>
@@ -1986,12 +1986,6 @@ function hraDrawBackground(ctx){
       ctx.fillStyle = '#32a0d2';
       ctx.fillRect(0, i*HRA_H/HRA_N, 4, HRA_H/HRA_N);
     }
-
-    /* Velké písmeno vlevo (label pruhu) */
-    ctx.font = 'bold 28px Verdana';
-    ctx.textAlign = 'left';
-    ctx.fillStyle = 'rgba(31,41,55,.5)';
-    ctx.fillText(HRA_LETS[i], 8, y + 9);
   }
 
   /* Linky oddělující pruhy */

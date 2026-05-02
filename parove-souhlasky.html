@@ -105,8 +105,8 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
   <div class="mh"><h1>Párové souhlásky</h1><p>3. ročník — spodoba znělosti (b/p, d/t, ž/š...)</p></div>
   <div class="mg">
     <div onclick="go('sady')" class="mk mk-p" style="grid-column:span 2"><h3>📋 Naučím se páry</h3><p>b/p · d/t · ď/ť · v/f · z/s · ž/š · h/ch · g/k</p></div>
-    <div onclick="go('doplnit')" class="mk mk-m"><h3>✏️ Doplň souhlásku</h3><p>du_ → dub nebo dup?</p></div>
-    <div onclick="go('overit')" class="mk mk-o"><h3>🔍 Ověř pomocí 2. pádu</h3><p>les → bez lesa (s)</p></div>
+    <div onclick="go('doplnit')" class="mk mk-m"><h3>✏️ Doplň ve větě</h3><p>Z kontextu věty pozná, co tam patří</p></div>
+    <div onclick="go('sz')" class="mk mk-o"><h3>🔤 Předpony s- / z-</h3><p>sběr × zběh, sjet × zjet</p></div>
     <div onclick="go('pexeso')" class="mk mk-m"><h3>🃏 Pexeso párů</h3><p>Spoj páry: b ↔ p, d ↔ t...</p></div>
     <div onclick="printChoice()" class="mk" style="grid-column:span 2;background:#f3f4f6;border:2px dashed #9ca3af"><h3 style="color:#374151">🖨️ Vytisknout pracovní list</h3><p style="color:#6b7280">PDF k procvičování doma</p></div>
   </div>
@@ -158,29 +158,31 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
   </div>
 </div>
 
-<!-- CV: OVĚŘ pomocí 2. pádu -->
-<div class="cv" id="cv-overit">
-  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🔍 Ověř pomocí 2. pádu</span><span class="var" id="ov-v">1/8</span></div>
+<!-- CV: S- / Z- na začátku slova -->
+<div class="cv" id="cv-sz">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🔤 Předpony s- / z-</span><span class="var" id="sz-v">1/12</span></div>
   <div class="sk">
-    <div><div class="skn" id="ov-bd">0</div><div class="skl">body</div></div>
-    <div><div class="skn" id="ov-ci">1/8</div><div class="skl">slovo</div></div>
-    <div><div class="skn" id="ov-sp">0</div><div class="skl">správně</div></div>
+    <div><div class="skn" id="sz-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="sz-ci">1/12</div><div class="skl">slovo</div></div>
+    <div><div class="skn" id="sz-sp">0</div><div class="skl">správně</div></div>
   </div>
-  <div class="pg"><div class="pgf" id="ov-pg" style="width:0%"></div></div>
-  <div id="ov-ob">
+  <div class="pg"><div class="pgf" id="sz-pg" style="width:0%"></div></div>
+  <div id="sz-ob">
     <div class="ka">
-      <div class="q">Když slovo dáš do <b>2. pádu</b> (bez čeho?), jaké uslyšíš písmeno?</div>
-      <div class="wordGap" id="ov-w">—</div>
-      <div class="hint">💡 Pomocná otázka: <b id="ov-h">bez čeho?</b></div>
-      <div class="opts2" id="ov-c"></div>
-      <div class="fb" id="ov-fb"></div>
+      <div class="q">Doplň <b>S-</b> nebo <b>Z-</b> na začátek slova podle významu věty.</div>
+      <div class="sentence" id="sz-s">—</div>
+      <div class="opts2">
+        <button class="opt2" onclick="szAns('s',this)">S</button>
+        <button class="opt2" onclick="szAns('z',this)">Z</button>
+      </div>
+      <div class="fb" id="sz-fb"></div>
     </div>
-    <button class="nxt" id="ov-nx" onclick="ovNext()">Další →</button>
+    <button class="nxt" id="sz-nx" onclick="szNext()">Další →</button>
   </div>
-  <div class="res" id="ov-res">
-    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="ov-pp"></p>
-    <div class="res-row"><div class="rs"><div class="rsv" id="ov-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="ov-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
-    <button class="znovu" onclick="go('overit')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  <div class="res" id="sz-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="sz-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="sz-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="sz-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('sz')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
   </div>
 </div>
 
@@ -222,7 +224,7 @@ function go(id){
   document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
   el('cv-'+id).style.display='block';
   if(id==='doplnit') dopStart();
-  if(id==='overit') ovStart();
+  if(id==='sz') szStart();
   if(id==='pexeso') pexStart();
 }
 function back(){
@@ -230,40 +232,62 @@ function back(){
   document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
 }
 
-/* ─── DATA: Slova s párovou souhláskou ─── */
-/* a = správná souhláska, alt = nesprávná (její pár), hint = 2. pád */
+/* ─── DATA: Slova s párovou souhláskou — VĚTY S KONTEXTEM ─── */
+/* Z věty se pozná, jestli patří dub/dup, led/let atd. */
+/* sentence: věta s "_" na místě souhlásky; correct: správná souhláska; alt: nesprávná (její pár); explanation: zdůvodnění */
 var DOP_DATA = [
   /* b/p */
-  {full:'dub',  a:'b', alt:'p', gap:'du_', g:'duby (mn.)'},
-  {full:'chléb',a:'b', alt:'p', gap:'chlé_', g:'bez chleba'},
-  {full:'sněhulák',a:'h',alt:'ch',gap:'sně_ulák', g:'bez sněhuláka'},
-  {full:'rybník',a:'b',alt:'p', gap:'ry_ník', g:'bez rybníka'},
+  {sentence:'Velký du_ rostl u rybníka.', correct:'b', alt:'p', explanation:'Strom dub — bez dubu (slyšíš b).'},
+  {sentence:'Slyšeli jsme tichý du_ kopyt.', correct:'p', alt:'b', explanation:'Dup = dupání — bez dupu (slyšíš p).'},
+  {sentence:'Maminka koupila bochník chle_a.', correct:'b', alt:'p', explanation:'Chléb — bez chleba (slyšíš b).'},
+  {sentence:'Z domu se ozval hlasitý chra_.', correct:'p', alt:'b', explanation:'Chrap = chrápání — bez chrapu.'},
   /* d/t */
-  {full:'led',  a:'d', alt:'t', gap:'le_', g:'bez ledu'},
-  {full:'mráz', a:'z', alt:'s', gap:'mrá_', g:'bez mrazu'},
-  {full:'kolovrátek',a:'t',alt:'d',gap:'kolovrá_ek', g:'bez kolovrátku'},
-  {full:'plot', a:'t', alt:'d', gap:'plo_', g:'bez plotu'},
+  {sentence:'Na řece se v zimě tvoří le_.', correct:'d', alt:'t', explanation:'Led — bez ledu (slyšíš d).'},
+  {sentence:'Letadlo má dlouhý le_.', correct:'t', alt:'d', explanation:'Let = letět — bez letu (slyšíš t).'},
+  {sentence:'Kolem zahrady stojí dřevěný plo_.', correct:'t', alt:'d', explanation:'Plot — bez plotu (slyšíš t).'},
+  {sentence:'Na podzim přišel velký mrá_.', correct:'z', alt:'s', explanation:'Mráz — bez mrazu (slyšíš z).'},
   /* v/f */
-  {full:'rukáv',a:'v', alt:'f', gap:'rukáv', g:'bez rukávu'},
-  {full:'lev',  a:'v', alt:'f', gap:'le_', g:'bez lva'},
+  {sentence:'Lev má hustou hří_u.', correct:'v', alt:'f', explanation:'Hříva — bez hřívy (slyšíš v).'},
+  {sentence:'Na kraji stál mladý le_.', correct:'v', alt:'f', explanation:'Lev — bez lva (slyšíš v).'},
   /* z/s */
-  {full:'mráz', a:'z', alt:'s', gap:'mrá_', g:'bez mrazu'},
-  {full:'vůz',  a:'z', alt:'s', gap:'vů_', g:'bez vozu'},
-  {full:'pes',  a:'s', alt:'z', gap:'pe_', g:'bez psa'},
-  {full:'les',  a:'s', alt:'z', gap:'le_', g:'bez lesa'},
+  {sentence:'V zoo jsme viděli starého vů_a.', correct:'z', alt:'s', explanation:'Vůz — bez vozu (slyšíš z).'},
+  {sentence:'Prošli jsme hlubokým le_em.', correct:'s', alt:'z', explanation:'Les — v lese (slyšíš s).'},
+  {sentence:'Náš pe_ má rád kosti.', correct:'s', alt:'z', explanation:'Pes — bez psa (slyšíš s).'},
   /* ž/š */
-  {full:'muž',  a:'ž', alt:'š', gap:'mu_', g:'bez muže'},
-  {full:'nůž',  a:'ž', alt:'š', gap:'nů_', g:'bez nože'},
-  {full:'myš',  a:'š', alt:'ž', gap:'my_', g:'bez myši'},
+  {sentence:'V kuchyni žije malá my_.', correct:'š', alt:'ž', explanation:'Myš — bez myši (slyšíš š).'},
+  {sentence:'Na poli pracoval silný mu_.', correct:'ž', alt:'š', explanation:'Muž — bez muže (slyšíš ž).'},
+  {sentence:'Maminka krájela chleba ostrým no_em.', correct:'ž', alt:'š', explanation:'Nůž — bez nože (slyšíš ž).'},
   /* h/ch */
-  {full:'sníh', a:'h', alt:'ch', gap:'sní_', g:'bez sněhu'},
-  {full:'roh',  a:'h', alt:'ch', gap:'ro_', g:'bez rohu'},
-  {full:'hrách',a:'ch',alt:'h', gap:'hrá_', g:'bez hrachu'},
+  {sentence:'V zimě napadl bílý sní_.', correct:'h', alt:'ch', explanation:'Sníh — bez sněhu (slyšíš h).'},
+  {sentence:'Na poli rostl zelený hrá_.', correct:'ch', alt:'h', explanation:'Hrách — bez hrachu (slyšíš ch).'},
+  {sentence:'Jelen má krásný paro_.', correct:'h', alt:'ch', explanation:'Paroh — bez parohu (slyšíš h).'},
   /* g/k */
-  {full:'vlak', a:'k', alt:'g', gap:'vla_', g:'bez vlaku'}
+  {sentence:'Z nádraží odjel rychlý vla_.', correct:'k', alt:'g', explanation:'Vlak — bez vlaku (slyšíš k).'}
 ];
-/* Pro ověřit pomocí 2. pádu - jednodušší podmnožina */
-var OV_DATA = DOP_DATA.slice(0, 14);
+
+/* ─── DATA: S- / Z- na začátku slova (předpony) ─── */
+/* Inspirace umimecesky.cz - dvojice s odlišným významem podle s/z */
+/* sentence: věta s mezerou pro celé slovo; correct: 's' nebo 'z'; word: zbytek slova bez s-/z-; explanation */
+var SZ_DATA = [
+  {sentence:'Petr šel ___brat houby v lese.', correct:'s', word:'brat', explanation:'sbírat = shromažďovat dohromady (s- = dohromady).'},
+  {sentence:'Vojáci ___běhli z kasáren bez dovolení.', correct:'z', word:'běhli', explanation:'zběhli = utekli (z- = pryč, dolů).'},
+  {sentence:'Lyžaři ___jeli ze svahu na lyžích.', correct:'s', word:'jeli', explanation:'sjeli (s- = dolů ze svahu).'},
+  {sentence:'Po havárii museli auto ___likvidovat.', correct:'z', word:'likvidovat', explanation:'zlikvidovat = úplně odstranit.'},
+  {sentence:'Maminka ___pekla výborný koláč.', correct:'u', word:'pekla', explanation:'POZOR: u-pekla = upekla, ne s/z. Zkus jiné slovo.'},
+  {sentence:'Před maminčiným pohledem se cítil ___trapený.', correct:'s', word:'trapený', explanation:'strapený, ztrapený — obě formy existují, ale význam je jiný.'},
+  {sentence:'Dělník ___bil několik prken k sobě.', correct:'s', word:'bil', explanation:'sbil (s- = dohromady).'},
+  {sentence:'Kluk hodně ___hubl po nemoci.', correct:'z', word:'hubl', explanation:'zhubl = stal se hubeným (z- = změna stavu).'},
+  {sentence:'Děti ___tloukly hřebíky do prkna.', correct:'s', word:'tloukly', explanation:'stloukly (s- = dohromady).'},
+  {sentence:'Stará jabloň po vichřici ___padla.', correct:'s', word:'padla', explanation:'spadla = padla dolů (s- = dolů).'},
+  {sentence:'Bratr ___jistil, že je vše v pořádku.', correct:'z', word:'jistil', explanation:'zjistil = dozvěděl se (z- = zjištění).'},
+  {sentence:'Dědeček ___bíral známky celý život.', correct:'s', word:'bíral', explanation:'sbíral = shromažďoval (s- = dohromady).'},
+  {sentence:'Po obědě jsme ___mizeli do kuchyně.', correct:'z', word:'mizeli', explanation:'zmizeli = ztratili se (z- = pryč).'},
+  {sentence:'Honza ___kopl míč přes branku.', correct:'s', word:'kopl', explanation:'skopl (s- = dolů, prudce).'},
+  {sentence:'Kočka ___skočila z okna na zem.', correct:'s', word:'skočila', explanation:'seskočila = skočila dolů (s- = dolů).'}
+];
+
+/* Pro ověřit/printer použijeme DOP_DATA (skutečná data) */
+var OV_DATA = DOP_DATA.slice();
 
 /* Sloupcové páry pro pexeso */
 var PEX_PAIRS = [
@@ -289,12 +313,14 @@ function dopRender(){
   var s = dopSt;
   if(s.idx >= s.seq.length){ dopFinish(); return; }
   var item = s.seq[s.idx];
-  /* Slovo s mezerou */
-  var html = item.gap.replace('_','<span class="gap">_</span>');
+  /* Věta s mezerou — vykreslíme do dop-w (přejmenuju vizuálně) */
+  var html = item.sentence.replace('_','<span class="gap">_</span>');
   el('dop-w').innerHTML = html;
+  el('dop-w').style.fontSize = '1.4rem';
+  el('dop-w').style.lineHeight = '1.5';
   /* 2 možnosti */
   var c = el('dop-c'); c.innerHTML = '';
-  var opts = shuffle([item.a, item.alt]);
+  var opts = shuffle([item.correct, item.alt]);
   opts.forEach(function(o){
     var b = document.createElement('button');
     b.className = 'opt2';
@@ -315,20 +341,22 @@ function dopRender(){
 }
 function dopAns(picked, btn, item){
   var s=dopSt; if(s.locked) return; s.locked=true;
-  if(picked === item.a){
+  if(picked === item.correct){
     btn.classList.add('ok');
     s.body += 5; s.sp++; addPoints(5);
-    el('dop-fb').innerHTML = '✓ Správně! Slovo je <b>'+item.full+'</b>.';
+    var solved = item.sentence.replace('_', item.correct);
+    el('dop-fb').innerHTML = '✓ Správně! '+solved;
     el('dop-fb').className='fb ok';
   } else {
     btn.classList.add('err');
     document.querySelectorAll('#dop-c .opt2').forEach(function(b){
-      if(b.textContent === item.a) b.classList.add('ok');
+      if(b.textContent === item.correct) b.classList.add('ok');
     });
-    el('dop-fb').innerHTML = '✗ Slovo je <b>'+item.full+'</b>.';
+    var solved = item.sentence.replace('_', item.correct);
+    el('dop-fb').innerHTML = '✗ Správně: '+solved;
     el('dop-fb').className='fb err';
-    /* Ukáž nápovědu */
-    el('dop-h').innerHTML = '💡 <b>Pomoc</b>: '+item.g+' → slyšíš <b>'+item.a+'</b>.';
+    /* Ukáž zdůvodnění */
+    el('dop-h').innerHTML = '💡 <b>Vysvětlení</b>: '+item.explanation;
     el('dop-h').style.display='block';
   }
   document.querySelectorAll('#dop-c .opt2').forEach(function(b){b.disabled=true;});
@@ -345,7 +373,65 @@ function dopFinish(){
   el('dop-tot').textContent=totalScore;
 }
 
-/* ─── OVĚŘ ─── */
+/* ─── S- / Z- na začátku slova ─── */
+var szSt={};
+function szStart(){
+  /* Filtruj jen čisté s/z (vyhoď ty s 'u' nebo s podivnostmi) */
+  var cleanData = SZ_DATA.filter(function(it){ return it.correct === 's' || it.correct === 'z'; });
+  szSt = {seq: shuffle(cleanData).slice(0,12), idx:0, body:0, sp:0, locked:false};
+  el('sz-res').style.display='none';
+  el('sz-ob').style.display='block';
+  szRender();
+}
+function szRender(){
+  var s = szSt;
+  if(s.idx >= s.seq.length){ szFinish(); return; }
+  var item = s.seq[s.idx];
+  /* Vykresli větu s mezerou */
+  var html = item.sentence.replace('___', '<span style="display:inline-block;background:var(--ms);border:2px solid var(--m);border-radius:6px;padding:.1rem .5rem;color:var(--m);font-weight:800;margin:0 .1rem">?</span>'+item.word);
+  el('sz-s').innerHTML = html;
+  el('sz-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('sz-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('sz-bd').textContent = s.body;
+  el('sz-sp').textContent = s.sp;
+  el('sz-pg').style.width = (s.idx/s.seq.length*100)+'%';
+  el('sz-fb').textContent='';
+  el('sz-fb').className='fb';
+  el('sz-nx').style.display='none';
+  document.querySelectorAll('#cv-sz .opt2').forEach(function(b){b.disabled=false; b.classList.remove('ok','err');});
+  s.locked=false;
+}
+function szAns(picked, btn){
+  var s=szSt; if(s.locked) return; s.locked=true;
+  var item = s.seq[s.idx];
+  if(picked === item.correct){
+    btn.classList.add('ok');
+    s.body += 6; s.sp++; addPoints(6);
+    el('sz-fb').innerHTML = '✓ Správně! Slovo je <b>'+item.correct+item.word+'</b>. '+item.explanation;
+    el('sz-fb').className='fb ok';
+  } else {
+    btn.classList.add('err');
+    document.querySelectorAll('#cv-sz .opt2').forEach(function(b){
+      if(b.textContent.toLowerCase() === item.correct) b.classList.add('ok');
+    });
+    el('sz-fb').innerHTML = '✗ Správně je <b>'+item.correct+item.word+'</b>. '+item.explanation;
+    el('sz-fb').className='fb err';
+  }
+  document.querySelectorAll('#cv-sz .opt2').forEach(function(b){b.disabled=true;});
+  el('sz-bd').textContent=s.body; el('sz-sp').textContent=s.sp;
+  el('sz-nx').style.display='block';
+}
+function szNext(){ szSt.idx++; szRender(); }
+function szFinish(){
+  var s=szSt;
+  el('sz-ob').style.display='none';
+  el('sz-res').style.display='block';
+  el('sz-pp').textContent='Správně '+s.sp+' z '+s.seq.length+' · '+s.body+' bodů.';
+  el('sz-sc').textContent=s.body;
+  el('sz-tot').textContent=totalScore;
+}
+
+/* ─── DEAD CODE: ovStart původní (kept for compatibility but never called) ─── */
 var ovSt={};
 function ovStart(){
   ovSt = {seq: shuffle(OV_DATA).slice(0,8), idx:0, body:0, sp:0, locked:false};
@@ -493,8 +579,8 @@ function pexFinish(){
 /* ─── PRINT ─── */
 function printChoice(){
   var topics = [
-    {key:'dop', label:'Doplň souhlásku (15 slov)'},
-    {key:'over', label:'Ověř pomocí 2. pádu (10 slov)'},
+    {key:'dop', label:'Doplň ve větě (8 vět)'},
+    {key:'sz', label:'Předpony s- / z- (10 vět)'},
     {key:'mix', label:'Smíšený list'}
   ];
   var html = '<div style="position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem"><div style="background:white;border-radius:12px;padding:1.5rem;max-width:480px;width:100%"><h3 style="margin:0 0 1rem;color:var(--m);text-align:center">🖨️ Vyber pracovní list</h3>';
@@ -507,60 +593,68 @@ function printChoice(){
   document.body.appendChild(d.firstChild);
 }
 function doPrint(key){
-  var data = printGetData(key);
   var w = window.open('', '_blank');
+  if(!w){ alert('Prohlížeč zablokoval okno pro tisk. Povol popup okna pro tento web a zkus znovu.'); return; }
+  var data = printGetData(key);
   w.document.write(printHTML(data));
   w.document.close();
-  setTimeout(function(){w.print();}, 500);
 }
 function printGetData(key){
   if(key==='dop'){
-    var picked = shuffle(DOP_DATA).slice(0,15);
-    var qHtml = '<p>Doplň správnou souhlásku (zaokrouhli ji nebo napiš na čáru):</p><table style="width:100%">';
+    var picked = shuffle(DOP_DATA).slice(0,8);
+    var qHtml = '<p>Doplň správnou souhlásku do mezery (zaokrouhli ji nebo napiš na čáru):</p><table style="width:100%">';
     picked.forEach(function(it,i){
-      qHtml += '<tr><td style="padding:.4rem;border-bottom:1px dotted #ccc;font-size:1.2em">'+(i+1)+'. '+it.gap.replace('_','______')+'</td><td style="padding:.4rem">'+it.a+' / '+it.alt+'</td></tr>';
+      qHtml += '<tr><td style="padding:.4rem;border-bottom:1px dotted #ccc">'+(i+1)+'. '+it.sentence+'</td><td style="padding:.4rem;text-align:right">'+it.correct+' / '+it.alt+'</td></tr>';
     });
     qHtml += '</table>';
     var aHtml='<table style="width:100%">';
     picked.forEach(function(it,i){
-      aHtml += '<tr><td>'+(i+1)+'. <b>'+it.full+'</b> ('+it.g+')</td></tr>';
+      aHtml += '<tr><td>'+(i+1)+'. '+it.sentence.replace('_','<b><u>'+it.correct+'</u></b>')+' &nbsp;— '+it.explanation+'</td></tr>';
     });
     aHtml += '</table>';
-    return {title:'Doplň souhlásku', topic:'Párové souhlásky', instructions:'Doplň správnou souhlásku do slova. Pomůž si 2. pádem (bez čeho?).', qHtml:qHtml, aHtml:aHtml};
+    return {title:'Doplň ve větě', topic:'Párové souhlásky', instructions:'Z kontextu věty pozná, která souhláska patří. Doplň ji do mezery.', qHtml:qHtml, aHtml:aHtml};
   }
-  if(key==='over'){
-    var picked = shuffle(OV_DATA).slice(0,10);
-    var qHtml = '<p>U každého slova napiš jeho <b>2. pád</b> (bez čeho?) a doplň správnou souhlásku:</p><table style="width:100%">';
+  if(key==='sz'){
+    var cleanData = SZ_DATA.filter(function(it){ return it.correct === 's' || it.correct === 'z'; });
+    var picked = shuffle(cleanData).slice(0,10);
+    var qHtml = '<p>Doplň <b>S-</b> nebo <b>Z-</b> na začátek slova podle významu věty:</p><table style="width:100%">';
     picked.forEach(function(it,i){
-      qHtml += '<tr><td style="padding:.4rem;border-bottom:1px dotted #ccc">'+(i+1)+'. '+it.gap.replace('_','______')+'</td><td style="padding:.4rem">2. pád: ____________</td></tr>';
+      qHtml += '<tr><td style="padding:.4rem;border-bottom:1px dotted #ccc">'+(i+1)+'. '+it.sentence.replace('___','___'+it.word)+'</td><td style="padding:.4rem;text-align:right">S / Z</td></tr>';
     });
     qHtml += '</table>';
     var aHtml = '<table style="width:100%">';
     picked.forEach(function(it,i){
-      aHtml += '<tr><td>'+(i+1)+'. <b>'+it.full+'</b> — '+it.g+'</td></tr>';
+      aHtml += '<tr><td>'+(i+1)+'. <b>'+it.correct+it.word+'</b> — '+it.explanation+'</td></tr>';
     });
     aHtml += '</table>';
-    return {title:'Ověř pomocí 2. pádu', topic:'Párové souhlásky', instructions:'Napiš slovo ve 2. pádě a doplň správnou souhlásku.', qHtml:qHtml, aHtml:aHtml};
+    return {title:'Předpony s- / z-', topic:'Párové souhlásky', instructions:'Doplň S- nebo Z- na začátek slova. Význam pozná z kontextu věty.', qHtml:qHtml, aHtml:aHtml};
   }
   if(key==='mix'){
-    var p1 = shuffle(DOP_DATA).slice(0,10);
-    var qHtml = '<h4>A) Doplň souhlásku:</h4><table style="width:100%">';
+    var p1 = shuffle(DOP_DATA).slice(0,5);
+    var p2 = shuffle(SZ_DATA.filter(function(it){return it.correct==='s'||it.correct==='z';})).slice(0,5);
+    var qHtml = '<h4>A) Doplň souhlásku ve větě:</h4><table style="width:100%">';
     p1.forEach(function(it,i){
-      qHtml += '<tr><td style="padding:.35rem;border-bottom:1px dotted #ccc">'+(i+1)+'. '+it.gap.replace('_','______')+' &nbsp;('+it.a+'/'+it.alt+')</td></tr>';
+      qHtml += '<tr><td style="padding:.35rem;border-bottom:1px dotted #ccc">'+(i+1)+'. '+it.sentence+' &nbsp;('+it.correct+'/'+it.alt+')</td></tr>';
     });
-    qHtml += '</table><h4 style="margin-top:1rem">B) Spoj čarou znělou souhlásku s neznělou:</h4>';
-    qHtml += '<table style="width:100%;margin-top:.5rem"><tr><td style="width:40%;text-align:center;padding:.5rem;font-size:1.3em"><b>B &nbsp; D &nbsp; V &nbsp; Z &nbsp; Ž &nbsp; H</b></td><td style="width:20%"></td><td style="width:40%;text-align:center;padding:.5rem;font-size:1.3em"><b>P &nbsp; T &nbsp; F &nbsp; S &nbsp; Š &nbsp; CH</b></td></tr></table>';
-    var aHtml = '<h4>A) Slova:</h4><table>';
+    qHtml += '</table><h4 style="margin-top:1rem">B) Doplň S- nebo Z-:</h4><table style="width:100%">';
+    p2.forEach(function(it,i){
+      qHtml += '<tr><td style="padding:.35rem;border-bottom:1px dotted #ccc">'+(i+1)+'. '+it.sentence.replace('___','___'+it.word)+' &nbsp;(S/Z)</td></tr>';
+    });
+    qHtml += '</table>';
+    var aHtml = '<h4>A) Doplň ve větě:</h4>';
     p1.forEach(function(it,i){
-      aHtml += '<tr><td>'+(i+1)+'. <b>'+it.full+'</b> ('+it.g+')</td></tr>';
+      aHtml += '<div>'+(i+1)+'. '+it.sentence.replace('_','<b>'+it.correct+'</b>')+'</div>';
     });
-    aHtml += '</table><h4 style="margin-top:.7rem">B) Páry:</h4><div>B↔P, D↔T, Ď↔Ť, V↔F, Z↔S, Ž↔Š, H↔CH, G↔K</div>';
+    aHtml += '<h4 style="margin-top:.7rem">B) Předpony s/z:</h4>';
+    p2.forEach(function(it,i){
+      aHtml += '<div>'+(i+1)+'. <b>'+it.correct+it.word+'</b></div>';
+    });
     return {title:'Smíšený list', topic:'Párové souhlásky', instructions:'Vyřeš obě části cvičení.', qHtml:qHtml, aHtml:aHtml};
   }
 }
 function printHTML(data){
   var d=new Date();var dateStr=d.getDate()+'.'+(d.getMonth()+1)+'.'+d.getFullYear();
-  return '<!doctype html><html lang="cs"><head><meta charset="utf-8"><title>Pracovní list — '+data.title+'</title><style>body{font-family:Arial,sans-serif;max-width:780px;margin:1rem auto;padding:1rem;color:#1f2937;font-size:13pt;line-height:1.55}h1{color:#1e3a5f;margin:0 0 .5rem;font-size:1.4rem}h2{color:#1e3a5f;margin-top:1.2rem;font-size:1.1rem;border-bottom:2px solid #1e3a5f;padding-bottom:.2rem}h4{margin:.6rem 0 .2rem}.head{display:flex;justify-content:space-between;border-bottom:2px solid #1e3a5f;padding-bottom:.3rem;margin-bottom:1rem}.head .l{display:flex;gap:1rem;align-items:baseline}.head span{font-size:.85rem;color:#6b7280}.instructions{background:#f3f4f6;padding:.6rem .9rem;border-left:4px solid #ffaa37;border-radius:4px;margin:.7rem 0;font-size:.95rem}.solution{page-break-before:always;background:#ecfdf5;padding:.7rem 1rem;border-left:4px solid #16a34a;border-radius:4px;margin-top:1rem}.solution h2{color:#16a34a;border-color:#16a34a}@media print{body{margin:0;padding:.5cm 1cm;font-size:12pt}.solution{page-break-before:always}}</style></head><body><div class="head"><div class="l"><h1>📋 '+data.title+'</h1><span>'+data.topic+'</span></div><span>Datum: '+dateStr+' · Jméno: ____________</span></div><div class="instructions"><b>Zadání:</b> '+data.instructions+'</div>'+data.qHtml+'<div class="solution"><h2>✓ Řešení (pro učitele)</h2>'+data.aHtml+'</div></body></html>';
+  return '<!doctype html><html lang="cs"><head><meta charset="utf-8"><title>Pracovní list — '+data.title+'</title><style>body{font-family:Arial,sans-serif;max-width:780px;margin:1rem auto;padding:1rem;color:#1f2937;font-size:13pt;line-height:1.55}h1{color:#1e3a5f;margin:0 0 .5rem;font-size:1.4rem}h2{color:#1e3a5f;margin-top:1.2rem;font-size:1.1rem;border-bottom:2px solid #1e3a5f;padding-bottom:.2rem}h4{margin:.6rem 0 .2rem}.head{display:flex;justify-content:space-between;border-bottom:2px solid #1e3a5f;padding-bottom:.3rem;margin-bottom:1rem}.head .l{display:flex;gap:1rem;align-items:baseline}.head span{font-size:.85rem;color:#6b7280}.instructions{background:#f3f4f6;padding:.6rem .9rem;border-left:4px solid #ffaa37;border-radius:4px;margin:.7rem 0;font-size:.95rem}.solution{page-break-before:always;background:#ecfdf5;padding:.7rem 1rem;border-left:4px solid #16a34a;border-radius:4px;margin-top:1rem}.solution h2{color:#16a34a;border-color:#16a34a}@media print{body{margin:0;padding:.5cm 1cm;font-size:12pt}.solution{page-break-before:always}}</style></head><body onload="setTimeout(function(){window.print();},400)"><div class="head"><div class="l"><h1>📋 '+data.title+'</h1><span>'+data.topic+'</span></div><span>Datum: '+dateStr+' · Jméno: ____________</span></div><div class="instructions"><b>Zadání:</b> '+data.instructions+'</div>'+data.qHtml+'<div class="solution"><h2>✓ Řešení (pro učitele)</h2>'+data.aHtml+'</div></body></html>';
 }
 </script>
 </body>

@@ -1099,16 +1099,18 @@ function pexFinish(){
    Format: {sentence:'...___...', pair:[w1,w2], correct:0, meanings:[m1,m2]}
 ───────────────────────────────────────────── */
 var HOM_DATA = [
+  /* DOBÝT × DOBÍT */
   {
     sentence:'Voják se snažil ___ hrad nepřátel.',
-    pair:[{w:'dobýt', m:'obsadit, zmocnit se'},{w:'dobít', m:'naplnit baterii, dorazit'}],
+    pair:[{w:'dobýt', m:'obsadit, zmocnit se'},{w:'dobít', m:'naplnit baterii'}],
     correct:0
   },
   {
-    sentence:'Musím ___ baterii v telefonu.',
-    pair:[{w:'dobýt', m:'obsadit, zmocnit se'},{w:'dobít', m:'naplnit baterii, dorazit'}],
+    sentence:'Musím si ___ baterii v telefonu.',
+    pair:[{w:'dobýt', m:'obsadit, zmocnit se'},{w:'dobít', m:'naplnit baterii'}],
     correct:1
   },
+  /* MÝT × MÍT (skloňované tvary) */
   {
     sentence:'Po ránu si jdu ___ ruce do umyvadla.',
     pair:[{w:'mýt', m:'umývat se vodou'},{w:'mít', m:'vlastnit'}],
@@ -1119,45 +1121,67 @@ var HOM_DATA = [
     pair:[{w:'mýt', m:'umývat se vodou'},{w:'mít', m:'vlastnit'}],
     correct:1
   },
+  /* VÝT × VÍT — skloňované! "vyje" / "vije" */
   {
-    sentence:'Vlk v noci hlasitě ___.',
-    pair:[{w:'výt', m:'vydávat zvuk (vlk vyje)'},{w:'vít', m:'plést věnec, splétat'}],
+    sentence:'Vlk v noci hlasitě ___ na měsíc.',
+    pair:[{w:'vyje', m:'od slovesa výt — vydává zvuk'},{w:'vije', m:'od slovesa vít — plete věnec'}],
     correct:0
   },
   {
-    sentence:'Babička nás učila ___ věnce z květin.',
-    pair:[{w:'výt', m:'vydávat zvuk (vlk vyje)'},{w:'vít', m:'plést věnec, splétat'}],
+    sentence:'Babička ___ věnec z květin.',
+    pair:[{w:'vyje', m:'od slovesa výt — vydává zvuk'},{w:'vije', m:'od slovesa vít — plete věnec'}],
     correct:1
   },
+  /* BÝT × BÍT */
   {
-    sentence:'Slunce zítra začne ___ velmi brzy.',
-    pair:[{w:'být', m:'existovat'},{w:'bít', m:'tlouct, udeřit'}],
+    sentence:'Petr chce ___ lékařem, až vyroste.',
+    pair:[{w:'být', m:'existovat, sloveso být'},{w:'bít', m:'tlouct, udeřit'}],
     correct:0
   },
   {
-    sentence:'Hodiny začaly ___ jednu hodinu po půlnoci.',
-    pair:[{w:'být', m:'existovat'},{w:'bít', m:'tlouct, udeřit'}],
+    sentence:'Hodiny začaly ___ celou hodinu.',
+    pair:[{w:'být', m:'existovat, sloveso být'},{w:'bít', m:'tlouct, udeřit'}],
+    correct:1
+  },
+  /* MÝVAL × MÍVAL — správně skloňované */
+  {
+    sentence:'Tatínek ___ vždycky moc práce.',
+    pair:[{w:'mýval', m:'malé zvíře — mýval severní'},{w:'míval', m:'minulý čas slovesa mít'}],
     correct:1
   },
   {
-    sentence:'Maminka ___ koláče s povidly.',
-    pair:[{w:'mýval', m:'malé zvíře (mýval severní)'},{w:'míval', m:'minulý čas slovesa mít'}],
-    correct:1
+    sentence:'V ZOO jsme viděli ___, co si umýval jídlo.',
+    pair:[{w:'mýval', m:'malé zvíře — mýval severní'},{w:'míval', m:'minulý čas slovesa mít'}],
+    correct:0
   },
+  /* SÝR × SIR */
   {
-    sentence:'V ZOO jsme viděli zvíře ___, které si umývalo jídlo.',
-    pair:[{w:'mýval', m:'malé zvíře (mýval severní)'},{w:'míval', m:'minulý čas slovesa mít'}],
+    sentence:'Petr měl k svačině kousek ___.',
+    pair:[{w:'sýr', m:'mléčný výrobek'},{w:'sir', m:'anglické oslovení šlechtice'}],
     correct:0
   },
   {
-    sentence:'Petr měl k svačině jen kousek ___.',
-    pair:[{w:'sýr', m:'mléčný výrobek'},{w:'sir', m:'pán (anglické oslovení)'}],
+    sentence:'V Anglii oslovili rytíře ___.',
+    pair:[{w:'sýr', m:'mléčný výrobek'},{w:'sir', m:'anglické oslovení šlechtice'}],
+    correct:1
+  },
+  /* LÝKO × LIKO (jednoslovní distraktor i jiný) — vyjm. po L */
+  {
+    sentence:'Z lipového ___ se pletly košíky.',
+    pair:[{w:'lýko', m:'vlákno z lipové kůry'},{w:'liko', m:'neexistuje (správně lýko)'}],
     correct:0
   },
+  /* BYT × BIT */
   {
-    sentence:'Tatínek si myslí, že je velký ___ jako baronet.',
-    pair:[{w:'sýr', m:'mléčný výrobek'},{w:'sir', m:'pán (anglické oslovení)'}],
-    correct:1
+    sentence:'Bydlíme v novém ___ v centru.',
+    pair:[{w:'bytě', m:'od slova byt — místo bydlení'},{w:'bitě', m:'od slova bití — tlouct'}],
+    correct:0
+  },
+  /* PYTEL × PITEL */
+  {
+    sentence:'Otec přinesl velký ___ brambor.',
+    pair:[{w:'pytel', m:'velká taška, vak'},{w:'pitel', m:'neexistuje (správně pytel)'}],
+    correct:0
   }
 ];
 
@@ -2039,7 +2063,7 @@ function hraLoop(){
           addPoints(2);
           HRA.wordIdx++;
           hraShowWord();
-          if(HRA.score % 7 === 0){
+          if(HRA.score % 4 === 0){
             HRA.speed = Math.min(5, HRA.speed + 0.2);
             HRA.spawnInt = Math.max(130, HRA.spawnInt - 12);
           }

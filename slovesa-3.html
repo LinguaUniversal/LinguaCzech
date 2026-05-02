@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Slovesa — LinguaCzech 3. třída</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --m:#32a0d2;--ms:#e8f4fb;
+  --o:#ffaa37;--os:#fff8ee;
+  --z:#16a34a;--zs:#dcfce7;
+  --r:#dc2626;--rs:#fee2e2;
+  --p:#7c3aed;--ps:#f3e8ff;
+  /* Časy */
+  --c-min:#64748b;--c-mins:#f1f5f9;     /* minulý - šedá */
+  --c-prit:#16a34a;--c-prits:#dcfce7;   /* přítomný - zelená */
+  --c-bud:#2563eb;--c-buds:#dbeafe;     /* budoucí - modrá */
+  --font:'Barlow Condensed',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
+.hl{max-width:760px;margin:1.5rem auto;padding:.5rem 1rem;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.4rem 0 1rem;}
+.topbar a{color:var(--m);text-decoration:none;font-weight:700;font-size:.95rem;}
+.topbar span{font-weight:800;color:var(--m);}
+.scbg{position:fixed;top:10px;right:12px;background:var(--o);color:white;border-radius:99px;padding:.3rem .85rem;font-weight:700;font-size:1rem;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.18);pointer-events:none;}
+.mh{text-align:center;margin:.5rem 0 1.2rem;}
+.mh h1{font-size:1.9rem;color:var(--m);font-weight:800;margin:0;}
+.mh p{color:#6b7280;margin:.3rem 0 0;}
+.mg{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem;}
+.mk{padding:1rem;border-radius:14px;cursor:pointer;text-align:center;transition:all .15s;border:2.5px solid transparent;background:white;}
+.mk:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08);}
+.mk-m{background:var(--ms);border-color:var(--m);}
+.mk-o{background:var(--os);border-color:var(--o);}
+.mk-p{background:var(--ps);border-color:var(--p);}
+.mk h3{font-size:1.05rem;font-weight:800;margin-bottom:.2rem;}
+.mk p{font-size:.85rem;color:#6b7280;margin:0;}
+.cv{display:none;}
+.nav{display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;}
+.zpet{background:white;border:1.5px solid #d1d5db;border-radius:8px;padding:.4rem .9rem;font-weight:600;cursor:pointer;font-family:var(--font);}
+.tit{font-size:1.1rem;font-weight:700;}
+.var{margin-left:auto;background:var(--ms);color:var(--m);border-radius:99px;padding:.2rem .8rem;font-weight:600;font-size:.85rem;}
+.sk{display:flex;justify-content:space-around;background:var(--os);border:1px solid #ffd48a;border-radius:10px;padding:.7rem;margin-bottom:.75rem;}
+.skn{font-size:1.4rem;font-weight:700;color:var(--o);text-align:center;}
+.skl{font-size:.75rem;color:#6b7280;text-align:center;}
+.pg{height:8px;background:#e5e7eb;border-radius:99px;overflow:hidden;margin-bottom:1rem;}
+.pgf{height:100%;background:var(--m);border-radius:99px;transition:width .3s;}
+.ka{background:white;border:1.5px solid #e5e7eb;border-radius:12px;padding:1rem;margin-bottom:1rem;}
+.q{font-weight:700;text-align:center;margin-bottom:.5rem;color:#374151;}
+.fb{margin-top:.7rem;font-size:.95rem;min-height:1.2rem;font-weight:600;text-align:center;}
+.fb.ok{color:var(--z);}
+.fb.err{color:var(--r);}
+.nxt{display:none;width:100%;background:var(--m);color:white;border:none;border-radius:8px;padding:.85rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:var(--font);margin-top:.5rem;}
+.res{display:none;text-align:center;padding:2rem 1rem;}
+.res h2{color:var(--m);font-size:1.6rem;margin:.5rem 0;}
+.res-row{display:flex;gap:1rem;justify-content:center;margin:1rem 0;flex-wrap:wrap;}
+.rs{background:var(--ms);border-radius:10px;padding:.75rem 1rem;}
+.rsv{font-size:1.4rem;font-weight:800;}
+.rsl{font-size:.8rem;color:#6b7280;}
+.znovu,.mbtn{padding:.7rem 1.2rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:.95rem;margin:.3rem;}
+.znovu{background:var(--m);color:white;border:none;}
+.mbtn{background:white;color:#374151;border:1.5px solid #d1d5db;}
+
+.sadyTabs{display:flex;gap:.3rem;margin-bottom:.7rem;flex-wrap:wrap;justify-content:center;}
+.sadyTab{padding:.45rem .9rem;border:2px solid var(--m);background:white;color:var(--m);border-radius:99px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:.95rem;}
+.sadyTab.on{background:var(--m);color:white;}
+.sadyHeader{font-family:Verdana,Geneva,sans-serif;font-size:1.3rem;font-weight:700;color:var(--m);text-align:center;margin:.5rem 0;}
+.sadyBody{font-family:Verdana,Geneva,sans-serif;font-size:1.05rem;line-height:1.8;color:#1f2937;background:var(--ms);padding:.8rem 1rem;border-radius:10px;margin:.5rem 0;}
+.sadyBody b{color:var(--m);}
+.sadyHint{background:#fffbeb;border-left:4px solid var(--o);padding:.6rem .8rem;border-radius:6px;font-size:.9rem;color:#374151;margin:.5rem 0;}
+
+.wordBig{font-family:Verdana,Geneva,sans-serif;font-size:2rem;font-weight:800;color:var(--m);text-align:center;padding:1rem;background:var(--ms);border-radius:10px;margin:.7rem 0;}
+.opts3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin:1rem 0;}
+.opt3{padding:1rem .5rem;background:white;border:2.5px solid #d1d5db;border-radius:10px;font-family:Verdana,Geneva,sans-serif;font-weight:700;font-size:1rem;cursor:pointer;text-align:center;transition:all .15s;color:#1f2937;}
+.opt3:hover:not(:disabled){border-color:var(--m);background:var(--ms);}
+.opt3.ok{background:var(--zs);border-color:var(--z);color:var(--z);}
+.opt3.err{background:var(--rs);border-color:var(--r);color:var(--r);}
+.opt3:disabled{cursor:default;}
+
+/* Osoba x číslo grid */
+.osobaGrid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:1rem 0;}
+.osobaCell{padding:.8rem .5rem;background:white;border:2px solid #d1d5db;border-radius:8px;font-family:Verdana,Geneva,sans-serif;font-weight:700;cursor:pointer;text-align:center;color:#1f2937;}
+.osobaCell:hover:not(:disabled){border-color:var(--m);background:var(--ms);}
+.osobaCell.ok{background:var(--zs);border-color:var(--z);color:var(--z);}
+.osobaCell.err{background:var(--rs);border-color:var(--r);color:var(--r);}
+.osobaCell b{display:block;font-size:.85rem;color:#6b7280;margin-bottom:.2rem;font-weight:400;}
+
+/* Sentence with word highlight */
+.sentence{font-family:Verdana,Geneva,sans-serif;font-size:1.3rem;text-align:center;line-height:1.8;background:var(--ms);padding:1rem;border-radius:10px;margin:1rem 0;color:#1f2937;}
+.word-btn{display:inline-block;padding:.1rem .35rem;margin:0 .1rem;border-radius:5px;cursor:pointer;border:2px solid transparent;background:transparent;font-family:Verdana,Geneva,sans-serif;font-size:1.3rem;font-weight:700;color:#1f2937;transition:all .15s;}
+.word-btn:hover{background:white;border-color:var(--m);}
+.word-btn.ok{background:var(--zs);border-color:var(--z);color:var(--z);}
+.word-btn.err{background:var(--rs);border-color:var(--r);color:var(--r);}
+
+@media print{body{background:white;}.scbg{display:none;}}
+</style>
+</head>
+<body>
+<div class="scbg" id="scbg">⭐ 0 b.</div>
+<div class="hl">
+
+<!-- MENU -->
+<div id="menu">
+  <div class="topbar"><a href="3trida.html">← 3. třída</a><span>LinguaCzech</span></div>
+  <div class="mh"><h1>Slovesa</h1><p>3. ročník — osoba, číslo, čas</p></div>
+  <div class="mg">
+    <div onclick="go('sady')" class="mk mk-p" style="grid-column:span 2"><h3>📋 Naučím se</h3><p>Co je sloveso · Osoba · Číslo · Čas</p></div>
+    <div onclick="go('najdi')" class="mk mk-m"><h3>🔍 Najdi sloveso</h3><p>Klikni ve větě</p></div>
+    <div onclick="go('cas')" class="mk mk-o"><h3>⏰ Určuj čas</h3><p>Minulý · přítomný · budoucí</p></div>
+    <div onclick="go('osoba')" class="mk mk-m"><h3>👤 Osoba a číslo</h3><p>já / ty / on  ·  my / vy / oni</p></div>
+    <div onclick="go('cas3')" class="mk mk-o"><h3>🔄 Vyčasuj</h3><p>Z přítomného do minulého a budoucího</p></div>
+    <div onclick="printChoice()" class="mk" style="grid-column:span 2;background:#f3f4f6;border:2px dashed #9ca3af"><h3 style="color:#374151">🖨️ Vytisknout pracovní list</h3><p style="color:#6b7280">PDF k procvičování doma</p></div>
+  </div>
+</div>
+
+<!-- CV: SADY -->
+<div class="cv" id="cv-sady">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">📋 Naučím se</span></div>
+  <div class="sadyTabs" id="sady-tabs"></div>
+  <div class="ka">
+    <div class="sadyHeader" id="sady-h">—</div>
+    <div class="sadyBody" id="sady-b">—</div>
+    <div class="sadyHint" id="sady-hint">—</div>
+  </div>
+  <button class="mbtn" style="display:block;margin:.5rem auto" onclick="back()">Zpět do menu</button>
+</div>
+
+<!-- CV: NAJDI sloveso ve větě -->
+<div class="cv" id="cv-najdi">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🔍 Najdi sloveso</span><span class="var" id="naj-v">1/8</span></div>
+  <div class="sk">
+    <div><div class="skn" id="naj-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="naj-ci">1/8</div><div class="skl">věta</div></div>
+    <div><div class="skn" id="naj-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="naj-pg" style="width:0%"></div></div>
+  <div id="naj-ob">
+    <div class="ka">
+      <div class="q">Klikni ve větě na <b>sloveso</b> (slovo, které říká, co někdo dělá).</div>
+      <div class="sentence" id="naj-s">—</div>
+      <div class="fb" id="naj-fb"></div>
+    </div>
+    <button class="nxt" id="naj-nx" onclick="najNext()">Další →</button>
+  </div>
+  <div class="res" id="naj-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="naj-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="naj-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="naj-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('najdi')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV: ČAS -->
+<div class="cv" id="cv-cas">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">⏰ Určuj čas</span><span class="var" id="cas-v">1/12</span></div>
+  <div class="sk">
+    <div><div class="skn" id="cas-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="cas-ci">1/12</div><div class="skl">věta</div></div>
+    <div><div class="skn" id="cas-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="cas-pg" style="width:0%"></div></div>
+  <div id="cas-ob">
+    <div class="ka">
+      <div class="q">V jakém <b>čase</b> je sloveso ve větě?</div>
+      <div class="sentence" id="cas-s">—</div>
+      <div class="opts3">
+        <button class="opt3" onclick="casAns('min',this)">⬅️ minulý</button>
+        <button class="opt3" onclick="casAns('prit',this)">⏺ přítomný</button>
+        <button class="opt3" onclick="casAns('bud',this)">➡️ budoucí</button>
+      </div>
+      <div class="fb" id="cas-fb"></div>
+    </div>
+    <button class="nxt" id="cas-nx" onclick="casNext()">Další →</button>
+  </div>
+  <div class="res" id="cas-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="cas-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="cas-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="cas-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('cas')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV: OSOBA -->
+<div class="cv" id="cv-osoba">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">👤 Osoba a číslo</span><span class="var" id="os-v">1/12</span></div>
+  <div class="sk">
+    <div><div class="skn" id="os-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="os-ci">1/12</div><div class="skl">sloveso</div></div>
+    <div><div class="skn" id="os-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="os-pg" style="width:0%"></div></div>
+  <div id="os-ob">
+    <div class="ka">
+      <div class="q">Která <b>osoba a číslo</b> je v slovese?</div>
+      <div class="wordBig" id="os-w">—</div>
+      <div class="osobaGrid" id="os-c"></div>
+      <div class="fb" id="os-fb"></div>
+    </div>
+    <button class="nxt" id="os-nx" onclick="osNext()">Další →</button>
+  </div>
+  <div class="res" id="os-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="os-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="os-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="os-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('osoba')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV: VYČASUJ -->
+<div class="cv" id="cv-cas3">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🔄 Vyčasuj</span><span class="var" id="c3-v">1/8</span></div>
+  <div class="sk">
+    <div><div class="skn" id="c3-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="c3-ci">1/8</div><div class="skl">slovo</div></div>
+    <div><div class="skn" id="c3-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="c3-pg" style="width:0%"></div></div>
+  <div id="c3-ob">
+    <div class="ka">
+      <div class="q">Sloveso v <b>přítomném čase</b>:</div>
+      <div class="wordBig" id="c3-w">—</div>
+      <div class="q" style="font-size:1rem;margin-top:1rem"><b>Vyber tvar v</b> <span id="c3-target" style="color:var(--o)">—</span> <b>čase:</b></div>
+      <div class="opts3" id="c3-c"></div>
+      <div class="fb" id="c3-fb"></div>
+    </div>
+    <button class="nxt" id="c3-nx" onclick="c3Next()">Další →</button>
+  </div>
+  <div class="res" id="c3-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="c3-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="c3-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="c3-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('cas3')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+</div><!-- .hl -->
+
+<script>
+var SCORE_KEY='slovesa3_score';
+var totalScore=0;
+try{totalScore=parseInt(localStorage.getItem(SCORE_KEY))||0;}catch(e){}
+function el(id){return document.getElementById(id);}
+function shuffle(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t;}return b;}
+function addPoints(n){totalScore+=n;try{localStorage.setItem(SCORE_KEY,totalScore);}catch(e){}updateScore();}
+function updateScore(){el('scbg').textContent='⭐ '+totalScore+' b.';}
+updateScore();
+function go(id){
+  el('menu').style.display='none';
+  document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
+  el('cv-'+id).style.display='block';
+  if(id==='sady') sadyStart();
+  if(id==='najdi') najStart();
+  if(id==='cas') casStart();
+  if(id==='osoba') osStart();
+  if(id==='cas3') c3Start();
+}
+function back(){
+  el('menu').style.display='block';
+  document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
+}
+
+/* ─── DATA ─── */
+/* Najdi sloveso ve větě */
+var NAJ_DATA = [
+  {sentence:'Maminka peče koláč.', target:'peče'},
+  {sentence:'Pes hlasitě štěká.', target:'štěká'},
+  {sentence:'Kluk čte zajímavou knihu.', target:'čte'},
+  {sentence:'Honza skáče přes potok.', target:'skáče'},
+  {sentence:'Ptáci zpívají na stromě.', target:'zpívají'},
+  {sentence:'Děti běhají po zahradě.', target:'běhají'},
+  {sentence:'Kočka spí na okně.', target:'spí'},
+  {sentence:'Kniha leží na stole.', target:'leží'},
+  {sentence:'Auto stojí před domem.', target:'stojí'},
+  {sentence:'Zítra půjdeme do lesa.', target:'půjdeme'},
+  {sentence:'Včera jsem viděl kamaráda.', target:'viděl'},
+  {sentence:'Babička vaří voňavou polévku.', target:'vaří'}
+];
+/* Čas - věty s slovesem v různém čase */
+var CAS_DATA = [
+  {sentence:'Včera jsem psal úkol.', cas:'min'},
+  {sentence:'Maminka peče koláč.', cas:'prit'},
+  {sentence:'Zítra půjdeme do školy.', cas:'bud'},
+  {sentence:'Děti hrály fotbal.', cas:'min'},
+  {sentence:'Kočka spí.', cas:'prit'},
+  {sentence:'Příští týden pojedeme k babičce.', cas:'bud'},
+  {sentence:'Klárka napsala dopis.', cas:'min'},
+  {sentence:'Slunce svítí.', cas:'prit'},
+  {sentence:'Budu malovat obrázek.', cas:'bud'},
+  {sentence:'Dědeček zaléval květiny.', cas:'min'},
+  {sentence:'Pavel běhá v parku.', cas:'prit'},
+  {sentence:'Zítra napíšu dopis.', cas:'bud'},
+  {sentence:'Vlak přijede za hodinu.', cas:'bud'},
+  {sentence:'Babička pekla buchty.', cas:'min'}
+];
+/* Osoba a číslo */
+var OS_DATA = [
+  {w:'píšu',    person:1, num:'j'},
+  {w:'píšeš',   person:2, num:'j'},
+  {w:'píše',    person:3, num:'j'},
+  {w:'píšeme',  person:1, num:'m'},
+  {w:'píšete',  person:2, num:'m'},
+  {w:'píšou',   person:3, num:'m'},
+  {w:'běžím',   person:1, num:'j'},
+  {w:'běžíš',   person:2, num:'j'},
+  {w:'běží',    person:3, num:'j'},
+  {w:'běžíme',  person:1, num:'m'},
+  {w:'běžíte',  person:2, num:'m'},
+  {w:'běží (oni)', person:3, num:'m', display:'běží'},
+  {w:'jíst — jím',  person:1, num:'j', display:'jím'},
+  {w:'jíš',     person:2, num:'j'},
+  {w:'jí (on)', person:3, num:'j', display:'jí'},
+  {w:'jíme',    person:1, num:'m'},
+  {w:'jíte',    person:2, num:'m'},
+  {w:'jedí',    person:3, num:'m'},
+  {w:'spím',    person:1, num:'j'},
+  {w:'spíš',    person:2, num:'j'},
+  {w:'spíme',   person:1, num:'m'}
+];
+/* Vyčasuj — z přítomného → minulý / budoucí */
+var C3_DATA = [
+  {pres:'píšu', target:'min',  options:['psal jsem','píšu','budu psát'], correct:0},
+  {pres:'běžím', target:'min', options:['běžel jsem','běžím','poběžím'], correct:0},
+  {pres:'jím', target:'min',   options:['snědl jsem','jím','najím se'], correct:0},
+  {pres:'spím', target:'min',  options:['spal jsem','spím','budu spát'], correct:0},
+  {pres:'maluju', target:'bud', options:['maloval jsem','maluju','budu malovat'], correct:2},
+  {pres:'čtu', target:'bud',   options:['budu číst','četl jsem','čtu'], correct:0},
+  {pres:'pomáhám', target:'bud', options:['pomáhal jsem','pomáhám','budu pomáhat'], correct:2},
+  {pres:'vařím', target:'min', options:['vařil jsem','vařím','budu vařit'], correct:0},
+  {pres:'běhám', target:'bud', options:['budu běhat','běhal jsem','běhám'], correct:0},
+  {pres:'učím se', target:'min', options:['učil jsem se','učím se','budu se učit'], correct:0}
+];
+
+/* ─── SADY ─── */
+var sadyKey = 'co';
+var SADY_DATA = {
+  co: {
+    label: 'Co je sloveso',
+    body: '<b>Sloveso</b> je slovo, které říká, <b>co někdo nebo něco dělá</b>:<br>'+
+          '🏃 běhá, skáče, čte, spí, jí, píše, kreslí<br><br>'+
+          '<b>Otázky na sloveso:</b><br>'+
+          '— Co dělá? (Maminka <b>vaří</b>.)<br>'+
+          '— Co se děje? (Slunce <b>svítí</b>.)<br><br>'+
+          '<b>Sloveso má čas, osobu a číslo.</b>',
+    hint: 'Pomůcka: Když najdeš slovo, na které se ptáš „co dělá?", máš sloveso.'
+  },
+  cas: {
+    label: 'Čas',
+    body: '<b>Slovesa mají 3 časy:</b><br><br>'+
+          '⬅️ <b>Minulý čas</b> — co se stalo (už):<br>'+
+          'psal jsem, hrála, běžel, vařila<br><br>'+
+          '⏺ <b>Přítomný čas</b> — co se děje (teď):<br>'+
+          'píšu, hraje, běhám, vaří<br><br>'+
+          '➡️ <b>Budoucí čas</b> — co se bude dít:<br>'+
+          'budu psát, napíšu, půjdeme, pojedeme',
+    hint: 'Pomůcka: <b>včera</b> = minulý, <b>teď</b> = přítomný, <b>zítra</b> = budoucí.'
+  },
+  osoba: {
+    label: 'Osoba a číslo',
+    body: '<b>Osoba</b> ukazuje, kdo dělá:<br><br>'+
+          '<b>Jednotné číslo</b> (1):<br>'+
+          '— 1. osoba: <b>já</b> píšu<br>'+
+          '— 2. osoba: <b>ty</b> píšeš<br>'+
+          '— 3. osoba: <b>on/ona/ono</b> píše<br><br>'+
+          '<b>Množné číslo</b> (víc):<br>'+
+          '— 1. osoba: <b>my</b> píšeme<br>'+
+          '— 2. osoba: <b>vy</b> píšete<br>'+
+          '— 3. osoba: <b>oni/ony/ona</b> píšou',
+    hint: 'Pomůcka: představ si, kdo to dělá. Já? Ty? On? Nebo my? Vy? Oni?'
+  }
+};
+function sadyStart(){
+  var tabs = el('sady-tabs');
+  tabs.innerHTML = '';
+  ['co','cas','osoba'].forEach(function(k){
+    var b = document.createElement('button');
+    b.className = 'sadyTab' + (k===sadyKey?' on':'');
+    b.textContent = SADY_DATA[k].label;
+    b.onclick = function(){ sadyShow(k); };
+    tabs.appendChild(b);
+  });
+  sadyShow(sadyKey);
+}
+function sadyShow(k){
+  sadyKey = k;
+  document.querySelectorAll('#sady-tabs .sadyTab').forEach(function(b,i){
+    b.classList.toggle('on', ['co','cas','osoba'][i]===k);
+  });
+  el('sady-h').textContent = SADY_DATA[k].label;
+  el('sady-b').innerHTML = SADY_DATA[k].body;
+  el('sady-hint').innerHTML = '💡 ' + SADY_DATA[k].hint;
+}
+
+/* ─── NAJDI ─── */
+var najSt={};
+function najStart(){
+  najSt = {seq: shuffle(NAJ_DATA).slice(0,8), idx:0, body:0, sp:0, locked:false};
+  el('naj-res').style.display='none';
+  el('naj-ob').style.display='block';
+  najRender();
+}
+function najRender(){
+  var s = najSt;
+  if(s.idx >= s.seq.length){ najFinish(); return; }
+  var item = s.seq[s.idx];
+  var sBox = el('naj-s');
+  sBox.innerHTML = '';
+  var words = item.sentence.split(' ');
+  words.forEach(function(w, i){
+    var clean = w.replace(/[.,!?;:]/g,'');
+    var btn = document.createElement('button');
+    btn.className = 'word-btn';
+    btn.textContent = w;
+    btn.onclick = function(){ najAns(clean, btn, item); };
+    sBox.appendChild(btn);
+    if(i < words.length-1) sBox.appendChild(document.createTextNode(' '));
+  });
+  el('naj-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('naj-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('naj-bd').textContent = s.body;
+  el('naj-sp').textContent = s.sp;
+  el('naj-pg').style.width = (s.idx/s.seq.length*100)+'%';
+  el('naj-fb').textContent='';
+  el('naj-fb').className='fb';
+  el('naj-nx').style.display='none';
+  s.locked=false;
+}
+function najAns(clicked, btn, item){
+  var s = najSt; if(s.locked) return; s.locked=true;
+  if(clicked === item.target){
+    btn.classList.add('ok');
+    s.body += 5; s.sp++; addPoints(5);
+    el('naj-fb').innerHTML='✓ Správně! <b>'+item.target+'</b> je sloveso.';
+    el('naj-fb').className='fb ok';
+  } else {
+    btn.classList.add('err');
+    document.querySelectorAll('#naj-s .word-btn').forEach(function(b){
+      if(b.textContent.replace(/[.,!?;:]/g,'') === item.target) b.classList.add('ok');
+    });
+    el('naj-fb').innerHTML='✗ Sloveso je <b>'+item.target+'</b>.';
+    el('naj-fb').className='fb err';
+  }
+  document.querySelectorAll('#naj-s .word-btn').forEach(function(b){b.disabled=true;});
+  el('naj-bd').textContent=s.body; el('naj-sp').textContent=s.sp;
+  el('naj-nx').style.display='block';
+}
+function najNext(){ najSt.idx++; najRender(); }
+function najFinish(){
+  var s=najSt;
+  el('naj-ob').style.display='none';
+  el('naj-res').style.display='block';
+  el('naj-pp').textContent='Správně '+s.sp+' z '+s.seq.length+' · '+s.body+' bodů.';
+  el('naj-sc').textContent=s.body;
+  el('naj-tot').textContent=totalScore;
+}
+
+/* ─── CAS ─── */
+var casSt={};
+var CAS_LABELS = {min:'minulý',prit:'přítomný',bud:'budoucí'};
+function casStart(){
+  casSt = {seq: shuffle(CAS_DATA).slice(0,12), idx:0, body:0, sp:0, locked:false};
+  el('cas-res').style.display='none';
+  el('cas-ob').style.display='block';
+  casRender();
+}
+function casRender(){
+  var s = casSt;
+  if(s.idx >= s.seq.length){ casFinish(); return; }
+  var item = s.seq[s.idx];
+  el('cas-s').textContent = item.sentence;
+  el('cas-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('cas-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('cas-bd').textContent = s.body;
+  el('cas-sp').textContent = s.sp;
+  el('cas-pg').style.width = (s.idx/s.seq.length*100)+'%';
+  el('cas-fb').textContent='';
+  el('cas-fb').className='fb';
+  el('cas-nx').style.display='none';
+  document.querySelectorAll('#cv-cas .opt3').forEach(function(b){b.disabled=false;b.classList.remove('ok','err');});
+  s.locked=false;
+}
+function casAns(picked, btn){
+  var s=casSt; if(s.locked) return; s.locked=true;
+  var item = s.seq[s.idx];
+  if(picked === item.cas){
+    btn.classList.add('ok');
+    s.body += 5; s.sp++; addPoints(5);
+    el('cas-fb').innerHTML='✓ Správně! Čas '+CAS_LABELS[item.cas]+'.';
+    el('cas-fb').className='fb ok';
+  } else {
+    btn.classList.add('err');
+    document.querySelectorAll('#cv-cas .opt3').forEach(function(b){
+      if(b.textContent.indexOf(CAS_LABELS[item.cas])>=0) b.classList.add('ok');
+    });
+    el('cas-fb').innerHTML='✗ Sloveso je v čase <b>'+CAS_LABELS[item.cas]+'</b>.';
+    el('cas-fb').className='fb err';
+  }
+  document.querySelectorAll('#cv-cas .opt3').forEach(function(b){b.disabled=true;});
+  el('cas-bd').textContent=s.body; el('cas-sp').textContent=s.sp;
+  el('cas-nx').style.display='block';
+}
+function casNext(){ casSt.idx++; casRender(); }
+function casFinish(){
+  var s=casSt;
+  el('cas-ob').style.display='none';
+  el('cas-res').style.display='block';
+  el('cas-pp').textContent='Správně '+s.sp+' z '+s.seq.length+' · '+s.body+' bodů.';
+  el('cas-sc').textContent=s.body;
+  el('cas-tot').textContent=totalScore;
+}
+
+/* ─── OSOBA ─── */
+var osSt={};
+function osStart(){
+  osSt = {seq: shuffle(OS_DATA).slice(0,12), idx:0, body:0, sp:0, locked:false};
+  el('os-res').style.display='none';
+  el('os-ob').style.display='block';
+  osRender();
+}
+function osRender(){
+  var s = osSt;
+  if(s.idx >= s.seq.length){ osFinish(); return; }
+  var item = s.seq[s.idx];
+  el('os-w').textContent = item.display || item.w;
+  /* Renderuj 6 buněk */
+  var c = el('os-c'); c.innerHTML='';
+  var labels = [
+    {p:1,n:'j',l:'1. os. j.č.',ex:'(já)'},
+    {p:2,n:'j',l:'2. os. j.č.',ex:'(ty)'},
+    {p:3,n:'j',l:'3. os. j.č.',ex:'(on/ona/ono)'},
+    {p:1,n:'m',l:'1. os. mn.č.',ex:'(my)'},
+    {p:2,n:'m',l:'2. os. mn.č.',ex:'(vy)'},
+    {p:3,n:'m',l:'3. os. mn.č.',ex:'(oni/ony/ona)'}
+  ];
+  labels.forEach(function(opt){
+    var b = document.createElement('button');
+    b.className = 'osobaCell';
+    b.innerHTML = '<b>'+opt.l+'</b>'+opt.ex;
+    b.onclick = function(){ osAns(opt.p, opt.n, b, item); };
+    c.appendChild(b);
+  });
+  el('os-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('os-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('os-bd').textContent = s.body;
+  el('os-sp').textContent = s.sp;
+  el('os-pg').style.width = (s.idx/s.seq.length*100)+'%';
+  el('os-fb').textContent='';
+  el('os-fb').className='fb';
+  el('os-nx').style.display='none';
+  s.locked=false;
+}
+function osAns(p, n, btn, item){
+  var s=osSt; if(s.locked) return; s.locked=true;
+  var label = (item.num==='j'?'jednotné':'množné');
+  if(p===item.person && n===item.num){
+    btn.classList.add('ok');
+    s.body += 5; s.sp++; addPoints(5);
+    el('os-fb').innerHTML='✓ Správně! '+item.person+'. osoba, číslo '+label+'.';
+    el('os-fb').className='fb ok';
+  } else {
+    btn.classList.add('err');
+    document.querySelectorAll('#os-c .osobaCell').forEach(function(b,i){
+      var lab = [{p:1,n:'j'},{p:2,n:'j'},{p:3,n:'j'},{p:1,n:'m'},{p:2,n:'m'},{p:3,n:'m'}][i];
+      if(lab.p===item.person && lab.n===item.num) b.classList.add('ok');
+    });
+    el('os-fb').innerHTML='✗ Správně je <b>'+item.person+'. osoba, '+label+' číslo</b>.';
+    el('os-fb').className='fb err';
+  }
+  document.querySelectorAll('#os-c .osobaCell').forEach(function(b){b.disabled=true;});
+  el('os-bd').textContent=s.body; el('os-sp').textContent=s.sp;
+  el('os-nx').style.display='block';
+}
+function osNext(){ osSt.idx++; osRender(); }
+function osFinish(){
+  var s=osSt;
+  el('os-ob').style.display='none';
+  el('os-res').style.display='block';
+  el('os-pp').textContent='Správně '+s.sp+' z '+s.seq.length+' · '+s.body+' bodů.';
+  el('os-sc').textContent=s.body;
+  el('os-tot').textContent=totalScore;
+}
+
+/* ─── VYČASUJ ─── */
+var c3St={};
+function c3Start(){
+  c3St = {seq: shuffle(C3_DATA).slice(0,8), idx:0, body:0, sp:0, locked:false};
+  el('c3-res').style.display='none';
+  el('c3-ob').style.display='block';
+  c3Render();
+}
+function c3Render(){
+  var s = c3St;
+  if(s.idx >= s.seq.length){ c3Finish(); return; }
+  var item = s.seq[s.idx];
+  el('c3-w').textContent = item.pres;
+  el('c3-target').textContent = CAS_LABELS[item.target];
+  /* Vykresli 3 možnosti */
+  var c = el('c3-c'); c.innerHTML='';
+  item.options.forEach(function(opt, i){
+    var b = document.createElement('button');
+    b.className = 'opt3';
+    b.style.fontSize = '.95rem';
+    b.textContent = opt;
+    b.onclick = function(){ c3Ans(i, b, item); };
+    c.appendChild(b);
+  });
+  el('c3-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('c3-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('c3-bd').textContent = s.body;
+  el('c3-sp').textContent = s.sp;
+  el('c3-pg').style.width = (s.idx/s.seq.length*100)+'%';
+  el('c3-fb').textContent='';
+  el('c3-fb').className='fb';
+  el('c3-nx').style.display='none';
+  s.locked=false;
+}
+function c3Ans(picked, btn, item){
+  var s=c3St; if(s.locked) return; s.locked=true;
+  if(picked === item.correct){
+    btn.classList.add('ok');
+    s.body += 6; s.sp++; addPoints(6);
+    el('c3-fb').innerHTML='✓ Správně! <b>'+item.options[item.correct]+'</b> je čas '+CAS_LABELS[item.target]+'.';
+    el('c3-fb').className='fb ok';
+  } else {
+    btn.classList.add('err');
+    document.querySelectorAll('#c3-c .opt3').forEach(function(b,i){
+      if(i===item.correct) b.classList.add('ok');
+    });
+    el('c3-fb').innerHTML='✗ V '+CAS_LABELS[item.target]+' čase: <b>'+item.options[item.correct]+'</b>.';
+    el('c3-fb').className='fb err';
+  }
+  document.querySelectorAll('#c3-c .opt3').forEach(function(b){b.disabled=true;});
+  el('c3-bd').textContent=s.body; el('c3-sp').textContent=s.sp;
+  el('c3-nx').style.display='block';
+}
+function c3Next(){ c3St.idx++; c3Render(); }
+function c3Finish(){
+  var s=c3St;
+  el('c3-ob').style.display='none';
+  el('c3-res').style.display='block';
+  el('c3-pp').textContent='Správně '+s.sp+' z '+s.seq.length+' · '+s.body+' bodů.';
+  el('c3-sc').textContent=s.body;
+  el('c3-tot').textContent=totalScore;
+}
+
+/* ─── PRINT ─── */
+function printChoice(){
+  var topics = [
+    {key:'najdi', label:'Najdi sloveso ve větě (10 vět)'},
+    {key:'cas', label:'Určuj čas (12 vět)'},
+    {key:'osoba', label:'Osoba a číslo (12 sloves)'},
+    {key:'mix', label:'Smíšený list'}
+  ];
+  var html = '<div style="position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem"><div style="background:white;border-radius:12px;padding:1.5rem;max-width:480px;width:100%"><h3 style="margin:0 0 1rem;color:var(--m);text-align:center">🖨️ Vyber pracovní list</h3>';
+  topics.forEach(function(t){
+    html += '<button onclick="doPrint(\\\''+t.key+'\\\');this.parentNode.parentNode.remove()" style="width:100%;padding:.85rem;margin:.3rem 0;background:var(--ms);border:2px solid var(--m);border-radius:8px;font-weight:700;color:var(--m);cursor:pointer;font-family:var(--font);font-size:1rem;text-align:left">'+t.label+'</button>';
+  });
+  html += '<button onclick="this.parentNode.parentNode.remove()" style="width:100%;padding:.6rem;margin-top:.5rem;background:#f3f4f6;border:1px solid #d1d5db;border-radius:8px;cursor:pointer;font-family:var(--font)">Zavřít</button></div></div>';
+  var d = document.createElement('div');
+  d.innerHTML = html;
+  document.body.appendChild(d.firstChild);
+}
+function doPrint(key){
+  var data = printGetData(key);
+  var w = window.open('', '_blank');
+  w.document.write(printHTML(data));
+  w.document.close();
+  setTimeout(function(){w.print();}, 500);
+}
+function printGetData(key){
+  if(key==='najdi'){
+    var picked = shuffle(NAJ_DATA).slice(0,10);
+    var qHtml = '<p>V každé větě <b>podtrhni sloveso</b>:</p>';
+    picked.forEach(function(it,i){
+      qHtml += '<div style="margin:.5rem 0;padding:.3rem 0;border-bottom:1px dotted #ccc">'+(i+1)+'. '+it.sentence+'</div>';
+    });
+    var aHtml = '';
+    picked.forEach(function(it,i){
+      aHtml += '<div>'+(i+1)+'. '+it.sentence.replace(it.target,'<b><u>'+it.target+'</u></b>')+'</div>';
+    });
+    return {title:'Najdi sloveso', topic:'Slovesa', instructions:'V každé větě podtrhni sloveso (slovo, které říká, co někdo dělá).', qHtml:qHtml, aHtml:aHtml};
+  }
+  if(key==='cas'){
+    var picked = shuffle(CAS_DATA).slice(0,12);
+    var qHtml = '<p>U každé věty napiš čas slovesa: <b>min</b> = minulý, <b>pří</b> = přítomný, <b>bud</b> = budoucí.</p><table style="width:100%">';
+    picked.forEach(function(it,i){
+      qHtml += '<tr><td style="padding:.4rem;border-bottom:1px dotted #ccc;width:80%">'+(i+1)+'. '+it.sentence+'</td><td style="text-align:right;padding:.4rem">_____</td></tr>';
+    });
+    qHtml += '</table>';
+    var aHtml = '<table style="width:100%">';
+    picked.forEach(function(it,i){
+      aHtml += '<tr><td>'+(i+1)+'. '+it.sentence+' — <b>'+CAS_LABELS[it.cas]+'</b></td></tr>';
+    });
+    aHtml += '</table>';
+    return {title:'Časy sloves', topic:'Slovesa', instructions:'Urči čas slovesa v každé větě (min/pří/bud).', qHtml:qHtml, aHtml:aHtml};
+  }
+  if(key==='osoba'){
+    var picked = shuffle(OS_DATA).slice(0,12);
+    var qHtml = '<p>U každého slovesa napiš osobu (1, 2, 3) a číslo (j = jednotné, m = množné):</p><table style="width:100%">';
+    picked.forEach(function(it,i){
+      qHtml += '<tr><td style="padding:.4rem;border-bottom:1px dotted #ccc">'+(i+1)+'. '+(it.display||it.w)+'</td><td style="text-align:right;padding:.4rem">os.: ___ &nbsp; č.: ___</td></tr>';
+    });
+    qHtml += '</table>';
+    var aHtml = '<table style="width:100%">';
+    picked.forEach(function(it,i){
+      aHtml += '<tr><td>'+(i+1)+'. '+(it.display||it.w)+' — <b>'+it.person+'. os. '+(it.num==='j'?'j.č.':'mn.č.')+'</b></td></tr>';
+    });
+    aHtml += '</table>';
+    return {title:'Osoba a číslo', topic:'Slovesa', instructions:'Urči osobu a číslo slovesa.', qHtml:qHtml, aHtml:aHtml};
+  }
+  if(key==='mix'){
+    var p1 = shuffle(NAJ_DATA).slice(0,5);
+    var p2 = shuffle(CAS_DATA).slice(0,5);
+    var qHtml = '<h4>A) Najdi a podtrhni sloveso ve větě:</h4>';
+    p1.forEach(function(it,i){
+      qHtml += '<div style="margin:.4rem 0;border-bottom:1px dotted #ccc;padding-bottom:.3rem">'+(i+1)+'. '+it.sentence+'</div>';
+    });
+    qHtml += '<h4 style="margin-top:1rem">B) Urči čas slovesa (min / pří / bud):</h4>';
+    p2.forEach(function(it,i){
+      qHtml += '<div style="margin:.4rem 0;border-bottom:1px dotted #ccc;padding-bottom:.3rem">'+(i+1)+'. '+it.sentence+' &nbsp;→ čas: _____</div>';
+    });
+    var aHtml = '<h4>A) Slovesa:</h4>';
+    p1.forEach(function(it,i){
+      aHtml += '<div>'+(i+1)+'. '+it.sentence.replace(it.target,'<b><u>'+it.target+'</u></b>')+'</div>';
+    });
+    aHtml += '<h4 style="margin-top:.7rem">B) Časy:</h4>';
+    p2.forEach(function(it,i){
+      aHtml += '<div>'+(i+1)+'. '+it.sentence+' — <b>'+CAS_LABELS[it.cas]+'</b></div>';
+    });
+    return {title:'Smíšený list', topic:'Slovesa', instructions:'Vyřeš obě části cvičení.', qHtml:qHtml, aHtml:aHtml};
+  }
+}
+function printHTML(data){
+  var d=new Date();var dateStr=d.getDate()+'.'+(d.getMonth()+1)+'.'+d.getFullYear();
+  return '<!doctype html><html lang="cs"><head><meta charset="utf-8"><title>Pracovní list — '+data.title+'</title><style>body{font-family:Arial,sans-serif;max-width:780px;margin:1rem auto;padding:1rem;color:#1f2937;font-size:13pt;line-height:1.55}h1{color:#1e3a5f;margin:0 0 .5rem;font-size:1.4rem}h2{color:#1e3a5f;margin-top:1.2rem;font-size:1.1rem;border-bottom:2px solid #1e3a5f;padding-bottom:.2rem}h4{margin:.6rem 0 .2rem}.head{display:flex;justify-content:space-between;border-bottom:2px solid #1e3a5f;padding-bottom:.3rem;margin-bottom:1rem}.head .l{display:flex;gap:1rem;align-items:baseline}.head span{font-size:.85rem;color:#6b7280}.instructions{background:#f3f4f6;padding:.6rem .9rem;border-left:4px solid #ffaa37;border-radius:4px;margin:.7rem 0;font-size:.95rem}.solution{page-break-before:always;background:#ecfdf5;padding:.7rem 1rem;border-left:4px solid #16a34a;border-radius:4px;margin-top:1rem}.solution h2{color:#16a34a;border-color:#16a34a}@media print{body{margin:0;padding:.5cm 1cm;font-size:12pt}.solution{page-break-before:always}}</style></head><body><div class="head"><div class="l"><h1>📋 '+data.title+'</h1><span>'+data.topic+'</span></div><span>Datum: '+dateStr+' · Jméno: ____________</span></div><div class="instructions"><b>Zadání:</b> '+data.instructions+'</div>'+data.qHtml+'<div class="solution"><h2>✓ Řešení (pro učitele)</h2>'+data.aHtml+'</div></body></html>';
+}
+</script>
+</body>
+</html>

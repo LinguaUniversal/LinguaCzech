@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Slovní zásoba — LinguaCzech 3. třída</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --m:#32a0d2;--ms:#e8f4fb;
+  --o:#ffaa37;--os:#fff8ee;
+  --z:#16a34a;--zs:#dcfce7;
+  --r:#dc2626;--rs:#fee2e2;
+  --p:#7c3aed;--ps:#f3e8ff;
+  --font:'Barlow Condensed',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
+.hl{max-width:760px;margin:1.5rem auto;padding:.5rem 1rem;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.4rem 0 1rem;}
+.topbar a{color:var(--m);text-decoration:none;font-weight:700;font-size:.95rem;}
+.topbar span{font-weight:800;color:var(--m);}
+.scbg{position:fixed;top:10px;right:12px;background:var(--o);color:white;border-radius:99px;padding:.3rem .85rem;font-weight:700;font-size:1rem;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.18);pointer-events:none;}
+.mh{text-align:center;margin:.5rem 0 1.2rem;}
+.mh h1{font-size:1.9rem;color:var(--m);font-weight:800;margin:0;}
+.mh p{color:#6b7280;margin:.3rem 0 0;}
+.mg{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem;}
+.mk{padding:1rem;border-radius:14px;cursor:pointer;text-align:center;transition:all .15s;border:2.5px solid transparent;background:white;}
+.mk:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08);}
+.mk-m{background:var(--ms);border-color:var(--m);}
+.mk-o{background:var(--os);border-color:var(--o);}
+.mk-p{background:var(--ps);border-color:var(--p);}
+.mk h3{font-size:1.05rem;font-weight:800;margin-bottom:.2rem;}
+.mk p{font-size:.85rem;color:#6b7280;margin:0;}
+.cv{display:none;}
+.nav{display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;}
+.zpet{background:white;border:1.5px solid #d1d5db;border-radius:8px;padding:.4rem .9rem;font-weight:600;cursor:pointer;font-family:var(--font);}
+.tit{font-size:1.1rem;font-weight:700;}
+.var{margin-left:auto;background:var(--ms);color:var(--m);border-radius:99px;padding:.2rem .8rem;font-weight:600;font-size:.85rem;}
+.sk{display:flex;justify-content:space-around;background:var(--os);border:1px solid #ffd48a;border-radius:10px;padding:.7rem;margin-bottom:.75rem;}
+.skn{font-size:1.4rem;font-weight:700;color:var(--o);text-align:center;}
+.skl{font-size:.75rem;color:#6b7280;text-align:center;}
+.pg{height:8px;background:#e5e7eb;border-radius:99px;overflow:hidden;margin-bottom:1rem;}
+.pgf{height:100%;background:var(--m);border-radius:99px;transition:width .3s;}
+.ka{background:white;border:1.5px solid #e5e7eb;border-radius:12px;padding:1rem;margin-bottom:1rem;}
+.q{font-weight:700;text-align:center;margin-bottom:.5rem;color:#374151;}
+.fb{margin-top:.7rem;font-size:.95rem;min-height:1.2rem;font-weight:600;text-align:center;}
+.fb.ok{color:var(--z);}
+.fb.err{color:var(--r);}
+.nxt{display:none;width:100%;background:var(--m);color:white;border:none;border-radius:8px;padding:.85rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:var(--font);margin-top:.5rem;}
+.res{display:none;text-align:center;padding:2rem 1rem;}
+.res h2{color:var(--m);font-size:1.6rem;margin:.5rem 0;}
+.res-row{display:flex;gap:1rem;justify-content:center;margin:1rem 0;flex-wrap:wrap;}
+.rs{background:var(--ms);border-radius:10px;padding:.75rem 1rem;}
+.rsv{font-size:1.4rem;font-weight:800;}
+.rsl{font-size:.8rem;color:#6b7280;}
+.znovu,.mbtn{padding:.7rem 1.2rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:.95rem;margin:.3rem;}
+.znovu{background:var(--m);color:white;border:none;}
+.mbtn{background:white;color:#374151;border:1.5px solid #d1d5db;}
+
+/* Sady tabs */
+.sadyTabs{display:flex;gap:.3rem;margin-bottom:.7rem;flex-wrap:wrap;justify-content:center;}
+.sadyTab{padding:.45rem .9rem;border:2px solid var(--m);background:white;color:var(--m);border-radius:99px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:.95rem;}
+.sadyTab.on{background:var(--m);color:white;}
+.sadyHeader{font-family:Verdana,Geneva,sans-serif;font-size:1.3rem;font-weight:700;color:var(--m);text-align:center;margin:.5rem 0;}
+.sadyBody{font-family:Verdana,Geneva,sans-serif;font-size:1.05rem;line-height:1.8;color:#1f2937;background:var(--ms);padding:.8rem 1rem;border-radius:10px;margin:.5rem 0;}
+.sadyBody b{color:var(--m);}
+.sadyHint{background:#fffbeb;border-left:4px solid var(--o);padding:.6rem .8rem;border-radius:6px;font-size:.9rem;color:#374151;margin:.5rem 0;}
+
+/* Slovo s otázkou */
+.wordBig{font-family:Verdana,Geneva,sans-serif;font-size:2.2rem;font-weight:800;color:var(--m);text-align:center;padding:1.2rem;background:var(--ms);border-radius:10px;margin:.7rem 0;}
+
+/* 3 možnosti */
+.opts3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin:1rem 0;}
+.opt3{padding:1rem .5rem;background:white;border:2.5px solid #d1d5db;border-radius:10px;font-family:Verdana,Geneva,sans-serif;font-weight:700;font-size:1.1rem;cursor:pointer;text-align:center;transition:all .15s;color:#1f2937;}
+.opt3:hover:not(:disabled){border-color:var(--m);background:var(--ms);}
+.opt3.ok{background:var(--zs);border-color:var(--z);color:var(--z);}
+.opt3.err{background:var(--rs);border-color:var(--r);color:var(--r);}
+
+/* 4 možnosti */
+.opts4{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:1rem 0;}
+.opt4{padding:1rem .5rem;background:white;border:2.5px solid #d1d5db;border-radius:10px;font-family:Verdana,Geneva,sans-serif;font-weight:700;font-size:1.05rem;cursor:pointer;text-align:center;transition:all .15s;color:#1f2937;}
+.opt4:hover:not(:disabled){border-color:var(--m);background:var(--ms);}
+.opt4.ok{background:var(--zs);border-color:var(--z);color:var(--z);}
+.opt4.err{background:var(--rs);border-color:var(--r);color:var(--r);}
+
+/* Pexeso */
+.pexGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin:1rem 0;}
+.pexCard{aspect-ratio:1.1;background:var(--m);border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:Verdana,Geneva,sans-serif;font-weight:700;color:white;font-size:.95rem;transition:all .2s;padding:.3rem;text-align:center;line-height:1.2;}
+.pexCard.flipped{background:white;border:2.5px solid var(--m);color:#1f2937;}
+.pexCard.matched{background:var(--zs);border:2.5px solid var(--z);color:var(--z);cursor:default;}
+.pexCard.back::after{content:'?';font-size:2rem;}
+
+/* Antonyma — paír */
+.antPair{display:flex;justify-content:center;align-items:center;gap:1rem;margin:1.2rem 0;font-family:Verdana,Geneva,sans-serif;}
+.antLeft{padding:.7rem 1.2rem;background:var(--ms);border:2px solid var(--m);border-radius:10px;font-weight:800;font-size:1.4rem;color:var(--m);}
+.antArrow{font-size:1.8rem;color:var(--o);}
+.antRight{padding:.7rem 1.2rem;background:#f3f4f6;border:2px dashed #9ca3af;border-radius:10px;font-weight:800;font-size:1.4rem;color:#9ca3af;min-width:6rem;text-align:center;}
+
+/* Rýmy */
+.rymStem{font-family:Verdana,Geneva,sans-serif;font-size:1.6rem;font-weight:800;color:var(--m);text-align:center;padding:.8rem;background:var(--ms);border-radius:10px;margin:.5rem 0;}
+.rymGroup{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin:1rem 0;}
+.rymChip{padding:.6rem 1rem;background:white;border:2.5px solid #d1d5db;border-radius:99px;font-family:Verdana,Geneva,sans-serif;font-weight:700;font-size:1rem;cursor:pointer;color:#1f2937;}
+.rymChip:hover:not(.locked){border-color:var(--m);background:var(--ms);}
+.rymChip.picked{background:var(--ms);border-color:var(--m);color:var(--m);}
+.rymChip.ok{background:var(--zs);border-color:var(--z);color:var(--z);}
+.rymChip.err{background:var(--rs);border-color:var(--r);color:var(--r);}
+
+@media print{body{background:white;}.scbg{display:none;}}
+</style>
+</head>
+<body>
+<div class="scbg" id="scbg">⭐ 0 b.</div>
+<div class="hl">
+
+<!-- MENU -->
+<div id="menu">
+  <div class="topbar"><a href="3trida.html">← 3. třída</a><span>LinguaCzech</span></div>
+  <div class="mh"><h1>Slovní zásoba</h1><p>3. ročník — synonyma, antonyma, rýmy</p></div>
+  <div class="mg">
+    <div onclick="go('sady')" class="mk mk-p" style="grid-column:span 2"><h3>📋 Naučím se</h3><p>Synonyma · Antonyma · Rýmy (přehled)</p></div>
+    <div onclick="go('syn')" class="mk mk-m"><h3>🔄 Synonyma</h3><p>Slova podobného významu</p></div>
+    <div onclick="go('ant')" class="mk mk-o"><h3>↔️ Antonyma</h3><p>Slova opačného významu</p></div>
+    <div onclick="go('rym')" class="mk mk-m"><h3>🎵 Rýmy</h3><p>Najdi rýmující se slovo</p></div>
+    <div onclick="go('pex')" class="mk mk-o"><h3>🃏 Pexeso synonym</h3><p>Spoj páry slov stejného významu</p></div>
+    <div onclick="printChoice()" class="mk" style="grid-column:span 2;background:#f3f4f6;border:2px dashed #9ca3af"><h3 style="color:#374151">🖨️ Vytisknout pracovní list</h3><p style="color:#6b7280">PDF k procvičování doma</p></div>
+  </div>
+</div>
+
+<!-- CV: SADY -->
+<div class="cv" id="cv-sady">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">📋 Naučím se</span></div>
+  <div class="sadyTabs" id="sady-tabs"></div>
+  <div class="ka">
+    <div class="sadyHeader" id="sady-h">—</div>
+    <div class="sadyBody" id="sady-b">—</div>
+    <div class="sadyHint" id="sady-hint">—</div>
+  </div>
+  <button class="mbtn" style="display:block;margin:.5rem auto" onclick="back()">Zpět do menu</button>
+</div>
+
+<!-- CV: SYNONYMA -->
+<div class="cv" id="cv-syn">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🔄 Synonyma</span><span class="var" id="syn-v">1/10</span></div>
+  <div class="sk">
+    <div><div class="skn" id="syn-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="syn-ci">1/10</div><div class="skl">slovo</div></div>
+    <div><div class="skn" id="syn-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="syn-pg" style="width:0%"></div></div>
+  <div id="syn-ob">
+    <div class="ka">
+      <div class="q">Které slovo má <b>podobný význam</b>?</div>
+      <div class="wordBig" id="syn-w">—</div>
+      <div class="opts4" id="syn-c"></div>
+      <div class="fb" id="syn-fb"></div>
+    </div>
+    <button class="nxt" id="syn-nx" onclick="synNext()">Další →</button>
+  </div>
+  <div class="res" id="syn-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="syn-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="syn-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="syn-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('syn')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV: ANTONYMA -->
+<div class="cv" id="cv-ant">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">↔️ Antonyma</span><span class="var" id="ant-v">1/10</span></div>
+  <div class="sk">
+    <div><div class="skn" id="ant-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="ant-ci">1/10</div><div class="skl">slovo</div></div>
+    <div><div class="skn" id="ant-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="ant-pg" style="width:0%"></div></div>
+  <div id="ant-ob">
+    <div class="ka">
+      <div class="q">Které slovo je <b>opakem</b>?</div>
+      <div class="antPair">
+        <div class="antLeft" id="ant-w">—</div>
+        <div class="antArrow">↔️</div>
+        <div class="antRight">?</div>
+      </div>
+      <div class="opts4" id="ant-c"></div>
+      <div class="fb" id="ant-fb"></div>
+    </div>
+    <button class="nxt" id="ant-nx" onclick="antNext()">Další →</button>
+  </div>
+  <div class="res" id="ant-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="ant-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="ant-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="ant-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('ant')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV: RÝMY -->
+<div class="cv" id="cv-rym">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🎵 Rýmy</span><span class="var" id="rym-v">1/10</span></div>
+  <div class="sk">
+    <div><div class="skn" id="rym-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="rym-ci">1/10</div><div class="skl">slovo</div></div>
+    <div><div class="skn" id="rym-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="rym-pg" style="width:0%"></div></div>
+  <div id="rym-ob">
+    <div class="ka">
+      <div class="q">Které slovo se <b>rýmuje</b>? (zní podobně na konci)</div>
+      <div class="rymStem" id="rym-w">—</div>
+      <div class="rymGroup" id="rym-c"></div>
+      <div class="fb" id="rym-fb"></div>
+    </div>
+    <button class="nxt" id="rym-nx" onclick="rymNext()">Další →</button>
+  </div>
+  <div class="res" id="rym-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="rym-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="rym-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="rym-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('rym')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV: PEXESO synonym -->
+<div class="cv" id="cv-pex">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🃏 Pexeso synonym</span><span class="var" id="pex-v">páry: 0/8</span></div>
+  <div class="sk">
+    <div><div class="skn" id="pex-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="pex-mv">0</div><div class="skl">tahy</div></div>
+    <div><div class="skn" id="pex-pr">0/8</div><div class="skl">páry</div></div>
+  </div>
+  <div id="pex-ob">
+    <div class="ka">
+      <div class="q">Najdi <b>dvojice slov</b>, která mají <b>podobný význam</b>.</div>
+      <div class="pexGrid" id="pex-grid"></div>
+      <div class="fb" id="pex-fb"></div>
+    </div>
+  </div>
+  <div class="res" id="pex-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="pex-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="pex-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="pex-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('pex')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+</div><!-- .hl -->
+
+<script>
+var SCORE_KEY='slovzas3_score';
+var totalScore=0;
+try{totalScore=parseInt(localStorage.getItem(SCORE_KEY))||0;}catch(e){}
+function el(id){return document.getElementById(id);}
+function shuffle(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t;}return b;}
+function addPoints(n){totalScore+=n;try{localStorage.setItem(SCORE_KEY,totalScore);}catch(e){}updateScore();}
+function updateScore(){el('scbg').textContent='⭐ '+totalScore+' b.';}
+updateScore();
+function go(id){
+  el('menu').style.display='none';
+  document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
+  el('cv-'+id).style.display='block';
+  if(id==='sady') sadyStart();
+  if(id==='syn') synStart();
+  if(id==='ant') antStart();
+  if(id==='rym') rymStart();
+  if(id==='pex') pexStart();
+}
+function back(){
+  el('menu').style.display='block';
+  document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
+}
+
+/* ─── DATA: SYNONYMA (slova podobného významu) ─── */
+/* Pro každé slovo: target, syn (správné), distractors (3 nesprávné) */
+var SYN_DATA = [
+  {w:'velký',  syn:'obrovský',  d:['malý','nízký','tlustý']},
+  {w:'rychlý', syn:'svižný',    d:['pomalý','tichý','starý']},
+  {w:'krásný', syn:'pěkný',     d:['ošklivý','starý','silný']},
+  {w:'chytrý', syn:'moudrý',    d:['hloupý','silný','tichý']},
+  {w:'smutný', syn:'nešťastný', d:['veselý','rychlý','velký']},
+  {w:'šťastný',syn:'veselý',    d:['smutný','zlý','starý']},
+  {w:'mluvit', syn:'povídat',   d:['mlčet','spát','jíst']},
+  {w:'utíkat', syn:'běžet',     d:['chodit','spát','sedět']},
+  {w:'pomáhat',syn:'asistovat', d:['škodit','spát','zlobit']},
+  {w:'odvážný',syn:'statečný',  d:['bázlivý','tichý','starý']},
+  {w:'chladný',syn:'studený',   d:['horký','suchý','tlustý']},
+  {w:'starý',  syn:'letitý',    d:['nový','mladý','silný']},
+  {w:'kamarád',syn:'přítel',    d:['nepřítel','soused','učitel']},
+  {w:'auto',   syn:'vůz',       d:['kolo','letadlo','loď']},
+  {w:'dům',    syn:'budova',    d:['stan','strom','park']}
+];
+
+/* ─── DATA: ANTONYMA (slova opačného významu) ─── */
+var ANT_DATA = [
+  {w:'velký',  ant:'malý',     d:['velikánský','malinkatý','tlustý']},
+  {w:'starý',  ant:'mladý',    d:['letitý','nový','rychlý']},
+  {w:'rychlý', ant:'pomalý',   d:['svižný','letitý','tichý']},
+  {w:'krásný', ant:'ošklivý',  d:['pěkný','vysoký','tlustý']},
+  {w:'tlustý', ant:'tenký',    d:['silný','tučný','hubený']},
+  {w:'chytrý', ant:'hloupý',   d:['moudrý','silný','rychlý']},
+  {w:'tmavý',  ant:'světlý',   d:['černý','šedý','barevný']},
+  {w:'horký',  ant:'studený',  d:['teplý','vlažný','slaný']},
+  {w:'vysoký', ant:'nízký',    d:['velký','tenký','tučný']},
+  {w:'silný',  ant:'slabý',    d:['mocný','rychlý','starý']},
+  {w:'nový',   ant:'starý',    d:['čerstvý','mladý','jiný']},
+  {w:'plný',   ant:'prázdný',  d:['velký','těžký','suchý']},
+  {w:'smát se',ant:'plakat',   d:['křičet','chechtat','spát']},
+  {w:'začátek',ant:'konec',    d:['střed','kraj','bok']},
+  {w:'světlo', ant:'tma',      d:['stín','noc','jas']}
+];
+
+/* ─── DATA: RÝMY (slova co se rýmují) ─── */
+/* Pro každé: stem (slovo), good (slova co se rýmují), bad (co se nerýmují) */
+var RYM_DATA = [
+  {w:'kočka',   good:['očka','nožka'],   bad:['ovce','strom','dům']},
+  {w:'sníh',    good:['vzdych','pích'],   bad:['kočka','les','voda']},
+  {w:'pes',     good:['les','les'],       bad:['kočka','okno','strom']},
+  {w:'maminka', good:['hodinka','tabulka'], bad:['tatínek','dům','les']},
+  {w:'babička', good:['tabulička','židlička'], bad:['dědeček','strom','dům']},
+  {w:'noha',    good:['hloha','křídla'],  bad:['ruka','strom','okno']},
+  {w:'kolo',    good:['pole','molo'],     bad:['kniha','strom','dům']},
+  {w:'voda',    good:['lebka','jahoda'],  bad:['oheň','vítr','strom']},
+  {w:'sluníčko',good:['kuřátko','kotě'],  bad:['měsíc','noc','strom']},
+  {w:'jablko',  good:['jablíčko','kolo'], bad:['hruška','strom','dům']},
+  {w:'myš',     good:['hřiš','plyš'],     bad:['kočka','strom','dům']},
+  {w:'lavice',  good:['ulice','okurky'],  bad:['stůl','židle','okno']}
+];
+
+/* ─── DATA: PEXESO synonym ─── */
+var PEX_DATA = [
+  ['velký','obrovský'],
+  ['rychlý','svižný'],
+  ['krásný','pěkný'],
+  ['chytrý','moudrý'],
+  ['smutný','nešťastný'],
+  ['mluvit','povídat'],
+  ['utíkat','běžet'],
+  ['kamarád','přítel'],
+  ['auto','vůz'],
+  ['dům','budova'],
+  ['statečný','odvážný'],
+  ['studený','chladný']
+];
+
+/* ─── SADY ─── */
+var sadyKey = 'syn';
+var SADY_DATA = {
+  syn: {
+    label: 'Synonyma',
+    body: '<b>Synonyma</b> jsou slova, která mají <b>podobný význam</b>.<br><br>'+
+          '🟦 velký = veliký = obrovský = velikánský<br>'+
+          '🟦 rychlý = svižný = bystrý<br>'+
+          '🟦 krásný = pěkný = nádherný<br>'+
+          '🟦 mluvit = povídat = hovořit<br>'+
+          '🟦 utíkat = běžet = pelášit<br><br>'+
+          'Pomocí synonym můžeme říct totéž <b>jinými slovy</b>. To je důležité pro pestrý projev.',
+    hint: 'Pomůcka: synonyma můžeš v textu zaměnit, aniž by se změnil význam věty.'
+  },
+  ant: {
+    label: 'Antonyma',
+    body: '<b>Antonyma</b> jsou slova, která mají <b>opačný význam</b>.<br><br>'+
+          '⬅️➡️ velký ↔ malý<br>'+
+          '⬅️➡️ starý ↔ mladý / nový<br>'+
+          '⬅️➡️ rychlý ↔ pomalý<br>'+
+          '⬅️➡️ krásný ↔ ošklivý<br>'+
+          '⬅️➡️ světlo ↔ tma<br>'+
+          '⬅️➡️ smát se ↔ plakat<br><br>'+
+          'Antonyma nám pomáhají popsat <b>protiklady</b>.',
+    hint: 'Pomůcka: zeptej se "<b>jaký je opak</b>?" – co je úplně naopak?'
+  },
+  rym: {
+    label: 'Rýmy',
+    body: '<b>Rýmy</b> jsou slova, která <b>zní podobně na konci</b>.<br><br>'+
+          '🎵 kočka — očka — nožka<br>'+
+          '🎵 sluníčko — kuřátko<br>'+
+          '🎵 maminka — hodinka<br>'+
+          '🎵 babička — židlička<br>'+
+          '🎵 myš — plyš<br><br>'+
+          'Rýmy najdeš v <b>básničkách, písničkách a říkadlech</b>.',
+    hint: 'Pomůcka: poslechni si oba slova nahlas. Zní jejich konce stejně? To je rým.'
+  }
+};
+function sadyStart(){
+  var tabs = el('sady-tabs');
+  tabs.innerHTML = '';
+  ['syn','ant','rym'].forEach(function(k){
+    var b = document.createElement('button');
+    b.className = 'sadyTab' + (k===sadyKey?' on':'');
+    b.textContent = SADY_DATA[k].label;
+    b.onclick = function(){ sadyShow(k); };
+    tabs.appendChild(b);
+  });
+  sadyShow(sadyKey);
+}
+function sadyShow(k){
+  sadyKey = k;
+  document.querySelectorAll('#sady-tabs .sadyTab').forEach(function(b,i){
+    b.classList.toggle('on', ['syn','ant','rym'][i]===k);
+  });
+  el('sady-h').textContent = SADY_DATA[k].label;
+  el('sady-b').innerHTML = SADY_DATA[k].body;
+  el('sady-hint').innerHTML = '💡 ' + SADY_DATA[k].hint;
+}
+
+/* ─── SYNONYMA ─── */
+var synSt={};
+function synStart(){
+  synSt = {seq: shuffle(SYN_DATA).slice(0,10), idx:0, body:0, sp:0, locked:false};
+  el('syn-res').style.display='none';
+  el('syn-ob').style.display='block';
+  synRender();
+}
+function synRender(){
+  var s = synSt;
+  if(s.idx >= s.seq.length){ synFinish(); return; }
+  var item = s.seq[s.idx];
+  el('syn-w').textContent = item.w;
+  /* 4 možnosti = 1 správná + 3 distraktory */
+  var c = el('syn-c'); c.innerHTML = '';
+  var opts = shuffle([item.syn].concat(item.d));
+  opts.forEach(function(o){
+    var b = document.createElement('button');
+    b.className = 'opt4';
+    b.textContent = o;
+    b.onclick = function(){ synAns(o, b, item); };
+    c.appendChild(b);
+  });
+  el('syn-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('syn-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('syn-bd').textContent = s.body;
+  el('syn-sp').textContent = s.sp;
+  el('syn-pg').style.width = (s.idx/s.seq.length*100)+'%';
+  el('syn-fb').textContent='';
+  el('syn-fb').className='fb';
+  el('syn-nx').style.display='none';
+  s.locked=false;
+}
+function synAns(picked, btn, item){
+  var s=synSt; if(s.locked) return; s.locked=true;
+  if(picked === item.syn){
+    btn.classList.add('ok');
+    s.body += 5; s.sp++; addPoints(5);
+    el('syn-fb').innerHTML = '✓ Správně! <b>'+item.w+'</b> = <b>'+item.syn+'</b>.';
+    el('syn-fb').className='fb ok';
+  } else {
+    btn.classList.add('err');
+    document.querySelectorAll('#syn-c .opt4').forEach(function(b){
+      if(b.textContent === item.syn) b.classList.add('ok');
+    });
+    el('syn-fb').innerHTML = '✗ Synonym k <b>'+item.w+'</b> je <b>'+item.syn+'</b>.';
+    el('syn-fb').className='fb err';
+  }
+  document.querySelectorAll('#syn-c .opt4').forEach(function(b){b.disabled=true;});
+  el('syn-bd').textContent=s.body; el('syn-sp').textContent=s.sp;
+  el('syn-nx').style.display='block';
+}
+function synNext(){ synSt.idx++; synRender(); }
+function synFinish(){
+  var s=synSt;
+  el('syn-ob').style.display='none';
+  el('syn-res').style.display='block';
+  el('syn-pp').textContent='Správně '+s.sp+' z '+s.seq.length+' · '+s.body+' bodů.';
+  el('syn-sc').textContent=s.body;
+  el('syn-tot').textContent=totalScore;
+}
+
+/* ─── ANTONYMA ─── */
+var antSt={};
+function antStart(){
+  antSt = {seq: shuffle(ANT_DATA).slice(0,10), idx:0, body:0, sp:0, locked:false};
+  el('ant-res').style.display='none';
+  el('ant-ob').style.display='block';
+  antRender();
+}
+function antRender(){
+  var s = antSt;
+  if(s.idx >= s.seq.length){ antFinish(); return; }
+  var item = s.seq[s.idx];
+  el('ant-w').textContent = item.w;
+  document.querySelector('#cv-ant .antRight').textContent = '?';
+  var c = el('ant-c'); c.innerHTML = '';
+  var opts = shuffle([item.ant].concat(item.d));
+  opts.forEach(function(o){
+    var b = document.createElement('button');
+    b.className = 'opt4';
+    b.textContent = o;
+    b.onclick = function(){ antAns(o, b, item); };
+    c.appendChild(b);
+  });
+  el('ant-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('ant-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('ant-bd').textContent = s.body;
+  el('ant-sp').textContent = s.sp;
+  el('ant-pg').style.width = (s.idx/s.seq.length*100)+'%';
+  el('ant-fb').textContent='';
+  el('ant-fb').className='fb';
+  el('ant-nx').style.display='none';
+  s.locked=false;
+}
+function antAns(picked, btn, item){
+  var s=antSt; if(s.locked) return; s.locked=true;
+  if(picked === item.ant){
+    btn.classList.add('ok');
+    s.body += 5; s.sp++; addPoints(5);
+    document.querySelector('#cv-ant .antRight').textContent = item.ant;
+    document.querySelector('#cv-ant .antRight').style.color = 'var(--z)';
+    document.querySelector('#cv-ant .antRight').style.background = 'var(--zs)';
+    document.querySelector('#cv-ant .antRight').style.borderColor = 'var(--z)';
+    document.querySelector('#cv-ant .antRight').style.borderStyle = 'solid';
+    el('ant-fb').innerHTML = '✓ Správně! Opak <b>'+item.w+'</b> je <b>'+item.ant+'</b>.';
+    el('ant-fb').className='fb ok';
+  } else {
+    btn.classList.add('err');
+    document.querySelectorAll('#ant-c .opt4').forEach(function(b){
+      if(b.textContent === item.ant) b.classList.add('ok');
+    });
+    document.querySelector('#cv-ant .antRight').textContent = item.ant;
+    document.querySelector('#cv-ant .antRight').style.color = 'var(--m)';
+    document.querySelector('#cv-ant .antRight').style.background = 'var(--ms)';
+    document.querySelector('#cv-ant .antRight').style.borderColor = 'var(--m)';
+    document.querySelector('#cv-ant .antRight').style.borderStyle = 'solid';
+    el('ant-fb').innerHTML = '✗ Opak <b>'+item.w+'</b> je <b>'+item.ant+'</b>.';
+    el('ant-fb').className='fb err';
+  }
+  document.querySelectorAll('#ant-c .opt4').forEach(function(b){b.disabled=true;});
+  el('ant-bd').textContent=s.body; el('ant-sp').textContent=s.sp;
+  el('ant-nx').style.display='block';
+}
+function antNext(){
+  /* Reset stylu pravé strany */
+  var ar = document.querySelector('#cv-ant .antRight');
+  ar.style.color = '#9ca3af';
+  ar.style.background = '#f3f4f6';
+  ar.style.borderColor = '#9ca3af';
+  ar.style.borderStyle = 'dashed';
+  antSt.idx++;
+  antRender();
+}
+function antFinish(){
+  var s=antSt;
+  el('ant-ob').style.display='none';
+  el('ant-res').style.display='block';
+  el('ant-pp').textContent='Správně '+s.sp+' z '+s.seq.length+' · '+s.body+' bodů.';
+  el('ant-sc').textContent=s.body;
+  el('ant-tot').textContent=totalScore;
+}
+
+/* ─── RÝMY ─── */
+var rymSt={};
+function rymStart(){
+  rymSt = {seq: shuffle(RYM_DATA).slice(0,10), idx:0, body:0, sp:0, locked:false};
+  el('rym-res').style.display='none';
+  el('rym-ob').style.display='block';
+  rymRender();
+}
+function rymRender(){
+  var s = rymSt;
+  if(s.idx >= s.seq.length){ rymFinish(); return; }
+  var item = s.seq[s.idx];
+  el('rym-w').textContent = item.w;
+  /* 1 správný rým + 3 nerýmy */
+  var c = el('rym-c'); c.innerHTML = '';
+  var rightOne = item.good[Math.floor(Math.random()*item.good.length)];
+  var bads = shuffle(item.bad).slice(0,3);
+  var opts = shuffle([rightOne].concat(bads));
+  opts.forEach(function(o){
+    var b = document.createElement('button');
+    b.className = 'rymChip';
+    b.textContent = o;
+    b.onclick = function(){ rymAns(o, b, item, rightOne); };
+    c.appendChild(b);
+  });
+  el('rym-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('rym-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('rym-bd').textContent = s.body;
+  el('rym-sp').textContent = s.sp;
+  el('rym-pg').style.width = (s.idx/s.seq.length*100)+'%';
+  el('rym-fb').textContent='';
+  el('rym-fb').className='fb';
+  el('rym-nx').style.display='none';
+  s.locked=false;
+}
+function rymAns(picked, btn, item, rightOne){
+  var s=rymSt; if(s.locked) return; s.locked=true;
+  if(item.good.indexOf(picked) >= 0){
+    btn.classList.add('ok');
+    s.body += 5; s.sp++; addPoints(5);
+    el('rym-fb').innerHTML = '✓ Správně! <b>'+item.w+'</b> se rýmuje s <b>'+picked+'</b>.';
+    el('rym-fb').className='fb ok';
+  } else {
+    btn.classList.add('err');
+    document.querySelectorAll('#rym-c .rymChip').forEach(function(b){
+      if(b.textContent === rightOne) b.classList.add('ok');
+    });
+    el('rym-fb').innerHTML = '✗ S <b>'+item.w+'</b> se rýmuje <b>'+rightOne+'</b>.';
+    el('rym-fb').className='fb err';
+  }
+  document.querySelectorAll('#rym-c .rymChip').forEach(function(b){b.classList.add('locked');});
+  el('rym-bd').textContent=s.body; el('rym-sp').textContent=s.sp;
+  el('rym-nx').style.display='block';
+}
+function rymNext(){ rymSt.idx++; rymRender(); }
+function rymFinish(){
+  var s=rymSt;
+  el('rym-ob').style.display='none';
+  el('rym-res').style.display='block';
+  el('rym-pp').textContent='Správně '+s.sp+' z '+s.seq.length+' · '+s.body+' bodů.';
+  el('rym-sc').textContent=s.body;
+  el('rym-tot').textContent=totalScore;
+}
+
+/* ─── PEXESO synonym ─── */
+var pexSt={};
+function pexStart(){
+  var pairs = shuffle(PEX_DATA).slice(0,8);
+  var cards = [];
+  pairs.forEach(function(p,i){
+    cards.push({txt:p[0], id:i, side:'A'});
+    cards.push({txt:p[1], id:i, side:'B'});
+  });
+  cards = shuffle(cards);
+  pexSt = {pairs:pairs, cards:cards, flipped:[], moves:0, matched:0, locked:false, body:0};
+  el('pex-res').style.display='none';
+  el('pex-ob').style.display='block';
+  pexRender();
+}
+function pexRender(){
+  var grid = el('pex-grid');
+  grid.innerHTML='';
+  pexSt.cards.forEach(function(c, i){
+    var div = document.createElement('div');
+    div.className = 'pexCard back';
+    div.dataset.idx = i;
+    div.onclick = function(){ pexFlip(i, div); };
+    grid.appendChild(div);
+  });
+  el('pex-mv').textContent = pexSt.moves;
+  el('pex-pr').textContent = pexSt.matched + '/8';
+  el('pex-bd').textContent = pexSt.body;
+  el('pex-fb').textContent='';
+  el('pex-fb').className='fb';
+}
+function pexFlip(idx, div){
+  if(pexSt.locked) return;
+  if(div.classList.contains('flipped') || div.classList.contains('matched')) return;
+  var c = pexSt.cards[idx];
+  div.classList.remove('back');
+  div.classList.add('flipped');
+  div.textContent = c.txt;
+  pexSt.flipped.push({idx:idx, card:c, div:div});
+  if(pexSt.flipped.length === 2){
+    pexSt.locked = true;
+    pexSt.moves++;
+    el('pex-mv').textContent = pexSt.moves;
+    var f1 = pexSt.flipped[0], f2 = pexSt.flipped[1];
+    if(f1.card.id === f2.card.id && f1.card.side !== f2.card.side){
+      setTimeout(function(){
+        f1.div.classList.add('matched');
+        f2.div.classList.add('matched');
+        f1.div.classList.remove('flipped');
+        f2.div.classList.remove('flipped');
+        pexSt.matched++;
+        pexSt.body += 10;
+        addPoints(10);
+        el('pex-pr').textContent = pexSt.matched + '/8';
+        el('pex-bd').textContent = pexSt.body;
+        el('pex-fb').innerHTML = '✓ Synonyma <b>'+f1.card.txt+' = '+f2.card.txt+'</b>!';
+        el('pex-fb').className='fb ok';
+        pexSt.flipped = [];
+        pexSt.locked = false;
+        if(pexSt.matched === 8) pexFinish();
+      }, 600);
+    } else {
+      setTimeout(function(){
+        f1.div.classList.remove('flipped'); f1.div.classList.add('back'); f1.div.textContent='';
+        f2.div.classList.remove('flipped'); f2.div.classList.add('back'); f2.div.textContent='';
+        pexSt.flipped = [];
+        pexSt.locked = false;
+        el('pex-fb').textContent='';
+        el('pex-fb').className='fb';
+      }, 1200);
+    }
+  }
+}
+function pexFinish(){
+  el('pex-ob').style.display='none';
+  el('pex-res').style.display='block';
+  el('pex-pp').textContent = 'Spojila jsi všech 8 párů na '+pexSt.moves+' tahů. '+pexSt.body+' bodů.';
+  el('pex-sc').textContent = pexSt.body;
+  el('pex-tot').textContent = totalScore;
+}
+
+/* ─── PRINT ─── */
+function printChoice(){
+  var topics = [
+    {key:'syn', label:'Synonyma (15 slov)'},
+    {key:'ant', label:'Antonyma (15 slov)'},
+    {key:'rym', label:'Rýmy (10 slov)'},
+    {key:'mix', label:'Smíšený list'}
+  ];
+  var html = '<div style="position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem"><div style="background:white;border-radius:12px;padding:1.5rem;max-width:480px;width:100%"><h3 style="margin:0 0 1rem;color:var(--m);text-align:center">🖨️ Vyber pracovní list</h3>';
+  topics.forEach(function(t){
+    html += '<button onclick="doPrint(\\\''+t.key+'\\\');this.parentNode.parentNode.remove()" style="width:100%;padding:.85rem;margin:.3rem 0;background:var(--ms);border:2px solid var(--m);border-radius:8px;font-weight:700;color:var(--m);cursor:pointer;font-family:var(--font);font-size:1rem;text-align:left">'+t.label+'</button>';
+  });
+  html += '<button onclick="this.parentNode.parentNode.remove()" style="width:100%;padding:.6rem;margin-top:.5rem;background:#f3f4f6;border:1px solid #d1d5db;border-radius:8px;cursor:pointer;font-family:var(--font)">Zavřít</button></div></div>';
+  var d = document.createElement('div');
+  d.innerHTML = html;
+  document.body.appendChild(d.firstChild);
+}
+function doPrint(key){
+  var data = printGetData(key);
+  var w = window.open('', '_blank');
+  w.document.write(printHTML(data));
+  w.document.close();
+  setTimeout(function(){w.print();}, 500);
+}
+function printGetData(key){
+  if(key==='syn'){
+    var picked = shuffle(SYN_DATA).slice(0,15);
+    var qHtml = '<p>Ke každému slovu napiš <b>synonymum</b> (slovo podobného významu):</p><table style="width:100%">';
+    picked.forEach(function(it,i){
+      qHtml += '<tr><td style="padding:.4rem;border-bottom:1px dotted #ccc;width:40%">'+(i+1)+'. '+it.w+'</td><td style="padding:.4rem">→ ___________________</td></tr>';
+    });
+    qHtml += '</table>';
+    var aHtml='<table>';
+    picked.forEach(function(it,i){
+      aHtml += '<tr><td>'+(i+1)+'. '+it.w+' → <b>'+it.syn+'</b></td></tr>';
+    });
+    aHtml += '</table>';
+    return {title:'Synonyma', topic:'Slovní zásoba', instructions:'Ke každému slovu napiš synonymum (slovo podobného významu).', qHtml:qHtml, aHtml:aHtml};
+  }
+  if(key==='ant'){
+    var picked = shuffle(ANT_DATA).slice(0,15);
+    var qHtml = '<p>Ke každému slovu napiš <b>antonymum</b> (slovo opačného významu):</p><table style="width:100%">';
+    picked.forEach(function(it,i){
+      qHtml += '<tr><td style="padding:.4rem;border-bottom:1px dotted #ccc;width:40%">'+(i+1)+'. '+it.w+'</td><td style="padding:.4rem">↔ ___________________</td></tr>';
+    });
+    qHtml += '</table>';
+    var aHtml='<table>';
+    picked.forEach(function(it,i){
+      aHtml += '<tr><td>'+(i+1)+'. '+it.w+' ↔ <b>'+it.ant+'</b></td></tr>';
+    });
+    aHtml += '</table>';
+    return {title:'Antonyma', topic:'Slovní zásoba', instructions:'Ke každému slovu napiš antonymum (slovo opačného významu).', qHtml:qHtml, aHtml:aHtml};
+  }
+  if(key==='rym'){
+    var picked = shuffle(RYM_DATA).slice(0,10);
+    var qHtml = '<p>Ke každému slovu napiš <b>rým</b> (slovo, které zní podobně na konci):</p><table style="width:100%">';
+    picked.forEach(function(it,i){
+      qHtml += '<tr><td style="padding:.4rem;border-bottom:1px dotted #ccc;width:40%">'+(i+1)+'. '+it.w+'</td><td style="padding:.4rem">🎵 ___________________</td></tr>';
+    });
+    qHtml += '</table>';
+    var aHtml='<table>';
+    picked.forEach(function(it,i){
+      aHtml += '<tr><td>'+(i+1)+'. '+it.w+' 🎵 <b>'+it.good.join(', ')+'</b></td></tr>';
+    });
+    aHtml += '</table>';
+    return {title:'Rýmy', topic:'Slovní zásoba', instructions:'Ke každému slovu napiš slovo, které se s ním rýmuje.', qHtml:qHtml, aHtml:aHtml};
+  }
+  if(key==='mix'){
+    var p1 = shuffle(SYN_DATA).slice(0,5);
+    var p2 = shuffle(ANT_DATA).slice(0,5);
+    var p3 = shuffle(RYM_DATA).slice(0,5);
+    var qHtml = '<h4>A) Synonyma — napiš slovo podobného významu:</h4><table style="width:100%">';
+    p1.forEach(function(it,i){ qHtml += '<tr><td style="padding:.35rem;border-bottom:1px dotted #ccc">'+(i+1)+'. '+it.w+' → ____________</td></tr>'; });
+    qHtml += '</table><h4 style="margin-top:1rem">B) Antonyma — napiš opak:</h4><table style="width:100%">';
+    p2.forEach(function(it,i){ qHtml += '<tr><td style="padding:.35rem;border-bottom:1px dotted #ccc">'+(i+1)+'. '+it.w+' ↔ ____________</td></tr>'; });
+    qHtml += '</table><h4 style="margin-top:1rem">C) Rýmy — napiš rýmující se slovo:</h4><table style="width:100%">';
+    p3.forEach(function(it,i){ qHtml += '<tr><td style="padding:.35rem;border-bottom:1px dotted #ccc">'+(i+1)+'. '+it.w+' 🎵 ____________</td></tr>'; });
+    qHtml += '</table>';
+    var aHtml = '<h4>A) Synonyma:</h4>';
+    p1.forEach(function(it,i){ aHtml += '<div>'+(i+1)+'. '+it.w+' → <b>'+it.syn+'</b></div>'; });
+    aHtml += '<h4 style="margin-top:.7rem">B) Antonyma:</h4>';
+    p2.forEach(function(it,i){ aHtml += '<div>'+(i+1)+'. '+it.w+' ↔ <b>'+it.ant+'</b></div>'; });
+    aHtml += '<h4 style="margin-top:.7rem">C) Rýmy:</h4>';
+    p3.forEach(function(it,i){ aHtml += '<div>'+(i+1)+'. '+it.w+' 🎵 <b>'+it.good[0]+'</b></div>'; });
+    return {title:'Smíšený list', topic:'Slovní zásoba', instructions:'Vyřeš všechny tři části cvičení.', qHtml:qHtml, aHtml:aHtml};
+  }
+}
+function printHTML(data){
+  var d=new Date();var dateStr=d.getDate()+'.'+(d.getMonth()+1)+'.'+d.getFullYear();
+  return '<!doctype html><html lang="cs"><head><meta charset="utf-8"><title>Pracovní list — '+data.title+'</title><style>body{font-family:Arial,sans-serif;max-width:780px;margin:1rem auto;padding:1rem;color:#1f2937;font-size:13pt;line-height:1.55}h1{color:#1e3a5f;margin:0 0 .5rem;font-size:1.4rem}h2{color:#1e3a5f;margin-top:1.2rem;font-size:1.1rem;border-bottom:2px solid #1e3a5f;padding-bottom:.2rem}h4{margin:.6rem 0 .2rem}.head{display:flex;justify-content:space-between;border-bottom:2px solid #1e3a5f;padding-bottom:.3rem;margin-bottom:1rem}.head .l{display:flex;gap:1rem;align-items:baseline}.head span{font-size:.85rem;color:#6b7280}.instructions{background:#f3f4f6;padding:.6rem .9rem;border-left:4px solid #ffaa37;border-radius:4px;margin:.7rem 0;font-size:.95rem}.solution{page-break-before:always;background:#ecfdf5;padding:.7rem 1rem;border-left:4px solid #16a34a;border-radius:4px;margin-top:1rem}.solution h2{color:#16a34a;border-color:#16a34a}@media print{body{margin:0;padding:.5cm 1cm;font-size:12pt}.solution{page-break-before:always}}</style></head><body><div class="head"><div class="l"><h1>📋 '+data.title+'</h1><span>'+data.topic+'</span></div><span>Datum: '+dateStr+' · Jméno: ____________</span></div><div class="instructions"><b>Zadání:</b> '+data.instructions+'</div>'+data.qHtml+'<div class="solution"><h2>✓ Řešení (pro učitele)</h2>'+data.aHtml+'</div></body></html>';
+}
+</script>
+</body>
+</html>

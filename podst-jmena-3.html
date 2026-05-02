@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Podstatná jména — LinguaCzech 3. třída</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --m:#32a0d2;--ms:#e8f4fb;
+  --o:#ffaa37;--os:#fff8ee;
+  --z:#16a34a;--zs:#dcfce7;
+  --r:#dc2626;--rs:#fee2e2;
+  --p:#7c3aed;--ps:#f3e8ff;
+  /* Rody */
+  --r-mz:#2563eb;--r-mzs:#dbeafe;   /* mužský životný - modrá */
+  --r-mn:#0891b2;--r-mns:#cffafe;   /* mužský neživotný - tyrkysová */
+  --r-z:#dc2626;--r-zs:#fee2e2;     /* ženský - červená */
+  --r-s:#16a34a;--r-ss:#dcfce7;     /* střední - zelená */
+  --font:'Barlow Condensed',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
+.hl{max-width:760px;margin:1.5rem auto;padding:.5rem 1rem;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.4rem 0 1rem;}
+.topbar a{color:var(--m);text-decoration:none;font-weight:700;font-size:.95rem;}
+.topbar span{font-weight:800;color:var(--m);}
+.scbg{position:fixed;top:10px;right:12px;background:var(--o);color:white;border-radius:99px;padding:.3rem .85rem;font-weight:700;font-size:1rem;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.18);pointer-events:none;}
+.mh{text-align:center;margin:.5rem 0 1.2rem;}
+.mh h1{font-size:1.9rem;color:var(--m);font-weight:800;margin:0;}
+.mh p{color:#6b7280;margin:.3rem 0 0;}
+.mg{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem;}
+.mk{padding:1rem;border-radius:14px;cursor:pointer;text-align:center;transition:all .15s;border:2.5px solid transparent;background:white;}
+.mk:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08);}
+.mk-m{background:var(--ms);border-color:var(--m);}
+.mk-o{background:var(--os);border-color:var(--o);}
+.mk-p{background:var(--ps);border-color:var(--p);}
+.mk h3{font-size:1.05rem;font-weight:800;margin-bottom:.2rem;}
+.mk p{font-size:.85rem;color:#6b7280;margin:0;}
+.cv{display:none;}
+.nav{display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;}
+.zpet{background:white;border:1.5px solid #d1d5db;border-radius:8px;padding:.4rem .9rem;font-weight:600;cursor:pointer;font-family:var(--font);}
+.tit{font-size:1.1rem;font-weight:700;}
+.var{margin-left:auto;background:var(--ms);color:var(--m);border-radius:99px;padding:.2rem .8rem;font-weight:600;font-size:.85rem;}
+.sk{display:flex;justify-content:space-around;background:var(--os);border:1px solid #ffd48a;border-radius:10px;padding:.7rem;margin-bottom:.75rem;}
+.skn{font-size:1.4rem;font-weight:700;color:var(--o);text-align:center;}
+.skl{font-size:.75rem;color:#6b7280;text-align:center;}
+.pg{height:8px;background:#e5e7eb;border-radius:99px;overflow:hidden;margin-bottom:1rem;}
+.pgf{height:100%;background:var(--m);border-radius:99px;transition:width .3s;}
+.ka{background:white;border:1.5px solid #e5e7eb;border-radius:12px;padding:1rem;margin-bottom:1rem;}
+.q{font-weight:700;text-align:center;margin-bottom:.5rem;color:#374151;}
+.fb{margin-top:.7rem;font-size:.95rem;min-height:1.2rem;font-weight:600;text-align:center;}
+.fb.ok{color:var(--z);}
+.fb.err{color:var(--r);}
+.nxt{display:none;width:100%;background:var(--m);color:white;border:none;border-radius:8px;padding:.85rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:var(--font);margin-top:.5rem;}
+.res{display:none;text-align:center;padding:2rem 1rem;}
+.res h2{color:var(--m);font-size:1.6rem;margin:.5rem 0;}
+.res-row{display:flex;gap:1rem;justify-content:center;margin:1rem 0;flex-wrap:wrap;}
+.rs{background:var(--ms);border-radius:10px;padding:.75rem 1rem;}
+.rsv{font-size:1.4rem;font-weight:800;}
+.rsl{font-size:.8rem;color:#6b7280;}
+.znovu,.mbtn{padding:.7rem 1.2rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:.95rem;margin:.3rem;}
+.znovu{background:var(--m);color:white;border:none;}
+.mbtn{background:white;color:#374151;border:1.5px solid #d1d5db;}
+
+/* Sady — referenční přehled rodů a pádů */
+.sadyTabs{display:flex;gap:.3rem;margin-bottom:.7rem;flex-wrap:wrap;justify-content:center;}
+.sadyTab{padding:.45rem .9rem;border:2px solid var(--m);background:white;color:var(--m);border-radius:99px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:.95rem;}
+.sadyTab.on{background:var(--m);color:white;}
+.sadyHeader{font-family:Verdana,Geneva,sans-serif;font-size:1.3rem;font-weight:700;color:var(--m);text-align:center;margin:.5rem 0;}
+.sadyBody{font-family:Verdana,Geneva,sans-serif;font-size:1.05rem;line-height:1.8;color:#1f2937;background:var(--ms);padding:.8rem 1rem;border-radius:10px;margin:.5rem 0;}
+.sadyBody b{color:var(--m);}
+.sadyHint{background:#fffbeb;border-left:4px solid var(--o);padding:.6rem .8rem;border-radius:6px;font-size:.9rem;color:#374151;margin:.5rem 0;}
+
+/* Slovo + 4 možnosti rodů */
+.wordBig{font-family:Verdana,Geneva,sans-serif;font-size:2rem;font-weight:800;color:var(--m);text-align:center;padding:1rem;background:var(--ms);border-radius:10px;margin:.7rem 0;}
+.opts4{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:1rem 0;}
+.opt4{padding:.9rem .5rem;background:white;border:2.5px solid #d1d5db;border-radius:10px;font-family:Verdana,Geneva,sans-serif;font-weight:700;font-size:1rem;cursor:pointer;text-align:center;transition:all .15s;color:#1f2937;}
+.opt4:hover:not(:disabled){border-color:var(--m);background:var(--ms);}
+.opt4.ok{background:var(--zs);border-color:var(--z);color:var(--z);}
+.opt4.err{background:var(--rs);border-color:var(--r);color:var(--r);}
+.opt4:disabled{cursor:default;}
+.opt4 .roleEx{font-size:.78rem;color:#6b7280;display:block;margin-top:.2rem;font-weight:400;}
+
+/* 2 možnosti */
+.opts2{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:1rem 0;}
+.opt2{padding:1.1rem .5rem;background:white;border:2.5px solid #d1d5db;border-radius:10px;font-family:Verdana,Geneva,sans-serif;font-weight:700;font-size:1.1rem;cursor:pointer;text-align:center;transition:all .15s;color:#1f2937;}
+.opt2:hover:not(:disabled){border-color:var(--m);background:var(--ms);}
+.opt2.ok{background:var(--zs);border-color:var(--z);color:var(--z);}
+.opt2.err{background:var(--rs);border-color:var(--r);color:var(--r);}
+
+/* 7 pádů — tlačítka */
+.opts7{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin:1rem 0;}
+.opt7{padding:.7rem .5rem;background:white;border:2px solid #d1d5db;border-radius:8px;font-family:Verdana,Geneva,sans-serif;font-weight:700;font-size:.95rem;cursor:pointer;text-align:left;transition:all .15s;color:#1f2937;}
+.opt7:hover:not(:disabled){border-color:var(--m);background:var(--ms);}
+.opt7 b{display:inline-block;width:1.5rem;color:var(--m);}
+.opt7.ok{background:var(--zs);border-color:var(--z);color:var(--z);}
+.opt7.err{background:var(--rs);border-color:var(--r);color:var(--r);}
+
+/* Najdi podst. jméno - klikatelná slova ve větě */
+.sentence{font-family:Verdana,Geneva,sans-serif;font-size:1.3rem;text-align:center;line-height:1.8;background:var(--ms);padding:1rem;border-radius:10px;margin:1rem 0;color:#1f2937;}
+.word-btn{display:inline-block;padding:.1rem .35rem;margin:0 .1rem;border-radius:5px;cursor:pointer;border:2px solid transparent;background:transparent;font-family:Verdana,Geneva,sans-serif;font-size:1.3rem;font-weight:700;color:#1f2937;transition:all .15s;}
+.word-btn:hover{background:white;border-color:var(--m);}
+.word-btn.picked{background:var(--ms);border-color:var(--m);color:var(--m);}
+.word-btn.ok{background:var(--zs);border-color:var(--z);color:var(--z);}
+.word-btn.err{background:var(--rs);border-color:var(--r);color:var(--r);}
+
+@media print{body{background:white;}.scbg{display:none;}}
+</style>
+</head>
+<body>
+<div class="scbg" id="scbg">⭐ 0 b.</div>
+<div class="hl">
+
+<!-- MENU -->
+<div id="menu">
+  <div class="topbar"><a href="3trida.html">← 3. třída</a><span>LinguaCzech</span></div>
+  <div class="mh"><h1>Podstatná jména</h1><p>3. ročník — rod, číslo, pád</p></div>
+  <div class="mg">
+    <div onclick="go('sady')" class="mk mk-p" style="grid-column:span 2"><h3>📋 Naučím se</h3><p>Rody · Číslo · Pády (přehled)</p></div>
+    <div onclick="go('rod')" class="mk mk-m"><h3>👤 Najdi rod</h3><p>Mužský / ženský / střední</p></div>
+    <div onclick="go('cislo')" class="mk mk-o"><h3>🔢 Jednotné × množné</h3><p>1 nebo víc?</p></div>
+    <div onclick="go('pad')" class="mk mk-m"><h3>📦 Pády</h3><p>1.-7. pád s pomocnými slovy</p></div>
+    <div onclick="go('najdi')" class="mk mk-o"><h3>🔍 Najdi podst. jméno</h3><p>Klikni ve větě</p></div>
+    <div onclick="go('hra')" class="mk mk-p" style="grid-column:span 2"><h3>🎯 Hra: Roztřiď slova podle rodu</h3><p>Drag & drop do správného sloupce</p></div>
+    <div onclick="printChoice()" class="mk" style="grid-column:span 2;background:#f3f4f6;border:2px dashed #9ca3af"><h3 style="color:#374151">🖨️ Vytisknout pracovní list</h3><p style="color:#6b7280">PDF k procvičování doma</p></div>
+  </div>
+</div>
+
+<!-- CV: SADY (přehled rodů, čísla, pádů) -->
+<div class="cv" id="cv-sady">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">📋 Naučím se</span></div>
+  <div class="sadyTabs" id="sady-tabs"></div>
+  <div class="ka">
+    <div class="sadyHeader" id="sady-h">—</div>
+    <div class="sadyBody" id="sady-b">—</div>
+    <div class="sadyHint" id="sady-hint">—</div>
+  </div>
+  <button class="mbtn" style="display:block;margin:.5rem auto" onclick="back()">Zpět do menu</button>
+</div>
+
+<!-- CV: ROD -->
+<div class="cv" id="cv-rod">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">👤 Najdi rod</span><span class="var" id="rod-v">1/12</span></div>
+  <div class="sk">
+    <div><div class="skn" id="rod-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="rod-ci">1/12</div><div class="skl">slovo</div></div>
+    <div><div class="skn" id="rod-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="rod-pg" style="width:0%"></div></div>
+  <div id="rod-ob">
+    <div class="ka">
+      <div class="q">Jaký rod má toto podstatné jméno?</div>
+      <div class="wordBig" id="rod-w">—</div>
+      <div class="opts4" id="rod-c"></div>
+      <div class="fb" id="rod-fb"></div>
+    </div>
+    <button class="nxt" id="rod-nx" onclick="rodNext()">Další →</button>
+  </div>
+  <div class="res" id="rod-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="rod-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="rod-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="rod-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('rod')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV: ČÍSLO -->
+<div class="cv" id="cv-cislo">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🔢 Jednotné × množné</span><span class="var" id="cis-v">1/12</span></div>
+  <div class="sk">
+    <div><div class="skn" id="cis-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="cis-ci">1/12</div><div class="skl">slovo</div></div>
+    <div><div class="skn" id="cis-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="cis-pg" style="width:0%"></div></div>
+  <div id="cis-ob">
+    <div class="ka">
+      <div class="q">Je to číslo <b>jednotné</b> (1) nebo <b>množné</b> (víc)?</div>
+      <div class="wordBig" id="cis-w">—</div>
+      <div class="opts2">
+        <button class="opt2" onclick="cisAns(1,this)">1 — jednotné</button>
+        <button class="opt2" onclick="cisAns(2,this)">víc — množné</button>
+      </div>
+      <div class="fb" id="cis-fb"></div>
+    </div>
+    <button class="nxt" id="cis-nx" onclick="cisNext()">Další →</button>
+  </div>
+  <div class="res" id="cis-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="cis-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="cis-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="cis-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('cislo')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV: PÁD -->
+<div class="cv" id="cv-pad">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">📦 Pády</span><span class="var" id="pad-v">1/10</span></div>
+  <div class="sk">
+    <div><div class="skn" id="pad-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="pad-ci">1/10</div><div class="skl">věta</div></div>
+    <div><div class="skn" id="pad-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="pad-pg" style="width:0%"></div></div>
+  <div id="pad-ob">
+    <div class="ka">
+      <div class="q">V jakém <b>pádě</b> je tučně zvýrazněné slovo?</div>
+      <div class="sentence" id="pad-s">—</div>
+      <div style="text-align:center;color:#6b7280;font-size:.85rem">Pomocná otázka: <b id="pad-h">—</b></div>
+      <div class="opts7" id="pad-c"></div>
+      <div class="fb" id="pad-fb"></div>
+    </div>
+    <button class="nxt" id="pad-nx" onclick="padNext()">Další →</button>
+  </div>
+  <div class="res" id="pad-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="pad-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="pad-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="pad-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('pad')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV: NAJDI -->
+<div class="cv" id="cv-najdi">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🔍 Najdi podst. jméno</span><span class="var" id="naj-v">1/8</span></div>
+  <div class="sk">
+    <div><div class="skn" id="naj-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="naj-ci">1/8</div><div class="skl">věta</div></div>
+    <div><div class="skn" id="naj-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="naj-pg" style="width:0%"></div></div>
+  <div id="naj-ob">
+    <div class="ka">
+      <div class="q">Klikni ve větě na <b>podstatné jméno</b>.</div>
+      <div class="sentence" id="naj-s">—</div>
+      <div class="fb" id="naj-fb"></div>
+    </div>
+    <button class="nxt" id="naj-nx" onclick="najNext()">Další →</button>
+  </div>
+  <div class="res" id="naj-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="naj-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="naj-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="naj-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('najdi')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV: HRA - Roztřiď podle rodu -->
+<div class="cv" id="cv-hra">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🎯 Roztřiď slova podle rodu</span><span class="var">v1</span></div>
+  <div class="sk">
+    <div><div class="skn" id="hra-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="hra-zb">10</div><div class="skl">zbývá</div></div>
+    <div><div class="skn" id="hra-er">0</div><div class="skl">chyby</div></div>
+  </div>
+  <div class="ka">
+    <div class="q">Klikni na slovo a pak na sloupec se správným rodem.</div>
+    <div id="hra-pool" style="display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin:1rem 0;min-height:3rem;padding:.7rem;background:#f9fafb;border-radius:10px;"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.4rem;margin:.7rem 0">
+      <div class="rod-col" data-rod="m" onclick="hraDrop('m')" style="padding:.8rem .3rem;background:var(--r-mzs);border:2.5px solid var(--r-mz);border-radius:10px;text-align:center;cursor:pointer;color:var(--r-mz);font-weight:800;font-size:.95rem">muž.<div id="hra-c-m" style="font-size:.7rem;color:#6b7280;margin-top:.2rem;font-weight:400">0 slov</div></div>
+      <div class="rod-col" data-rod="z" onclick="hraDrop('z')" style="padding:.8rem .3rem;background:var(--r-zs);border:2.5px solid var(--r-z);border-radius:10px;text-align:center;cursor:pointer;color:var(--r-z);font-weight:800;font-size:.95rem">žen.<div id="hra-c-z" style="font-size:.7rem;color:#6b7280;margin-top:.2rem;font-weight:400">0 slov</div></div>
+      <div class="rod-col" data-rod="s" onclick="hraDrop('s')" style="padding:.8rem .3rem;background:var(--r-ss);border:2.5px solid var(--r-s);border-radius:10px;text-align:center;cursor:pointer;color:var(--r-s);font-weight:800;font-size:.95rem">stř.<div id="hra-c-s" style="font-size:.7rem;color:#6b7280;margin-top:.2rem;font-weight:400">0 slov</div></div>
+    </div>
+    <div class="fb" id="hra-fb"></div>
+  </div>
+  <div class="res" id="hra-res">
+    <div style="font-size:3rem">🏆</div><h2 id="hra-tx">Hotovo!</h2><p id="hra-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="hra-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="hra-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('hra')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+</div><!-- .hl -->
+
+<script>
+/* ── SDÍLENÉ ── */
+var SCORE_KEY='podst3_score';
+var totalScore=0;
+try{totalScore=parseInt(localStorage.getItem(SCORE_KEY))||0;}catch(e){}
+function el(id){return document.getElementById(id);}
+function shuffle(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t;}return b;}
+function addPoints(n){totalScore+=n;try{localStorage.setItem(SCORE_KEY,totalScore);}catch(e){}updateScore();}
+function updateScore(){el('scbg').textContent='⭐ '+totalScore+' b.';}
+updateScore();
+
+function go(id){
+  el('menu').style.display='none';
+  document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
+  el('cv-'+id).style.display='block';
+  if(id==='sady') sadyStart();
+  if(id==='rod') rodStart();
+  if(id==='cislo') cisStart();
+  if(id==='pad') padStart();
+  if(id==='najdi') najStart();
+  if(id==='hra') hraStart();
+}
+function back(){
+  el('menu').style.display='block';
+  document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
+}
+
+/* ─── DATA: Podstatná jména a jejich rody ─── */
+/* rod: 'mz' = mužský životný, 'mn' = mužský neživotný, 'z' = ženský, 's' = střední */
+var SLOVA = [
+  /* mužský životný */
+  {w:'pán',rod:'mz'},{w:'kluk',rod:'mz'},{w:'tatínek',rod:'mz'},{w:'pes',rod:'mz'},{w:'kůň',rod:'mz'},
+  {w:'učitel',rod:'mz'},{w:'kamarád',rod:'mz'},{w:'lev',rod:'mz'},{w:'medvěd',rod:'mz'},{w:'syn',rod:'mz'},
+  {w:'ptáček',rod:'mz'},{w:'rytíř',rod:'mz'},{w:'doktor',rod:'mz'},
+  /* mužský neživotný */
+  {w:'hrad',rod:'mn'},{w:'stůl',rod:'mn'},{w:'dům',rod:'mn'},{w:'most',rod:'mn'},{w:'les',rod:'mn'},
+  {w:'mlýn',rod:'mn'},{w:'sešit',rod:'mn'},{w:'klobouk',rod:'mn'},{w:'počítač',rod:'mn'},{w:'kámen',rod:'mn'},
+  {w:'vlak',rod:'mn'},{w:'autobus',rod:'mn'},
+  /* ženský */
+  {w:'žena',rod:'z'},{w:'maminka',rod:'z'},{w:'kočka',rod:'z'},{w:'zahrada',rod:'z'},{w:'škola',rod:'z'},
+  {w:'kniha',rod:'z'},{w:'lavice',rod:'z'},{w:'tabule',rod:'z'},{w:'paní',rod:'z'},{w:'sestra',rod:'z'},
+  {w:'tužka',rod:'z'},{w:'lyže',rod:'z'},{w:'řeka',rod:'z'},{w:'louka',rod:'z'},
+  /* střední */
+  {w:'město',rod:'s'},{w:'okno',rod:'s'},{w:'auto',rod:'s'},{w:'dítě',rod:'s'},{w:'kuře',rod:'s'},
+  {w:'pole',rod:'s'},{w:'moře',rod:'s'},{w:'kolo',rod:'s'},{w:'jablko',rod:'s'},{w:'slunce',rod:'s'},
+  {w:'rádio',rod:'s'},{w:'štěně',rod:'s'},{w:'koťátko',rod:'s'}
+];
+
+/* ─── CV-SADY ─── */
+var sadyKey = 'rod';
+var SADY_DATA = {
+  rod: {
+    label: 'Rod podstatných jmen',
+    body: '<b>Rod určujeme podle slov ten / ta / to:</b><br>'+
+          '🔵 <b>Rod mužský</b> — <b>ten</b> pán, <b>ten</b> hrad, <b>ten</b> kůň<br>'+
+          '🔴 <b>Rod ženský</b> — <b>ta</b> žena, <b>ta</b> kniha, <b>ta</b> škola<br>'+
+          '🟢 <b>Rod střední</b> — <b>to</b> město, <b>to</b> okno, <b>to</b> auto<br><br>'+
+          '<b>Rod mužský dělíme na 2 druhy:</b><br>'+
+          '— <b>životný</b>: pán, kluk, pes (živé bytosti)<br>'+
+          '— <b>neživotný</b>: hrad, stůl, mlýn (věci, neživé)',
+    hint: 'Pomůcka: Před slovem zkus vyslovit <b>ten / ta / to</b>. Co přijde nejvíc přirozeně?'
+  },
+  cislo: {
+    label: 'Číslo podstatných jmen',
+    body: '<b>Podstatná jména mají 2 čísla:</b><br><br>'+
+          '<b>Jednotné</b> — pro 1 osobu, věc, zvíře:<br>'+
+          'kniha, pes, dítě, kluk<br><br>'+
+          '<b>Množné</b> — pro 2 a více:<br>'+
+          'knihy, psi, děti, kluci<br><br>'+
+          '<b>Pozor</b>: některá slova mají jen <i>množné</i> číslo (kalhoty, dveře, brýle, prázdniny).',
+    hint: 'Pomůcka: Můžeš si představit, že <b>jeden</b> = jednotné, <b>víc</b> = množné.'
+  },
+  pad: {
+    label: 'Pády podstatných jmen',
+    body: '<b>Čeština má 7 pádů:</b><br><br>'+
+          '<b>1.</b> kdo? co? — <i>maminka</i><br>'+
+          '<b>2.</b> bez koho? bez čeho? — <i>bez maminky</i><br>'+
+          '<b>3.</b> komu? čemu? — <i>k mamince</i><br>'+
+          '<b>4.</b> koho? co? — <i>vidím maminku</i><br>'+
+          '<b>5.</b> oslovujeme — <i>maminko!</i><br>'+
+          '<b>6.</b> o kom? o čem? — <i>o mamince</i><br>'+
+          '<b>7.</b> s kým? s čím? — <i>s maminkou</i>',
+    hint: 'Pomůcka: Pomocné otázky ti pomohou určit pád. Stačí najít, která otázka sedí na slovo ve větě.'
+  }
+};
+
+function sadyStart(){
+  var tabs = el('sady-tabs');
+  tabs.innerHTML = '';
+  ['rod','cislo','pad'].forEach(function(k){
+    var b = document.createElement('button');
+    b.className = 'sadyTab' + (k===sadyKey?' on':'');
+    b.textContent = SADY_DATA[k].label.replace('Podstatných jmen','').replace('podstatných jmen','').replace(/\s$/,'');
+    b.onclick = function(){ sadyShow(k); };
+    tabs.appendChild(b);
+  });
+  sadyShow(sadyKey);
+}
+function sadyShow(k){
+  sadyKey = k;
+  document.querySelectorAll('#sady-tabs .sadyTab').forEach(function(b,i){
+    b.classList.toggle('on', ['rod','cislo','pad'][i] === k);
+  });
+  var data = SADY_DATA[k];
+  el('sady-h').textContent = data.label;
+  el('sady-b').innerHTML = data.body;
+  el('sady-hint').innerHTML = '💡 ' + data.hint;
+}
+
+/* ─── CV-ROD ─── */
+var rodSt = {seq:[], idx:0, body:0, sp:0, locked:false};
+var ROD_OPTIONS = [
+  {key:'mz', label:'mužský životný', ex:'ten kluk, ten pes'},
+  {key:'mn', label:'mužský neživotný', ex:'ten hrad, ten stůl'},
+  {key:'z',  label:'ženský', ex:'ta žena, ta kniha'},
+  {key:'s',  label:'střední', ex:'to město, to okno'}
+];
+function rodStart(){
+  rodSt = {seq: shuffle(SLOVA).slice(0,12), idx:0, body:0, sp:0, locked:false};
+  el('rod-res').style.display='none';
+  el('rod-ob').style.display='block';
+  rodRender();
+}
+function rodRender(){
+  var s = rodSt;
+  if(s.idx >= s.seq.length){ rodFinish(); return; }
+  var item = s.seq[s.idx];
+  el('rod-w').textContent = item.w;
+  var c = el('rod-c'); c.innerHTML='';
+  ROD_OPTIONS.forEach(function(o){
+    var b = document.createElement('button');
+    b.className = 'opt4';
+    b.innerHTML = '<b>'+o.label+'</b><span class="roleEx">'+o.ex+'</span>';
+    b.onclick = function(){ rodAns(o.key, b, item); };
+    c.appendChild(b);
+  });
+  el('rod-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('rod-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('rod-bd').textContent = s.body;
+  el('rod-sp').textContent = s.sp;
+  el('rod-pg').style.width = (s.idx/s.seq.length*100)+'%';
+  el('rod-fb').textContent='';
+  el('rod-fb').className='fb';
+  el('rod-nx').style.display='none';
+  s.locked=false;
+}
+function rodAns(picked, btn, item){
+  var s = rodSt;
+  if(s.locked) return;
+  s.locked = true;
+  var correctLabel = ROD_OPTIONS.find(function(o){return o.key===item.rod;}).label;
+  if(picked === item.rod){
+    btn.classList.add('ok');
+    s.body += 5; s.sp++; addPoints(5);
+    el('rod-fb').innerHTML = '✓ Správně! <b>'+item.w+'</b> — '+correctLabel+'.';
+    el('rod-fb').className = 'fb ok';
+  } else {
+    btn.classList.add('err');
+    document.querySelectorAll('#rod-c .opt4').forEach(function(b,i){
+      if(ROD_OPTIONS[i].key === item.rod) b.classList.add('ok');
+    });
+    el('rod-fb').innerHTML = '✗ <b>'+item.w+'</b> má rod <b>'+correctLabel+'</b>.';
+    el('rod-fb').className = 'fb err';
+  }
+  document.querySelectorAll('#rod-c .opt4').forEach(function(b){b.disabled=true;});
+  el('rod-bd').textContent = s.body;
+  el('rod-sp').textContent = s.sp;
+  el('rod-nx').style.display = 'block';
+}
+function rodNext(){ rodSt.idx++; rodRender(); }
+function rodFinish(){
+  var s = rodSt;
+  el('rod-ob').style.display='none';
+  el('rod-res').style.display='block';
+  el('rod-pp').textContent='Správně '+s.sp+' z '+s.seq.length+' · získala jsi '+s.body+' bodů.';
+  el('rod-sc').textContent=s.body;
+  el('rod-tot').textContent=totalScore;
+}
+
+/* ─── CV-CISLO ─── */
+/* Pool slov - smíchá jednotné a množné */
+var CIS_DATA = [
+  /* jednotné */
+  {w:'kniha',n:1},{w:'pes',n:1},{w:'dítě',n:1},{w:'kočka',n:1},{w:'auto',n:1},
+  {w:'jablko',n:1},{w:'kluk',n:1},{w:'sešit',n:1},{w:'maminka',n:1},{w:'tužka',n:1},
+  /* množné */
+  {w:'knihy',n:2},{w:'psi',n:2},{w:'děti',n:2},{w:'kočky',n:2},{w:'auta',n:2},
+  {w:'jablka',n:2},{w:'kluci',n:2},{w:'sešity',n:2},{w:'tužky',n:2},
+  /* jen množné */
+  {w:'kalhoty',n:2},{w:'dveře',n:2},{w:'brýle',n:2},{w:'prázdniny',n:2},{w:'housle',n:2}
+];
+var cisSt = {seq:[], idx:0, body:0, sp:0, locked:false};
+function cisStart(){
+  cisSt = {seq: shuffle(CIS_DATA).slice(0,12), idx:0, body:0, sp:0, locked:false};
+  el('cis-res').style.display='none';
+  el('cis-ob').style.display='block';
+  cisRender();
+}
+function cisRender(){
+  var s = cisSt;
+  if(s.idx >= s.seq.length){ cisFinish(); return; }
+  var item = s.seq[s.idx];
+  el('cis-w').textContent = item.w;
+  el('cis-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('cis-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('cis-bd').textContent = s.body;
+  el('cis-sp').textContent = s.sp;
+  el('cis-pg').style.width = (s.idx/s.seq.length*100)+'%';
+  el('cis-fb').textContent='';
+  el('cis-fb').className='fb';
+  el('cis-nx').style.display='none';
+  document.querySelectorAll('#cv-cislo .opt2').forEach(function(b){b.disabled=false;b.classList.remove('ok','err');});
+  s.locked=false;
+}
+function cisAns(picked, btn){
+  var s = cisSt;
+  if(s.locked) return;
+  s.locked=true;
+  var item = s.seq[s.idx];
+  if(picked === item.n){
+    btn.classList.add('ok');
+    s.body += 4; s.sp++; addPoints(4);
+    el('cis-fb').innerHTML = '✓ Správně!';
+    el('cis-fb').className='fb ok';
+  } else {
+    btn.classList.add('err');
+    document.querySelectorAll('#cv-cislo .opt2').forEach(function(b,i){
+      if((i+1)===item.n) b.classList.add('ok');
+    });
+    el('cis-fb').innerHTML = '✗ Slovo <b>'+item.w+'</b> je číslo '+(item.n===1?'jednotné':'množné')+'.';
+    el('cis-fb').className='fb err';
+  }
+  document.querySelectorAll('#cv-cislo .opt2').forEach(function(b){b.disabled=true;});
+  el('cis-bd').textContent=s.body;
+  el('cis-sp').textContent=s.sp;
+  el('cis-nx').style.display='block';
+}
+function cisNext(){ cisSt.idx++; cisRender(); }
+function cisFinish(){
+  var s = cisSt;
+  el('cis-ob').style.display='none';
+  el('cis-res').style.display='block';
+  el('cis-pp').textContent='Správně '+s.sp+' z '+s.seq.length+' · '+s.body+' bodů.';
+  el('cis-sc').textContent=s.body;
+  el('cis-tot').textContent=totalScore;
+}
+
+/* ─── CV-PAD ─── */
+/* Pomocné otázky všech 7 pádů */
+var PADY = [
+  {n:1, q:'kdo? co?'},
+  {n:2, q:'bez koho? bez čeho?'},
+  {n:3, q:'komu? čemu?'},
+  {n:4, q:'koho? co? (vidím)'},
+  {n:5, q:'oslovujeme'},
+  {n:6, q:'o kom? o čem?'},
+  {n:7, q:'s kým? s čím?'}
+];
+var PAD_DATA = [
+  {sentence:'Maminka peče koláč.', word:'Maminka', pad:1, hint:'Kdo peče?'},
+  {sentence:'Kluk hází míč.', word:'Kluk', pad:1, hint:'Kdo hází?'},
+  {sentence:'Kniha leží na stole.', word:'Kniha', pad:1, hint:'Co leží?'},
+  {sentence:'Bez maminky nepůjdu.', word:'maminky', pad:2, hint:'Bez koho?'},
+  {sentence:'Lukáš jde domů ze školy.', word:'školy', pad:2, hint:'Bez čeho? Z čeho?'},
+  {sentence:'Dám knihu kamarádovi.', word:'kamarádovi', pad:3, hint:'Komu?'},
+  {sentence:'Pomáháme mamince.', word:'mamince', pad:3, hint:'Komu?'},
+  {sentence:'Vidím učitele.', word:'učitele', pad:4, hint:'Koho vidím?'},
+  {sentence:'Čtu knihu.', word:'knihu', pad:4, hint:'Co čtu?'},
+  {sentence:'Mami, podej mi vodu!', word:'Mami', pad:5, hint:'Koho oslovujeme?'},
+  {sentence:'Mluvíme o mamince.', word:'mamince', pad:6, hint:'O kom?'},
+  {sentence:'Píšu o lese.', word:'lese', pad:6, hint:'O čem?'},
+  {sentence:'Jdu se sestrou.', word:'sestrou', pad:7, hint:'S kým?'},
+  {sentence:'Píšu tužkou.', word:'tužkou', pad:7, hint:'S čím?'}
+];
+var padSt = {seq:[], idx:0, body:0, sp:0, locked:false};
+function padStart(){
+  padSt = {seq: shuffle(PAD_DATA).slice(0,10), idx:0, body:0, sp:0, locked:false};
+  el('pad-res').style.display='none';
+  el('pad-ob').style.display='block';
+  padRender();
+}
+function padRender(){
+  var s = padSt;
+  if(s.idx >= s.seq.length){ padFinish(); return; }
+  var item = s.seq[s.idx];
+  /* Větu zvýrazníme */
+  var html = item.sentence.replace(item.word, '<b style="color:var(--m);background:var(--ms);padding:.1rem .3rem;border-radius:4px">'+item.word+'</b>');
+  el('pad-s').innerHTML = html;
+  el('pad-h').textContent = item.hint;
+  /* Tlačítka pádů */
+  var c = el('pad-c'); c.innerHTML='';
+  PADY.forEach(function(p){
+    var b = document.createElement('button');
+    b.className='opt7';
+    b.innerHTML = '<b>'+p.n+'.</b> '+p.q;
+    b.onclick = function(){ padAns(p.n, b, item); };
+    c.appendChild(b);
+  });
+  el('pad-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('pad-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('pad-bd').textContent = s.body;
+  el('pad-sp').textContent = s.sp;
+  el('pad-pg').style.width = (s.idx/s.seq.length*100)+'%';
+  el('pad-fb').textContent='';
+  el('pad-fb').className='fb';
+  el('pad-nx').style.display='none';
+  s.locked=false;
+}
+function padAns(picked, btn, item){
+  var s = padSt;
+  if(s.locked) return;
+  s.locked=true;
+  if(picked === item.pad){
+    btn.classList.add('ok');
+    s.body += 6; s.sp++; addPoints(6);
+    el('pad-fb').innerHTML = '✓ Správně! <b>'+item.word+'</b> je v '+item.pad+'. pádě.';
+    el('pad-fb').className='fb ok';
+  } else {
+    btn.classList.add('err');
+    document.querySelectorAll('#pad-c .opt7').forEach(function(b,i){
+      if(PADY[i].n === item.pad) b.classList.add('ok');
+    });
+    el('pad-fb').innerHTML = '✗ <b>'+item.word+'</b> je v <b>'+item.pad+'. pádě</b> ('+PADY[item.pad-1].q+').';
+    el('pad-fb').className='fb err';
+  }
+  document.querySelectorAll('#pad-c .opt7').forEach(function(b){b.disabled=true;});
+  el('pad-bd').textContent=s.body;
+  el('pad-sp').textContent=s.sp;
+  el('pad-nx').style.display='block';
+}
+function padNext(){ padSt.idx++; padRender(); }
+function padFinish(){
+  var s = padSt;
+  el('pad-ob').style.display='none';
+  el('pad-res').style.display='block';
+  el('pad-pp').textContent='Správně '+s.sp+' z '+s.seq.length+' · '+s.body+' bodů.';
+  el('pad-sc').textContent=s.body;
+  el('pad-tot').textContent=totalScore;
+}
+
+/* ─── CV-NAJDI ─── */
+var NAJ_DATA = [
+  {sentence:'Maminka peče koláč.', target:'Maminka'},
+  {sentence:'Kluk čte zajímavou knihu.', target:'Kluk'},
+  {sentence:'Pes běhá po zahradě.', target:'Pes'},
+  {sentence:'Dítě si hraje s autem.', target:'Dítě'},
+  {sentence:'Učitel vysvětlil úkol.', target:'Učitel'},
+  {sentence:'Kočka spí na okně.', target:'Kočka'},
+  {sentence:'Tužka leží na stole.', target:'Tužka'},
+  {sentence:'Auto stojí před domem.', target:'Auto'},
+  {sentence:'Kniha je velmi tlustá.', target:'Kniha'},
+  {sentence:'Ptáček zpívá v lese.', target:'Ptáček'}
+];
+var najSt = {seq:[], idx:0, body:0, sp:0, locked:false};
+function najStart(){
+  najSt = {seq: shuffle(NAJ_DATA).slice(0,8), idx:0, body:0, sp:0, locked:false};
+  el('naj-res').style.display='none';
+  el('naj-ob').style.display='block';
+  najRender();
+}
+function najRender(){
+  var s = najSt;
+  if(s.idx >= s.seq.length){ najFinish(); return; }
+  var item = s.seq[s.idx];
+  /* Vykreslit větu jako klikatelná slova */
+  var sBox = el('naj-s');
+  sBox.innerHTML = '';
+  var words = item.sentence.split(' ');
+  words.forEach(function(w, i){
+    var clean = w.replace(/[.,!?;:]/g,'');
+    var btn = document.createElement('button');
+    btn.className = 'word-btn';
+    btn.textContent = w;
+    btn.onclick = function(){ najAns(clean, btn, item); };
+    sBox.appendChild(btn);
+    if(i < words.length-1) sBox.appendChild(document.createTextNode(' '));
+  });
+  el('naj-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('naj-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('naj-bd').textContent = s.body;
+  el('naj-sp').textContent = s.sp;
+  el('naj-pg').style.width = (s.idx/s.seq.length*100)+'%';
+  el('naj-fb').textContent='';
+  el('naj-fb').className='fb';
+  el('naj-nx').style.display='none';
+  s.locked=false;
+}
+function najAns(clicked, btn, item){
+  var s = najSt;
+  if(s.locked) return;
+  s.locked=true;
+  if(clicked === item.target){
+    btn.classList.add('ok');
+    s.body += 5; s.sp++; addPoints(5);
+    el('naj-fb').innerHTML='✓ Správně! <b>'+item.target+'</b> je podstatné jméno.';
+    el('naj-fb').className='fb ok';
+  } else {
+    btn.classList.add('err');
+    /* Najít a označit správnou */
+    document.querySelectorAll('#naj-s .word-btn').forEach(function(b){
+      if(b.textContent.replace(/[.,!?;:]/g,'') === item.target) b.classList.add('ok');
+    });
+    el('naj-fb').innerHTML='✗ Podstatné jméno je <b>'+item.target+'</b>.';
+    el('naj-fb').className='fb err';
+  }
+  document.querySelectorAll('#naj-s .word-btn').forEach(function(b){b.disabled=true;});
+  el('naj-bd').textContent=s.body;
+  el('naj-sp').textContent=s.sp;
+  el('naj-nx').style.display='block';
+}
+function najNext(){ najSt.idx++; najRender(); }
+function najFinish(){
+  var s = najSt;
+  el('naj-ob').style.display='none';
+  el('naj-res').style.display='block';
+  el('naj-pp').textContent='Správně '+s.sp+' z '+s.seq.length+' · '+s.body+' bodů.';
+  el('naj-sc').textContent=s.body;
+  el('naj-tot').textContent=totalScore;
+}
+
+/* ─── CV-HRA: Roztřiď slova podle rodu ─── */
+/* Pro hru zjednodušíme: jen 3 rody (mužský, ženský, střední) - životnost neřešíme */
+var HRA_DATA = SLOVA.map(function(s){
+  return {w:s.w, rod: (s.rod==='mz'||s.rod==='mn') ? 'm' : s.rod};
+});
+var hraSt = {seq:[], idx:0, body:0, errs:0, picked:null, counts:{m:0,z:0,s:0}};
+function hraStart(){
+  hraSt = {seq: shuffle(HRA_DATA).slice(0,10), idx:0, body:0, errs:0, picked:null, counts:{m:0,z:0,s:0}};
+  el('hra-res').style.display='none';
+  el('cv-hra .ka').style.display='block';
+  hraRenderPool();
+  el('hra-bd').textContent = '0';
+  el('hra-zb').textContent = hraSt.seq.length;
+  el('hra-er').textContent = '0';
+  el('hra-c-m').textContent = '0 slov';
+  el('hra-c-z').textContent = '0 slov';
+  el('hra-c-s').textContent = '0 slov';
+  el('hra-fb').textContent='';
+  el('hra-fb').className='fb';
+}
+function hraRenderPool(){
+  var pool = el('hra-pool');
+  pool.innerHTML='';
+  var remaining = hraSt.seq.slice(hraSt.idx);
+  if(remaining.length === 0){
+    setTimeout(hraFinish, 300);
+    return;
+  }
+  remaining.forEach(function(it, i){
+    var b = document.createElement('button');
+    b.className = 'word-btn';
+    b.style.fontSize='1.1rem';
+    b.style.padding='.3rem .7rem';
+    b.style.background='white';
+    b.style.border='2px solid #d1d5db';
+    b.textContent = it.w;
+    if(i===0){ b.style.background='var(--ms)'; b.style.borderColor='var(--m)'; b.classList.add('picked'); }
+    pool.appendChild(b);
+  });
+}
+function hraDrop(rod){
+  if(hraSt.idx >= hraSt.seq.length) return;
+  var item = hraSt.seq[hraSt.idx];
+  if(item.rod === rod){
+    hraSt.body += 5;
+    hraSt.counts[rod]++;
+    addPoints(5);
+    el('hra-fb').innerHTML = '✓ Správně! <b>'+item.w+'</b> má rod '+(rod==='m'?'mužský':rod==='z'?'ženský':'střední')+'.';
+    el('hra-fb').className='fb ok';
+    el('hra-c-'+rod).textContent = hraSt.counts[rod]+' slov';
+    hraSt.idx++;
+  } else {
+    hraSt.errs++;
+    el('hra-fb').innerHTML = '✗ Slovo <b>'+item.w+'</b> není '+(rod==='m'?'mužského':rod==='z'?'ženského':'středního')+' rodu. Zkus jiný sloupec.';
+    el('hra-fb').className='fb err';
+  }
+  el('hra-bd').textContent = hraSt.body;
+  el('hra-zb').textContent = hraSt.seq.length - hraSt.idx;
+  el('hra-er').textContent = hraSt.errs;
+  hraRenderPool();
+}
+function hraFinish(){
+  el('cv-hra .ka').style.display='none';
+  el('hra-res').style.display='block';
+  el('hra-pp').textContent='Roztřídila jsi všech '+hraSt.seq.length+' slov · chyb: '+hraSt.errs+'.';
+  el('hra-sc').textContent=hraSt.body;
+  el('hra-tot').textContent=totalScore;
+  if(hraSt.errs === 0){ el('hra-tx').textContent = '🏆 Bezchybně!'; }
+  else if(hraSt.errs <= 2){ el('hra-tx').textContent = '🎉 Skvěle!'; }
+  else { el('hra-tx').textContent = '💪 Zkus to znovu!'; }
+}
+
+/* ─── PRINT ─── */
+function printChoice(){
+  var topics = [
+    {key:'rod', label:'Najdi rod (15 slov)'},
+    {key:'cislo', label:'Jednotné × množné (15 slov)'},
+    {key:'pad', label:'Pády (10 vět)'},
+    {key:'najdi', label:'Najdi podst. jméno (10 vět)'},
+    {key:'mix', label:'Smíšený pracovní list'}
+  ];
+  var html = '<div style="position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem"><div style="background:white;border-radius:12px;padding:1.5rem;max-width:480px;width:100%"><h3 style="margin:0 0 1rem;color:var(--m);text-align:center">🖨️ Vyber pracovní list</h3>';
+  topics.forEach(function(t){
+    html += '<button onclick="doPrint(\\\''+t.key+'\\\');this.parentNode.parentNode.remove()" style="width:100%;padding:.85rem;margin:.3rem 0;background:var(--ms);border:2px solid var(--m);border-radius:8px;font-weight:700;color:var(--m);cursor:pointer;font-family:var(--font);font-size:1rem;text-align:left">'+t.label+'</button>';
+  });
+  html += '<button onclick="this.parentNode.parentNode.remove()" style="width:100%;padding:.6rem;margin-top:.5rem;background:#f3f4f6;border:1px solid #d1d5db;border-radius:8px;cursor:pointer;font-family:var(--font)">Zavřít</button></div></div>';
+  var d = document.createElement('div');
+  d.innerHTML = html;
+  document.body.appendChild(d.firstChild);
+}
+function doPrint(key){
+  var data = printGetData(key);
+  var w = window.open('', '_blank');
+  w.document.write(printHTML(data));
+  w.document.close();
+  setTimeout(function(){w.print();}, 500);
+}
+function printGetData(key){
+  if(key==='rod'){
+    var picked = shuffle(SLOVA).slice(0,15);
+    var qHtml = '<p>U každého slova napiš zkratku rodu: <b>M</b> mužský, <b>Ž</b> ženský, <b>S</b> střední.</p>';
+    qHtml += '<table style="width:100%;border-collapse:collapse">';
+    picked.forEach(function(it,i){
+      qHtml += '<tr><td style="padding:.4rem;border-bottom:1px dotted #ccc">'+(i+1)+'. '+it.w+'</td><td style="padding:.4rem;border-bottom:1px dotted #ccc;text-align:right">_______</td></tr>';
+    });
+    qHtml += '</table>';
+    var aHtml='<table style="width:100%"><tr>';
+    picked.forEach(function(it,i){
+      var letter = it.rod==='z'?'Ž':it.rod==='s'?'S':'M';
+      aHtml += '<td style="padding:.3rem;width:33%">'+(i+1)+'. '+it.w+' — <b>'+letter+'</b></td>';
+      if((i+1)%3===0) aHtml += '</tr><tr>';
+    });
+    aHtml += '</tr></table>';
+    return {title:'Podstatná jména — rod', topic:'Podstatná jména', instructions:'Urči rod každého slova (M = mužský, Ž = ženský, S = střední).', qHtml:qHtml, aHtml:aHtml};
+  }
+  if(key==='cislo'){
+    var picked = shuffle(CIS_DATA).slice(0,15);
+    var qHtml = '<p>Napiš <b>1</b> (jednotné) nebo <b>M</b> (množné) podle čísla:</p><table style="width:100%">';
+    picked.forEach(function(it,i){
+      qHtml += '<tr><td style="padding:.35rem;border-bottom:1px dotted #ccc">'+(i+1)+'. '+it.w+'</td><td style="text-align:right;padding:.35rem">_____</td></tr>';
+    });
+    qHtml += '</table>';
+    var aHtml = '<table style="width:100%">';
+    picked.forEach(function(it,i){
+      aHtml += '<tr><td>'+(i+1)+'. '+it.w+' — <b>'+(it.n===1?'1':'M')+'</b></td></tr>';
+    });
+    aHtml += '</table>';
+    return {title:'Číslo podst. jmen', topic:'Podstatná jména', instructions:'Napiš 1 (jednotné) nebo M (množné).', qHtml:qHtml, aHtml:aHtml};
+  }
+  if(key==='pad'){
+    var picked = shuffle(PAD_DATA).slice(0,10);
+    var qHtml = '<p>U každé věty napiš číslo pádu (1-7) zvýrazněného slova:</p>';
+    picked.forEach(function(it,i){
+      qHtml += '<div style="margin:.6rem 0;border-bottom:1px dotted #ccc;padding-bottom:.4rem">'+(i+1)+'. '+it.sentence.replace(it.word,'<b><u>'+it.word+'</u></b>')+' &nbsp;→ pád: _____</div>';
+    });
+    var aHtml = '<table style="width:100%">';
+    picked.forEach(function(it,i){
+      aHtml += '<tr><td>'+(i+1)+'. <b>'+it.word+'</b> — '+it.pad+'. pád ('+PADY[it.pad-1].q+')</td></tr>';
+    });
+    aHtml += '</table>';
+    return {title:'Pády', topic:'Podstatná jména', instructions:'Urči pád zvýrazněného slova ve větě.', qHtml:qHtml, aHtml:aHtml};
+  }
+  if(key==='najdi'){
+    var picked = shuffle(NAJ_DATA).slice(0,10);
+    var qHtml = '<p>V každé větě <b>podtrhni podstatné jméno</b>:</p>';
+    picked.forEach(function(it,i){
+      qHtml += '<div style="margin:.5rem 0;padding:.3rem 0;border-bottom:1px dotted #ccc">'+(i+1)+'. '+it.sentence+'</div>';
+    });
+    var aHtml = '';
+    picked.forEach(function(it,i){
+      aHtml += '<div>'+(i+1)+'. '+it.sentence.replace(it.target,'<b><u>'+it.target+'</u></b>')+'</div>';
+    });
+    return {title:'Najdi podstatné jméno', topic:'Podstatná jména', instructions:'V každé větě podtrhni podstatné jméno.', qHtml:qHtml, aHtml:aHtml};
+  }
+  if(key==='mix'){
+    var pickedRod = shuffle(SLOVA).slice(0,8);
+    var pickedPad = shuffle(PAD_DATA).slice(0,5);
+    var qHtml = '<h4 style="color:#1e3a5f">A) Urči rod (M/Ž/S):</h4><table style="width:100%">';
+    pickedRod.forEach(function(it,i){
+      qHtml += '<tr><td style="padding:.35rem;border-bottom:1px dotted #ccc">'+(i+1)+'. '+it.w+' → _____</td></tr>';
+    });
+    qHtml += '</table><h4 style="color:#1e3a5f;margin-top:1rem">B) Urči pád zvýrazněného slova:</h4>';
+    pickedPad.forEach(function(it,i){
+      qHtml += '<div style="margin:.4rem 0;padding-bottom:.3rem;border-bottom:1px dotted #ccc">'+(i+1)+'. '+it.sentence.replace(it.word,'<b><u>'+it.word+'</u></b>')+' → pád: _____</div>';
+    });
+    var aHtml='<h4>A) Rody:</h4>';
+    pickedRod.forEach(function(it,i){
+      var l = it.rod==='z'?'Ž':it.rod==='s'?'S':'M';
+      aHtml += '<div>'+(i+1)+'. '+it.w+' — <b>'+l+'</b></div>';
+    });
+    aHtml += '<h4 style="margin-top:1rem">B) Pády:</h4>';
+    pickedPad.forEach(function(it,i){
+      aHtml += '<div>'+(i+1)+'. <b>'+it.word+'</b> — '+it.pad+'. pád</div>';
+    });
+    return {title:'Smíšený list', topic:'Podstatná jména', instructions:'Vyřeš obě části cvičení.', qHtml:qHtml, aHtml:aHtml};
+  }
+}
+function printHTML(data){
+  var d=new Date();var dateStr=d.getDate()+'.'+(d.getMonth()+1)+'.'+d.getFullYear();
+  return '<!doctype html><html lang="cs"><head><meta charset="utf-8"><title>Pracovní list — '+data.title+'</title><style>body{font-family:Arial,sans-serif;max-width:780px;margin:1rem auto;padding:1rem;color:#1f2937;font-size:13pt;line-height:1.55}h1{color:#1e3a5f;margin:0 0 .5rem;font-size:1.4rem}h2{color:#1e3a5f;margin-top:1.2rem;font-size:1.1rem;border-bottom:2px solid #1e3a5f;padding-bottom:.2rem}h4{margin:.6rem 0 .2rem}.task{margin:.4rem 0}.head{display:flex;justify-content:space-between;border-bottom:2px solid #1e3a5f;padding-bottom:.3rem;margin-bottom:1rem}.head .l{display:flex;gap:1rem}.head span{font-size:.85rem;color:#6b7280}.instructions{background:#f3f4f6;padding:.6rem .9rem;border-left:4px solid #ffaa37;border-radius:4px;margin:.7rem 0;font-size:.95rem}.solution{page-break-before:always;background:#ecfdf5;padding:.7rem 1rem;border-left:4px solid #16a34a;border-radius:4px;margin-top:1rem}.solution h2{color:#16a34a;border-color:#16a34a}@media print{body{margin:0;padding:.5cm 1cm;font-size:12pt}.solution{page-break-before:always}}</style></head><body><div class="head"><div class="l"><h1>📋 '+data.title+'</h1><span>'+data.topic+'</span></div><span>Datum: '+dateStr+' · Jméno: ____________</span></div><div class="instructions"><b>Zadání:</b> '+data.instructions+'</div>'+data.qHtml+'<div class="solution"><h2>✓ Řešení (pro učitele)</h2>'+data.aHtml+'</div></body></html>';
+}
+</script>
+</body>
+</html>

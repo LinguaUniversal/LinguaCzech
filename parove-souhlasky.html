@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Párové souhlásky — LinguaCzech 3. třída</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --m:#32a0d2;--ms:#e8f4fb;
+  --o:#ffaa37;--os:#fff8ee;
+  --z:#16a34a;--zs:#dcfce7;
+  --r:#dc2626;--rs:#fee2e2;
+  --p:#7c3aed;--ps:#f3e8ff;
+  --font:'Barlow Condensed',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
+.hl{max-width:760px;margin:1.5rem auto;padding:.5rem 1rem;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.4rem 0 1rem;}
+.topbar a{color:var(--m);text-decoration:none;font-weight:700;font-size:.95rem;}
+.topbar span{font-weight:800;color:var(--m);}
+.scbg{position:fixed;top:10px;right:12px;background:var(--o);color:white;border-radius:99px;padding:.3rem .85rem;font-weight:700;font-size:1rem;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.18);pointer-events:none;}
+.mh{text-align:center;margin:.5rem 0 1.2rem;}
+.mh h1{font-size:1.9rem;color:var(--m);font-weight:800;margin:0;}
+.mh p{color:#6b7280;margin:.3rem 0 0;}
+.mg{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem;}
+.mk{padding:1rem;border-radius:14px;cursor:pointer;text-align:center;transition:all .15s;border:2.5px solid transparent;background:white;}
+.mk:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08);}
+.mk-m{background:var(--ms);border-color:var(--m);}
+.mk-o{background:var(--os);border-color:var(--o);}
+.mk-p{background:var(--ps);border-color:var(--p);}
+.mk h3{font-size:1.05rem;font-weight:800;margin-bottom:.2rem;}
+.mk p{font-size:.85rem;color:#6b7280;margin:0;}
+.cv{display:none;}
+.nav{display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;}
+.zpet{background:white;border:1.5px solid #d1d5db;border-radius:8px;padding:.4rem .9rem;font-weight:600;cursor:pointer;font-family:var(--font);}
+.tit{font-size:1.1rem;font-weight:700;}
+.var{margin-left:auto;background:var(--ms);color:var(--m);border-radius:99px;padding:.2rem .8rem;font-weight:600;font-size:.85rem;}
+.sk{display:flex;justify-content:space-around;background:var(--os);border:1px solid #ffd48a;border-radius:10px;padding:.7rem;margin-bottom:.75rem;}
+.skn{font-size:1.4rem;font-weight:700;color:var(--o);text-align:center;}
+.skl{font-size:.75rem;color:#6b7280;text-align:center;}
+.pg{height:8px;background:#e5e7eb;border-radius:99px;overflow:hidden;margin-bottom:1rem;}
+.pgf{height:100%;background:var(--m);border-radius:99px;transition:width .3s;}
+.ka{background:white;border:1.5px solid #e5e7eb;border-radius:12px;padding:1rem;margin-bottom:1rem;}
+.q{font-weight:700;text-align:center;margin-bottom:.5rem;color:#374151;}
+.fb{margin-top:.7rem;font-size:.95rem;min-height:1.2rem;font-weight:600;text-align:center;}
+.fb.ok{color:var(--z);}
+.fb.err{color:var(--r);}
+.nxt{display:none;width:100%;background:var(--m);color:white;border:none;border-radius:8px;padding:.85rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:var(--font);margin-top:.5rem;}
+.res{display:none;text-align:center;padding:2rem 1rem;}
+.res h2{color:var(--m);font-size:1.6rem;margin:.5rem 0;}
+.res-row{display:flex;gap:1rem;justify-content:center;margin:1rem 0;flex-wrap:wrap;}
+.rs{background:var(--ms);border-radius:10px;padding:.75rem 1rem;}
+.rsv{font-size:1.4rem;font-weight:800;}
+.rsl{font-size:.8rem;color:#6b7280;}
+.znovu,.mbtn{padding:.7rem 1.2rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:.95rem;margin:.3rem;}
+.znovu{background:var(--m);color:white;border:none;}
+.mbtn{background:white;color:#374151;border:1.5px solid #d1d5db;}
+
+/* Páry tabulka */
+.parGrid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:.7rem 0;}
+.parCell{background:var(--ms);border:2px solid var(--m);border-radius:10px;padding:.7rem;text-align:center;}
+.parCell h4{color:var(--m);font-size:1.05rem;margin-bottom:.2rem;}
+.parCell .pair{font-family:Verdana,Geneva,sans-serif;font-size:1.7rem;font-weight:800;color:#1f2937;margin:.2rem 0;}
+.parCell .ex{font-size:.85rem;color:#6b7280;font-family:Verdana,Geneva,sans-serif;}
+
+/* Slovo s mezerou */
+.wordGap{font-family:Verdana,Geneva,sans-serif;font-size:2.5rem;font-weight:800;text-align:center;color:var(--m);padding:1.5rem 1rem;background:var(--ms);border-radius:10px;margin:1rem 0;letter-spacing:.05em;}
+.wordGap .gap{color:var(--o);border-bottom:4px solid var(--o);padding:0 .15em;}
+
+/* 2 možnosti pro doplnění */
+.opts2{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:1rem 0;}
+.opt2{padding:1.3rem;font-size:1.8rem;font-weight:800;font-family:Verdana,Geneva,sans-serif;color:#1f2937;background:white;border:2.5px solid #d1d5db;border-radius:12px;cursor:pointer;text-align:center;transition:all .15s;}
+.opt2:hover:not(:disabled){border-color:var(--m);background:var(--ms);}
+.opt2.ok{background:var(--zs);border-color:var(--z);color:var(--z);}
+.opt2.err{background:var(--rs);border-color:var(--r);color:var(--r);}
+.opt2:disabled{cursor:default;}
+
+.hint{background:#fffbeb;border-left:4px solid var(--o);padding:.6rem .9rem;border-radius:6px;margin:.5rem 0;font-size:.9rem;color:#374151;}
+.hint b{color:var(--o);}
+
+/* Pexeso */
+.pexGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin:1rem 0;}
+.pexCard{aspect-ratio:1.1;background:var(--m);border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:Verdana,Geneva,sans-serif;font-weight:700;color:white;font-size:1rem;transition:all .2s;padding:.3rem;text-align:center;line-height:1.2;}
+.pexCard.flipped{background:white;border:2.5px solid var(--m);color:#1f2937;}
+.pexCard.matched{background:var(--zs);border:2.5px solid var(--z);color:var(--z);cursor:default;}
+.pexCard.back::after{content:'?';font-size:2rem;}
+
+/* Sady tabs */
+.sadyTabs{display:flex;gap:.3rem;margin-bottom:.7rem;flex-wrap:wrap;justify-content:center;}
+.sadyTab{padding:.45rem .9rem;border:2px solid var(--m);background:white;color:var(--m);border-radius:99px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:.95rem;}
+.sadyTab.on{background:var(--m);color:white;}
+
+@media print{body{background:white;}.scbg{display:none;}}
+</style>
+</head>
+<body>
+<div class="scbg" id="scbg">⭐ 0 b.</div>
+<div class="hl">
+
+<!-- MENU -->
+<div id="menu">
+  <div class="topbar"><a href="3trida.html">← 3. třída</a><span>LinguaCzech</span></div>
+  <div class="mh"><h1>Párové souhlásky</h1><p>3. ročník — spodoba znělosti (b/p, d/t, ž/š...)</p></div>
+  <div class="mg">
+    <div onclick="go('sady')" class="mk mk-p" style="grid-column:span 2"><h3>📋 Naučím se páry</h3><p>b/p · d/t · ď/ť · v/f · z/s · ž/š · h/ch · g/k</p></div>
+    <div onclick="go('doplnit')" class="mk mk-m"><h3>✏️ Doplň souhlásku</h3><p>du_ → dub nebo dup?</p></div>
+    <div onclick="go('overit')" class="mk mk-o"><h3>🔍 Ověř pomocí 2. pádu</h3><p>les → bez lesa (s)</p></div>
+    <div onclick="go('pexeso')" class="mk mk-m"><h3>🃏 Pexeso párů</h3><p>Spoj páry: b ↔ p, d ↔ t...</p></div>
+    <div onclick="printChoice()" class="mk" style="grid-column:span 2;background:#f3f4f6;border:2px dashed #9ca3af"><h3 style="color:#374151">🖨️ Vytisknout pracovní list</h3><p style="color:#6b7280">PDF k procvičování doma</p></div>
+  </div>
+</div>
+
+<!-- CV: SADY -->
+<div class="cv" id="cv-sady">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">📋 Naučím se páry</span></div>
+  <div class="ka">
+    <p style="text-align:center;color:#374151;margin-bottom:.5rem">Některé souhlásky mají <b style="color:var(--m)">znělý</b> a <b style="color:var(--r)">neznělý</b> pár. Na konci slova nebo před neznělou souhláskou se znělá vyslovuje jako neznělá — to je <b>spodoba znělosti</b>.</p>
+    <div class="parGrid">
+      <div class="parCell"><h4>b — p</h4><div class="pair">b ↔ p</div><div class="ex">dub × dup<br/>chléb (vyslov chlép)</div></div>
+      <div class="parCell"><h4>d — t</h4><div class="pair">d ↔ t</div><div class="ex">led × let<br/>led (vyslov let)</div></div>
+      <div class="parCell"><h4>ď — ť</h4><div class="pair">ď ↔ ť</div><div class="ex">odpověď<br/>(vyslov odpověť)</div></div>
+      <div class="parCell"><h4>v — f</h4><div class="pair">v ↔ f</div><div class="ex">krev × krev<br/>(vyslov kref)</div></div>
+      <div class="parCell"><h4>z — s</h4><div class="pair">z ↔ s</div><div class="ex">vůz × ves<br/>vůz (vyslov vús)</div></div>
+      <div class="parCell"><h4>ž — š</h4><div class="pair">ž ↔ š</div><div class="ex">muž × myš<br/>muž (vyslov muš)</div></div>
+      <div class="parCell"><h4>h — ch</h4><div class="pair">h ↔ ch</div><div class="ex">sníh — sněhu<br/>(vyslov sních)</div></div>
+      <div class="parCell"><h4>g — k</h4><div class="pair">g ↔ k</div><div class="ex">flag × flek<br/>vzácné v češtině</div></div>
+    </div>
+    <div class="hint">💡 <b>Pomůcka</b>: Když slyšíš na konci slova „p, t, ť, f, s, š, ch, k", zkus slovo říct ve <b>2. pádě</b> (bez koho/čeho?). Tam uslyšíš správnou souhlásku.<br/>Příklad: <b>dub</b> → bez <b>dubu</b> (slyšíš b) → píšu <b>b</b>.</div>
+  </div>
+  <button class="mbtn" style="display:block;margin:.5rem auto" onclick="back()">Zpět do menu</button>
+</div>
+
+<!-- CV: DOPLNIT souhlásku -->
+<div class="cv" id="cv-doplnit">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">✏️ Doplň souhlásku</span><span class="var" id="dop-v">1/12</span></div>
+  <div class="sk">
+    <div><div class="skn" id="dop-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="dop-ci">1/12</div><div class="skl">slovo</div></div>
+    <div><div class="skn" id="dop-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="dop-pg" style="width:0%"></div></div>
+  <div id="dop-ob">
+    <div class="ka">
+      <div class="q">Které <b>písmeno patří</b> do slova?</div>
+      <div class="wordGap" id="dop-w">—</div>
+      <div class="opts2" id="dop-c"></div>
+      <div class="hint" id="dop-h" style="display:none">—</div>
+      <div class="fb" id="dop-fb"></div>
+    </div>
+    <button class="nxt" id="dop-nx" onclick="dopNext()">Další →</button>
+  </div>
+  <div class="res" id="dop-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="dop-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="dop-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="dop-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('doplnit')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV: OVĚŘ pomocí 2. pádu -->
+<div class="cv" id="cv-overit">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🔍 Ověř pomocí 2. pádu</span><span class="var" id="ov-v">1/8</span></div>
+  <div class="sk">
+    <div><div class="skn" id="ov-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="ov-ci">1/8</div><div class="skl">slovo</div></div>
+    <div><div class="skn" id="ov-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="ov-pg" style="width:0%"></div></div>
+  <div id="ov-ob">
+    <div class="ka">
+      <div class="q">Když slovo dáš do <b>2. pádu</b> (bez čeho?), jaké uslyšíš písmeno?</div>
+      <div class="wordGap" id="ov-w">—</div>
+      <div class="hint">💡 Pomocná otázka: <b id="ov-h">bez čeho?</b></div>
+      <div class="opts2" id="ov-c"></div>
+      <div class="fb" id="ov-fb"></div>
+    </div>
+    <button class="nxt" id="ov-nx" onclick="ovNext()">Další →</button>
+  </div>
+  <div class="res" id="ov-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="ov-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="ov-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="ov-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('overit')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV: PEXESO -->
+<div class="cv" id="cv-pexeso">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🃏 Pexeso párů</span><span class="var" id="pex-v">páry: 0/8</span></div>
+  <div class="sk">
+    <div><div class="skn" id="pex-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="pex-mv">0</div><div class="skl">tahy</div></div>
+    <div><div class="skn" id="pex-pr">0/8</div><div class="skl">páry</div></div>
+  </div>
+  <div id="pex-ob">
+    <div class="ka">
+      <div class="q">Spoj <b>znělou</b> souhlásku s její <b>neznělou</b> verzí (např. b ↔ p).</div>
+      <div class="pexGrid" id="pex-grid"></div>
+      <div class="fb" id="pex-fb"></div>
+    </div>
+  </div>
+  <div class="res" id="pex-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="pex-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="pex-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="pex-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('pexeso')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+</div><!-- .hl -->
+
+<script>
+var SCORE_KEY='parove3_score';
+var totalScore=0;
+try{totalScore=parseInt(localStorage.getItem(SCORE_KEY))||0;}catch(e){}
+function el(id){return document.getElementById(id);}
+function shuffle(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t;}return b;}
+function addPoints(n){totalScore+=n;try{localStorage.setItem(SCORE_KEY,totalScore);}catch(e){}updateScore();}
+function updateScore(){el('scbg').textContent='⭐ '+totalScore+' b.';}
+updateScore();
+function go(id){
+  el('menu').style.display='none';
+  document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
+  el('cv-'+id).style.display='block';
+  if(id==='doplnit') dopStart();
+  if(id==='overit') ovStart();
+  if(id==='pexeso') pexStart();
+}
+function back(){
+  el('menu').style.display='block';
+  document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
+}
+
+/* ─── DATA: Slova s párovou souhláskou ─── */
+/* a = správná souhláska, alt = nesprávná (její pár), hint = 2. pád */
+var DOP_DATA = [
+  /* b/p */
+  {full:'dub',  a:'b', alt:'p', gap:'du_', g:'duby (mn.)'},
+  {full:'chléb',a:'b', alt:'p', gap:'chlé_', g:'bez chleba'},
+  {full:'sněhulák',a:'h',alt:'ch',gap:'sně_ulák', g:'bez sněhuláka'},
+  {full:'rybník',a:'b',alt:'p', gap:'ry_ník', g:'bez rybníka'},
+  /* d/t */
+  {full:'led',  a:'d', alt:'t', gap:'le_', g:'bez ledu'},
+  {full:'mráz', a:'z', alt:'s', gap:'mrá_', g:'bez mrazu'},
+  {full:'kolovrátek',a:'t',alt:'d',gap:'kolovrá_ek', g:'bez kolovrátku'},
+  {full:'plot', a:'t', alt:'d', gap:'plo_', g:'bez plotu'},
+  /* v/f */
+  {full:'rukáv',a:'v', alt:'f', gap:'rukáv', g:'bez rukávu'},
+  {full:'lev',  a:'v', alt:'f', gap:'le_', g:'bez lva'},
+  /* z/s */
+  {full:'mráz', a:'z', alt:'s', gap:'mrá_', g:'bez mrazu'},
+  {full:'vůz',  a:'z', alt:'s', gap:'vů_', g:'bez vozu'},
+  {full:'pes',  a:'s', alt:'z', gap:'pe_', g:'bez psa'},
+  {full:'les',  a:'s', alt:'z', gap:'le_', g:'bez lesa'},
+  /* ž/š */
+  {full:'muž',  a:'ž', alt:'š', gap:'mu_', g:'bez muže'},
+  {full:'nůž',  a:'ž', alt:'š', gap:'nů_', g:'bez nože'},
+  {full:'myš',  a:'š', alt:'ž', gap:'my_', g:'bez myši'},
+  /* h/ch */
+  {full:'sníh', a:'h', alt:'ch', gap:'sní_', g:'bez sněhu'},
+  {full:'roh',  a:'h', alt:'ch', gap:'ro_', g:'bez rohu'},
+  {full:'hrách',a:'ch',alt:'h', gap:'hrá_', g:'bez hrachu'},
+  /* g/k */
+  {full:'vlak', a:'k', alt:'g', gap:'vla_', g:'bez vlaku'}
+];
+/* Pro ověřit pomocí 2. pádu - jednodušší podmnožina */
+var OV_DATA = DOP_DATA.slice(0, 14);
+
+/* Sloupcové páry pro pexeso */
+var PEX_PAIRS = [
+  {z:'B', n:'P'},
+  {z:'D', n:'T'},
+  {z:'Ď', n:'Ť'},
+  {z:'V', n:'F'},
+  {z:'Z', n:'S'},
+  {z:'Ž', n:'Š'},
+  {z:'H', n:'CH'},
+  {z:'G', n:'K'}
+];
+
+/* ─── DOPLŇ ─── */
+var dopSt={};
+function dopStart(){
+  dopSt = {seq: shuffle(DOP_DATA).slice(0,12), idx:0, body:0, sp:0, locked:false};
+  el('dop-res').style.display='none';
+  el('dop-ob').style.display='block';
+  dopRender();
+}
+function dopRender(){
+  var s = dopSt;
+  if(s.idx >= s.seq.length){ dopFinish(); return; }
+  var item = s.seq[s.idx];
+  /* Slovo s mezerou */
+  var html = item.gap.replace('_','<span class="gap">_</span>');
+  el('dop-w').innerHTML = html;
+  /* 2 možnosti */
+  var c = el('dop-c'); c.innerHTML = '';
+  var opts = shuffle([item.a, item.alt]);
+  opts.forEach(function(o){
+    var b = document.createElement('button');
+    b.className = 'opt2';
+    b.textContent = o;
+    b.onclick = function(){ dopAns(o, b, item); };
+    c.appendChild(b);
+  });
+  el('dop-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('dop-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('dop-bd').textContent = s.body;
+  el('dop-sp').textContent = s.sp;
+  el('dop-pg').style.width = (s.idx/s.seq.length*100)+'%';
+  el('dop-fb').textContent='';
+  el('dop-fb').className='fb';
+  el('dop-h').style.display='none';
+  el('dop-nx').style.display='none';
+  s.locked=false;
+}
+function dopAns(picked, btn, item){
+  var s=dopSt; if(s.locked) return; s.locked=true;
+  if(picked === item.a){
+    btn.classList.add('ok');
+    s.body += 5; s.sp++; addPoints(5);
+    el('dop-fb').innerHTML = '✓ Správně! Slovo je <b>'+item.full+'</b>.';
+    el('dop-fb').className='fb ok';
+  } else {
+    btn.classList.add('err');
+    document.querySelectorAll('#dop-c .opt2').forEach(function(b){
+      if(b.textContent === item.a) b.classList.add('ok');
+    });
+    el('dop-fb').innerHTML = '✗ Slovo je <b>'+item.full+'</b>.';
+    el('dop-fb').className='fb err';
+    /* Ukáž nápovědu */
+    el('dop-h').innerHTML = '💡 <b>Pomoc</b>: '+item.g+' → slyšíš <b>'+item.a+'</b>.';
+    el('dop-h').style.display='block';
+  }
+  document.querySelectorAll('#dop-c .opt2').forEach(function(b){b.disabled=true;});
+  el('dop-bd').textContent=s.body; el('dop-sp').textContent=s.sp;
+  el('dop-nx').style.display='block';
+}
+function dopNext(){ dopSt.idx++; dopRender(); }
+function dopFinish(){
+  var s=dopSt;
+  el('dop-ob').style.display='none';
+  el('dop-res').style.display='block';
+  el('dop-pp').textContent='Správně '+s.sp+' z '+s.seq.length+' · '+s.body+' bodů.';
+  el('dop-sc').textContent=s.body;
+  el('dop-tot').textContent=totalScore;
+}
+
+/* ─── OVĚŘ ─── */
+var ovSt={};
+function ovStart(){
+  ovSt = {seq: shuffle(OV_DATA).slice(0,8), idx:0, body:0, sp:0, locked:false};
+  el('ov-res').style.display='none';
+  el('ov-ob').style.display='block';
+  ovRender();
+}
+function ovRender(){
+  var s = ovSt;
+  if(s.idx >= s.seq.length){ ovFinish(); return; }
+  var item = s.seq[s.idx];
+  var html = item.gap.replace('_','<span class="gap">_</span>');
+  el('ov-w').innerHTML = html;
+  el('ov-h').textContent = item.g;
+  /* 2 možnosti */
+  var c = el('ov-c'); c.innerHTML = '';
+  var opts = shuffle([item.a, item.alt]);
+  opts.forEach(function(o){
+    var b = document.createElement('button');
+    b.className = 'opt2';
+    b.textContent = o;
+    b.onclick = function(){ ovAns(o, b, item); };
+    c.appendChild(b);
+  });
+  el('ov-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('ov-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('ov-bd').textContent = s.body;
+  el('ov-sp').textContent = s.sp;
+  el('ov-pg').style.width = (s.idx/s.seq.length*100)+'%';
+  el('ov-fb').textContent='';
+  el('ov-fb').className='fb';
+  el('ov-nx').style.display='none';
+  s.locked=false;
+}
+function ovAns(picked, btn, item){
+  var s=ovSt; if(s.locked) return; s.locked=true;
+  if(picked === item.a){
+    btn.classList.add('ok');
+    s.body += 6; s.sp++; addPoints(6);
+    el('ov-fb').innerHTML = '✓ Správně! V "<b>'+item.g+'</b>" slyšíš <b>'+item.a+'</b>, takže slovo je <b>'+item.full+'</b>.';
+    el('ov-fb').className='fb ok';
+  } else {
+    btn.classList.add('err');
+    document.querySelectorAll('#ov-c .opt2').forEach(function(b){
+      if(b.textContent === item.a) b.classList.add('ok');
+    });
+    el('ov-fb').innerHTML = '✗ Správně je <b>'+item.a+'</b>. Slovo je <b>'+item.full+'</b>.';
+    el('ov-fb').className='fb err';
+  }
+  document.querySelectorAll('#ov-c .opt2').forEach(function(b){b.disabled=true;});
+  el('ov-bd').textContent=s.body; el('ov-sp').textContent=s.sp;
+  el('ov-nx').style.display='block';
+}
+function ovNext(){ ovSt.idx++; ovRender(); }
+function ovFinish(){
+  var s=ovSt;
+  el('ov-ob').style.display='none';
+  el('ov-res').style.display='block';
+  el('ov-pp').textContent='Správně '+s.sp+' z '+s.seq.length+' · '+s.body+' bodů.';
+  el('ov-sc').textContent=s.body;
+  el('ov-tot').textContent=totalScore;
+}
+
+/* ─── PEXESO ─── */
+var pexSt={};
+function pexStart(){
+  var pairs = shuffle(PEX_PAIRS).slice(0, 8);
+  var cards = [];
+  pairs.forEach(function(p, i){
+    cards.push({txt:p.z, id:i, type:'z'});
+    cards.push({txt:p.n, id:i, type:'n'});
+  });
+  cards = shuffle(cards);
+  pexSt = {pairs:pairs, cards:cards, flipped:[], moves:0, matched:0, locked:false, body:0};
+  el('pex-res').style.display='none';
+  el('pex-ob').style.display='block';
+  pexRender();
+}
+function pexRender(){
+  var grid = el('pex-grid');
+  grid.innerHTML = '';
+  pexSt.cards.forEach(function(c, i){
+    var div = document.createElement('div');
+    div.className = 'pexCard back';
+    div.dataset.idx = i;
+    div.onclick = function(){ pexFlip(i, div); };
+    grid.appendChild(div);
+  });
+  el('pex-mv').textContent = pexSt.moves;
+  el('pex-pr').textContent = pexSt.matched + '/8';
+  el('pex-bd').textContent = pexSt.body;
+  el('pex-fb').textContent='';
+  el('pex-fb').className='fb';
+}
+function pexFlip(idx, div){
+  if(pexSt.locked) return;
+  if(div.classList.contains('flipped') || div.classList.contains('matched')) return;
+  var c = pexSt.cards[idx];
+  div.classList.remove('back');
+  div.classList.add('flipped');
+  div.textContent = c.txt;
+  pexSt.flipped.push({idx:idx, card:c, div:div});
+  if(pexSt.flipped.length === 2){
+    pexSt.locked = true;
+    pexSt.moves++;
+    el('pex-mv').textContent = pexSt.moves;
+    var f1 = pexSt.flipped[0], f2 = pexSt.flipped[1];
+    if(f1.card.id === f2.card.id && f1.card.type !== f2.card.type){
+      setTimeout(function(){
+        f1.div.classList.add('matched');
+        f2.div.classList.add('matched');
+        f1.div.classList.remove('flipped');
+        f2.div.classList.remove('flipped');
+        pexSt.matched++;
+        pexSt.body += 10;
+        addPoints(10);
+        el('pex-pr').textContent = pexSt.matched + '/8';
+        el('pex-bd').textContent = pexSt.body;
+        el('pex-fb').innerHTML = '✓ Pár <b>'+f1.card.txt+' ↔ '+f2.card.txt+'</b>!';
+        el('pex-fb').className='fb ok';
+        pexSt.flipped = [];
+        pexSt.locked = false;
+        if(pexSt.matched === 8) pexFinish();
+      }, 600);
+    } else {
+      setTimeout(function(){
+        f1.div.classList.remove('flipped'); f1.div.classList.add('back'); f1.div.textContent='';
+        f2.div.classList.remove('flipped'); f2.div.classList.add('back'); f2.div.textContent='';
+        pexSt.flipped = [];
+        pexSt.locked = false;
+        el('pex-fb').textContent='';
+        el('pex-fb').className='fb';
+      }, 1200);
+    }
+  }
+}
+function pexFinish(){
+  el('pex-ob').style.display='none';
+  el('pex-res').style.display='block';
+  el('pex-pp').textContent = 'Spojila jsi všech 8 párů na '+pexSt.moves+' tahů. '+pexSt.body+' bodů.';
+  el('pex-sc').textContent = pexSt.body;
+  el('pex-tot').textContent = totalScore;
+}
+
+/* ─── PRINT ─── */
+function printChoice(){
+  var topics = [
+    {key:'dop', label:'Doplň souhlásku (15 slov)'},
+    {key:'over', label:'Ověř pomocí 2. pádu (10 slov)'},
+    {key:'mix', label:'Smíšený list'}
+  ];
+  var html = '<div style="position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem"><div style="background:white;border-radius:12px;padding:1.5rem;max-width:480px;width:100%"><h3 style="margin:0 0 1rem;color:var(--m);text-align:center">🖨️ Vyber pracovní list</h3>';
+  topics.forEach(function(t){
+    html += '<button onclick="doPrint(\\\''+t.key+'\\\');this.parentNode.parentNode.remove()" style="width:100%;padding:.85rem;margin:.3rem 0;background:var(--ms);border:2px solid var(--m);border-radius:8px;font-weight:700;color:var(--m);cursor:pointer;font-family:var(--font);font-size:1rem;text-align:left">'+t.label+'</button>';
+  });
+  html += '<button onclick="this.parentNode.parentNode.remove()" style="width:100%;padding:.6rem;margin-top:.5rem;background:#f3f4f6;border:1px solid #d1d5db;border-radius:8px;cursor:pointer;font-family:var(--font)">Zavřít</button></div></div>';
+  var d = document.createElement('div');
+  d.innerHTML = html;
+  document.body.appendChild(d.firstChild);
+}
+function doPrint(key){
+  var data = printGetData(key);
+  var w = window.open('', '_blank');
+  w.document.write(printHTML(data));
+  w.document.close();
+  setTimeout(function(){w.print();}, 500);
+}
+function printGetData(key){
+  if(key==='dop'){
+    var picked = shuffle(DOP_DATA).slice(0,15);
+    var qHtml = '<p>Doplň správnou souhlásku (zaokrouhli ji nebo napiš na čáru):</p><table style="width:100%">';
+    picked.forEach(function(it,i){
+      qHtml += '<tr><td style="padding:.4rem;border-bottom:1px dotted #ccc;font-size:1.2em">'+(i+1)+'. '+it.gap.replace('_','______')+'</td><td style="padding:.4rem">'+it.a+' / '+it.alt+'</td></tr>';
+    });
+    qHtml += '</table>';
+    var aHtml='<table style="width:100%">';
+    picked.forEach(function(it,i){
+      aHtml += '<tr><td>'+(i+1)+'. <b>'+it.full+'</b> ('+it.g+')</td></tr>';
+    });
+    aHtml += '</table>';
+    return {title:'Doplň souhlásku', topic:'Párové souhlásky', instructions:'Doplň správnou souhlásku do slova. Pomůž si 2. pádem (bez čeho?).', qHtml:qHtml, aHtml:aHtml};
+  }
+  if(key==='over'){
+    var picked = shuffle(OV_DATA).slice(0,10);
+    var qHtml = '<p>U každého slova napiš jeho <b>2. pád</b> (bez čeho?) a doplň správnou souhlásku:</p><table style="width:100%">';
+    picked.forEach(function(it,i){
+      qHtml += '<tr><td style="padding:.4rem;border-bottom:1px dotted #ccc">'+(i+1)+'. '+it.gap.replace('_','______')+'</td><td style="padding:.4rem">2. pád: ____________</td></tr>';
+    });
+    qHtml += '</table>';
+    var aHtml = '<table style="width:100%">';
+    picked.forEach(function(it,i){
+      aHtml += '<tr><td>'+(i+1)+'. <b>'+it.full+'</b> — '+it.g+'</td></tr>';
+    });
+    aHtml += '</table>';
+    return {title:'Ověř pomocí 2. pádu', topic:'Párové souhlásky', instructions:'Napiš slovo ve 2. pádě a doplň správnou souhlásku.', qHtml:qHtml, aHtml:aHtml};
+  }
+  if(key==='mix'){
+    var p1 = shuffle(DOP_DATA).slice(0,10);
+    var qHtml = '<h4>A) Doplň souhlásku:</h4><table style="width:100%">';
+    p1.forEach(function(it,i){
+      qHtml += '<tr><td style="padding:.35rem;border-bottom:1px dotted #ccc">'+(i+1)+'. '+it.gap.replace('_','______')+' &nbsp;('+it.a+'/'+it.alt+')</td></tr>';
+    });
+    qHtml += '</table><h4 style="margin-top:1rem">B) Spoj čarou znělou souhlásku s neznělou:</h4>';
+    qHtml += '<table style="width:100%;margin-top:.5rem"><tr><td style="width:40%;text-align:center;padding:.5rem;font-size:1.3em"><b>B &nbsp; D &nbsp; V &nbsp; Z &nbsp; Ž &nbsp; H</b></td><td style="width:20%"></td><td style="width:40%;text-align:center;padding:.5rem;font-size:1.3em"><b>P &nbsp; T &nbsp; F &nbsp; S &nbsp; Š &nbsp; CH</b></td></tr></table>';
+    var aHtml = '<h4>A) Slova:</h4><table>';
+    p1.forEach(function(it,i){
+      aHtml += '<tr><td>'+(i+1)+'. <b>'+it.full+'</b> ('+it.g+')</td></tr>';
+    });
+    aHtml += '</table><h4 style="margin-top:.7rem">B) Páry:</h4><div>B↔P, D↔T, Ď↔Ť, V↔F, Z↔S, Ž↔Š, H↔CH, G↔K</div>';
+    return {title:'Smíšený list', topic:'Párové souhlásky', instructions:'Vyřeš obě části cvičení.', qHtml:qHtml, aHtml:aHtml};
+  }
+}
+function printHTML(data){
+  var d=new Date();var dateStr=d.getDate()+'.'+(d.getMonth()+1)+'.'+d.getFullYear();
+  return '<!doctype html><html lang="cs"><head><meta charset="utf-8"><title>Pracovní list — '+data.title+'</title><style>body{font-family:Arial,sans-serif;max-width:780px;margin:1rem auto;padding:1rem;color:#1f2937;font-size:13pt;line-height:1.55}h1{color:#1e3a5f;margin:0 0 .5rem;font-size:1.4rem}h2{color:#1e3a5f;margin-top:1.2rem;font-size:1.1rem;border-bottom:2px solid #1e3a5f;padding-bottom:.2rem}h4{margin:.6rem 0 .2rem}.head{display:flex;justify-content:space-between;border-bottom:2px solid #1e3a5f;padding-bottom:.3rem;margin-bottom:1rem}.head .l{display:flex;gap:1rem;align-items:baseline}.head span{font-size:.85rem;color:#6b7280}.instructions{background:#f3f4f6;padding:.6rem .9rem;border-left:4px solid #ffaa37;border-radius:4px;margin:.7rem 0;font-size:.95rem}.solution{page-break-before:always;background:#ecfdf5;padding:.7rem 1rem;border-left:4px solid #16a34a;border-radius:4px;margin-top:1rem}.solution h2{color:#16a34a;border-color:#16a34a}@media print{body{margin:0;padding:.5cm 1cm;font-size:12pt}.solution{page-break-before:always}}</style></head><body><div class="head"><div class="l"><h1>📋 '+data.title+'</h1><span>'+data.topic+'</span></div><span>Datum: '+dateStr+' · Jméno: ____________</span></div><div class="instructions"><b>Zadání:</b> '+data.instructions+'</div>'+data.qHtml+'<div class="solution"><h2>✓ Řešení (pro učitele)</h2>'+data.aHtml+'</div></body></html>';
+}
+</script>
+</body>
+</html>

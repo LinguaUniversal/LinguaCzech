@@ -65,11 +65,11 @@ body{font-family:var(--font);background:#f0f7fc;}
 
   <div class="grid">
     <a class="lnk" href="vyjmenovana.html">Vyjmenovaná slova<small>y/i · příbuzná · řady B/L/M/P/S/V/Z</small></a>
-    <a class="lnk lnk-soon" href="#">Podstatná jména<small>rod · číslo · pád</small></a>
-    <a class="lnk lnk-soon" href="#">Slovesa<small>osoba · číslo · čas · časování</small></a>
+    <a class="lnk" href="podst-jmena-3.html">Podstatná jména<small>rod · číslo · pád</small></a>
+    <a class="lnk" href="slovesa-3.html">Slovesa<small>osoba · číslo · čas · časování</small></a>
     <a class="lnk" href="stavba-slova.html">Stavba slova<small>kořen · předpona · přípona · příbuzná</small></a>
-    <a class="lnk lnk-soon" href="#">Párové souhlásky<small>na konci · uprostřed · spodoba</small></a>
-    <a class="lnk lnk-soon" href="#">Slovní zásoba<small>synonyma · antonyma · rýmy</small></a>
+    <a class="lnk" href="parove-souhlasky.html">Párové souhlásky<small>na konci · uprostřed · spodoba</small></a>
+    <a class="lnk" href="slovni-zasoba.html">Slovní zásoba<small>synonyma · antonyma · rýmy</small></a>
     <a class="lnk lnk-soon" href="#" style="grid-column:span 2">Slovní druhy — všech 10<small>roztřídění · neohebné × ohebné · rozšíření</small></a>
   </div>
 
@@ -77,15 +77,15 @@ body{font-family:var(--font);background:#f0f7fc;}
 </div>
 
 <script>
-/* Klíče v localStorage pro budoucí soubory 3. třídy */
+/* Klíče v localStorage — musí odpovídat klíčům v jednotlivých souborech */
 var KEYS=[
-  'vyjm_score',     // vyjmenovaná slova
-  'pj3_score',      // podstatná jména
-  'sl3_score',      // slovesa
-  'stsl_score',     // stavba slova
-  'parsouh_score',  // párové souhlásky
-  'slzas_score',    // slovní zásoba
-  'sd3_score'       // slovní druhy 3. třída
+  'vyjm_score',       // vyjmenovaná slova (vyjmenovana.html)
+  'podst3_score',     // podstatná jména (podst-jmena-3.html)
+  'slovesa3_score',   // slovesa (slovesa-3.html)
+  'stsl_score',       // stavba slova (stavba-slova.html)
+  'parove3_score',    // párové souhlásky (parove-souhlasky.html)
+  'slovzas3_score',   // slovní zásoba (slovni-zasoba.html)
+  'sd3_score'         // slovní druhy 3. třída (chystá se)
 ];
 function load(){
   var t=0;

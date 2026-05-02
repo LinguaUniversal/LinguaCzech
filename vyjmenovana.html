@@ -84,14 +84,39 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
 .najdiSent span{cursor:pointer;padding:.2rem .4rem;border-radius:6px;display:inline-block;margin:.1rem;transition:background .15s;}
 .najdiSent span:hover{background:var(--ms);}
 
-/* Vyjm × souzvuk */
-.vsCards{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:1rem 0;}
-.vsCard{padding:1rem;border:2.5px solid #d1d5db;border-radius:12px;background:white;cursor:pointer;text-align:center;transition:all .15s;}
-.vsCard:hover{border-color:var(--m);background:var(--ms);}
-.vsCard .vs-w{font-family:Verdana,Geneva,sans-serif;font-size:1.5rem;font-weight:700;color:#1f2937;}
-.vsCard .vs-m{font-size:.85rem;color:#6b7280;margin-top:.3rem;}
-.vsCard.ok{background:var(--zs);border-color:var(--z);}
-.vsCard.err{background:var(--rs);border-color:var(--r);}
+/* Pexeso */
+.pexGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin:1rem 0;}
+.pexCard{aspect-ratio:1.1;background:var(--m);border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:Verdana,Geneva,sans-serif;font-weight:700;color:white;font-size:.95rem;transition:all .2s;position:relative;padding:.3rem;text-align:center;line-height:1.2;}
+.pexCard.flipped{background:white;border:2.5px solid var(--m);color:#1f2937;}
+.pexCard.matched{background:var(--zs);border:2.5px solid var(--z);color:var(--z);cursor:default;}
+.pexCard.locked{cursor:default;}
+.pexCard.back::after{content:'?';font-size:2rem;}
+.pexInfo{text-align:center;margin:.7rem 0;font-weight:600;color:#374151;}
+
+/* Homonyma — dvojice slov se 2 významy */
+.homWrap{margin:1rem 0;}
+.homSentence{font-family:Verdana,Geneva,sans-serif;font-size:1.15rem;text-align:center;line-height:1.7;background:var(--ms);padding:1rem;border-radius:10px;margin:1rem 0;color:#1f2937;}
+.homBlank{display:inline-block;border-bottom:3px solid var(--o);min-width:3em;color:var(--o);font-weight:800;}
+.homOpts{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:1rem 0;}
+.homOpt{padding:1rem;border:2.5px solid #d1d5db;border-radius:12px;background:white;cursor:pointer;text-align:center;transition:all .15s;}
+.homOpt:hover{border-color:var(--m);background:var(--ms);}
+.homOpt .hom-w{font-family:Verdana,Geneva,sans-serif;font-size:1.5rem;font-weight:700;color:#1f2937;}
+.homOpt .hom-m{font-size:.85rem;color:#6b7280;margin-top:.3rem;}
+.homOpt.ok{background:var(--zs);border-color:var(--z);}
+.homOpt.err{background:var(--rs);border-color:var(--r);}
+
+/* Příbuzná Ano/Ne */
+.pribTarget2{font-family:Verdana,Geneva,sans-serif;font-size:1.5rem;font-weight:800;color:var(--m);text-align:center;padding:.6rem;background:var(--ms);border-radius:10px;margin:.8rem 0;}
+.pribCandidate{font-family:Verdana,Geneva,sans-serif;font-size:1.4rem;font-weight:700;text-align:center;padding:.8rem;background:white;border:2.5px solid var(--o);border-radius:10px;margin:.5rem 0;color:#1f2937;}
+.pribAnswers{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.8rem;}
+.pribBtn{padding:1.2rem;font-size:1.3rem;font-weight:800;border-radius:12px;border:2.5px solid;cursor:pointer;font-family:var(--font);}
+.pribAno{background:var(--zs);border-color:var(--z);color:var(--z);}
+.pribAno:hover:not(:disabled){background:var(--z);color:white;}
+.pribNe{background:var(--rs);border-color:var(--r);color:var(--r);}
+.pribNe:hover:not(:disabled){background:var(--r);color:white;}
+.pribBtn.ok{background:var(--zs);border-color:var(--z);color:var(--z);}
+.pribBtn.err{background:var(--rs);border-color:var(--r);color:var(--r);}
+.pribBtn:disabled{cursor:default;opacity:.7;}
 
 /* Hra autíčko */
 .gameWrap{position:relative;background:#1a3550;border-radius:12px;overflow:hidden;margin:.5rem 0;border:2px solid var(--m);}
@@ -118,7 +143,9 @@ canvas#gameCv{display:block;width:100%;height:280px;background:linear-gradient(1
     <div onclick="go('sady')" class="mk mk-p" style="grid-column:span 2"><h3>📋 Naučím se sady</h3><p>Vyjmenovaná slova B / L / M / P / S / V / Z</p></div>
     <div onclick="go('dop')" class="mk mk-m"><h3>✏️ Doplň y/i</h3><p>Doplň správné písmeno do slova</p></div>
     <div onclick="go('najdi')" class="mk mk-o"><h3>🔍 Najdi vyjm. slovo</h3><p>Klikni ve větě na vyjm. slovo</p></div>
-    <div onclick="go('vs')" class="mk mk-m"><h3>🎯 Vyjm. × souzvuk</h3><p>Které slovo je vyjmenované?</p></div>
+    <div onclick="go('pex')" class="mk mk-m"><h3>🃏 Pexeso</h3><p>Spoj vyjm. slovo s odvozeným</p></div>
+    <div onclick="go('hom')" class="mk mk-o"><h3>🎭 Dvojice významů</h3><p>mýt × mít, být × bít...</p></div>
+    <div onclick="go('prib')" class="mk mk-m"><h3>🌳 Příbuzné? Ano/Ne</h3><p>Patří slovo k vyjmenovanému?</p></div>
     <div onclick="go('hra')" class="mk mk-o"><h3>🚗 Hra autíčko</h3><p>Najeď do pruhu y nebo i</p></div>
     <div onclick="printChoice()" class="mk" style="grid-column:span 2;background:#f3f4f6;border:2px dashed #9ca3af"><h3 style="color:#374151">🖨️ Vytisknout pracovní list</h3><p style="color:#6b7280">PDF k procvičování doma — zadání + řešení na A4</p></div>
   </div>
@@ -191,27 +218,80 @@ canvas#gameCv{display:block;width:100%;height:280px;background:linear-gradient(1
   </div>
 </div>
 
-<!-- CV: VYJM × SOUZVUK -->
-<div class="cv" id="cv-vs">
-  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🎯 Vyjm. × souzvuk</span><span class="var" id="vs-v">1/10</span></div>
+<!-- CV: PEXESO -->
+<div class="cv" id="cv-pex">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🃏 Pexeso</span><span class="var" id="pex-v">páry: 0/8</span></div>
   <div class="sk">
-    <div><div class="skn" id="vs-bd">0</div><div class="skl">body</div></div>
-    <div><div class="skn" id="vs-ci">1/10</div><div class="skl">dvojice</div></div>
-    <div><div class="skn" id="vs-sp">0</div><div class="skl">správně</div></div>
+    <div><div class="skn" id="pex-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="pex-mv">0</div><div class="skl">tahy</div></div>
+    <div><div class="skn" id="pex-pr">0/8</div><div class="skl">páry</div></div>
   </div>
-  <div class="pg"><div class="pgf" id="vs-pg" style="width:0%"></div></div>
-  <div id="vs-ob">
+  <div id="pex-ob">
     <div class="ka">
-      <div class="q">Které slovo je <b style="color:var(--m)">vyjmenované</b> (píše se s y/ý)?</div>
-      <div class="vsCards" id="vs-c"></div>
-      <div class="fb" id="vs-fb"></div>
+      <div class="pexInfo">Spoj <b style="color:var(--m)">vyjmenované slovo</b> s jeho <b style="color:var(--o)">odvozeným</b> (příbuzným).</div>
+      <div class="pexGrid" id="pex-grid"></div>
+      <div class="fb" id="pex-fb"></div>
     </div>
-    <button class="nxt" id="vs-nx" onclick="vsNext()">Další →</button>
   </div>
-  <div class="res" id="vs-res">
-    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="vs-pp"></p>
-    <div class="res-row"><div class="rs"><div class="rsv" id="vs-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="vs-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
-    <button class="znovu" onclick="go('vs')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  <div class="res" id="pex-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="pex-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="pex-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="pex-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('pex')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV: HOMONYMA — dvojice významů -->
+<div class="cv" id="cv-hom">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🎭 Dvojice významů</span><span class="var" id="hom-v">1/8</span></div>
+  <div class="sk">
+    <div><div class="skn" id="hom-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="hom-ci">1/8</div><div class="skl">věta</div></div>
+    <div><div class="skn" id="hom-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="hom-pg" style="width:0%"></div></div>
+  <div id="hom-ob">
+    <div class="ka">
+      <div class="q">Které slovo patří do věty? Pozor — záleží na <b style="color:var(--m)">významu</b>.</div>
+      <div class="homSentence" id="hom-s">—</div>
+      <div class="homOpts" id="hom-c"></div>
+      <div class="fb" id="hom-fb"></div>
+    </div>
+    <button class="nxt" id="hom-nx" onclick="homNext()">Další →</button>
+  </div>
+  <div class="res" id="hom-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="hom-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="hom-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="hom-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('hom')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV: PŘÍBUZNÁ ANO/NE -->
+<div class="cv" id="cv-prib">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🌳 Příbuzné? Ano/Ne</span><span class="var" id="prb-v">1/12</span></div>
+  <div class="sk">
+    <div><div class="skn" id="prb-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="prb-ci">1/12</div><div class="skl">slovo</div></div>
+    <div><div class="skn" id="prb-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="prb-pg" style="width:0%"></div></div>
+  <div id="prb-ob">
+    <div class="ka">
+      <div class="q">Patří toto slovo k vyjmenovanému slovu (je <b style="color:var(--m)">příbuzné</b>)?</div>
+      <div class="pribTarget2" id="prb-t">—</div>
+      <div style="font-size:.9rem;color:#6b7280;text-align:center">je příbuzné k</div>
+      <div class="pribCandidate" id="prb-c">—</div>
+      <div class="pribAnswers">
+        <button class="pribBtn pribAno" onclick="prbAns(true,this)">✓ ANO</button>
+        <button class="pribBtn pribNe" onclick="prbAns(false,this)">✗ NE</button>
+      </div>
+      <div class="fb" id="prb-fb"></div>
+    </div>
+    <button class="nxt" id="prb-nx" onclick="prbNext()">Další →</button>
+  </div>
+  <div class="res" id="prb-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="prb-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="prb-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="prb-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('prib')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
   </div>
 </div>
 
@@ -281,7 +361,9 @@ function go(id){
   if(id==='sady') sadyStart();
   if(id==='dop') dopStart();
   if(id==='najdi') najStart();
-  if(id==='vs') vsStart();
+  if(id==='pex') pexStart();
+  if(id==='hom') homStart();
+  if(id==='prib') prbStart();
   if(id==='hra') hraIntro();
 }
 
@@ -294,22 +376,22 @@ function go(id){
 var VYJM = {
   B: {
     label: 'Vyjmenovaná slova po B',
-    words: ['být','bydlit','obyvatel','byt','příbytek','nábytek','dobytek','obyčej','bystrý','bylina','kobyla','býk','Přibyslav'],
-    hint: 'Pomůcka: <b>Být — bydlet — obyvatel — byt</b> a tak dále. Po B v těchto slovech vždy píšeme Y/Ý.'
+    words: ['být','bydlit','obyvatel','byt','příbytek','nábytek','dobytek','obyčej','bystrý','bylina','kobyla','býk','babyka'],
+    hint: 'Pomůcka: <b>Být — bydlit — obyvatel — byt</b> a tak dále. Po B v těchto slovech vždy píšeme Y/Ý.'
   },
   L: {
     label: 'Vyjmenovaná slova po L',
-    words: ['slyšet','mlýn','blýskat se','polykat','plynout','plýtvat','vzlykat','lysý','lýtko','lýko','lyže','pelyněk','plyš'],
+    words: ['slyšet','mlýn','blýskat se','polykat','plynout','plýtvat','vzlykat','lysý','lýko','lýtko','lyže','pelyněk','plyš'],
     hint: 'Pomůcka: <b>Slyšet — mlýn — blýskat se — polykat</b>. Po L v těchto slovech vždy Y/Ý.'
   },
   M: {
     label: 'Vyjmenovaná slova po M',
-    words: ['my','mýt','myslit','mýlit se','hmyz','myš','hlemýžď','mýtit','zamykat','smýkat','dmýchat','chmýří','nachomýtnout se','Litomyšl'],
+    words: ['my','mýt','myslit','mýlit se','hmyz','myš','hlemýžď','mýtit','zamykat','smýkat','dmýchat','chmýří','nachomýtnout se','mýto','mykat'],
     hint: 'Pomůcka: <b>My — mýt — myslit — mýlit se</b>. Po M v těchto slovech vždy Y/Ý.'
   },
   P: {
     label: 'Vyjmenovaná slova po P',
-    words: ['pýcha','pytel','pysk','netopýr','slepýš','pyl','kopyto','klopýtat','třpytit se','zpytovat','pykat','pýr','pýřit se'],
+    words: ['pýcha','pytel','pysk','netopýr','slepýš','pyl','kopyto','klopýtat','třpytit se','zpytovat','pykat','pýr','pýří','pýřit se','čepýřit se'],
     hint: 'Pomůcka: <b>Pýcha — pytel — pysk — netopýr</b>. Po P v těchto slovech vždy Y/Ý.'
   },
   S: {
@@ -320,12 +402,12 @@ var VYJM = {
   V: {
     label: 'Vyjmenovaná slova po V',
     words: ['vy','vykat','vysoký','výt','výskat','zvykat','žvýkat','vydra','výr','vyžle','povyk','výheň'],
-    hint: 'Pomůcka: <b>Vy — vykat — vysoký — výt</b>. Po V v těchto slovech vždy Y/Ý.'
+    hint: 'Pomůcka: <b>Vy — vykat — vysoký — výt</b>. Po V v těchto slovech vždy Y/Ý — a také ve slovech s předponou <b>vy-, vý-</b>.'
   },
   Z: {
     label: 'Vyjmenovaná slova po Z',
-    words: ['brzy','jazyk','nazývat se','Ruzyně'],
-    hint: 'Pomůcka: <b>Brzy — jazyk — nazývat se — Ruzyně</b>. Pouze 4 slova, ale často se objeví!'
+    words: ['brzy','jazyk','nazývat','Ruzyně'],
+    hint: 'Pomůcka: <b>Brzy — jazyk — nazývat — Ruzyně</b>. Pouze 4 slova, ale často se objeví!'
   }
 };
 
@@ -377,76 +459,82 @@ var DOP_DATA = [
   {full:'kobyla',  a:'y', root:'kobyla'},
   {full:'býk',     a:'ý', root:'býk'},
   {full:'nábytek', a:'y', root:'nábytek'},
+  {full:'dobytek', a:'y', root:'dobytek'},
+  {full:'bylina',  a:'y', root:'bylina'},
   /* B - příbuzná */
   {full:'bydliště',a:'y', root:'bydlit'},
   {full:'obývák',  a:'ý', root:'být'},
   {full:'bystřina',a:'y', root:'bystrý'},
-  /* B - protipóly (s i) */
-  {full:'bít (do bubnu)',a:'í', root:'(NE bý — to je vyjm.)'},
-  {full:'bílý',    a:'í', root:'(barva, NE vyjm.)'},
+  {full:'bylinka', a:'y', root:'bylina'},
 
-  /* L */
+  /* L - vyjmenovaná */
   {full:'mlýn',    a:'ý', root:'mlýn'},
   {full:'lyže',    a:'y', root:'lyže'},
   {full:'plynout', a:'y', root:'plynout'},
   {full:'lýtko',   a:'ý', root:'lýtko'},
   {full:'slyšet',  a:'y', root:'slyšet'},
   {full:'lysý',    a:'y', root:'lysý'},
-  {full:'mlynář',  a:'y', root:'mlýn'},
   {full:'plýtvat', a:'ý', root:'plýtvat'},
-  /* L - protipóly */
-  {full:'líbat',   a:'í', root:'(NE vyjm.)'},
-  {full:'líný',    a:'í', root:'(NE vyjm.)'},
+  {full:'pelyněk', a:'y', root:'pelyněk'},
+  /* L - příbuzná */
+  {full:'mlynář',  a:'y', root:'mlýn'},
+  {full:'polykání',a:'y', root:'polykat'},
+  {full:'lyžař',   a:'y', root:'lyže'},
 
-  /* M */
+  /* M - vyjmenovaná */
   {full:'mýt',     a:'ý', root:'mýt'},
   {full:'mýlit se',a:'ý', root:'mýlit se'},
   {full:'myš',     a:'y', root:'myš'},
-  {full:'umýt',    a:'ý', root:'mýt'},
   {full:'myslet',  a:'y', root:'myslit'},
   {full:'hmyz',    a:'y', root:'hmyz'},
+  {full:'hlemýžď', a:'ý', root:'hlemýžď'},
+  /* M - příbuzná */
+  {full:'umýt',    a:'ý', root:'mýt'},
   {full:'myslivec',a:'y', root:'myslit'},
-  /* M - protipóly */
-  {full:'milý',    a:'i', root:'(NE vyjm.)'},
-  {full:'mít',     a:'í', root:'(NE vyjm.)'},
+  {full:'myšlenka',a:'y', root:'myslit'},
+  {full:'umyvadlo',a:'y', root:'mýt'},
 
-  /* P */
+  /* P - vyjmenovaná */
   {full:'pýcha',   a:'ý', root:'pýcha'},
   {full:'pytel',   a:'y', root:'pytel'},
   {full:'netopýr', a:'ý', root:'netopýr'},
   {full:'pyl',     a:'y', root:'pyl'},
   {full:'kopyto',  a:'y', root:'kopyto'},
+  {full:'slepýš',  a:'ý', root:'slepýš'},
+  /* P - příbuzná */
   {full:'pyšný',   a:'y', root:'pýcha'},
-  /* P - protipóly */
-  {full:'pivo',    a:'i', root:'(NE vyjm.)'},
-  {full:'pilný',   a:'i', root:'(NE vyjm.)'},
+  {full:'klopýtnout',a:'y', root:'klopýtat'},
+  {full:'třpytivý',a:'y', root:'třpytit se'},
 
-  /* S */
+  /* S - vyjmenovaná */
   {full:'syn',     a:'y', root:'syn'},
   {full:'sýr',     a:'ý', root:'sýr'},
   {full:'sytý',    a:'y', root:'sytý'},
   {full:'syrový',  a:'y', root:'syrový'},
   {full:'sýkora',  a:'ý', root:'sýkora'},
   {full:'syčet',   a:'y', root:'syčet'},
-  /* S - protipóly */
-  {full:'silný',   a:'i', root:'(NE vyjm.)'},
-  {full:'síla',    a:'í', root:'(NE vyjm.)'},
+  {full:'sysel',   a:'y', root:'sysel'},
+  /* S - příbuzná */
+  {full:'syrečky', a:'y', root:'sýr'},
+  {full:'sypký',   a:'y', root:'sypat'},
+  {full:'syčení',  a:'y', root:'syčet'},
 
-  /* V */
+  /* V - vyjmenovaná */
   {full:'vy',      a:'y', root:'vy'},
   {full:'vysoký',  a:'y', root:'vysoký'},
   {full:'výška',   a:'ý', root:'vysoký'},
   {full:'vydra',   a:'y', root:'vydra'},
   {full:'zvykat',  a:'y', root:'zvykat'},
   {full:'žvýkat',  a:'ý', root:'žvýkat'},
-  /* V - protipóly */
-  {full:'vidět',   a:'i', root:'(NE vyjm.)'},
-  {full:'vítr',    a:'í', root:'(NE vyjm.)'},
+  {full:'vyžle',   a:'y', root:'vyžle'},
+  /* V - příbuzná (předpona vy-) */
+  {full:'vyběhnout',a:'y', root:'předpona vy-'},
+  {full:'výskot',  a:'ý', root:'výskat'},
 
-  /* Z */
+  /* Z - vyjmenovaná */
   {full:'brzy',    a:'y', root:'brzy'},
   {full:'jazyk',   a:'y', root:'jazyk'},
-  {full:'nazývat', a:'ý', root:'nazývat se'}
+  {full:'nazývat', a:'ý', root:'nazývat'}
 ];
 
 /* Vytvoří gap z full + a (nahradí písmeno na pozici za 1. souhláskou) */
@@ -630,94 +718,390 @@ function najFinish(){
 }
 
 /* ─────────────────────────────────────────────
-   DATA: Vyjm × souzvuk
-   Páry slov, která zní podobně, ale jen jedno je vyjmenované.
+   DATA: PEXESO — dvojice vyjm. slovo + odvozené
 ───────────────────────────────────────────── */
-var VS_DATA = [
-  /* {vyjm:'slovo (vyjm.)', sou:'slovo (s i)', meaning_v:'význam vyjm.', meaning_s:'význam s i'} */
-  {vyjm:'být', sou:'bít', mv:'existovat (jsem, jsi, je)', ms:'tlouct (bít do bubnu)'},
-  {vyjm:'mýt', sou:'mít', mv:'umývat (mýdlem)', ms:'vlastnit'},
-  {vyjm:'výt', sou:'vít', mv:'vlk vyje (zvuk)', ms:'plést (věnec)'},
-  {vyjm:'mýval', sou:'míval', mv:'zvíře (mýval)', ms:'minulý čas slovesa mít'},
-  {vyjm:'pýcha', sou:'picha', mv:'vlastnost (povýšenost)', ms:'NEEXISTUJE jako české slovo'},
-  {vyjm:'sýr', sou:'sir', mv:'mléčný výrobek', ms:'pán (oslovení)'},
-  {vyjm:'lyska', sou:'liska', mv:'pták (lyska černá)', ms:'NEEXISTUJE'},
-  {vyjm:'lýtko', sou:'litko', mv:'část nohy', ms:'NEEXISTUJE'},
-  {vyjm:'kobyla', sou:'kobila', mv:'samice koně', ms:'NEEXISTUJE'},
-  {vyjm:'pýr', sou:'pír', mv:'plevel na poli', ms:'(zastaralé pero)'},
-  {vyjm:'sýkora', sou:'sikora', mv:'pták', ms:'NEEXISTUJE'},
-  {vyjm:'syrový', sou:'sirový', mv:'nevařený (maso)', ms:'(z chemie - sírový)'}
+var PEX_DATA = [
+  /* 8 párů: vyjm. slovo a jeho odvozené (s kořenem y) */
+  {a:'být', b:'obývák'},
+  {a:'bydlit', b:'bydliště'},
+  {a:'mlýn', b:'mlynář'},
+  {a:'lyže', b:'lyžař'},
+  {a:'mýt', b:'umyvadlo'},
+  {a:'myslit', b:'myšlenka'},
+  {a:'pýcha', b:'pyšný'},
+  {a:'syn', b:'synovec'},
+  {a:'sýr', b:'sýrový'},
+  {a:'sypat', b:'sypký'},
+  {a:'vysoký', b:'výška'},
+  {a:'jazyk', b:'jazýček'},
+  {a:'bystrý', b:'bystřina'},
+  {a:'bylina', b:'bylinka'},
+  {a:'plynout', b:'plynulý'},
+  {a:'syčet', b:'syčení'}
 ];
 
 /* ─────────────────────────────────────────────
-   CV-VS
+   CV-PEX: Pexeso
 ───────────────────────────────────────────── */
-var vsSt = {seq:[], idx:0, body:0, sp:0, locked:false};
+var pexSt = {pairs:[], cards:[], flipped:[], moves:0, matched:0, locked:false, body:0};
 
-function vsStart(){
-  vsSt = {seq: shuffle(VS_DATA).slice(0, 10), idx:0, body:0, sp:0, locked:false};
-  el('vs-res').style.display='none';
-  el('vs-ob').style.display='block';
-  vsRender();
+function pexStart(){
+  /* Vyber 8 náhodných párů */
+  var pairs = shuffle(PEX_DATA).slice(0, 8);
+  /* Vytvoř kartičky: každý pár = 2 karty se stejným pairId */
+  var cards = [];
+  pairs.forEach(function(p, i){
+    cards.push({txt:p.a, id:i, type:'a'});
+    cards.push({txt:p.b, id:i, type:'b'});
+  });
+  cards = shuffle(cards);
+  pexSt = {pairs:pairs, cards:cards, flipped:[], moves:0, matched:0, locked:false, body:0};
+  el('pex-res').style.display='none';
+  el('pex-ob').style.display='block';
+  pexRender();
 }
-function vsRender(){
-  var s = vsSt;
-  if(s.idx >= s.seq.length){ vsFinish(); return; }
+function pexRender(){
+  var grid = el('pex-grid');
+  grid.innerHTML = '';
+  pexSt.cards.forEach(function(c, i){
+    var div = document.createElement('div');
+    div.className = 'pexCard back';
+    div.dataset.idx = i;
+    div.onclick = function(){ pexFlip(i, div); };
+    grid.appendChild(div);
+  });
+  el('pex-mv').textContent = pexSt.moves;
+  el('pex-pr').textContent = pexSt.matched + '/8';
+  el('pex-bd').textContent = pexSt.body;
+  el('pex-fb').textContent = '';
+  el('pex-fb').className = 'fb';
+}
+function pexFlip(idx, div){
+  if(pexSt.locked) return;
+  if(div.classList.contains('flipped') || div.classList.contains('matched')) return;
+  /* Otočit kartu */
+  var c = pexSt.cards[idx];
+  div.classList.remove('back');
+  div.classList.add('flipped');
+  div.textContent = c.txt;
+  pexSt.flipped.push({idx:idx, card:c, div:div});
+  if(pexSt.flipped.length === 2){
+    pexSt.locked = true;
+    pexSt.moves++;
+    el('pex-mv').textContent = pexSt.moves;
+    var f1 = pexSt.flipped[0], f2 = pexSt.flipped[1];
+    if(f1.card.id === f2.card.id && f1.card.type !== f2.card.type){
+      /* MATCH! */
+      setTimeout(function(){
+        f1.div.classList.add('matched');
+        f2.div.classList.add('matched');
+        f1.div.classList.remove('flipped');
+        f2.div.classList.remove('flipped');
+        pexSt.matched++;
+        pexSt.body += 10;
+        addPoints(10);
+        el('pex-pr').textContent = pexSt.matched + '/8';
+        el('pex-bd').textContent = pexSt.body;
+        el('pex-fb').innerHTML = '✓ Spojila jsi <b>'+f1.card.txt+'</b> a <b>'+f2.card.txt+'</b>!';
+        el('pex-fb').className = 'fb ok';
+        pexSt.flipped = [];
+        pexSt.locked = false;
+        if(pexSt.matched === 8) pexFinish();
+      }, 600);
+    } else {
+      /* MISS */
+      setTimeout(function(){
+        f1.div.classList.remove('flipped');
+        f1.div.classList.add('back');
+        f1.div.textContent = '';
+        f2.div.classList.remove('flipped');
+        f2.div.classList.add('back');
+        f2.div.textContent = '';
+        pexSt.flipped = [];
+        pexSt.locked = false;
+        el('pex-fb').textContent = '';
+        el('pex-fb').className = 'fb';
+      }, 1200);
+    }
+  }
+}
+function pexFinish(){
+  el('pex-ob').style.display='none';
+  el('pex-res').style.display='block';
+  el('pex-pp').textContent = 'Spojila jsi všech 8 párů na '+pexSt.moves+' tahů. Získala jsi '+pexSt.body+' bodů.';
+  el('pex-sc').textContent = pexSt.body;
+  el('pex-tot').textContent = totalScore;
+}
+
+/* ─────────────────────────────────────────────
+   DATA: HOMONYMA — dvojice s jiným významem
+   Format: {sentence:'...___...', pair:[w1,w2], correct:0, meanings:[m1,m2]}
+───────────────────────────────────────────── */
+var HOM_DATA = [
+  {
+    sentence:'Voják se snažil ___ hrad nepřátel.',
+    pair:[{w:'dobýt', m:'obsadit, zmocnit se'},{w:'dobít', m:'naplnit baterii, dorazit'}],
+    correct:0
+  },
+  {
+    sentence:'Musím ___ baterii v telefonu.',
+    pair:[{w:'dobýt', m:'obsadit, zmocnit se'},{w:'dobít', m:'naplnit baterii, dorazit'}],
+    correct:1
+  },
+  {
+    sentence:'Po ránu si jdu ___ ruce do umyvadla.',
+    pair:[{w:'mýt', m:'umývat se vodou'},{w:'mít', m:'vlastnit'}],
+    correct:0
+  },
+  {
+    sentence:'Chtěl bych ___ stejné kolo jako brácha.',
+    pair:[{w:'mýt', m:'umývat se vodou'},{w:'mít', m:'vlastnit'}],
+    correct:1
+  },
+  {
+    sentence:'Vlk v noci hlasitě ___.',
+    pair:[{w:'výt', m:'vydávat zvuk (vlk vyje)'},{w:'vít', m:'plést věnec, splétat'}],
+    correct:0
+  },
+  {
+    sentence:'Babička nás učila ___ věnce z květin.',
+    pair:[{w:'výt', m:'vydávat zvuk (vlk vyje)'},{w:'vít', m:'plést věnec, splétat'}],
+    correct:1
+  },
+  {
+    sentence:'Slunce zítra začne ___ velmi brzy.',
+    pair:[{w:'být', m:'existovat'},{w:'bít', m:'tlouct, udeřit'}],
+    correct:0
+  },
+  {
+    sentence:'Hodiny začaly ___ jednu hodinu po půlnoci.',
+    pair:[{w:'být', m:'existovat'},{w:'bít', m:'tlouct, udeřit'}],
+    correct:1
+  },
+  {
+    sentence:'Maminka ___ koláče s povidly.',
+    pair:[{w:'mýval', m:'malé zvíře (mýval severní)'},{w:'míval', m:'minulý čas slovesa mít'}],
+    correct:1
+  },
+  {
+    sentence:'V ZOO jsme viděli zvíře ___, které si umývalo jídlo.',
+    pair:[{w:'mýval', m:'malé zvíře (mýval severní)'},{w:'míval', m:'minulý čas slovesa mít'}],
+    correct:0
+  },
+  {
+    sentence:'Petr měl k svačině jen kousek ___.',
+    pair:[{w:'sýr', m:'mléčný výrobek'},{w:'sir', m:'pán (anglické oslovení)'}],
+    correct:0
+  },
+  {
+    sentence:'Tatínek si myslí, že je velký ___ jako baronet.',
+    pair:[{w:'sýr', m:'mléčný výrobek'},{w:'sir', m:'pán (anglické oslovení)'}],
+    correct:1
+  }
+];
+
+/* ─────────────────────────────────────────────
+   CV-HOM: Homonyma
+───────────────────────────────────────────── */
+var homSt = {seq:[], idx:0, body:0, sp:0, locked:false};
+
+function homStart(){
+  homSt = {seq: shuffle(HOM_DATA).slice(0, 8), idx:0, body:0, sp:0, locked:false};
+  el('hom-res').style.display='none';
+  el('hom-ob').style.display='block';
+  homRender();
+}
+function homRender(){
+  var s = homSt;
+  if(s.idx >= s.seq.length){ homFinish(); return; }
   var item = s.seq[s.idx];
-  var box = el('vs-c');
+  /* Věta s prázdným místem */
+  el('hom-s').innerHTML = item.sentence.replace('___','<span class="homBlank">_____</span>');
+  /* Možnosti */
+  var box = el('hom-c');
   box.innerHTML = '';
-  /* Náhodné pořadí */
-  var opts = shuffle([
-    {w:item.vyjm, m:item.mv, isV:true},
-    {w:item.sou, m:item.ms, isV:false}
-  ]);
-  opts.forEach(function(o){
+  item.pair.forEach(function(opt, i){
     var card = document.createElement('div');
-    card.className = 'vsCard';
-    card.innerHTML = '<div class="vs-w">'+o.w+'</div><div class="vs-m">'+o.m+'</div>';
-    card.onclick = function(){ vsAns(o, card, item); };
+    card.className = 'homOpt';
+    card.innerHTML = '<div class="hom-w">'+opt.w+'</div><div class="hom-m">'+opt.m+'</div>';
+    card.onclick = function(){ homAns(i, card, item); };
     box.appendChild(card);
   });
-  el('vs-v').textContent = (s.idx+1)+'/'+s.seq.length;
-  el('vs-ci').textContent = (s.idx+1)+'/'+s.seq.length;
-  el('vs-bd').textContent = s.body;
-  el('vs-sp').textContent = s.sp;
-  el('vs-pg').style.width = ((s.idx)/s.seq.length*100)+'%';
-  el('vs-fb').textContent = '';
-  el('vs-fb').className = 'fb';
-  el('vs-nx').style.display = 'none';
+  el('hom-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('hom-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('hom-bd').textContent = s.body;
+  el('hom-sp').textContent = s.sp;
+  el('hom-pg').style.width = ((s.idx)/s.seq.length*100)+'%';
+  el('hom-fb').textContent = '';
+  el('hom-fb').className = 'fb';
+  el('hom-nx').style.display = 'none';
   s.locked = false;
 }
-function vsAns(o, card, item){
-  var s = vsSt;
+function homAns(picked, card, item){
+  var s = homSt;
   if(s.locked) return;
   s.locked = true;
-  if(o.isV){
+  if(picked === item.correct){
     card.classList.add('ok');
-    s.body += 8; s.sp += 1; addPoints(8);
-    el('vs-fb').innerHTML = '✓ Správně! <b>'+item.vyjm+'</b> je vyjmenované slovo.';
-    el('vs-fb').className = 'fb ok';
+    s.body += 10; s.sp += 1; addPoints(10);
+    el('hom-fb').innerHTML = '✓ Správně! Slovo <b>'+item.pair[picked].w+'</b> ('+item.pair[picked].m+').';
+    el('hom-fb').className = 'fb ok';
   } else {
     card.classList.add('err');
-    /* Označit správnou */
-    document.querySelectorAll('#vs-c .vsCard').forEach(function(c){
-      if(c.querySelector('.vs-w').textContent === item.vyjm) c.classList.add('ok');
+    /* Zvýraznit správnou */
+    document.querySelectorAll('#hom-c .homOpt').forEach(function(c, i){
+      if(i === item.correct) c.classList.add('ok');
     });
-    el('vs-fb').innerHTML = '✗ Vyjmenované slovo je <b>'+item.vyjm+'</b>.';
-    el('vs-fb').className = 'fb err';
+    el('hom-fb').innerHTML = '✗ Správně je <b>'+item.pair[item.correct].w+'</b> ('+item.pair[item.correct].m+').';
+    el('hom-fb').className = 'fb err';
   }
-  el('vs-bd').textContent = s.body;
-  el('vs-sp').textContent = s.sp;
-  el('vs-nx').style.display = 'block';
+  el('hom-bd').textContent = s.body;
+  el('hom-sp').textContent = s.sp;
+  el('hom-nx').style.display = 'block';
 }
-function vsNext(){ vsSt.idx++; vsRender(); }
-function vsFinish(){
-  var s = vsSt;
-  el('vs-ob').style.display='none';
-  el('vs-res').style.display='block';
-  el('vs-pp').textContent = 'Správně '+s.sp+' z '+s.seq.length+' · získala jsi '+s.body+' bodů.';
-  el('vs-sc').textContent = s.body;
-  el('vs-tot').textContent = totalScore;
+function homNext(){ homSt.idx++; homRender(); }
+function homFinish(){
+  var s = homSt;
+  el('hom-ob').style.display='none';
+  el('hom-res').style.display='block';
+  el('hom-pp').textContent = 'Správně '+s.sp+' z '+s.seq.length+' · získala jsi '+s.body+' bodů.';
+  el('hom-sc').textContent = s.body;
+  el('hom-tot').textContent = totalScore;
+}
+
+/* ─────────────────────────────────────────────
+   DATA: PŘÍBUZNÁ — Ano/Ne
+   Pro každé vyjm. slovo: seznam příbuzných (ano) a NEpříbuzných (ne)
+───────────────────────────────────────────── */
+var PRB_DATA = [
+  /* B - být */
+  {target:'být', cand:'obývák', isPrib:true},
+  {target:'být', cand:'bydliště', isPrib:true},
+  {target:'být', cand:'bít (do bubnu)', isPrib:false},
+  /* B - bystrý */
+  {target:'bystrý', cand:'bystřina', isPrib:true},
+  {target:'bystrý', cand:'bistro', isPrib:false},
+  /* B - bylina */
+  {target:'bylina', cand:'bylinka', isPrib:true},
+  {target:'bylina', cand:'bílý', isPrib:false},
+  /* L - mlýn */
+  {target:'mlýn', cand:'mlynář', isPrib:true},
+  {target:'mlýn', cand:'mléko', isPrib:false},
+  /* L - lyže */
+  {target:'lyže', cand:'lyžař', isPrib:true},
+  {target:'lyže', cand:'liška', isPrib:false},
+  /* L - slyšet */
+  {target:'slyšet', cand:'slyšitelný', isPrib:true},
+  {target:'slyšet', cand:'silný', isPrib:false},
+  /* M - mýt */
+  {target:'mýt', cand:'umyvadlo', isPrib:true},
+  {target:'mýt', cand:'mít', isPrib:false},
+  /* M - myslit */
+  {target:'myslit', cand:'myšlenka', isPrib:true},
+  {target:'myslit', cand:'milovat', isPrib:false},
+  /* M - myš */
+  {target:'myš', cand:'myší', isPrib:true},
+  {target:'myš', cand:'míč', isPrib:false},
+  /* P - pýcha */
+  {target:'pýcha', cand:'pyšný', isPrib:true},
+  {target:'pýcha', cand:'pícha', isPrib:false},
+  /* P - klopýtat */
+  {target:'klopýtat', cand:'klopýtnout', isPrib:true},
+  {target:'klopýtat', cand:'kopat', isPrib:false},
+  /* P - pyl */
+  {target:'pyl', cand:'opylit', isPrib:true},
+  {target:'pyl', cand:'pilný', isPrib:false},
+  /* S - syn */
+  {target:'syn', cand:'synovec', isPrib:true},
+  {target:'syn', cand:'silný', isPrib:false},
+  /* S - sýr */
+  {target:'sýr', cand:'sýrový', isPrib:true},
+  {target:'sýr', cand:'sirup', isPrib:false},
+  /* S - sypat */
+  {target:'sypat', cand:'sypký', isPrib:true},
+  {target:'sypat', cand:'sipot', isPrib:false},
+  /* V - vysoký */
+  {target:'vysoký', cand:'výška', isPrib:true},
+  {target:'vysoký', cand:'visutý', isPrib:false},
+  /* V - vydra */
+  {target:'vydra', cand:'vydří (ocas)', isPrib:true},
+  {target:'vydra', cand:'vidět', isPrib:false},
+  /* Z - jazyk */
+  {target:'jazyk', cand:'jazýček', isPrib:true},
+  {target:'jazyk', cand:'jasný', isPrib:false}
+];
+
+/* ─────────────────────────────────────────────
+   CV-PRIB: Příbuzné Ano/Ne
+───────────────────────────────────────────── */
+var prbSt = {seq:[], idx:0, body:0, sp:0, locked:false};
+
+function prbStart(){
+  prbSt = {seq: shuffle(PRB_DATA).slice(0, 12), idx:0, body:0, sp:0, locked:false};
+  el('prb-res').style.display='none';
+  el('prb-ob').style.display='block';
+  prbRender();
+}
+function prbRender(){
+  var s = prbSt;
+  if(s.idx >= s.seq.length){ prbFinish(); return; }
+  var item = s.seq[s.idx];
+  el('prb-t').textContent = item.target;
+  el('prb-c').textContent = item.cand;
+  el('prb-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('prb-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('prb-bd').textContent = s.body;
+  el('prb-sp').textContent = s.sp;
+  el('prb-pg').style.width = ((s.idx)/s.seq.length*100)+'%';
+  el('prb-fb').textContent = '';
+  el('prb-fb').className = 'fb';
+  el('prb-nx').style.display = 'none';
+  document.querySelectorAll('#cv-prib .pribBtn').forEach(function(b){
+    b.disabled=false; b.classList.remove('ok','err');
+  });
+  s.locked = false;
+}
+function prbAns(picked, btn){
+  var s = prbSt;
+  if(s.locked) return;
+  s.locked = true;
+  var item = s.seq[s.idx];
+  if(picked === item.isPrib){
+    btn.classList.add('ok');
+    s.body += 6; s.sp += 1; addPoints(6);
+    if(item.isPrib){
+      el('prb-fb').innerHTML = '✓ Správně! <b>'+item.cand+'</b> je příbuzné slovo k <b>'+item.target+'</b>.';
+    } else {
+      el('prb-fb').innerHTML = '✓ Správně! <b>'+item.cand+'</b> není příbuzné k <b>'+item.target+'</b>.';
+    }
+    el('prb-fb').className = 'fb ok';
+  } else {
+    btn.classList.add('err');
+    /* Zvýraznit správnou */
+    document.querySelectorAll('#cv-prib .pribBtn').forEach(function(b){
+      var isAno = b.classList.contains('pribAno');
+      if(isAno === item.isPrib) b.classList.add('ok');
+    });
+    if(item.isPrib){
+      el('prb-fb').innerHTML = '✗ <b>'+item.cand+'</b> JE příbuzné k <b>'+item.target+'</b>.';
+    } else {
+      el('prb-fb').innerHTML = '✗ <b>'+item.cand+'</b> NENÍ příbuzné k <b>'+item.target+'</b> — jen tak zní podobně.';
+    }
+    el('prb-fb').className = 'fb err';
+  }
+  document.querySelectorAll('#cv-prib .pribBtn').forEach(function(b){b.disabled=true;});
+  el('prb-bd').textContent = s.body;
+  el('prb-sp').textContent = s.sp;
+  el('prb-nx').style.display = 'block';
+}
+function prbNext(){ prbSt.idx++; prbRender(); }
+function prbFinish(){
+  var s = prbSt;
+  el('prb-ob').style.display='none';
+  el('prb-res').style.display='block';
+  el('prb-pp').textContent = 'Správně '+s.sp+' z '+s.seq.length+' · získala jsi '+s.body+' bodů.';
+  el('prb-sc').textContent = s.body;
+  el('prb-tot').textContent = totalScore;
 }
 
 /* ─────────────────────────────────────────────
@@ -850,7 +1234,9 @@ var PRINT_TOPICS = [
   {key:'dop_y', label:'Doplň y/i — s nápovědou', count:'15 slov'},
   {key:'dop_t', label:'Doplň y/i — bez nápovědy (těžší)', count:'20 slov'},
   {key:'sady', label:'Karty vyjmenovaných slov (učební list)', count:'B/L/M/P/S/V/Z'},
-  {key:'mix', label:'Smíšený list — doplň y/i v textu', count:'20 slov'}
+  {key:'mix', label:'Smíšený list — doplň y/i v textu', count:'20 slov'},
+  {key:'hom', label:'Dvojice významů — vyber správné slovo', count:'10 vět'},
+  {key:'pex', label:'Pexeso k vystřižení (vyjm. + odvozené)', count:'8 párů'}
 ];
 function printChoice(){
   var html = '<div style="background:white;padding:1rem;border-radius:12px;max-width:380px;margin:0 auto;font-family:var(--font);max-height:80vh;overflow-y:auto">'+
@@ -936,6 +1322,48 @@ function printGetData(key){
       aHtml += '<div class="task" style="display:inline-block;width:48%"><span class="num">'+(i+1)+'.</span> '+it.full+'</div>';
     });
     return {title:'Doplň a přepiš slovo', topic:'Vyjmenovaná slova', instructions:'Doplň y/i a celé slovo přepiš na vedlejší řádek. Tím si zapamatuješ správný tvar.', qHtml:qHtml, aHtml:aHtml};
+  }
+  if(key === 'hom'){
+    /* Homonyma - věty s prázdnem + 2 možnosti k zakroužkování */
+    var picked = shuffle(HOM_DATA).slice(0, 10);
+    var qHtml = '<div class="task" style="margin:.5rem 0">U každé věty zakroužkuj <b>správné</b> slovo (záleží na významu):</div>';
+    picked.forEach(function(it,i){
+      var sentence = it.sentence.replace('___','______');
+      qHtml += '<div class="task" style="border-bottom:1px solid #d1d5db;padding:.5rem 0">'+
+               '<div><span class="num">'+(i+1)+'.</span> '+sentence+'</div>'+
+               '<div style="margin-left:1.5rem;margin-top:.2rem">'+
+               '<span style="display:inline-block;border:1.5px solid #9ca3af;border-radius:6px;padding:.2rem .6rem;margin:.15rem;font-family:Verdana,Geneva,sans-serif"><b>a)</b> '+it.pair[0].w+'</span>'+
+               '<span style="display:inline-block;border:1.5px solid #9ca3af;border-radius:6px;padding:.2rem .6rem;margin:.15rem;font-family:Verdana,Geneva,sans-serif"><b>b)</b> '+it.pair[1].w+'</span>'+
+               '</div></div>';
+    });
+    var aHtml = '';
+    picked.forEach(function(it,i){
+      var letter = it.correct === 0 ? 'a' : 'b';
+      aHtml += '<div class="task"><span class="num">'+(i+1)+'.</span> <b>'+letter+')</b> '+it.pair[it.correct].w+' &nbsp;<span style="color:#9ca3af;font-size:.85rem">('+it.pair[it.correct].m+')</span></div>';
+    });
+    return {title:'Dvojice významů', topic:'Vyjmenovaná slova', instructions:'V každé větě zakroužkuj správné slovo. Záleží na významu — některá slova zní podobně, ale znamenají něco jiného.', qHtml:qHtml, aHtml:aHtml};
+  }
+  if(key === 'pex'){
+    /* Pexeso k vystřižení — 16 kartiček (8 párů) na A4 */
+    var pairs = shuffle(PEX_DATA).slice(0, 8);
+    var allCards = [];
+    pairs.forEach(function(p){
+      allCards.push(p.a);
+      allCards.push(p.b);
+    });
+    allCards = shuffle(allCards);
+    var qHtml = '<div class="task" style="margin:.5rem 0;font-size:.9rem;color:#6b7280">Vystřihni kartičky a hraj pexeso. Spojuj vždy <b>vyjmenované slovo</b> s jeho <b>příbuzným</b> (odvozeným).</div>';
+    qHtml += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;margin:.5rem 0">';
+    allCards.forEach(function(w){
+      qHtml += '<div style="border:2px dashed #9ca3af;border-radius:8px;padding:1rem .3rem;text-align:center;font-family:Verdana,Geneva,sans-serif;font-weight:700;font-size:.95rem;background:#fafafa;min-height:60px;display:flex;align-items:center;justify-content:center">'+w+'</div>';
+    });
+    qHtml += '</div>';
+    /* Klíč — páry */
+    var aHtml = '<div class="task" style="margin:.4rem 0;font-size:.9rem;color:#6b7280">Páry pexesa:</div>';
+    pairs.forEach(function(p,i){
+      aHtml += '<div class="task"><span class="num">'+(i+1)+'.</span> <b>'+p.a+'</b> ↔ '+p.b+'</div>';
+    });
+    return {title:'Pexeso k vystřižení', topic:'Vyjmenovaná slova', instructions:'Vystřihni kartičky a hraj pexeso. Hledej dvojice: vyjmenované slovo + slovo příbuzné.', qHtml:qHtml, aHtml:aHtml};
   }
 }
 

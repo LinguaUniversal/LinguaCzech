@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Slovní druhy — LinguaCzech 3. třída</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --m:#32a0d2;--ms:#e8f4fb;
+  --o:#ffaa37;--os:#fff8ee;
+  --z:#16a34a;--zs:#dcfce7;
+  --r:#dc2626;--rs:#fee2e2;
+  --p:#7c3aed;--ps:#f3e8ff;
+  --font:'Barlow Condensed',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
+.hl{max-width:760px;margin:1.5rem auto;padding:.5rem 1rem;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.4rem 0 1rem;}
+.topbar a{color:var(--m);text-decoration:none;font-weight:700;font-size:.95rem;}
+.topbar span{font-weight:800;color:var(--m);}
+.scbg{position:fixed;top:10px;right:12px;background:var(--o);color:white;border-radius:99px;padding:.3rem .85rem;font-weight:700;font-size:1rem;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.18);pointer-events:none;}
+.mh{text-align:center;margin:.5rem 0 1.2rem;}
+.mh h1{font-size:1.9rem;color:var(--m);font-weight:800;margin:0;}
+.mh p{color:#6b7280;margin:.3rem 0 0;}
+.mg{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem;}
+.mk{padding:1rem;border-radius:14px;cursor:pointer;text-align:center;transition:all .15s;border:2.5px solid transparent;background:white;}
+.mk:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08);}
+.mk-m{background:var(--ms);border-color:var(--m);}
+.mk-o{background:var(--os);border-color:var(--o);}
+.mk-p{background:var(--ps);border-color:var(--p);}
+.mk h3{font-size:1.05rem;font-weight:800;margin-bottom:.2rem;}
+.mk p{font-size:.85rem;color:#6b7280;margin:0;}
+.cv{display:none;}
+.nav{display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;}
+.zpet{background:white;border:1.5px solid #d1d5db;border-radius:8px;padding:.4rem .9rem;font-weight:600;cursor:pointer;font-family:var(--font);}
+.tit{font-size:1.1rem;font-weight:700;}
+.var{margin-left:auto;background:var(--ms);color:var(--m);border-radius:99px;padding:.2rem .8rem;font-weight:600;font-size:.85rem;}
+.sk{display:flex;justify-content:space-around;background:var(--os);border:1px solid #ffd48a;border-radius:10px;padding:.7rem;margin-bottom:.75rem;}
+.skn{font-size:1.4rem;font-weight:700;color:var(--o);text-align:center;}
+.skl{font-size:.75rem;color:#6b7280;text-align:center;}
+.pg{height:8px;background:#e5e7eb;border-radius:99px;overflow:hidden;margin-bottom:1rem;}
+.pgf{height:100%;background:var(--m);border-radius:99px;transition:width .3s;}
+.ka{background:white;border:1.5px solid #e5e7eb;border-radius:12px;padding:1rem;margin-bottom:1rem;}
+.q{font-weight:700;text-align:center;margin-bottom:.5rem;color:#374151;}
+.fb{margin-top:.7rem;font-size:.95rem;min-height:1.2rem;font-weight:600;text-align:center;}
+.fb.ok{color:var(--z);}
+.fb.err{color:var(--r);}
+.nxt{display:none;width:100%;background:var(--m);color:white;border:none;border-radius:8px;padding:.85rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:var(--font);margin-top:.5rem;}
+.res{display:none;text-align:center;padding:2rem 1rem;}
+.res h2{color:var(--m);font-size:1.6rem;margin:.5rem 0;}
+.res-row{display:flex;gap:1rem;justify-content:center;margin:1rem 0;flex-wrap:wrap;}
+.rs{background:var(--ms);border-radius:10px;padding:.75rem 1rem;}
+.rsv{font-size:1.4rem;font-weight:800;}
+.rsl{font-size:.8rem;color:#6b7280;}
+.znovu,.mbtn{padding:.7rem 1.2rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:.95rem;margin:.3rem;}
+.znovu{background:var(--m);color:white;border:none;}
+.mbtn{background:white;color:#374151;border:1.5px solid #d1d5db;}
+
+/* Sady - tabulka 10 slovních druhů */
+.druhTab{display:grid;grid-template-columns:auto 1fr;gap:.4rem .7rem;margin:.5rem 0;font-family:Verdana,Geneva,sans-serif;font-size:.95rem;line-height:1.5;}
+.druhTab .cislo{font-weight:800;color:var(--m);text-align:right;padding-right:.3rem;}
+.druhTab .nazev{font-weight:700;color:#1f2937;}
+.druhTab .priklad{color:#6b7280;font-size:.85rem;font-style:italic;}
+.skupina{background:var(--ms);border-left:4px solid var(--m);padding:.6rem .8rem;border-radius:6px;margin:.7rem 0;}
+.skupina h4{color:var(--m);font-size:1rem;margin-bottom:.3rem;}
+
+.sentence{font-family:Verdana,Geneva,sans-serif;font-size:1.3rem;text-align:center;line-height:1.8;background:var(--ms);padding:1rem;border-radius:10px;margin:1rem 0;color:#1f2937;}
+.word-btn{display:inline-block;padding:.1rem .35rem;margin:0 .1rem;border-radius:5px;cursor:pointer;border:2px solid transparent;background:transparent;font-family:Verdana,Geneva,sans-serif;font-size:1.3rem;font-weight:700;color:#1f2937;transition:all .15s;}
+.word-btn:hover{background:white;border-color:var(--m);}
+.word-btn.ok{background:var(--zs);border-color:var(--z);color:var(--z);}
+.word-btn.err{background:var(--rs);border-color:var(--r);color:var(--r);}
+
+.wordBig{font-family:Verdana,Geneva,sans-serif;font-size:2rem;font-weight:800;color:var(--m);text-align:center;padding:1rem;background:var(--ms);border-radius:10px;margin:.7rem 0;}
+.opts4{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:1rem 0;}
+.opt4{padding:.9rem .5rem;background:white;border:2.5px solid #d1d5db;border-radius:10px;font-family:Verdana,Geneva,sans-serif;font-weight:700;font-size:1rem;cursor:pointer;text-align:center;transition:all .15s;color:#1f2937;}
+.opt4:hover:not(:disabled){border-color:var(--m);background:var(--ms);}
+.opt4.ok{background:var(--zs);border-color:var(--z);color:var(--z);}
+.opt4.err{background:var(--rs);border-color:var(--r);color:var(--r);}
+
+.opts2{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:1rem 0;}
+.opt2{padding:1.1rem .5rem;background:white;border:2.5px solid #d1d5db;border-radius:10px;font-family:Verdana,Geneva,sans-serif;font-weight:700;font-size:1.1rem;cursor:pointer;text-align:center;transition:all .15s;color:#1f2937;}
+.opt2:hover:not(:disabled){border-color:var(--m);background:var(--ms);}
+.opt2.ok{background:var(--zs);border-color:var(--z);color:var(--z);}
+.opt2.err{background:var(--rs);border-color:var(--r);color:var(--r);}
+
+/* Sady tabs */
+.sadyTabs{display:flex;gap:.3rem;margin-bottom:.7rem;flex-wrap:wrap;justify-content:center;}
+.sadyTab{padding:.45rem .9rem;border:2px solid var(--m);background:white;color:var(--m);border-radius:99px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:.95rem;}
+.sadyTab.on{background:var(--m);color:white;}
+
+@media print{body{background:white;}.scbg{display:none;}}
+</style>
+</head>
+<body>
+<div class="scbg" id="scbg">⭐ 0 b.</div>
+<div class="hl">
+
+<!-- MENU -->
+<div id="menu">
+  <div class="topbar"><a href="3trida.html">← 3. třída</a><span>LinguaCzech</span></div>
+  <div class="mh"><h1>Slovní druhy — všech 10</h1><p>3. ročník — rozšíření 2. třídy</p></div>
+  <div class="mg">
+    <div onclick="go('sady')" class="mk mk-p" style="grid-column:span 2"><h3>📋 Naučím se</h3><p>Všech 10 slovních druhů · ohebné × neohebné</p></div>
+    <div onclick="go('urci')" class="mk mk-m"><h3>🎯 Urči slovní druh</h3><p>Slovo → vyber druh (1-10)</p></div>
+    <div onclick="go('ohne')" class="mk mk-o"><h3>🔄 Ohebné × neohebné</h3><p>Mění tvar / nemění tvar?</p></div>
+    <div onclick="go('najdi')" class="mk mk-m"><h3>🔍 Najdi slova ve větě</h3><p>Klikni na zadaný druh</p></div>
+    <div onclick="go('mix')" class="mk mk-o"><h3>🎲 Smíšené (4 druhy)</h3><p>Podst.j., příd.j., slovesa, příslovce</p></div>
+    <div onclick="printChoice()" class="mk" style="grid-column:span 2;background:#f3f4f6;border:2px dashed #9ca3af"><h3 style="color:#374151">🖨️ Vytisknout pracovní list</h3><p style="color:#6b7280">PDF k procvičování doma</p></div>
+  </div>
+</div>
+
+<!-- CV: SADY -->
+<div class="cv" id="cv-sady">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">📋 Naučím se</span></div>
+  <div class="sadyTabs" id="sady-tabs"></div>
+  <div class="ka" id="sady-body">—</div>
+  <button class="mbtn" style="display:block;margin:.5rem auto" onclick="back()">Zpět do menu</button>
+</div>
+
+<!-- CV: URČI slovní druh -->
+<div class="cv" id="cv-urci">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🎯 Urči slovní druh</span><span class="var" id="urc-v">1/12</span></div>
+  <div class="sk">
+    <div><div class="skn" id="urc-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="urc-ci">1/12</div><div class="skl">slovo</div></div>
+    <div><div class="skn" id="urc-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="urc-pg" style="width:0%"></div></div>
+  <div id="urc-ob">
+    <div class="ka">
+      <div class="q">Který <b>slovní druh</b> je toto slovo?</div>
+      <div class="wordBig" id="urc-w">—</div>
+      <div class="opts4" id="urc-c"></div>
+      <div class="fb" id="urc-fb"></div>
+    </div>
+    <button class="nxt" id="urc-nx" onclick="urcNext()">Další →</button>
+  </div>
+  <div class="res" id="urc-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="urc-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="urc-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="urc-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('urci')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV: OHEBNÉ × NEOHEBNÉ -->
+<div class="cv" id="cv-ohne">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🔄 Ohebné × neohebné</span><span class="var" id="oh-v">1/12</span></div>
+  <div class="sk">
+    <div><div class="skn" id="oh-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="oh-ci">1/12</div><div class="skl">slovo</div></div>
+    <div><div class="skn" id="oh-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="oh-pg" style="width:0%"></div></div>
+  <div id="oh-ob">
+    <div class="ka">
+      <div class="q">Je toto slovo <b>ohebné</b> (mění tvar — skloňuje se nebo časuje) nebo <b>neohebné</b>?</div>
+      <div class="wordBig" id="oh-w">—</div>
+      <div class="opts2">
+        <button class="opt2" onclick="ohAns('ohebne',this)">🔄 ohebné</button>
+        <button class="opt2" onclick="ohAns('neohebne',this)">📌 neohebné</button>
+      </div>
+      <div class="fb" id="oh-fb"></div>
+    </div>
+    <button class="nxt" id="oh-nx" onclick="ohNext()">Další →</button>
+  </div>
+  <div class="res" id="oh-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="oh-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="oh-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="oh-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('ohne')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV: NAJDI ve větě -->
+<div class="cv" id="cv-najdi">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🔍 Najdi ve větě</span><span class="var" id="naj-v">1/8</span></div>
+  <div class="sk">
+    <div><div class="skn" id="naj-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="naj-ci">1/8</div><div class="skl">věta</div></div>
+    <div><div class="skn" id="naj-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="naj-pg" style="width:0%"></div></div>
+  <div id="naj-ob">
+    <div class="ka">
+      <div class="q" id="naj-q">Klikni na <b>všechna podstatná jména</b>.</div>
+      <div class="sentence" id="naj-s">—</div>
+      <div class="fb" id="naj-fb"></div>
+    </div>
+    <button class="nxt" id="naj-nx" onclick="najNext()">Další →</button>
+  </div>
+  <div class="res" id="naj-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="naj-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="naj-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="naj-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('najdi')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV: MIX (4 druhy) -->
+<div class="cv" id="cv-mix">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🎲 Smíšené (4 druhy)</span><span class="var" id="mx-v">1/12</span></div>
+  <div class="sk">
+    <div><div class="skn" id="mx-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="mx-ci">1/12</div><div class="skl">slovo</div></div>
+    <div><div class="skn" id="mx-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="mx-pg" style="width:0%"></div></div>
+  <div id="mx-ob">
+    <div class="ka">
+      <div class="q">Který <b>slovní druh</b>?</div>
+      <div class="wordBig" id="mx-w">—</div>
+      <div class="opts4" id="mx-c"></div>
+      <div class="fb" id="mx-fb"></div>
+    </div>
+    <button class="nxt" id="mx-nx" onclick="mxNext()">Další →</button>
+  </div>
+  <div class="res" id="mx-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="mx-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="mx-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="mx-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('mix')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+</div><!-- .hl -->
+
+<script>
+var SCORE_KEY='sd3_score';
+var totalScore=0;
+try{totalScore=parseInt(localStorage.getItem(SCORE_KEY))||0;}catch(e){}
+function el(id){return document.getElementById(id);}
+function shuffle(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t;}return b;}
+function addPoints(n){totalScore+=n;try{localStorage.setItem(SCORE_KEY,totalScore);}catch(e){}updateScore();}
+function updateScore(){el('scbg').textContent='⭐ '+totalScore+' b.';}
+updateScore();
+function go(id){
+  el('menu').style.display='none';
+  document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
+  el('cv-'+id).style.display='block';
+  if(id==='sady') sadyStart();
+  if(id==='urci') urcStart();
+  if(id==='ohne') ohStart();
+  if(id==='najdi') najStart();
+  if(id==='mix') mxStart();
+}
+function back(){
+  el('menu').style.display='block';
+  document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
+}
+
+/* ───────── DATA ───────── */
+/* Všech 10 slovních druhů — kód 1-10 */
+var DRUHY = [
+  {n:1,  k:'PJ',  nazev:'podstatné jméno', kratky:'podst. jm.', oh:'ohebne', ot:'kdo? co?',         priklady:'maminka, kniha, město, dům'},
+  {n:2,  k:'PRJ', nazev:'přídavné jméno',  kratky:'přídav. jm.',oh:'ohebne', ot:'jaký? který? čí?', priklady:'velký, hezká, modré, mojí'},
+  {n:3,  k:'ZAJ', nazev:'zájmeno',         kratky:'zájmeno',    oh:'ohebne', ot:'zastupuje jméno',  priklady:'já, ty, on, my, ten, sebe'},
+  {n:4,  k:'CIS', nazev:'číslovka',        kratky:'číslovka',   oh:'ohebne', ot:'kolik? kolikátý?', priklady:'jeden, dva, sto, první'},
+  {n:5,  k:'SLO', nazev:'sloveso',         kratky:'sloveso',    oh:'ohebne', ot:'co dělá?',         priklady:'běhá, čte, spí, je'},
+  {n:6,  k:'PRI', nazev:'příslovce',       kratky:'příslovce',  oh:'neohebne', ot:'jak? kde? kdy?', priklady:'rychle, doma, dnes, hodně'},
+  {n:7,  k:'PRD', nazev:'předložka',       kratky:'předložka',  oh:'neohebne', ot:'stojí před jmény',priklady:'na, do, pod, s, v, ke'},
+  {n:8,  k:'SPO', nazev:'spojka',          kratky:'spojka',     oh:'neohebne', ot:'spojuje slova/věty',priklady:'a, ale, nebo, že, když'},
+  {n:9,  k:'CAS', nazev:'částice',         kratky:'částice',    oh:'neohebne', ot:'uvozuje větu',     priklady:'ať, kéž, snad, asi, prý'},
+  {n:10, k:'CIT', nazev:'citoslovce',      kratky:'citoslovce', oh:'neohebne', ot:'zvuky a city',     priklady:'ach, hop, fuj, haf, mňau'}
+];
+
+/* Slova pro cvičení Urči slovní druh — slovo + správný druh (1-10) */
+var SLOVA = [
+  /* 1 - podstatná jména */
+  {w:'maminka', d:1}, {w:'kniha', d:1}, {w:'město', d:1}, {w:'kluk', d:1}, {w:'auto', d:1}, {w:'pes', d:1},
+  /* 2 - přídavná jména */
+  {w:'velký', d:2}, {w:'hezká', d:2}, {w:'modré', d:2}, {w:'starý', d:2}, {w:'rychlý', d:2}, {w:'malý', d:2},
+  /* 3 - zájmena */
+  {w:'já', d:3}, {w:'ty', d:3}, {w:'on', d:3}, {w:'my', d:3}, {w:'ten', d:3}, {w:'tato', d:3}, {w:'náš', d:3},
+  /* 4 - číslovky */
+  {w:'jeden', d:4}, {w:'pět', d:4}, {w:'sto', d:4}, {w:'první', d:4}, {w:'třetí', d:4}, {w:'dva', d:4},
+  /* 5 - slovesa */
+  {w:'běhá', d:5}, {w:'čte', d:5}, {w:'spí', d:5}, {w:'jí', d:5}, {w:'maluje', d:5}, {w:'mluví', d:5},
+  /* 6 - příslovce */
+  {w:'rychle', d:6}, {w:'doma', d:6}, {w:'dnes', d:6}, {w:'velmi', d:6}, {w:'hezky', d:6}, {w:'málo', d:6},
+  /* 7 - předložky */
+  {w:'na', d:7}, {w:'do', d:7}, {w:'pod', d:7}, {w:'s', d:7}, {w:'v', d:7}, {w:'ke', d:7}, {w:'před', d:7},
+  /* 8 - spojky */
+  {w:'a', d:8}, {w:'ale', d:8}, {w:'nebo', d:8}, {w:'že', d:8}, {w:'když', d:8}, {w:'protože', d:8},
+  /* 9 - částice */
+  {w:'ať', d:9}, {w:'kéž', d:9}, {w:'snad', d:9}, {w:'asi', d:9}, {w:'prý', d:9}, {w:'jen', d:9},
+  /* 10 - citoslovce */
+  {w:'ach', d:10}, {w:'hop', d:10}, {w:'fuj', d:10}, {w:'haf', d:10}, {w:'mňau', d:10}, {w:'cink', d:10}
+];
+
+/* Věty s označením druhů u každého slova */
+/* d = pole indexů kódů druhů, korespondují s pozicí slov */
+var VETY = [
+  {sentence:'Maminka peče sladký koláč.', words:[
+    {w:'Maminka', d:1}, {w:'peče', d:5}, {w:'sladký', d:2}, {w:'koláč', d:1}
+  ]},
+  {sentence:'Kluk rychle běží do školy.', words:[
+    {w:'Kluk', d:1}, {w:'rychle', d:6}, {w:'běží', d:5}, {w:'do', d:7}, {w:'školy', d:1}
+  ]},
+  {sentence:'Náš pes hlasitě štěká.', words:[
+    {w:'Náš', d:3}, {w:'pes', d:1}, {w:'hlasitě', d:6}, {w:'štěká', d:5}
+  ]},
+  {sentence:'Mám dva malé bratry.', words:[
+    {w:'Mám', d:5}, {w:'dva', d:4}, {w:'malé', d:2}, {w:'bratry', d:1}
+  ]},
+  {sentence:'Včera jsem viděl velkou kočku.', words:[
+    {w:'Včera', d:6}, {w:'jsem', d:5}, {w:'viděl', d:5}, {w:'velkou', d:2}, {w:'kočku', d:1}
+  ]},
+  {sentence:'Petr a Eva čtou pohádku.', words:[
+    {w:'Petr', d:1}, {w:'a', d:8}, {w:'Eva', d:1}, {w:'čtou', d:5}, {w:'pohádku', d:1}
+  ]},
+  {sentence:'Ach, jak je tady krásně!', words:[
+    {w:'Ach', d:10}, {w:'jak', d:6}, {w:'je', d:5}, {w:'tady', d:6}, {w:'krásně', d:6}
+  ]},
+  {sentence:'Babička sedí na pohovce.', words:[
+    {w:'Babička', d:1}, {w:'sedí', d:5}, {w:'na', d:7}, {w:'pohovce', d:1}
+  ]},
+  {sentence:'Honza má novou červenou čepici.', words:[
+    {w:'Honza', d:1}, {w:'má', d:5}, {w:'novou', d:2}, {w:'červenou', d:2}, {w:'čepici', d:1}
+  ]},
+  {sentence:'Snad zítra půjdeme do lesa.', words:[
+    {w:'Snad', d:9}, {w:'zítra', d:6}, {w:'půjdeme', d:5}, {w:'do', d:7}, {w:'lesa', d:1}
+  ]}
+];
+
+/* ───────── SADY ───────── */
+var sadyKey='vsech';
+var SADY_DATA = {
+  vsech: {
+    label: 'Všech 10 druhů',
+    body: '<p style="margin-bottom:.5rem">V češtině máme <b>10 slovních druhů</b>. Každý druh má své <b>číslo</b> a <b>otázky</b>, podle kterých ho poznáš:</p>'+
+          '<div class="druhTab">'+
+          DRUHY.map(function(d){
+            return '<span class="cislo">'+d.n+'.</span><div><span class="nazev">'+d.nazev+'</span> — '+d.ot+'<br><span class="priklad">'+d.priklady+'</span></div>';
+          }).join('')+
+          '</div>'
+  },
+  ohneo: {
+    label: 'Ohebné × neohebné',
+    body: '<p style="margin-bottom:.5rem">Slovní druhy dělíme na dvě skupiny:</p>'+
+          '<div class="skupina"><h4>🔄 Ohebné (5 druhů) — <b>mění tvar</b></h4>'+
+          '<p style="font-family:Verdana,Geneva,sans-serif;font-size:.95rem;line-height:1.7">'+
+          '<b>1.</b> podstatná jména (žena → ženy, ženě)<br>'+
+          '<b>2.</b> přídavná jména (velký → velké, velkého)<br>'+
+          '<b>3.</b> zájmena (já → mě, mně, mnou)<br>'+
+          '<b>4.</b> číslovky (jeden → jedna, jedno)<br>'+
+          '<b>5.</b> slovesa (běhám → běháš, běhal)</p></div>'+
+          '<div class="skupina" style="border-color:var(--o);background:var(--os)"><h4 style="color:var(--o)">📌 Neohebné (5 druhů) — <b>nemění tvar</b></h4>'+
+          '<p style="font-family:Verdana,Geneva,sans-serif;font-size:.95rem;line-height:1.7">'+
+          '<b>6.</b> příslovce (rychle, doma, dnes)<br>'+
+          '<b>7.</b> předložky (na, do, pod, s)<br>'+
+          '<b>8.</b> spojky (a, ale, nebo, že)<br>'+
+          '<b>9.</b> částice (ať, kéž, snad)<br>'+
+          '<b>10.</b> citoslovce (ach, hop, fuj)</p></div>'+
+          '<div style="background:#fffbeb;border-left:4px solid var(--o);padding:.6rem .9rem;border-radius:6px;margin-top:.7rem;font-size:.9rem">💡 <b>Pomůcka</b>: zkus změnit slovo (řekni ho v jiném pádě, čísle nebo času). Pokud jde, je <b>ohebné</b>. Pokud nejde, je <b>neohebné</b>.</div>'
+  },
+  novinky: {
+    label: 'Co je nového oproti 2. třídě',
+    body: '<p style="margin-bottom:.7rem">V 2. třídě jsi se naučila <b>4 druhy</b>:<br>podstatná jména, slovesa, předložky, spojky.</p>'+
+          '<p style="margin-bottom:.7rem">Ve 3. třídě se učíš <b>všech 10 druhů</b>. Nové jsou:</p>'+
+          '<div class="druhTab" style="font-size:1rem">'+
+          '<span class="cislo">2.</span><div><b>Přídavná jména</b> — popisují <i>jaký? který? čí?</i><br><span class="priklad">velký dům, hezká kniha, mojí kočky</span></div>'+
+          '<span class="cislo">3.</span><div><b>Zájmena</b> — zastupují podstatná jména<br><span class="priklad">já, ty, on, my, ten, ona</span></div>'+
+          '<span class="cislo">4.</span><div><b>Číslovky</b> — odpovídají na <i>kolik? kolikátý?</i><br><span class="priklad">jeden, dva, pět, sto, první, třetí</span></div>'+
+          '<span class="cislo">6.</span><div><b>Příslovce</b> — popisují <i>jak? kde? kdy?</i><br><span class="priklad">rychle, doma, dnes, hezky</span></div>'+
+          '<span class="cislo">9.</span><div><b>Částice</b> — uvozují větu (přání, otázku)<br><span class="priklad">ať se ti daří!, kéž by, snad přijde</span></div>'+
+          '<span class="cislo">10.</span><div><b>Citoslovce</b> — zvuky a pocity<br><span class="priklad">ach, hop, fuj, haf, mňau, bum</span></div>'+
+          '</div>'
+  }
+};
+function sadyStart(){
+  var tabs = el('sady-tabs');
+  tabs.innerHTML = '';
+  ['vsech','ohneo','novinky'].forEach(function(k){
+    var b = document.createElement('button');
+    b.className = 'sadyTab' + (k===sadyKey?' on':'');
+    b.textContent = SADY_DATA[k].label;
+    b.onclick = function(){ sadyShow(k); };
+    tabs.appendChild(b);
+  });
+  sadyShow(sadyKey);
+}
+function sadyShow(k){
+  sadyKey = k;
+  document.querySelectorAll('#sady-tabs .sadyTab').forEach(function(b,i){
+    b.classList.toggle('on', ['vsech','ohneo','novinky'][i]===k);
+  });
+  el('sady-body').innerHTML = SADY_DATA[k].body;
+}
+
+/* ───────── URČI slovní druh ───────── */
+var urcSt={};
+function urcStart(){
+  urcSt = {seq: shuffle(SLOVA).slice(0,12), idx:0, body:0, sp:0, locked:false};
+  el('urc-res').style.display='none';
+  el('urc-ob').style.display='block';
+  urcRender();
+}
+function urcRender(){
+  var s = urcSt;
+  if(s.idx >= s.seq.length){ urcFinish(); return; }
+  var item = s.seq[s.idx];
+  el('urc-w').textContent = item.w;
+  /* 4 možnosti: 1 správná + 3 distraktory z DRUHY */
+  var c = el('urc-c'); c.innerHTML = '';
+  var correctDruh = DRUHY[item.d-1];
+  var others = DRUHY.filter(function(d){ return d.n !== item.d; });
+  var distractors = shuffle(others).slice(0,3);
+  var opts = shuffle([correctDruh].concat(distractors));
+  opts.forEach(function(o){
+    var b = document.createElement('button');
+    b.className = 'opt4';
+    b.innerHTML = '<b>'+o.n+'.</b> '+o.kratky;
+    b.onclick = function(){ urcAns(o.n, b, item); };
+    c.appendChild(b);
+  });
+  el('urc-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('urc-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('urc-bd').textContent = s.body;
+  el('urc-sp').textContent = s.sp;
+  el('urc-pg').style.width = (s.idx/s.seq.length*100)+'%';
+  el('urc-fb').textContent='';
+  el('urc-fb').className='fb';
+  el('urc-nx').style.display='none';
+  s.locked=false;
+}
+function urcAns(picked, btn, item){
+  var s=urcSt; if(s.locked) return; s.locked=true;
+  var correct = DRUHY[item.d-1];
+  if(picked === item.d){
+    btn.classList.add('ok');
+    s.body += 5; s.sp++; addPoints(5);
+    el('urc-fb').innerHTML = '✓ Správně! <b>'+item.w+'</b> je '+correct.nazev+'.';
+    el('urc-fb').className='fb ok';
+  } else {
+    btn.classList.add('err');
+    document.querySelectorAll('#urc-c .opt4').forEach(function(b){
+      if(b.innerHTML.indexOf(correct.kratky) >= 0) b.classList.add('ok');
+    });
+    el('urc-fb').innerHTML = '✗ <b>'+item.w+'</b> je '+correct.nazev+' ('+correct.n+'. druh).';
+    el('urc-fb').className='fb err';
+  }
+  document.querySelectorAll('#urc-c .opt4').forEach(function(b){b.disabled=true;});
+  el('urc-bd').textContent=s.body; el('urc-sp').textContent=s.sp;
+  el('urc-nx').style.display='block';
+}
+function urcNext(){ urcSt.idx++; urcRender(); }
+function urcFinish(){
+  var s=urcSt;
+  el('urc-ob').style.display='none';
+  el('urc-res').style.display='block';
+  el('urc-pp').textContent='Správně '+s.sp+' z '+s.seq.length+' · '+s.body+' bodů.';
+  el('urc-sc').textContent=s.body;
+  el('urc-tot').textContent=totalScore;
+}
+
+/* ───────── OHEBNÉ × NEOHEBNÉ ───────── */
+var ohSt={};
+function ohStart(){
+  ohSt = {seq: shuffle(SLOVA).slice(0,12), idx:0, body:0, sp:0, locked:false};
+  el('oh-res').style.display='none';
+  el('oh-ob').style.display='block';
+  ohRender();
+}
+function ohRender(){
+  var s = ohSt;
+  if(s.idx >= s.seq.length){ ohFinish(); return; }
+  var item = s.seq[s.idx];
+  el('oh-w').textContent = item.w;
+  el('oh-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('oh-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('oh-bd').textContent = s.body;
+  el('oh-sp').textContent = s.sp;
+  el('oh-pg').style.width = (s.idx/s.seq.length*100)+'%';
+  el('oh-fb').textContent='';
+  el('oh-fb').className='fb';
+  el('oh-nx').style.display='none';
+  document.querySelectorAll('#cv-ohne .opt2').forEach(function(b){b.disabled=false; b.classList.remove('ok','err');});
+  s.locked=false;
+}
+function ohAns(picked, btn){
+  var s=ohSt; if(s.locked) return; s.locked=true;
+  var item = s.seq[s.idx];
+  var druh = DRUHY[item.d-1];
+  var correctOh = druh.oh;
+  if(picked === correctOh){
+    btn.classList.add('ok');
+    s.body += 4; s.sp++; addPoints(4);
+    el('oh-fb').innerHTML = '✓ Správně! <b>'+item.w+'</b> ('+druh.nazev+') je '+(correctOh==='ohebne'?'ohebné':'neohebné')+'.';
+    el('oh-fb').className='fb ok';
+  } else {
+    btn.classList.add('err');
+    document.querySelectorAll('#cv-ohne .opt2').forEach(function(b){
+      if(b.textContent.indexOf(correctOh==='ohebne'?'ohebné':'neohebné')>=0 && b.textContent.indexOf('ne')<0===(correctOh==='ohebne')){
+        /* správná možnost */
+      }
+    });
+    /* Lepší přístup: najít a označit */
+    var btns = document.querySelectorAll('#cv-ohne .opt2');
+    if(correctOh==='ohebne') btns[0].classList.add('ok');
+    else btns[1].classList.add('ok');
+    el('oh-fb').innerHTML = '✗ <b>'+item.w+'</b> je '+druh.nazev+' a to je '+(correctOh==='ohebne'?'ohebné':'neohebné')+' slovo.';
+    el('oh-fb').className='fb err';
+  }
+  document.querySelectorAll('#cv-ohne .opt2').forEach(function(b){b.disabled=true;});
+  el('oh-bd').textContent=s.body; el('oh-sp').textContent=s.sp;
+  el('oh-nx').style.display='block';
+}
+function ohNext(){ ohSt.idx++; ohRender(); }
+function ohFinish(){
+  var s=ohSt;
+  el('oh-ob').style.display='none';
+  el('oh-res').style.display='block';
+  el('oh-pp').textContent='Správně '+s.sp+' z '+s.seq.length+' · '+s.body+' bodů.';
+  el('oh-sc').textContent=s.body;
+  el('oh-tot').textContent=totalScore;
+}
+
+/* ───────── NAJDI ve větě ───────── */
+var najSt={};
+function najStart(){
+  najSt = {seq: shuffle(VETY).slice(0,8), idx:0, body:0, sp:0, locked:false, found:[], targetD:null, targetWords:[]};
+  el('naj-res').style.display='none';
+  el('naj-ob').style.display='block';
+  najRender();
+}
+function najRender(){
+  var s = najSt;
+  if(s.idx >= s.seq.length){ najFinish(); return; }
+  var item = s.seq[s.idx];
+  s.found = [];
+  /* Náhodně zvol druh, který chceme hledat - z těch které ve větě jsou */
+  var availableDruhy = [];
+  item.words.forEach(function(w){
+    if(availableDruhy.indexOf(w.d) < 0) availableDruhy.push(w.d);
+  });
+  /* Preferujeme jednodušší druhy: 1, 2, 5, 6, 7 (čili podst.j., příd.j., sloveso, příslovce, předložka) */
+  var preferred = availableDruhy.filter(function(d){return [1,2,5,6,7].indexOf(d)>=0;});
+  var pool = preferred.length > 0 ? preferred : availableDruhy;
+  s.targetD = pool[Math.floor(Math.random()*pool.length)];
+  /* Cíle: všechna slova s druhem targetD */
+  s.targetWords = item.words.filter(function(w){return w.d===s.targetD;}).map(function(w){return w.w;});
+  /* Otázka */
+  var druhInfo = DRUHY[s.targetD-1];
+  var pluralTarget = s.targetWords.length > 1 ? 'všechna ' + druhInfo.nazev.replace('é jméno','á jména').replace('o','a') + ' (' + s.targetWords.length + ')' : druhInfo.nazev;
+  /* Pro jednoduchost - jen "klikni na všechna podstatná jména" + počet */
+  var label = '';
+  if(s.targetD===1) label = 'všechna <b>podstatná jména</b>';
+  else if(s.targetD===2) label = 'všechna <b>přídavná jména</b>';
+  else if(s.targetD===3) label = 'všechna <b>zájmena</b>';
+  else if(s.targetD===4) label = 'všechny <b>číslovky</b>';
+  else if(s.targetD===5) label = 'všechna <b>slovesa</b>';
+  else if(s.targetD===6) label = 'všechna <b>příslovce</b>';
+  else if(s.targetD===7) label = 'všechny <b>předložky</b>';
+  else if(s.targetD===8) label = 'všechny <b>spojky</b>';
+  else if(s.targetD===9) label = 'všechny <b>částice</b>';
+  else if(s.targetD===10) label = 'všechna <b>citoslovce</b>';
+  el('naj-q').innerHTML = 'Klikni na '+label+' (jsou tam <b>'+s.targetWords.length+'</b>).';
+  /* Vykresli větu */
+  var sBox = el('naj-s');
+  sBox.innerHTML = '';
+  item.words.forEach(function(wObj, i){
+    var btn = document.createElement('button');
+    btn.className = 'word-btn';
+    btn.textContent = wObj.w;
+    btn.onclick = function(){ najClick(wObj.w, btn); };
+    sBox.appendChild(btn);
+    if(i < item.words.length-1) sBox.appendChild(document.createTextNode(' '));
+  });
+  /* Tečka na konci? */
+  if(item.sentence.endsWith('.') || item.sentence.endsWith('!') || item.sentence.endsWith('?')){
+    sBox.appendChild(document.createTextNode(item.sentence.slice(-1)));
+  }
+  el('naj-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('naj-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('naj-bd').textContent = s.body;
+  el('naj-sp').textContent = s.sp;
+  el('naj-pg').style.width = (s.idx/s.seq.length*100)+'%';
+  el('naj-fb').innerHTML = 'Nalezeno <b>0/'+s.targetWords.length+'</b>';
+  el('naj-fb').className='fb';
+  el('naj-nx').style.display='none';
+  s.locked=false;
+}
+function najClick(clicked, btn){
+  var s = najSt;
+  if(s.locked) return;
+  if(btn.classList.contains('ok') || btn.classList.contains('err')) return;
+  if(s.targetWords.indexOf(clicked) >= 0 && s.found.indexOf(clicked) < 0){
+    btn.classList.add('ok');
+    s.found.push(clicked);
+    s.body += 3; addPoints(3);
+    el('naj-bd').textContent = s.body;
+    el('naj-fb').innerHTML = '✓ Nalezeno <b>'+s.found.length+'/'+s.targetWords.length+'</b>';
+    el('naj-fb').className = 'fb ok';
+    if(s.found.length === s.targetWords.length){
+      s.locked = true;
+      s.sp++;
+      el('naj-sp').textContent = s.sp;
+      el('naj-fb').innerHTML = '🎉 Nalezeno <b>vše</b>!';
+      el('naj-nx').style.display = 'block';
+    }
+  } else if(s.targetWords.indexOf(clicked) < 0){
+    btn.classList.add('err');
+    el('naj-fb').innerHTML = '✗ Toto není to, co hledáš. Zkus jiné slovo.';
+    el('naj-fb').className = 'fb err';
+    setTimeout(function(){
+      btn.classList.remove('err');
+      el('naj-fb').innerHTML = 'Nalezeno <b>'+s.found.length+'/'+s.targetWords.length+'</b>';
+      el('naj-fb').className='fb';
+    }, 1200);
+  }
+}
+function najNext(){ najSt.idx++; najRender(); }
+function najFinish(){
+  var s=najSt;
+  el('naj-ob').style.display='none';
+  el('naj-res').style.display='block';
+  el('naj-pp').textContent='Vyřešila jsi všech '+s.seq.length+' vět · '+s.body+' bodů.';
+  el('naj-sc').textContent=s.body;
+  el('naj-tot').textContent=totalScore;
+}
+
+/* ───────── MIX (4 druhy: podst.j./příd.j./sloveso/příslovce) ───────── */
+var mxSt={};
+function mxStart(){
+  /* Filtruj jen druhy 1, 2, 5, 6 */
+  var pool = SLOVA.filter(function(it){ return [1,2,5,6].indexOf(it.d)>=0; });
+  mxSt = {seq: shuffle(pool).slice(0,12), idx:0, body:0, sp:0, locked:false};
+  el('mx-res').style.display='none';
+  el('mx-ob').style.display='block';
+  mxRender();
+}
+function mxRender(){
+  var s = mxSt;
+  if(s.idx >= s.seq.length){ mxFinish(); return; }
+  var item = s.seq[s.idx];
+  el('mx-w').textContent = item.w;
+  /* 4 možnosti */
+  var c = el('mx-c'); c.innerHTML = '';
+  [1,2,5,6].forEach(function(dn){
+    var d = DRUHY[dn-1];
+    var b = document.createElement('button');
+    b.className = 'opt4';
+    b.innerHTML = '<b>'+d.n+'.</b> '+d.kratky;
+    b.onclick = function(){ mxAns(dn, b, item); };
+    c.appendChild(b);
+  });
+  el('mx-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('mx-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('mx-bd').textContent = s.body;
+  el('mx-sp').textContent = s.sp;
+  el('mx-pg').style.width = (s.idx/s.seq.length*100)+'%';
+  el('mx-fb').textContent='';
+  el('mx-fb').className='fb';
+  el('mx-nx').style.display='none';
+  s.locked=false;
+}
+function mxAns(picked, btn, item){
+  var s=mxSt; if(s.locked) return; s.locked=true;
+  var correct = DRUHY[item.d-1];
+  if(picked === item.d){
+    btn.classList.add('ok');
+    s.body += 4; s.sp++; addPoints(4);
+    el('mx-fb').innerHTML = '✓ Správně! <b>'+item.w+'</b> = '+correct.nazev+'.';
+    el('mx-fb').className='fb ok';
+  } else {
+    btn.classList.add('err');
+    document.querySelectorAll('#mx-c .opt4').forEach(function(b){
+      if(b.innerHTML.indexOf(correct.kratky) >= 0) b.classList.add('ok');
+    });
+    el('mx-fb').innerHTML = '✗ <b>'+item.w+'</b> = '+correct.nazev+'.';
+    el('mx-fb').className='fb err';
+  }
+  document.querySelectorAll('#mx-c .opt4').forEach(function(b){b.disabled=true;});
+  el('mx-bd').textContent=s.body; el('mx-sp').textContent=s.sp;
+  el('mx-nx').style.display='block';
+}
+function mxNext(){ mxSt.idx++; mxRender(); }
+function mxFinish(){
+  var s=mxSt;
+  el('mx-ob').style.display='none';
+  el('mx-res').style.display='block';
+  el('mx-pp').textContent='Správně '+s.sp+' z '+s.seq.length+' · '+s.body+' bodů.';
+  el('mx-sc').textContent=s.body;
+  el('mx-tot').textContent=totalScore;
+}
+
+/* ───────── PRINT ───────── */
+function printChoice(){
+  var topics = [
+    {key:'urc', label:'Urči slovní druh (15 slov)'},
+    {key:'oh', label:'Ohebné × neohebné (15 slov)'},
+    {key:'najdi', label:'Najdi ve větě (8 vět)'},
+    {key:'mix', label:'Smíšený list'}
+  ];
+  var html = '<div style="position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem"><div style="background:white;border-radius:12px;padding:1.5rem;max-width:480px;width:100%"><h3 style="margin:0 0 1rem;color:var(--m);text-align:center">🖨️ Vyber pracovní list</h3>';
+  topics.forEach(function(t){
+    html += '<button onclick="doPrint(\\\''+t.key+'\\\');this.parentNode.parentNode.remove()" style="width:100%;padding:.85rem;margin:.3rem 0;background:var(--ms);border:2px solid var(--m);border-radius:8px;font-weight:700;color:var(--m);cursor:pointer;font-family:var(--font);font-size:1rem;text-align:left">'+t.label+'</button>';
+  });
+  html += '<button onclick="this.parentNode.parentNode.remove()" style="width:100%;padding:.6rem;margin-top:.5rem;background:#f3f4f6;border:1px solid #d1d5db;border-radius:8px;cursor:pointer;font-family:var(--font)">Zavřít</button></div></div>';
+  var d = document.createElement('div');
+  d.innerHTML = html;
+  document.body.appendChild(d.firstChild);
+}
+function doPrint(key){
+  var w = window.open('', '_blank');
+  if(!w){ alert('Prohlížeč zablokoval okno pro tisk. Povol popup okna pro tento web.'); return; }
+  var data = printGetData(key);
+  w.document.write(printHTML(data));
+  w.document.close();
+}
+function printGetData(key){
+  if(key==='urc'){
+    var picked = shuffle(SLOVA).slice(0,15);
+    var qHtml = '<p>U každého slova napiš číslo (1-10) podle slovního druhu. Druhy: <small>1=podst.j., 2=příd.j., 3=zájmeno, 4=číslovka, 5=sloveso, 6=příslovce, 7=předložka, 8=spojka, 9=částice, 10=citoslovce</small></p>';
+    qHtml += '<table style="width:100%;border-collapse:collapse">';
+    /* 3 sloupce po 5 řádcích */
+    for(var i = 0; i < 5; i++){
+      qHtml += '<tr>';
+      for(var j = 0; j < 3; j++){
+        var idx = i + j*5;
+        if(idx < picked.length){
+          qHtml += '<td style="padding:.4rem;width:33%;border-bottom:1px dotted #ccc">'+(idx+1)+'. '+picked[idx].w+' &nbsp;__</td>';
+        }
+      }
+      qHtml += '</tr>';
+    }
+    qHtml += '</table>';
+    var aHtml = '<table style="width:100%">';
+    for(var i = 0; i < 5; i++){
+      aHtml += '<tr>';
+      for(var j = 0; j < 3; j++){
+        var idx = i + j*5;
+        if(idx < picked.length){
+          aHtml += '<td style="padding:.3rem;width:33%">'+(idx+1)+'. '+picked[idx].w+' — <b>'+picked[idx].d+'.</b> '+DRUHY[picked[idx].d-1].kratky+'</td>';
+        }
+      }
+      aHtml += '</tr>';
+    }
+    aHtml += '</table>';
+    return {title:'Urči slovní druh', topic:'Slovní druhy', instructions:'U každého slova napiš číslo slovního druhu (1-10).', qHtml:qHtml, aHtml:aHtml};
+  }
+  if(key==='oh'){
+    var picked = shuffle(SLOVA).slice(0,15);
+    var qHtml = '<p>U každého slova napiš <b>O</b> (ohebné) nebo <b>N</b> (neohebné):</p><table style="width:100%">';
+    for(var i = 0; i < 5; i++){
+      qHtml += '<tr>';
+      for(var j = 0; j < 3; j++){
+        var idx = i + j*5;
+        if(idx < picked.length){
+          qHtml += '<td style="padding:.35rem;width:33%;border-bottom:1px dotted #ccc">'+(idx+1)+'. '+picked[idx].w+' &nbsp;__</td>';
+        }
+      }
+      qHtml += '</tr>';
+    }
+    qHtml += '</table>';
+    var aHtml = '<table style="width:100%">';
+    for(var i = 0; i < 5; i++){
+      aHtml += '<tr>';
+      for(var j = 0; j < 3; j++){
+        var idx = i + j*5;
+        if(idx < picked.length){
+          var oh = DRUHY[picked[idx].d-1].oh==='ohebne'?'O':'N';
+          aHtml += '<td style="padding:.3rem;width:33%">'+(idx+1)+'. '+picked[idx].w+' — <b>'+oh+'</b></td>';
+        }
+      }
+      aHtml += '</tr>';
+    }
+    aHtml += '</table>';
+    return {title:'Ohebné × neohebné', topic:'Slovní druhy', instructions:'O = ohebné (mění tvar), N = neohebné (nemění tvar).', qHtml:qHtml, aHtml:aHtml};
+  }
+  if(key==='najdi'){
+    var picked = shuffle(VETY).slice(0,8);
+    var qHtml = '<p>V každé větě <b>podtrhni všechna podstatná jména</b> (1. druh):</p>';
+    picked.forEach(function(it,i){
+      qHtml += '<div style="margin:.4rem 0;padding:.2rem 0;border-bottom:1px dotted #ccc">'+(i+1)+'. '+it.sentence+'</div>';
+    });
+    var aHtml = '';
+    picked.forEach(function(it,i){
+      var html = it.sentence;
+      it.words.forEach(function(w){
+        if(w.d===1) html = html.replace(w.w, '<b><u>'+w.w+'</u></b>');
+      });
+      aHtml += '<div>'+(i+1)+'. '+html+'</div>';
+    });
+    return {title:'Najdi podstatná jména ve větě', topic:'Slovní druhy', instructions:'V každé větě podtrhni všechna podstatná jména.', qHtml:qHtml, aHtml:aHtml};
+  }
+  if(key==='mix'){
+    var p1 = shuffle(SLOVA).slice(0,8);
+    var p2 = shuffle(SLOVA).slice(0,7);
+    var qHtml = '<h4>A) Urči slovní druh (číslem 1-10):</h4><table style="width:100%">';
+    for(var i = 0; i < Math.ceil(p1.length/2); i++){
+      qHtml += '<tr>';
+      for(var j = 0; j < 2; j++){
+        var idx = i*2 + j;
+        if(idx < p1.length){
+          qHtml += '<td style="padding:.35rem;width:50%;border-bottom:1px dotted #ccc">'+(idx+1)+'. '+p1[idx].w+' &nbsp;__</td>';
+        }
+      }
+      qHtml += '</tr>';
+    }
+    qHtml += '</table><h4 style="margin-top:1rem">B) Ohebné (O) / Neohebné (N):</h4><table style="width:100%">';
+    for(var i = 0; i < Math.ceil(p2.length/2); i++){
+      qHtml += '<tr>';
+      for(var j = 0; j < 2; j++){
+        var idx = i*2 + j;
+        if(idx < p2.length){
+          qHtml += '<td style="padding:.35rem;width:50%;border-bottom:1px dotted #ccc">'+(idx+1)+'. '+p2[idx].w+' &nbsp;__</td>';
+        }
+      }
+      qHtml += '</tr>';
+    }
+    qHtml += '</table>';
+    var aHtml = '<h4>A) Druhy:</h4>';
+    p1.forEach(function(it,i){ aHtml += '<div>'+(i+1)+'. '+it.w+' — <b>'+it.d+'.</b> '+DRUHY[it.d-1].kratky+'</div>'; });
+    aHtml += '<h4 style="margin-top:.7rem">B) Ohebnost:</h4>';
+    p2.forEach(function(it,i){ var oh=DRUHY[it.d-1].oh==='ohebne'?'O':'N'; aHtml += '<div>'+(i+1)+'. '+it.w+' — <b>'+oh+'</b></div>'; });
+    return {title:'Smíšený list', topic:'Slovní druhy', instructions:'Vyřeš obě části cvičení.', qHtml:qHtml, aHtml:aHtml};
+  }
+}
+function printHTML(data){
+  var d=new Date();var dateStr=d.getDate()+'.'+(d.getMonth()+1)+'.'+d.getFullYear();
+  return '<!doctype html><html lang="cs"><head><meta charset="utf-8"><title>Pracovní list — '+data.title+'</title><style>body{font-family:Arial,sans-serif;max-width:780px;margin:1rem auto;padding:1rem;color:#1f2937;font-size:12pt;line-height:1.5}h1{color:#1e3a5f;margin:0 0 .5rem;font-size:1.4rem}h2{color:#1e3a5f;margin-top:1.2rem;font-size:1.1rem;border-bottom:2px solid #1e3a5f;padding-bottom:.2rem}h4{margin:.6rem 0 .2rem}.head{display:flex;justify-content:space-between;border-bottom:2px solid #1e3a5f;padding-bottom:.3rem;margin-bottom:1rem}.head .l{display:flex;gap:1rem;align-items:baseline}.head span{font-size:.85rem;color:#6b7280}.instructions{background:#f3f4f6;padding:.5rem .8rem;border-left:4px solid #ffaa37;border-radius:4px;margin:.5rem 0;font-size:.9rem}.solution{page-break-before:always;background:#ecfdf5;padding:.7rem 1rem;border-left:4px solid #16a34a;border-radius:4px;margin-top:1rem}.solution h2{color:#16a34a;border-color:#16a34a}@media print{body{margin:0;padding:.5cm 1cm;font-size:11pt}.solution{page-break-before:always}}</style></head><body onload="setTimeout(function(){window.print();},400)"><div class="head"><div class="l"><h1>📋 '+data.title+'</h1><span>'+data.topic+'</span></div><span>Datum: '+dateStr+' · Jméno: ____________</span></div><div class="instructions"><b>Zadání:</b> '+data.instructions+'</div>'+data.qHtml+'<div class="solution"><h2>✓ Řešení (pro učitele)</h2>'+data.aHtml+'</div></body></html>';
+}
+</script>
+</body>
+</html>

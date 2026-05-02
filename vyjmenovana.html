@@ -382,7 +382,7 @@ canvas#gameCv{display:block;width:100%;height:280px;background:linear-gradient(1
 
 <!-- CV: HRA T-REX Y/I -->
 <div class="cv" id="cv-hra">
-  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🦖 T-rex doplňuje y/i</span></div>
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🦖 T-rex doplňuje y/i</span><span class="var">v32</span></div>
   <div id="hra-intro">
     <div class="ka" style="text-align:center">
       <div style="font-size:3.5rem">🦖</div>
@@ -403,13 +403,7 @@ canvas#gameCv{display:block;width:100%;height:280px;background:linear-gradient(1
       </div>
       <canvas id="gameCv" width="480" height="280" style="width:100%;border-radius:10px;border:2px solid #fbbf77;display:block;touch-action:none;cursor:pointer"></canvas>
       <div id="hra-word" style="margin-top:.6rem;padding:.8rem;background:var(--ms);border-radius:10px;text-align:center;font-family:Verdana,Geneva,sans-serif;font-size:1.8rem;font-weight:700;letter-spacing:.05em;color:#1f2937;min-height:3rem">—</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:.3rem;margin-top:.5rem">
-        <button style="padding:.7rem .3rem;font-weight:800;font-size:1.1rem;border:2px solid var(--m);background:white;color:var(--m);border-radius:8px;cursor:pointer;font-family:Verdana,Geneva,sans-serif" onclick="hraMove(0)">i</button>
-        <button style="padding:.7rem .3rem;font-weight:800;font-size:1.1rem;border:2px solid var(--m);background:white;color:var(--m);border-radius:8px;cursor:pointer;font-family:Verdana,Geneva,sans-serif" onclick="hraMove(1)">y</button>
-        <button style="padding:.7rem .3rem;font-weight:800;font-size:1.1rem;border:2px solid var(--m);background:white;color:var(--m);border-radius:8px;cursor:pointer;font-family:Verdana,Geneva,sans-serif" onclick="hraMove(2)">í</button>
-        <button style="padding:.7rem .3rem;font-weight:800;font-size:1.1rem;border:2px solid var(--m);background:white;color:var(--m);border-radius:8px;cursor:pointer;font-family:Verdana,Geneva,sans-serif" onclick="hraMove(3)">ý</button>
-      </div>
-      <div style="text-align:center;color:#9ca3af;font-size:.78rem;margin-top:.3rem">↑↓ šipky · klik/tap na pruh · 1/2/3/4</div>
+      <div style="text-align:center;color:#9ca3af;font-size:.78rem;margin-top:.5rem">↑↓ šipky · klikni/klepni na pruh kde je správné písmeno</div>
     </div>
   </div>
   <div class="gameOver" id="hra-over" style="display:none">
@@ -1773,7 +1767,55 @@ function krizReveal(){
          - Když písmeno ≠ správné → -1 život
 ─────────────────────────────────────────────── */
 
-var HRA_POOL = DOP_DATA.slice();
+/* HRA_POOL: kombinace vyjmenovaných (y/ý) a slov s měkkým i/í po obojetné souhlásce.
+   Aby to byla skutečná hra, musí přijít obě varianty - žák se učí ROZLIŠOVAT. */
+var HRA_POOL_I = [
+  /* B + i/í — slova kde patří měkké i/í (NEpříbuzná k vyjmenovaným) */
+  {full:'bílý',    a:'í'},
+  {full:'bít',     a:'í'},
+  {full:'biják',   a:'i'},
+  {full:'blízko',  a:'í'},
+  {full:'bidlo',   a:'i'},
+  /* L + i/í */
+  {full:'liška',   a:'i'},
+  {full:'lidé',    a:'i'},
+  {full:'lít',     a:'í'},
+  {full:'lípa',    a:'í'},
+  {full:'líný',    a:'í'},
+  {full:'líbat',   a:'í'},
+  /* M + i/í */
+  {full:'míč',     a:'í'},
+  {full:'mít',     a:'í'},
+  {full:'milý',    a:'i'},
+  {full:'minulý',  a:'i'},
+  {full:'mince',   a:'i'},
+  {full:'milovat', a:'i'},
+  /* P + i/í */
+  {full:'pivo',    a:'i'},
+  {full:'pilný',   a:'i'},
+  {full:'pilot',   a:'i'},
+  {full:'písek',   a:'í'},
+  {full:'piknik',  a:'i'},
+  /* S + i/í */
+  {full:'silný',   a:'i'},
+  {full:'síla',    a:'í'},
+  {full:'sirka',   a:'i'},
+  {full:'sirup',   a:'i'},
+  {full:'sice',    a:'i'},
+  /* V + i/í */
+  {full:'vidět',   a:'i'},
+  {full:'vítr',    a:'í'},
+  {full:'vítat',   a:'í'},
+  {full:'vinout',  a:'i'},
+  {full:'vinný',   a:'i'},
+  /* Z + i/í */
+  {full:'zima',    a:'i'},
+  {full:'zítra',   a:'í'},
+  {full:'zívat',   a:'í'}
+];
+
+/* Zkombinuj vyjmenovaná (y/ý) + slova s i/í. To je pravá hra — žák musí rozlišovat. */
+var HRA_POOL = DOP_DATA.slice().concat(HRA_POOL_I);
 
 var HRA = {
   running:false, lane:1, trexY:0, lives:3, score:0, errs:0,

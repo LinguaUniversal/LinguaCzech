@@ -107,7 +107,7 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
     <div onclick="go('sady')" class="mk mk-p" style="grid-column:span 2"><h3>📋 Naučím se páry</h3><p>b/p · d/t · ď/ť · v/f · z/s · ž/š · h/ch · g/k</p></div>
     <div onclick="go('doplnit')" class="mk mk-m"><h3>✏️ Doplň ve větě</h3><p>Z kontextu věty pozná, co tam patří</p></div>
     <div onclick="go('sz')" class="mk mk-o"><h3>🔤 Předpony s- / z-</h3><p>sběr × zběh, sjet × zjet</p></div>
-    <div onclick="go('pexeso')" class="mk mk-m"><h3>🃏 Pexeso párů</h3><p>Spoj páry: b ↔ p, d ↔ t...</p></div>
+    <div onclick="go('pexeso')" class="mk mk-m"><h3>🃏 Pexeso: slovo ↔ význam</h3><p>Spoj dvojice (dub = strom)</p></div>
     <div onclick="printChoice()" class="mk" style="grid-column:span 2;background:#f3f4f6;border:2px dashed #9ca3af"><h3 style="color:#374151">🖨️ Vytisknout pracovní list</h3><p style="color:#6b7280">PDF k procvičování doma</p></div>
   </div>
 </div>
@@ -186,17 +186,17 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
   </div>
 </div>
 
-<!-- CV: PEXESO -->
+<!-- CV: PEXESO slovo + význam -->
 <div class="cv" id="cv-pexeso">
-  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🃏 Pexeso párů</span><span class="var" id="pex-v">páry: 0/8</span></div>
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🃏 Pexeso: slovo + význam</span><span class="var" id="pex-v">páry: 0/6</span></div>
   <div class="sk">
     <div><div class="skn" id="pex-bd">0</div><div class="skl">body</div></div>
     <div><div class="skn" id="pex-mv">0</div><div class="skl">tahy</div></div>
-    <div><div class="skn" id="pex-pr">0/8</div><div class="skl">páry</div></div>
+    <div><div class="skn" id="pex-pr">0/6</div><div class="skl">páry</div></div>
   </div>
   <div id="pex-ob">
     <div class="ka">
-      <div class="q">Spoj <b>znělou</b> souhlásku s její <b>neznělou</b> verzí (např. b ↔ p).</div>
+      <div class="q">Spoj <b>slovo</b> s jeho <b>významem</b>. (Záleží na párové souhlásce!)</div>
       <div class="pexGrid" id="pex-grid"></div>
       <div class="fb" id="pex-fb"></div>
     </div>
@@ -273,8 +273,6 @@ var SZ_DATA = [
   {sentence:'Vojáci ___běhli z kasáren bez dovolení.', correct:'z', word:'běhli', explanation:'zběhli = utekli (z- = pryč, dolů).'},
   {sentence:'Lyžaři ___jeli ze svahu na lyžích.', correct:'s', word:'jeli', explanation:'sjeli (s- = dolů ze svahu).'},
   {sentence:'Po havárii museli auto ___likvidovat.', correct:'z', word:'likvidovat', explanation:'zlikvidovat = úplně odstranit.'},
-  {sentence:'Maminka ___pekla výborný koláč.', correct:'u', word:'pekla', explanation:'POZOR: u-pekla = upekla, ne s/z. Zkus jiné slovo.'},
-  {sentence:'Před maminčiným pohledem se cítil ___trapený.', correct:'s', word:'trapený', explanation:'strapený, ztrapený — obě formy existují, ale význam je jiný.'},
   {sentence:'Dělník ___bil několik prken k sobě.', correct:'s', word:'bil', explanation:'sbil (s- = dohromady).'},
   {sentence:'Kluk hodně ___hubl po nemoci.', correct:'z', word:'hubl', explanation:'zhubl = stal se hubeným (z- = změna stavu).'},
   {sentence:'Děti ___tloukly hřebíky do prkna.', correct:'s', word:'tloukly', explanation:'stloukly (s- = dohromady).'},
@@ -289,16 +287,20 @@ var SZ_DATA = [
 /* Pro ověřit/printer použijeme DOP_DATA (skutečná data) */
 var OV_DATA = DOP_DATA.slice();
 
-/* Sloupcové páry pro pexeso */
+/* Pexeso: dvojice slovo + význam, kde záleží na párové souhlásce */
 var PEX_PAIRS = [
-  {z:'B', n:'P'},
-  {z:'D', n:'T'},
-  {z:'Ď', n:'Ť'},
-  {z:'V', n:'F'},
-  {z:'Z', n:'S'},
-  {z:'Ž', n:'Š'},
-  {z:'H', n:'CH'},
-  {z:'G', n:'K'}
+  {w:'dub', m:'strom (s žaludy)'},
+  {w:'dup', m:'dupání nohou'},
+  {w:'led', m:'zmrzlá voda'},
+  {w:'let', m:'pohyb v vzduchu'},
+  {w:'muž', m:'dospělý člověk'},
+  {w:'myš', m:'malé zvířátko'},
+  {w:'plot', m:'ohrada zahrady'},
+  {w:'plod', m:'ovoce na stromě'},
+  {w:'sníh', m:'bílá zimní pokrývka'},
+  {w:'hrách', m:'zelený luštěninový plod'},
+  {w:'vůz', m:'kočárkový dopravní prostředek'},
+  {w:'ves', m:'malá vesnice'}
 ];
 
 /* ─── DOPLŇ ─── */
@@ -387,8 +389,8 @@ function szRender(){
   var s = szSt;
   if(s.idx >= s.seq.length){ szFinish(); return; }
   var item = s.seq[s.idx];
-  /* Vykresli větu s mezerou */
-  var html = item.sentence.replace('___', '<span style="display:inline-block;background:var(--ms);border:2px solid var(--m);border-radius:6px;padding:.1rem .5rem;color:var(--m);font-weight:800;margin:0 .1rem">?</span>'+item.word);
+  /* Věta má ___ na začátku slova; word je už součást věty (např. "___brat houby") - replace nahrazuje jen ___ za vizuální box */
+  var html = item.sentence.replace('___', '<span style="display:inline-block;background:var(--ms);border:2px solid var(--m);border-radius:6px;padding:.1rem .5rem;color:var(--m);font-weight:800;margin:0 .1rem">?</span>');
   el('sz-s').innerHTML = html;
   el('sz-v').textContent = (s.idx+1)+'/'+s.seq.length;
   el('sz-ci').textContent = (s.idx+1)+'/'+s.seq.length;
@@ -498,11 +500,12 @@ function ovFinish(){
 /* ─── PEXESO ─── */
 var pexSt={};
 function pexStart(){
-  var pairs = shuffle(PEX_PAIRS).slice(0, 8);
+  /* Vyber 6 dvojic = 12 karet (slovo + význam) */
+  var pairs = shuffle(PEX_PAIRS).slice(0, 6);
   var cards = [];
   pairs.forEach(function(p, i){
-    cards.push({txt:p.z, id:i, type:'z'});
-    cards.push({txt:p.n, id:i, type:'n'});
+    cards.push({txt:p.w, id:i, type:'w'});  /* slovo */
+    cards.push({txt:p.m, id:i, type:'m'});  /* význam */
   });
   cards = shuffle(cards);
   pexSt = {pairs:pairs, cards:cards, flipped:[], moves:0, matched:0, locked:false, body:0};
@@ -513,15 +516,24 @@ function pexStart(){
 function pexRender(){
   var grid = el('pex-grid');
   grid.innerHTML = '';
+  /* 12 karet, 4 sloupce × 3 řádky */
+  grid.style.gridTemplateColumns = 'repeat(4, 1fr)';
   pexSt.cards.forEach(function(c, i){
     var div = document.createElement('div');
     div.className = 'pexCard back';
     div.dataset.idx = i;
+    /* Karty s významem mají jinou velikost písma (delší text) */
+    if(c.type === 'm'){
+      div.style.fontSize = '.75rem';
+      div.style.lineHeight = '1.1';
+    } else {
+      div.style.fontSize = '1.1rem';
+    }
     div.onclick = function(){ pexFlip(i, div); };
     grid.appendChild(div);
   });
   el('pex-mv').textContent = pexSt.moves;
-  el('pex-pr').textContent = pexSt.matched + '/8';
+  el('pex-pr').textContent = pexSt.matched + '/6';
   el('pex-bd').textContent = pexSt.body;
   el('pex-fb').textContent='';
   el('pex-fb').className='fb';
@@ -548,14 +560,16 @@ function pexFlip(idx, div){
         pexSt.matched++;
         pexSt.body += 10;
         addPoints(10);
-        el('pex-pr').textContent = pexSt.matched + '/8';
+        el('pex-pr').textContent = pexSt.matched + '/6';
         el('pex-bd').textContent = pexSt.body;
-        el('pex-fb').innerHTML = '✓ Pár <b>'+f1.card.txt+' ↔ '+f2.card.txt+'</b>!';
+        /* Najít slovo a význam z páru pro feedback */
+        var pair = pexSt.pairs[f1.card.id];
+        el('pex-fb').innerHTML = '✓ <b>'+pair.w+'</b> = '+pair.m;
         el('pex-fb').className='fb ok';
         pexSt.flipped = [];
         pexSt.locked = false;
-        if(pexSt.matched === 8) pexFinish();
-      }, 600);
+        if(pexSt.matched === 6) pexFinish();
+      }, 700);
     } else {
       setTimeout(function(){
         f1.div.classList.remove('flipped'); f1.div.classList.add('back'); f1.div.textContent='';
@@ -564,14 +578,14 @@ function pexFlip(idx, div){
         pexSt.locked = false;
         el('pex-fb').textContent='';
         el('pex-fb').className='fb';
-      }, 1200);
+      }, 1300);
     }
   }
 }
 function pexFinish(){
   el('pex-ob').style.display='none';
   el('pex-res').style.display='block';
-  el('pex-pp').textContent = 'Spojila jsi všech 8 párů na '+pexSt.moves+' tahů. '+pexSt.body+' bodů.';
+  el('pex-pp').textContent = 'Spojila jsi všech 6 párů na '+pexSt.moves+' tahů. '+pexSt.body+' bodů.';
   el('pex-sc').textContent = pexSt.body;
   el('pex-tot').textContent = totalScore;
 }
@@ -619,7 +633,7 @@ function printGetData(key){
     var picked = shuffle(cleanData).slice(0,10);
     var qHtml = '<p>Doplň <b>S-</b> nebo <b>Z-</b> na začátek slova podle významu věty:</p><table style="width:100%">';
     picked.forEach(function(it,i){
-      qHtml += '<tr><td style="padding:.4rem;border-bottom:1px dotted #ccc">'+(i+1)+'. '+it.sentence.replace('___','___'+it.word)+'</td><td style="padding:.4rem;text-align:right">S / Z</td></tr>';
+      qHtml += '<tr><td style="padding:.4rem;border-bottom:1px dotted #ccc">'+(i+1)+'. '+it.sentence.replace('___', '<u>____</u>')+'</td><td style="padding:.4rem;text-align:right">S / Z</td></tr>';
     });
     qHtml += '</table>';
     var aHtml = '<table style="width:100%">';
@@ -638,7 +652,7 @@ function printGetData(key){
     });
     qHtml += '</table><h4 style="margin-top:1rem">B) Doplň S- nebo Z-:</h4><table style="width:100%">';
     p2.forEach(function(it,i){
-      qHtml += '<tr><td style="padding:.35rem;border-bottom:1px dotted #ccc">'+(i+1)+'. '+it.sentence.replace('___','___'+it.word)+' &nbsp;(S/Z)</td></tr>';
+      qHtml += '<tr><td style="padding:.35rem;border-bottom:1px dotted #ccc">'+(i+1)+'. '+it.sentence.replace('___', '<u>____</u>')+' &nbsp;(S/Z)</td></tr>';
     });
     qHtml += '</table>';
     var aHtml = '<h4>A) Doplň ve větě:</h4>';

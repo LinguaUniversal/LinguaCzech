@@ -767,7 +767,7 @@ var DOP_DATA = [
   {full:'slepýš',  a:'ý', root:'slepýš'},
   /* P - příbuzná */
   {full:'pyšný',   a:'y', root:'pýcha'},
-  {full:'klopýtnout',a:'y', root:'klopýtat'},
+  {full:'klopýtnout',a:'ý', root:'klopýtat'},
   {full:'třpytivý',a:'y', root:'třpytit se'},
 
   /* S - vyjmenovaná */
@@ -2310,7 +2310,7 @@ function printHTML(data){
     '.toolbar{position:fixed;top:.5rem;right:.5rem;background:#32a0d2;color:white;padding:.5rem 1rem;border-radius:99px;border:none;font-family:inherit;font-weight:700;font-size:.95rem;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2);}'+
     '@media print{.toolbar{display:none;}body{padding:.5cm;}.sheet{max-width:100%;}}'+
     '@page{size:A4;margin:1cm;}'+
-    '</style></head><body>'+
+    '</style></head><body onload="setTimeout(function(){window.print();},400)">'+
     '<button class="toolbar" onclick="window.print()">🖨️ Vytisknout / Uložit PDF</button>'+
     '<div class="sheet">'+
       '<div class="head"><span class="brand">LinguaCzech · ZŠ Lingua Universal</span><span class="meta">'+(data.topic||data.title)+' · '+dateStr+'</span></div>'+

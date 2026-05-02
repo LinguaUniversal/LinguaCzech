@@ -1,0 +1,1927 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vyjmenovaná slova — LinguaCzech 3. třída</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --m:#32a0d2;--ms:#e8f4fb;
+  --o:#ffaa37;--os:#fff8ee;
+  --z:#16a34a;--zs:#dcfce7;
+  --r:#dc2626;--rs:#fee2e2;
+  --p:#7c3aed;--ps:#f3e8ff;
+  --font:'Barlow Condensed',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
+.hl{max-width:760px;margin:1.5rem auto;padding:.5rem 1rem;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.4rem 0 1rem;}
+.topbar a{color:var(--m);text-decoration:none;font-weight:700;font-size:.95rem;}
+.topbar span{font-weight:800;color:var(--m);}
+.scbg{position:fixed;top:10px;right:12px;background:var(--o);color:white;border-radius:99px;padding:.3rem .85rem;font-weight:700;font-size:1rem;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.18);pointer-events:none;}
+.mh{text-align:center;margin:.5rem 0 1.2rem;}
+.mh h1{font-size:1.9rem;color:var(--m);font-weight:800;margin:0;}
+.mh p{color:#6b7280;margin:.3rem 0 0;}
+.mg{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem;}
+.mk{padding:1rem;border-radius:14px;cursor:pointer;text-align:center;transition:all .15s;border:2.5px solid transparent;background:white;}
+.mk:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08);}
+.mk-m{background:var(--ms);border-color:var(--m);}
+.mk-o{background:var(--os);border-color:var(--o);}
+.mk-p{background:var(--ps);border-color:var(--p);}
+.mk h3{font-size:1.05rem;font-weight:800;margin-bottom:.2rem;}
+.mk p{font-size:.85rem;color:#6b7280;margin:0;}
+.cv{display:none;}
+.nav{display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;}
+.zpet{background:white;border:1.5px solid #d1d5db;border-radius:8px;padding:.4rem .9rem;font-weight:600;cursor:pointer;font-family:var(--font);}
+.tit{font-size:1.1rem;font-weight:700;}
+.var{margin-left:auto;background:var(--ms);color:var(--m);border-radius:99px;padding:.2rem .8rem;font-weight:600;font-size:.85rem;}
+.sk{display:flex;justify-content:space-around;background:var(--os);border:1px solid #ffd48a;border-radius:10px;padding:.7rem;margin-bottom:.75rem;}
+.skn{font-size:1.4rem;font-weight:700;color:var(--o);text-align:center;}
+.skl{font-size:.75rem;color:#6b7280;text-align:center;}
+.pg{height:8px;background:#e5e7eb;border-radius:99px;overflow:hidden;margin-bottom:1rem;}
+.pgf{height:100%;background:var(--m);border-radius:99px;transition:width .3s;}
+.ka{background:white;border:1.5px solid #e5e7eb;border-radius:12px;padding:1rem;margin-bottom:1rem;}
+.q{font-weight:700;text-align:center;margin-bottom:.5rem;color:#374151;}
+.fb{margin-top:.7rem;font-size:.95rem;min-height:1.2rem;font-weight:600;text-align:center;}
+.fb.ok{color:var(--z);}
+.fb.err{color:var(--r);}
+.nxt{display:none;width:100%;background:var(--m);color:white;border:none;border-radius:8px;padding:.85rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:var(--font);margin-top:.5rem;}
+.res{display:none;text-align:center;padding:2rem 1rem;}
+.res h2{color:var(--m);font-size:1.6rem;margin:.5rem 0;}
+.res-row{display:flex;gap:1rem;justify-content:center;margin:1rem 0;flex-wrap:wrap;}
+.rs{background:var(--ms);border-radius:10px;padding:.75rem 1rem;}
+.rsv{font-size:1.4rem;font-weight:800;}
+.rsl{font-size:.8rem;color:#6b7280;}
+.znovu,.mbtn{padding:.7rem 1.2rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:.95rem;margin:.3rem;}
+.znovu{background:var(--m);color:white;border:none;}
+.mbtn{background:white;color:#374151;border:1.5px solid #d1d5db;}
+
+/* Sady — karta s vyjmenovanými slovy */
+.sadyTabs{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin:.5rem 0 1rem;}
+.sadyTab{padding:.5rem 1rem;background:white;border:2px solid #d1d5db;border-radius:99px;font-family:var(--font);font-weight:800;font-size:1.1rem;cursor:pointer;transition:all .15s;color:#374151;min-width:48px;}
+.sadyTab:hover{border-color:var(--m);}
+.sadyTab.on{background:var(--m);color:white;border-color:var(--m);}
+.sadyHeader{font-family:Verdana,Geneva,sans-serif;font-size:1.3rem;font-weight:700;color:var(--m);text-align:center;margin:1rem 0 .5rem;}
+.sadyWords{font-family:Verdana,Geneva,sans-serif;font-size:1.4rem;line-height:2;text-align:center;color:#1f2937;background:var(--ms);padding:1rem;border-radius:10px;margin:.5rem 0;}
+.sadyWords span{display:inline-block;padding:.15rem .5rem;margin:.15rem;background:white;border:1.5px solid var(--m);border-radius:8px;}
+.sadyHint{background:var(--os);border-left:4px solid var(--o);padding:.6rem .8rem;border-radius:6px;font-size:.9rem;color:#374151;margin:.5rem 0;line-height:1.5;}
+
+/* Doplň y/i */
+.dopWord{font-family:Verdana,Geneva,sans-serif;font-size:2.2rem;font-weight:700;text-align:center;margin:1rem 0;letter-spacing:.05em;color:#1f2937;}
+.dopGap{display:inline-block;border-bottom:3px solid var(--o);min-width:1.5em;color:var(--o);}
+.dopOpts{display:flex;gap:.6rem;justify-content:center;margin:1rem 0;}
+.dopBtn{padding:.8rem 1.5rem;font-size:1.5rem;font-weight:800;font-family:Verdana,Geneva,sans-serif;border:2.5px solid var(--m);background:white;color:var(--m);border-radius:12px;cursor:pointer;min-width:65px;}
+.dopBtn:hover:not(:disabled){background:var(--ms);}
+.dopBtn.ok{background:var(--zs);border-color:var(--z);color:var(--z);}
+.dopBtn.err{background:var(--rs);border-color:var(--r);color:var(--r);}
+.dopBtn:disabled{cursor:default;}
+.dopHint{background:var(--os);border-left:4px solid var(--o);padding:.5rem .75rem;border-radius:6px;font-size:.9rem;color:#374151;margin:.5rem 0;}
+
+/* Najdi vyjm. slovo ve větě */
+.najdiSent{font-family:Verdana,Geneva,sans-serif;font-size:1.2rem;font-weight:600;text-align:center;line-height:1.9;margin:1rem 0;}
+.najdiSent span{cursor:pointer;padding:.2rem .4rem;border-radius:6px;display:inline-block;margin:.1rem;transition:background .15s;}
+.najdiSent span:hover{background:var(--ms);}
+
+/* Pexeso */
+.pexGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin:1rem 0;}
+.pexCard{aspect-ratio:1.1;background:var(--m);border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:Verdana,Geneva,sans-serif;font-weight:700;color:white;font-size:.95rem;transition:all .2s;position:relative;padding:.3rem;text-align:center;line-height:1.2;}
+.pexCard.flipped{background:white;border:2.5px solid var(--m);color:#1f2937;}
+.pexCard.matched{background:var(--zs);border:2.5px solid var(--z);color:var(--z);cursor:default;}
+.pexCard.locked{cursor:default;}
+.pexCard.back::after{content:'?';font-size:2rem;}
+.pexInfo{text-align:center;margin:.7rem 0;font-weight:600;color:#374151;}
+
+/* Homonyma — dvojice slov se 2 významy */
+.homWrap{margin:1rem 0;}
+.homSentence{font-family:Verdana,Geneva,sans-serif;font-size:1.15rem;text-align:center;line-height:1.7;background:var(--ms);padding:1rem;border-radius:10px;margin:1rem 0;color:#1f2937;}
+.homBlank{display:inline-block;border-bottom:3px solid var(--o);min-width:3em;color:var(--o);font-weight:800;}
+.homOpts{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:1rem 0;}
+.homOpt{padding:1rem;border:2.5px solid #d1d5db;border-radius:12px;background:white;cursor:pointer;text-align:center;transition:all .15s;}
+.homOpt:hover{border-color:var(--m);background:var(--ms);}
+.homOpt .hom-w{font-family:Verdana,Geneva,sans-serif;font-size:1.5rem;font-weight:700;color:#1f2937;}
+.homOpt .hom-m{font-size:.85rem;color:#6b7280;margin-top:.3rem;}
+.homOpt.ok{background:var(--zs);border-color:var(--z);}
+.homOpt.err{background:var(--rs);border-color:var(--r);}
+
+/* Příbuzná Ano/Ne */
+.pribTarget2{font-family:Verdana,Geneva,sans-serif;font-size:1.5rem;font-weight:800;color:var(--m);text-align:center;padding:.6rem;background:var(--ms);border-radius:10px;margin:.8rem 0;}
+.pribCandidate{font-family:Verdana,Geneva,sans-serif;font-size:1.4rem;font-weight:700;text-align:center;padding:.8rem;background:white;border:2.5px solid var(--o);border-radius:10px;margin:.5rem 0;color:#1f2937;}
+.pribAnswers{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.8rem;}
+.pribBtn{padding:1.2rem;font-size:1.3rem;font-weight:800;border-radius:12px;border:2.5px solid;cursor:pointer;font-family:var(--font);}
+.pribAno{background:var(--zs);border-color:var(--z);color:var(--z);}
+.pribAno:hover:not(:disabled){background:var(--z);color:white;}
+.pribNe{background:var(--rs);border-color:var(--r);color:var(--r);}
+.pribNe:hover:not(:disabled){background:var(--r);color:white;}
+.pribBtn.ok{background:var(--zs);border-color:var(--z);color:var(--z);}
+.pribBtn.err{background:var(--rs);border-color:var(--r);color:var(--r);}
+.pribBtn:disabled{cursor:default;opacity:.7;}
+
+/* Křížovka */
+.krizGrid{display:inline-grid;gap:0;background:#374151;padding:2px;border-radius:6px;margin:0 auto;}
+.krizCell{position:relative;width:38px;height:38px;background:#374151;display:flex;align-items:center;justify-content:center;}
+.krizCell.empty{background:#374151;}
+.krizCell.fill{background:white;}
+.krizCell.fill input{width:100%;height:100%;border:1.5px solid #d1d5db;border-radius:0;text-align:center;font-family:Verdana,Geneva,sans-serif;font-size:1.1rem;font-weight:700;color:#1f2937;text-transform:uppercase;outline:none;background:white;padding:0;}
+.krizCell.fill input:focus{border-color:var(--m);background:var(--ms);}
+.krizCell.fill input.ok{background:var(--zs);border-color:var(--z);color:var(--z);}
+.krizCell.fill input.err{background:var(--rs);border-color:var(--r);color:var(--r);}
+.krizCell .krizNum{position:absolute;top:1px;left:2px;font-size:.55rem;font-weight:700;color:#6b7280;font-family:var(--font);line-height:1;pointer-events:none;}
+.krizClues{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:1rem 0;font-size:.9rem;}
+.krizClueBox{background:white;border:1.5px solid #d1d5db;border-radius:8px;padding:.6rem .8rem;}
+.krizClueBox h4{color:var(--m);font-size:.95rem;font-weight:800;margin-bottom:.4rem;}
+.krizClueBox ol{padding-left:1.4rem;line-height:1.6;}
+.krizClueBox li{margin:.2rem 0;color:#374151;}
+.krizClueBox li.done{text-decoration:line-through;color:#9ca3af;}
+
+/* Hra autíčko */
+.gameWrap{position:relative;background:#1a3550;border-radius:12px;overflow:hidden;margin:.5rem 0;border:2px solid var(--m);}
+.gameInfo{display:flex;justify-content:space-between;padding:.5rem .8rem;background:rgba(0,0,0,.3);color:white;font-weight:700;}
+.gameInfo span{font-size:1rem;}
+.gameLives{color:#ff6b6b;}
+canvas#gameCv{display:block;width:100%;height:280px;background:linear-gradient(180deg,#234e7a 0%,#1a3550 100%);}
+.gameCtrl{display:flex;gap:.4rem;padding:.6rem;background:rgba(0,0,0,.3);}
+.gameCtrl button{flex:1;padding:.8rem;font-size:1.5rem;font-weight:800;font-family:Verdana,Geneva,sans-serif;background:white;color:var(--m);border:none;border-radius:8px;cursor:pointer;}
+.gameCtrl button:active{background:var(--ms);}
+.gameWord{position:absolute;top:.5rem;left:50%;transform:translateX(-50%);background:white;padding:.4rem .8rem;border-radius:8px;font-family:Verdana,Geneva,sans-serif;font-weight:700;font-size:1.3rem;color:#1f2937;}
+.gameOver{display:none;text-align:center;padding:1.5rem;background:white;border:2px solid var(--m);border-radius:12px;}
+</style>
+</head>
+<body>
+<div class="scbg" id="scbg">⭐ 0 b.</div>
+<div class="hl">
+
+<!-- MENU -->
+<div id="menu">
+  <div class="topbar"><a href="3trida.html">← 3. třída</a><span>LinguaCzech</span></div>
+  <div class="mh"><h1>Vyjmenovaná slova</h1><p>3. ročník — y/i po obojetných souhláskách</p></div>
+  <div class="mg">
+    <div onclick="go('sady')" class="mk mk-p" style="grid-column:span 2"><h3>📋 Naučím se sady</h3><p>Vyjmenovaná slova B / L / M / P / S / V / Z</p></div>
+    <div onclick="go('dop')" class="mk mk-m"><h3>✏️ Doplň y/i</h3><p>Doplň správné písmeno do slova</p></div>
+    <div onclick="go('najdi')" class="mk mk-o"><h3>🔍 Najdi vyjm. slovo</h3><p>Klikni ve větě na vyjm. slovo</p></div>
+    <div onclick="go('pex')" class="mk mk-m"><h3>🃏 Pexeso</h3><p>Spoj vyjm. slovo s odvozeným</p></div>
+    <div onclick="go('hom')" class="mk mk-o"><h3>🎭 Dvojice významů</h3><p>mýt × mít, být × bít...</p></div>
+    <div onclick="go('prib')" class="mk mk-m"><h3>🌳 Příbuzné? Ano/Ne</h3><p>Patří slovo k vyjmenovanému?</p></div>
+    <div onclick="go('hra')" class="mk mk-o"><h3>🦖 T-rex doplňuje y/i</h3><p>Vyber správné písmeno do slova</p></div>
+    <div onclick="go('kriz')" class="mk mk-p" style="grid-column:span 2"><h3>🧩 Křížovka</h3><p>Vylušti křížovku z vyjmenovaných slov</p></div>
+    <div onclick="printChoice()" class="mk" style="grid-column:span 2;background:#f3f4f6;border:2px dashed #9ca3af"><h3 style="color:#374151">🖨️ Vytisknout pracovní list</h3><p style="color:#6b7280">PDF k procvičování doma — zadání + řešení na A4</p></div>
+  </div>
+</div>
+
+<!-- CV: SADY -->
+<div class="cv" id="cv-sady">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">📋 Naučím se sady</span></div>
+  <div class="sadyTabs" id="sady-tabs"></div>
+  <div class="ka">
+    <div class="sadyHeader" id="sady-h">—</div>
+    <div class="sadyWords" id="sady-w">—</div>
+    <div class="sadyHint" id="sady-hint">—</div>
+  </div>
+  <button class="mbtn" style="display:block;margin:.5rem auto" onclick="back()">Zpět do menu</button>
+</div>
+
+<!-- CV: DOPLŇ Y/I -->
+<div class="cv" id="cv-dop">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">✏️ Doplň y/i</span><span class="var" id="dop-v">1/12</span></div>
+  <div class="sk">
+    <div><div class="skn" id="dop-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="dop-ci">1/12</div><div class="skl">slovo</div></div>
+    <div><div class="skn" id="dop-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="dop-pg" style="width:0%"></div></div>
+  <div id="dop-ob">
+    <div class="ka">
+      <div class="q">Doplň správné písmeno do slova:</div>
+      <div class="dopWord" id="dop-w">—</div>
+      <div class="dopOpts">
+        <button class="dopBtn" onclick="dopAns('y',this)">y</button>
+        <button class="dopBtn" onclick="dopAns('i',this)">i</button>
+        <button class="dopBtn" onclick="dopAns('ý',this)">ý</button>
+        <button class="dopBtn" onclick="dopAns('í',this)">í</button>
+      </div>
+      <div class="fb" id="dop-fb"></div>
+    </div>
+    <button class="nxt" id="dop-nx" onclick="dopNext()">Další →</button>
+  </div>
+  <div class="res" id="dop-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="dop-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="dop-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="dop-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('dop')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV: NAJDI VYJM. SLOVO -->
+<div class="cv" id="cv-najdi">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🔍 Najdi vyjm. slovo</span><span class="var" id="naj-v">1/8</span></div>
+  <div class="sk">
+    <div><div class="skn" id="naj-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="naj-ci">1/8</div><div class="skl">věta</div></div>
+    <div><div class="skn" id="naj-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="naj-pg" style="width:0%"></div></div>
+  <div id="naj-ob">
+    <div class="ka">
+      <div class="q">Klikni na slovo, které je <b style="color:var(--m)">vyjmenované</b>:</div>
+      <div class="najdiSent" id="naj-s">—</div>
+      <div class="fb" id="naj-fb"></div>
+    </div>
+    <button class="nxt" id="naj-nx" onclick="najNext()">Další →</button>
+  </div>
+  <div class="res" id="naj-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="naj-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="naj-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="naj-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('najdi')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV: PEXESO -->
+<div class="cv" id="cv-pex">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🃏 Pexeso</span><span class="var" id="pex-v">páry: 0/8</span></div>
+  <div class="sk">
+    <div><div class="skn" id="pex-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="pex-mv">0</div><div class="skl">tahy</div></div>
+    <div><div class="skn" id="pex-pr">0/8</div><div class="skl">páry</div></div>
+  </div>
+  <div id="pex-ob">
+    <div class="ka">
+      <div class="pexInfo">Spoj <b style="color:var(--m)">vyjmenované slovo</b> s jeho <b style="color:var(--o)">odvozeným</b> (příbuzným).</div>
+      <div class="pexGrid" id="pex-grid"></div>
+      <div class="fb" id="pex-fb"></div>
+    </div>
+  </div>
+  <div class="res" id="pex-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="pex-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="pex-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="pex-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('pex')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV: HOMONYMA — dvojice významů -->
+<div class="cv" id="cv-hom">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🎭 Dvojice významů</span><span class="var" id="hom-v">1/8</span></div>
+  <div class="sk">
+    <div><div class="skn" id="hom-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="hom-ci">1/8</div><div class="skl">věta</div></div>
+    <div><div class="skn" id="hom-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="hom-pg" style="width:0%"></div></div>
+  <div id="hom-ob">
+    <div class="ka">
+      <div class="q">Které slovo patří do věty? Pozor — záleží na <b style="color:var(--m)">významu</b>.</div>
+      <div class="homSentence" id="hom-s">—</div>
+      <div class="homOpts" id="hom-c"></div>
+      <div class="fb" id="hom-fb"></div>
+    </div>
+    <button class="nxt" id="hom-nx" onclick="homNext()">Další →</button>
+  </div>
+  <div class="res" id="hom-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="hom-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="hom-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="hom-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('hom')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV: PŘÍBUZNÁ ANO/NE -->
+<div class="cv" id="cv-prib">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🌳 Příbuzné? Ano/Ne</span><span class="var" id="prb-v">1/12</span></div>
+  <div class="sk">
+    <div><div class="skn" id="prb-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="prb-ci">1/12</div><div class="skl">slovo</div></div>
+    <div><div class="skn" id="prb-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="prb-pg" style="width:0%"></div></div>
+  <div id="prb-ob">
+    <div class="ka">
+      <div class="q">Patří toto slovo k vyjmenovanému slovu (je <b style="color:var(--m)">příbuzné</b>)?</div>
+      <div class="pribTarget2" id="prb-t">—</div>
+      <div style="font-size:.9rem;color:#6b7280;text-align:center">je příbuzné k</div>
+      <div class="pribCandidate" id="prb-c">—</div>
+      <div class="pribAnswers">
+        <button class="pribBtn pribAno" onclick="prbAns(true,this)">✓ ANO</button>
+        <button class="pribBtn pribNe" onclick="prbAns(false,this)">✗ NE</button>
+      </div>
+      <div class="fb" id="prb-fb"></div>
+    </div>
+    <button class="nxt" id="prb-nx" onclick="prbNext()">Další →</button>
+  </div>
+  <div class="res" id="prb-res">
+    <div style="font-size:3rem">🎉</div><h2>Výborně!</h2><p id="prb-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="prb-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="prb-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('prib')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV: KŘÍŽOVKA -->
+<div class="cv" id="cv-kriz">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🧩 Křížovka</span></div>
+  <div class="ka">
+    <div class="q" style="margin-bottom:.4rem">Doplň slova do mřížky podle nápověd. Tajenka se objeví <b style="color:var(--m)">žlutě</b>.</div>
+    <div style="text-align:center;margin:.8rem 0">
+      <div id="kriz-grid-wrap"></div>
+    </div>
+    <div class="krizClues" id="kriz-clues">
+      <div class="krizClueBox">
+        <h4>↓ Svisle</h4>
+        <ol id="kriz-down"></ol>
+      </div>
+      <div class="krizClueBox">
+        <h4>→ Vodorovně</h4>
+        <ol id="kriz-across"></ol>
+      </div>
+    </div>
+    <div style="display:flex;gap:.5rem;margin-top:.6rem">
+      <button class="mbtn" style="flex:1" onclick="krizCheck()">Zkontrolovat ✓</button>
+      <button class="mbtn" style="flex:1" onclick="krizClear()">Smazat 🧽</button>
+      <button class="mbtn" style="flex:1" onclick="krizReveal()">Ukázat řešení</button>
+    </div>
+    <div class="fb" id="kriz-fb"></div>
+  </div>
+</div>
+
+<!-- CV: HRA T-REX Y/I -->
+<div class="cv" id="cv-hra">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🦖 T-rex doplňuje y/i</span></div>
+  <div id="hra-intro">
+    <div class="ka" style="text-align:center">
+      <div style="font-size:3.5rem">🦖</div>
+      <h3 style="color:var(--m);margin:.5rem 0">T-rex doplňuje y/i</h3>
+      <p style="color:#6b7280;line-height:1.6;margin:.5rem 0;text-align:left;padding:0 .5rem">
+        Pod hrou je slovo s prázdným místem (např. <b>b_strý</b>).<br><br>
+        V krajině přijíždí 4 pruhy s písmeny <b style="color:var(--m)">i · y · í · ý</b>. T-rex skáče mezi pruhy — najeď do toho s <b>správným písmenem</b>!
+      </p>
+      <p style="color:#6b7280;font-size:.85rem;margin:.5rem 0">3 životy ❤️❤️❤️ · ovládání: ↑↓ klávesy, tlačítka 1-4, nebo tap na pruh</p>
+      <button class="znovu" onclick="hraStart()">▶ Začít hru</button>
+    </div>
+  </div>
+  <div id="hra-play" style="display:none">
+    <div style="background:white;border:2px solid #d1d5db;border-radius:12px;padding:.8rem;margin:.5rem 0">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;font-weight:700">
+        <span>🏆 <span id="hra-sc">0</span> b.</span>
+        <span id="hra-lv">❤️❤️❤️</span>
+      </div>
+      <canvas id="gameCv" width="480" height="280" style="width:100%;border-radius:10px;display:block;touch-action:none;cursor:pointer;background:#fafafa"></canvas>
+      <div id="hra-word" style="margin-top:.6rem;padding:.8rem;background:var(--ms);border-radius:10px;text-align:center;font-family:Verdana,Geneva,sans-serif;font-size:1.8rem;font-weight:700;letter-spacing:.05em;color:#1f2937;min-height:3rem">—</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:.3rem;margin-top:.5rem">
+        <button style="padding:.7rem .3rem;font-weight:800;font-size:1.1rem;border:2px solid var(--m);background:white;color:var(--m);border-radius:8px;cursor:pointer;font-family:Verdana,Geneva,sans-serif" onclick="hraMove(0)">i</button>
+        <button style="padding:.7rem .3rem;font-weight:800;font-size:1.1rem;border:2px solid var(--m);background:white;color:var(--m);border-radius:8px;cursor:pointer;font-family:Verdana,Geneva,sans-serif" onclick="hraMove(1)">y</button>
+        <button style="padding:.7rem .3rem;font-weight:800;font-size:1.1rem;border:2px solid var(--m);background:white;color:var(--m);border-radius:8px;cursor:pointer;font-family:Verdana,Geneva,sans-serif" onclick="hraMove(2)">í</button>
+        <button style="padding:.7rem .3rem;font-weight:800;font-size:1.1rem;border:2px solid var(--m);background:white;color:var(--m);border-radius:8px;cursor:pointer;font-family:Verdana,Geneva,sans-serif" onclick="hraMove(3)">ý</button>
+      </div>
+      <div style="text-align:center;color:#9ca3af;font-size:.78rem;margin-top:.3rem">↑↓ šipky · klik/tap na pruh · 1/2/3/4</div>
+    </div>
+  </div>
+  <div class="gameOver" id="hra-over" style="display:none">
+    <div style="font-size:3rem">🦖</div>
+    <h3 style="color:var(--m)" id="hra-tx">Hra skončila!</h3>
+    <p id="hra-pp"></p>
+    <p>Skóre: <b id="hra-fin">0</b> bodů</p>
+    <button class="znovu" onclick="hraStart()">Hrát znovu 🔄</button>
+    <button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+</div><!-- .hl -->
+
+<script>
+/* ── SDÍLENÉ ── */
+var SCORE_KEY = 'vyjm_score';
+var totalScore = 0;
+function loadScore(){
+  try{ totalScore = parseInt(localStorage.getItem(SCORE_KEY)) || 0; }catch(e){ totalScore = 0; }
+  el('scbg').textContent = '⭐ '+totalScore+' b.';
+}
+function saveScore(){
+  try{ localStorage.setItem(SCORE_KEY, String(totalScore)); }catch(e){}
+}
+function addPoints(n){ totalScore += n; saveScore(); el('scbg').textContent = '⭐ '+totalScore+' b.'; }
+function el(id){ return document.getElementById(id); }
+function shuffle(a){ a = a.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function back(){
+  hraStop();
+  document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
+  el('menu').style.display='block';
+  window.scrollTo(0,0);
+}
+function go(id){
+  el('menu').style.display='none';
+  document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
+  el('cv-'+id).style.display='block';
+  window.scrollTo(0,0);
+  if(id==='sady') sadyStart();
+  if(id==='dop') dopStart();
+  if(id==='najdi') najStart();
+  if(id==='pex') pexStart();
+  if(id==='hom') homStart();
+  if(id==='prib') prbStart();
+  if(id==='kriz') krizStart();
+  if(id==='hra') hraIntro();
+}
+
+/* ─────────────────────────────────────────────
+   DATA: VYJMENOVANÁ SLOVA
+   Pro každou souhlásku seznam vyjm. slov + jejich příbuzná
+───────────────────────────────────────────── */
+
+/* Hlavní vyjm. slova podle abecedy souhlásek */
+var VYJM = {
+  B: {
+    label: 'Vyjmenovaná slova po B',
+    words: ['být','bydlit','obyvatel','byt','příbytek','nábytek','dobytek','obyčej','bystrý','bylina','kobyla','býk','babyka'],
+    hint: 'Pomůcka: <b>Být — bydlit — obyvatel — byt</b> a tak dále. Po B v těchto slovech vždy píšeme Y/Ý.'
+  },
+  L: {
+    label: 'Vyjmenovaná slova po L',
+    words: ['slyšet','mlýn','blýskat se','polykat','plynout','plýtvat','vzlykat','lysý','lýko','lýtko','lyže','pelyněk','plyš'],
+    hint: 'Pomůcka: <b>Slyšet — mlýn — blýskat se — polykat</b>. Po L v těchto slovech vždy Y/Ý.'
+  },
+  M: {
+    label: 'Vyjmenovaná slova po M',
+    words: ['my','mýt','myslit','mýlit se','hmyz','myš','hlemýžď','mýtit','zamykat','smýkat','dmýchat','chmýří','nachomýtnout se','mýto','mykat'],
+    hint: 'Pomůcka: <b>My — mýt — myslit — mýlit se</b>. Po M v těchto slovech vždy Y/Ý.'
+  },
+  P: {
+    label: 'Vyjmenovaná slova po P',
+    words: ['pýcha','pytel','pysk','netopýr','slepýš','pyl','kopyto','klopýtat','třpytit se','zpytovat','pykat','pýr','pýří','pýřit se','čepýřit se'],
+    hint: 'Pomůcka: <b>Pýcha — pytel — pysk — netopýr</b>. Po P v těchto slovech vždy Y/Ý.'
+  },
+  S: {
+    label: 'Vyjmenovaná slova po S',
+    words: ['syn','sytý','sýr','syrový','sychravý','usychat','sýkora','sýček','sysel','syčet','sypat'],
+    hint: 'Pomůcka: <b>Syn — sytý — sýr — syrový</b>. Po S v těchto slovech vždy Y/Ý.'
+  },
+  V: {
+    label: 'Vyjmenovaná slova po V',
+    words: ['vy','vykat','vysoký','výt','výskat','zvykat','žvýkat','vydra','výr','vyžle','povyk','výheň'],
+    hint: 'Pomůcka: <b>Vy — vykat — vysoký — výt</b>. Po V v těchto slovech vždy Y/Ý — a také ve slovech s předponou <b>vy-, vý-</b>.'
+  },
+  Z: {
+    label: 'Vyjmenovaná slova po Z',
+    words: ['brzy','jazyk','nazývat','Ruzyně'],
+    hint: 'Pomůcka: <b>Brzy — jazyk — nazývat — Ruzyně</b>. Pouze 4 slova, ale často se objeví!'
+  }
+};
+
+var VYJM_KEYS = ['B','L','M','P','S','V','Z'];
+
+/* ─────────────────────────────────────────────
+   CV-SADY: Karta vyjmenovaných slov
+───────────────────────────────────────────── */
+var sadyKey = 'B';
+function sadyStart(){
+  /* Vykreslit taby */
+  var tabs = el('sady-tabs');
+  tabs.innerHTML = '';
+  VYJM_KEYS.forEach(function(k){
+    var b = document.createElement('button');
+    b.className = 'sadyTab' + (k===sadyKey?' on':'');
+    b.textContent = k;
+    b.onclick = function(){ sadyShow(k); };
+    tabs.appendChild(b);
+  });
+  sadyShow(sadyKey);
+}
+function sadyShow(k){
+  sadyKey = k;
+  document.querySelectorAll('#sady-tabs .sadyTab').forEach(function(b){
+    b.classList.toggle('on', b.textContent === k);
+  });
+  var data = VYJM[k];
+  el('sady-h').textContent = data.label;
+  /* Slova jako pole pillů */
+  var wHtml = data.words.map(function(w){return '<span>'+w+'</span>';}).join(' ');
+  el('sady-w').innerHTML = wHtml;
+  el('sady-hint').innerHTML = data.hint;
+}
+
+/* ─────────────────────────────────────────────
+   DATA: Slova k doplňování
+   Každý záznam: {full: 'bystrý', gap: 'b_strý', a: 'y', root: 'bystrý'}
+   - full: celé slovo
+   - gap:  s prázdnem (v originále s y/i, my dáme '_')
+   - a:    správné písmeno (y/i/ý/í)
+   - root: vyjm. slovo, na které se odkazuje (pro nápovědu)
+───────────────────────────────────────────── */
+var DOP_DATA = [
+  /* B - vyjmenovaná */
+  {full:'být',     a:'ý', root:'být'},
+  {full:'bystrý',  a:'y', root:'bystrý'},
+  {full:'bydlet',  a:'y', root:'bydlit'},
+  {full:'kobyla',  a:'y', root:'kobyla'},
+  {full:'býk',     a:'ý', root:'býk'},
+  {full:'nábytek', a:'y', root:'nábytek'},
+  {full:'dobytek', a:'y', root:'dobytek'},
+  {full:'bylina',  a:'y', root:'bylina'},
+  /* B - příbuzná */
+  {full:'bydliště',a:'y', root:'bydlit'},
+  {full:'obývák',  a:'ý', root:'být'},
+  {full:'bystřina',a:'y', root:'bystrý'},
+  {full:'bylinka', a:'y', root:'bylina'},
+
+  /* L - vyjmenovaná */
+  {full:'mlýn',    a:'ý', root:'mlýn'},
+  {full:'lyže',    a:'y', root:'lyže'},
+  {full:'plynout', a:'y', root:'plynout'},
+  {full:'lýtko',   a:'ý', root:'lýtko'},
+  {full:'slyšet',  a:'y', root:'slyšet'},
+  {full:'lysý',    a:'y', root:'lysý'},
+  {full:'plýtvat', a:'ý', root:'plýtvat'},
+  {full:'pelyněk', a:'y', root:'pelyněk'},
+  /* L - příbuzná */
+  {full:'mlynář',  a:'y', root:'mlýn'},
+  {full:'polykání',a:'y', root:'polykat'},
+  {full:'lyžař',   a:'y', root:'lyže'},
+
+  /* M - vyjmenovaná */
+  {full:'mýt',     a:'ý', root:'mýt'},
+  {full:'mýlit se',a:'ý', root:'mýlit se'},
+  {full:'myš',     a:'y', root:'myš'},
+  {full:'myslet',  a:'y', root:'myslit'},
+  {full:'hmyz',    a:'y', root:'hmyz'},
+  {full:'hlemýžď', a:'ý', root:'hlemýžď'},
+  /* M - příbuzná */
+  {full:'umýt',    a:'ý', root:'mýt'},
+  {full:'myslivec',a:'y', root:'myslit'},
+  {full:'myšlenka',a:'y', root:'myslit'},
+  {full:'umyvadlo',a:'y', root:'mýt'},
+
+  /* P - vyjmenovaná */
+  {full:'pýcha',   a:'ý', root:'pýcha'},
+  {full:'pytel',   a:'y', root:'pytel'},
+  {full:'netopýr', a:'ý', root:'netopýr'},
+  {full:'pyl',     a:'y', root:'pyl'},
+  {full:'kopyto',  a:'y', root:'kopyto'},
+  {full:'slepýš',  a:'ý', root:'slepýš'},
+  /* P - příbuzná */
+  {full:'pyšný',   a:'y', root:'pýcha'},
+  {full:'klopýtnout',a:'y', root:'klopýtat'},
+  {full:'třpytivý',a:'y', root:'třpytit se'},
+
+  /* S - vyjmenovaná */
+  {full:'syn',     a:'y', root:'syn'},
+  {full:'sýr',     a:'ý', root:'sýr'},
+  {full:'sytý',    a:'y', root:'sytý'},
+  {full:'syrový',  a:'y', root:'syrový'},
+  {full:'sýkora',  a:'ý', root:'sýkora'},
+  {full:'syčet',   a:'y', root:'syčet'},
+  {full:'sysel',   a:'y', root:'sysel'},
+  /* S - příbuzná */
+  {full:'syrečky', a:'y', root:'sýr'},
+  {full:'sypký',   a:'y', root:'sypat'},
+  {full:'syčení',  a:'y', root:'syčet'},
+
+  /* V - vyjmenovaná */
+  {full:'vy',      a:'y', root:'vy'},
+  {full:'vysoký',  a:'y', root:'vysoký'},
+  {full:'výška',   a:'ý', root:'vysoký'},
+  {full:'vydra',   a:'y', root:'vydra'},
+  {full:'zvykat',  a:'y', root:'zvykat'},
+  {full:'žvýkat',  a:'ý', root:'žvýkat'},
+  {full:'vyžle',   a:'y', root:'vyžle'},
+  /* V - příbuzná (předpona vy-) */
+  {full:'vyběhnout',a:'y', root:'předpona vy-'},
+  {full:'výskot',  a:'ý', root:'výskat'},
+
+  /* Z - vyjmenovaná */
+  {full:'brzy',    a:'y', root:'brzy'},
+  {full:'jazyk',   a:'y', root:'jazyk'},
+  {full:'nazývat', a:'ý', root:'nazývat'}
+];
+
+/* Vytvoří gap z full + a (nahradí písmeno na pozici za 1. souhláskou) */
+function makeGap(full, a){
+  /* Najde pozici znaku a v originálu a nahradí ho '_' */
+  var idx = full.indexOf(a);
+  if(idx < 0) return full;
+  return full.substring(0, idx) + '_' + full.substring(idx+1);
+}
+
+/* ─────────────────────────────────────────────
+   CV-DOP: Doplň y/i
+───────────────────────────────────────────── */
+var dopSt = {seq:[], idx:0, body:0, sp:0, locked:false};
+
+function dopStart(){
+  dopSt = {seq: shuffle(DOP_DATA).slice(0, 12), idx:0, body:0, sp:0, locked:false};
+  el('dop-res').style.display='none';
+  el('dop-ob').style.display='block';
+  dopRender();
+}
+function dopRender(){
+  var s = dopSt;
+  if(s.idx >= s.seq.length){ dopFinish(); return; }
+  var item = s.seq[s.idx];
+  /* Vykreslit slovo s prázdnem */
+  var gap = makeGap(item.full, item.a);
+  var html = gap.replace('_','<span class="dopGap">_</span>');
+  el('dop-w').innerHTML = html;
+  el('dop-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('dop-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('dop-bd').textContent = s.body;
+  el('dop-sp').textContent = s.sp;
+  el('dop-pg').style.width = ((s.idx)/s.seq.length*100)+'%';
+  el('dop-fb').textContent = '';
+  el('dop-fb').className = 'fb';
+  el('dop-nx').style.display = 'none';
+  document.querySelectorAll('#cv-dop .dopBtn').forEach(function(b){
+    b.disabled=false; b.classList.remove('ok','err');
+  });
+  s.locked = false;
+}
+function dopAns(picked, btn){
+  var s = dopSt;
+  if(s.locked) return;
+  s.locked = true;
+  var item = s.seq[s.idx];
+  if(picked === item.a){
+    btn.classList.add('ok');
+    s.body += 5;
+    s.sp += 1;
+    addPoints(5);
+    el('dop-fb').innerHTML = '✓ Správně! Slovo je <b>'+item.full+'</b>.';
+    el('dop-fb').className = 'fb ok';
+  } else {
+    btn.classList.add('err');
+    /* Označit správnou */
+    document.querySelectorAll('#cv-dop .dopBtn').forEach(function(b){
+      if(b.textContent === item.a) b.classList.add('ok');
+    });
+    el('dop-fb').innerHTML = '✗ Správně je <b>'+item.full+'</b>.';
+    el('dop-fb').className = 'fb err';
+  }
+  /* Nápověda zrušena - žák se naučí přes opakování */
+  document.querySelectorAll('#cv-dop .dopBtn').forEach(function(b){b.disabled=true;});
+  el('dop-bd').textContent = s.body;
+  el('dop-sp').textContent = s.sp;
+  el('dop-nx').style.display = 'block';
+}
+function dopNext(){ dopSt.idx++; dopRender(); }
+function dopFinish(){
+  var s = dopSt;
+  el('dop-ob').style.display='none';
+  el('dop-res').style.display='block';
+  el('dop-pp').textContent = 'Správně '+s.sp+' z '+s.seq.length+' · získala jsi '+s.body+' bodů.';
+  el('dop-sc').textContent = s.body;
+  el('dop-tot').textContent = totalScore;
+}
+
+/* ─────────────────────────────────────────────
+   DATA: Najdi vyjm. slovo ve větě
+───────────────────────────────────────────── */
+var NAJ_DATA = [
+  {sent:['Pavel','rád','plave','v','rybníku.'], correct:0},  // Pavel? Ne, hledáme vyjm.
+  /* Lepší: každá věta obsahuje 1 vyjm. slovo, klikni na něj */
+];
+/* Přepíšeme — věty s 1 vyjm. slovem, ostatní jsou normální */
+NAJ_DATA = [
+  {sent:'Maminka má bystrého psa.', words:[{w:'Maminka'},{w:'má'},{w:'bystrého',vyjm:true},{w:'psa.'}]},
+  {sent:'Děti slyšely zpěv ptáků.', words:[{w:'Děti'},{w:'slyšely',vyjm:true},{w:'zpěv'},{w:'ptáků.'}]},
+  {sent:'V noci přiletěl netopýr.', words:[{w:'V'},{w:'noci'},{w:'přiletěl'},{w:'netopýr.',vyjm:true}]},
+  {sent:'Pes je velmi sytý.', words:[{w:'Pes'},{w:'je'},{w:'velmi'},{w:'sytý.',vyjm:true}]},
+  {sent:'Tatínek koupil nový nábytek.', words:[{w:'Tatínek'},{w:'koupil'},{w:'nový'},{w:'nábytek.',vyjm:true}]},
+  {sent:'Babička miluje sýr.', words:[{w:'Babička'},{w:'miluje'},{w:'sýr.',vyjm:true}]},
+  {sent:'Honza polyká léky neochotně.', words:[{w:'Honza'},{w:'polyká',vyjm:true},{w:'léky'},{w:'neochotně.'}]},
+  {sent:'Anička vystoupila na vysokou horu.', words:[{w:'Anička'},{w:'vystoupila'},{w:'na'},{w:'vysokou',vyjm:true},{w:'horu.'}]},
+  {sent:'V louce roste pelyněk.', words:[{w:'V'},{w:'louce'},{w:'roste'},{w:'pelyněk.',vyjm:true}]},
+  {sent:'Kočka chytila myš.', words:[{w:'Kočka'},{w:'chytila'},{w:'myš.',vyjm:true}]},
+  {sent:'Kuba má v ruce pytel.', words:[{w:'Kuba'},{w:'má'},{w:'v'},{w:'ruce'},{w:'pytel.',vyjm:true}]},
+  {sent:'Brzy přijde podzim.', words:[{w:'Brzy',vyjm:true},{w:'přijde'},{w:'podzim.'}]},
+  {sent:'Učitel mluví anglickým jazykem.', words:[{w:'Učitel'},{w:'mluví'},{w:'anglickým'},{w:'jazykem.',vyjm:true}]},
+  {sent:'Děti spí ve svém pokoji.', words:[{w:'Děti'},{w:'spí'},{w:'ve'},{w:'svém'},{w:'pokoji.'},{w:'(žádné vyjm. slovo)'}]} // pomocná - vynech
+];
+NAJ_DATA = NAJ_DATA.filter(function(d){ return d.words.some(function(w){return w.vyjm;}); });
+
+/* ─────────────────────────────────────────────
+   CV-NAJDI
+───────────────────────────────────────────── */
+var najSt = {seq:[], idx:0, body:0, sp:0, locked:false};
+
+function najStart(){
+  najSt = {seq: shuffle(NAJ_DATA).slice(0, 8), idx:0, body:0, sp:0, locked:false};
+  el('naj-res').style.display='none';
+  el('naj-ob').style.display='block';
+  najRender();
+}
+function najRender(){
+  var s = najSt;
+  if(s.idx >= s.seq.length){ najFinish(); return; }
+  var item = s.seq[s.idx];
+  var box = el('naj-s');
+  box.innerHTML = '';
+  item.words.forEach(function(w, i){
+    var span = document.createElement('span');
+    span.textContent = w.w;
+    span.onclick = function(){ najAns(w, span, item); };
+    box.appendChild(span);
+    box.appendChild(document.createTextNode(' '));
+  });
+  el('naj-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('naj-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('naj-bd').textContent = s.body;
+  el('naj-sp').textContent = s.sp;
+  el('naj-pg').style.width = ((s.idx)/s.seq.length*100)+'%';
+  el('naj-fb').textContent = '';
+  el('naj-fb').className = 'fb';
+  el('naj-nx').style.display = 'none';
+  s.locked = false;
+}
+function najAns(w, span, item){
+  var s = najSt;
+  if(s.locked) return;
+  s.locked = true;
+  if(w.vyjm){
+    span.style.background = 'var(--zs)';
+    span.style.color = 'var(--z)';
+    span.style.fontWeight = '800';
+    s.body += 8; s.sp += 1; addPoints(8);
+    el('naj-fb').innerHTML = '✓ Správně! "'+w.w.replace(/[.,!?]/g,'')+'" je vyjmenované slovo.';
+    el('naj-fb').className = 'fb ok';
+  } else {
+    span.style.background = 'var(--rs)';
+    span.style.color = 'var(--r)';
+    /* Označit správné */
+    var spans = el('naj-s').querySelectorAll('span');
+    item.words.forEach(function(w2, i){
+      if(w2.vyjm){
+        spans[i].style.background = 'var(--zs)';
+        spans[i].style.color = 'var(--z)';
+        spans[i].style.fontWeight = '800';
+      }
+    });
+    el('naj-fb').textContent = '✗ Vyjmenované slovo bylo zvýrazněné zeleně.';
+    el('naj-fb').className = 'fb err';
+  }
+  el('naj-bd').textContent = s.body;
+  el('naj-sp').textContent = s.sp;
+  el('naj-nx').style.display = 'block';
+}
+function najNext(){ najSt.idx++; najRender(); }
+function najFinish(){
+  var s = najSt;
+  el('naj-ob').style.display='none';
+  el('naj-res').style.display='block';
+  el('naj-pp').textContent = 'Správně '+s.sp+' z '+s.seq.length+' · získala jsi '+s.body+' bodů.';
+  el('naj-sc').textContent = s.body;
+  el('naj-tot').textContent = totalScore;
+}
+
+/* ─────────────────────────────────────────────
+   DATA: PEXESO — dvojice vyjm. slovo + odvozené
+───────────────────────────────────────────── */
+var PEX_DATA = [
+  /* 8 párů: vyjm. slovo a jeho odvozené (s kořenem y) */
+  {a:'být', b:'obývák'},
+  {a:'bydlit', b:'bydliště'},
+  {a:'mlýn', b:'mlynář'},
+  {a:'lyže', b:'lyžař'},
+  {a:'mýt', b:'umyvadlo'},
+  {a:'myslit', b:'myšlenka'},
+  {a:'pýcha', b:'pyšný'},
+  {a:'syn', b:'synovec'},
+  {a:'sýr', b:'sýrový'},
+  {a:'sypat', b:'sypký'},
+  {a:'vysoký', b:'výška'},
+  {a:'jazyk', b:'jazýček'},
+  {a:'bystrý', b:'bystřina'},
+  {a:'bylina', b:'bylinka'},
+  {a:'plynout', b:'plynulý'},
+  {a:'syčet', b:'syčení'}
+];
+
+/* ─────────────────────────────────────────────
+   CV-PEX: Pexeso
+───────────────────────────────────────────── */
+var pexSt = {pairs:[], cards:[], flipped:[], moves:0, matched:0, locked:false, body:0};
+
+function pexStart(){
+  /* Vyber 8 náhodných párů */
+  var pairs = shuffle(PEX_DATA).slice(0, 8);
+  /* Vytvoř kartičky: každý pár = 2 karty se stejným pairId */
+  var cards = [];
+  pairs.forEach(function(p, i){
+    cards.push({txt:p.a, id:i, type:'a'});
+    cards.push({txt:p.b, id:i, type:'b'});
+  });
+  cards = shuffle(cards);
+  pexSt = {pairs:pairs, cards:cards, flipped:[], moves:0, matched:0, locked:false, body:0};
+  el('pex-res').style.display='none';
+  el('pex-ob').style.display='block';
+  pexRender();
+}
+function pexRender(){
+  var grid = el('pex-grid');
+  grid.innerHTML = '';
+  pexSt.cards.forEach(function(c, i){
+    var div = document.createElement('div');
+    div.className = 'pexCard back';
+    div.dataset.idx = i;
+    div.onclick = function(){ pexFlip(i, div); };
+    grid.appendChild(div);
+  });
+  el('pex-mv').textContent = pexSt.moves;
+  el('pex-pr').textContent = pexSt.matched + '/8';
+  el('pex-bd').textContent = pexSt.body;
+  el('pex-fb').textContent = '';
+  el('pex-fb').className = 'fb';
+}
+function pexFlip(idx, div){
+  if(pexSt.locked) return;
+  if(div.classList.contains('flipped') || div.classList.contains('matched')) return;
+  /* Otočit kartu */
+  var c = pexSt.cards[idx];
+  div.classList.remove('back');
+  div.classList.add('flipped');
+  div.textContent = c.txt;
+  pexSt.flipped.push({idx:idx, card:c, div:div});
+  if(pexSt.flipped.length === 2){
+    pexSt.locked = true;
+    pexSt.moves++;
+    el('pex-mv').textContent = pexSt.moves;
+    var f1 = pexSt.flipped[0], f2 = pexSt.flipped[1];
+    if(f1.card.id === f2.card.id && f1.card.type !== f2.card.type){
+      /* MATCH! */
+      setTimeout(function(){
+        f1.div.classList.add('matched');
+        f2.div.classList.add('matched');
+        f1.div.classList.remove('flipped');
+        f2.div.classList.remove('flipped');
+        pexSt.matched++;
+        pexSt.body += 10;
+        addPoints(10);
+        el('pex-pr').textContent = pexSt.matched + '/8';
+        el('pex-bd').textContent = pexSt.body;
+        el('pex-fb').innerHTML = '✓ Spojila jsi <b>'+f1.card.txt+'</b> a <b>'+f2.card.txt+'</b>!';
+        el('pex-fb').className = 'fb ok';
+        pexSt.flipped = [];
+        pexSt.locked = false;
+        if(pexSt.matched === 8) pexFinish();
+      }, 600);
+    } else {
+      /* MISS */
+      setTimeout(function(){
+        f1.div.classList.remove('flipped');
+        f1.div.classList.add('back');
+        f1.div.textContent = '';
+        f2.div.classList.remove('flipped');
+        f2.div.classList.add('back');
+        f2.div.textContent = '';
+        pexSt.flipped = [];
+        pexSt.locked = false;
+        el('pex-fb').textContent = '';
+        el('pex-fb').className = 'fb';
+      }, 1200);
+    }
+  }
+}
+function pexFinish(){
+  el('pex-ob').style.display='none';
+  el('pex-res').style.display='block';
+  el('pex-pp').textContent = 'Spojila jsi všech 8 párů na '+pexSt.moves+' tahů. Získala jsi '+pexSt.body+' bodů.';
+  el('pex-sc').textContent = pexSt.body;
+  el('pex-tot').textContent = totalScore;
+}
+
+/* ─────────────────────────────────────────────
+   DATA: HOMONYMA — dvojice s jiným významem
+   Format: {sentence:'...___...', pair:[w1,w2], correct:0, meanings:[m1,m2]}
+───────────────────────────────────────────── */
+var HOM_DATA = [
+  {
+    sentence:'Voják se snažil ___ hrad nepřátel.',
+    pair:[{w:'dobýt', m:'obsadit, zmocnit se'},{w:'dobít', m:'naplnit baterii, dorazit'}],
+    correct:0
+  },
+  {
+    sentence:'Musím ___ baterii v telefonu.',
+    pair:[{w:'dobýt', m:'obsadit, zmocnit se'},{w:'dobít', m:'naplnit baterii, dorazit'}],
+    correct:1
+  },
+  {
+    sentence:'Po ránu si jdu ___ ruce do umyvadla.',
+    pair:[{w:'mýt', m:'umývat se vodou'},{w:'mít', m:'vlastnit'}],
+    correct:0
+  },
+  {
+    sentence:'Chtěl bych ___ stejné kolo jako brácha.',
+    pair:[{w:'mýt', m:'umývat se vodou'},{w:'mít', m:'vlastnit'}],
+    correct:1
+  },
+  {
+    sentence:'Vlk v noci hlasitě ___.',
+    pair:[{w:'výt', m:'vydávat zvuk (vlk vyje)'},{w:'vít', m:'plést věnec, splétat'}],
+    correct:0
+  },
+  {
+    sentence:'Babička nás učila ___ věnce z květin.',
+    pair:[{w:'výt', m:'vydávat zvuk (vlk vyje)'},{w:'vít', m:'plést věnec, splétat'}],
+    correct:1
+  },
+  {
+    sentence:'Slunce zítra začne ___ velmi brzy.',
+    pair:[{w:'být', m:'existovat'},{w:'bít', m:'tlouct, udeřit'}],
+    correct:0
+  },
+  {
+    sentence:'Hodiny začaly ___ jednu hodinu po půlnoci.',
+    pair:[{w:'být', m:'existovat'},{w:'bít', m:'tlouct, udeřit'}],
+    correct:1
+  },
+  {
+    sentence:'Maminka ___ koláče s povidly.',
+    pair:[{w:'mýval', m:'malé zvíře (mýval severní)'},{w:'míval', m:'minulý čas slovesa mít'}],
+    correct:1
+  },
+  {
+    sentence:'V ZOO jsme viděli zvíře ___, které si umývalo jídlo.',
+    pair:[{w:'mýval', m:'malé zvíře (mýval severní)'},{w:'míval', m:'minulý čas slovesa mít'}],
+    correct:0
+  },
+  {
+    sentence:'Petr měl k svačině jen kousek ___.',
+    pair:[{w:'sýr', m:'mléčný výrobek'},{w:'sir', m:'pán (anglické oslovení)'}],
+    correct:0
+  },
+  {
+    sentence:'Tatínek si myslí, že je velký ___ jako baronet.',
+    pair:[{w:'sýr', m:'mléčný výrobek'},{w:'sir', m:'pán (anglické oslovení)'}],
+    correct:1
+  }
+];
+
+/* ─────────────────────────────────────────────
+   CV-HOM: Homonyma
+───────────────────────────────────────────── */
+var homSt = {seq:[], idx:0, body:0, sp:0, locked:false};
+
+function homStart(){
+  homSt = {seq: shuffle(HOM_DATA).slice(0, 8), idx:0, body:0, sp:0, locked:false};
+  el('hom-res').style.display='none';
+  el('hom-ob').style.display='block';
+  homRender();
+}
+function homRender(){
+  var s = homSt;
+  if(s.idx >= s.seq.length){ homFinish(); return; }
+  var item = s.seq[s.idx];
+  /* Věta s prázdným místem */
+  el('hom-s').innerHTML = item.sentence.replace('___','<span class="homBlank">_____</span>');
+  /* Možnosti */
+  var box = el('hom-c');
+  box.innerHTML = '';
+  item.pair.forEach(function(opt, i){
+    var card = document.createElement('div');
+    card.className = 'homOpt';
+    card.innerHTML = '<div class="hom-w">'+opt.w+'</div>';
+    card.onclick = function(){ homAns(i, card, item); };
+    box.appendChild(card);
+  });
+  el('hom-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('hom-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('hom-bd').textContent = s.body;
+  el('hom-sp').textContent = s.sp;
+  el('hom-pg').style.width = ((s.idx)/s.seq.length*100)+'%';
+  el('hom-fb').textContent = '';
+  el('hom-fb').className = 'fb';
+  el('hom-nx').style.display = 'none';
+  s.locked = false;
+}
+function homAns(picked, card, item){
+  var s = homSt;
+  if(s.locked) return;
+  s.locked = true;
+  if(picked === item.correct){
+    card.classList.add('ok');
+    s.body += 10; s.sp += 1; addPoints(10);
+    el('hom-fb').innerHTML = '✓ Správně! Slovo <b>'+item.pair[picked].w+'</b>.';
+    el('hom-fb').className = 'fb ok';
+  } else {
+    card.classList.add('err');
+    /* Zvýraznit správnou */
+    document.querySelectorAll('#hom-c .homOpt').forEach(function(c, i){
+      if(i === item.correct) c.classList.add('ok');
+    });
+    el('hom-fb').innerHTML = '✗ Správně je <b>'+item.pair[item.correct].w+'</b>.';
+    el('hom-fb').className = 'fb err';
+  }
+  el('hom-bd').textContent = s.body;
+  el('hom-sp').textContent = s.sp;
+  el('hom-nx').style.display = 'block';
+}
+function homNext(){ homSt.idx++; homRender(); }
+function homFinish(){
+  var s = homSt;
+  el('hom-ob').style.display='none';
+  el('hom-res').style.display='block';
+  el('hom-pp').textContent = 'Správně '+s.sp+' z '+s.seq.length+' · získala jsi '+s.body+' bodů.';
+  el('hom-sc').textContent = s.body;
+  el('hom-tot').textContent = totalScore;
+}
+
+/* ─────────────────────────────────────────────
+   DATA: PŘÍBUZNÁ — Ano/Ne
+   Pro každé vyjm. slovo: seznam příbuzných (ano) a NEpříbuzných (ne)
+───────────────────────────────────────────── */
+var PRB_DATA = [
+  /* B - být */
+  {target:'být', cand:'obývák', isPrib:true},
+  {target:'být', cand:'bydliště', isPrib:true},
+  {target:'být', cand:'bít (do bubnu)', isPrib:false},
+  /* B - bystrý */
+  {target:'bystrý', cand:'bystřina', isPrib:true},
+  {target:'bystrý', cand:'bistro', isPrib:false},
+  /* B - bylina */
+  {target:'bylina', cand:'bylinka', isPrib:true},
+  {target:'bylina', cand:'bílý', isPrib:false},
+  /* L - mlýn */
+  {target:'mlýn', cand:'mlynář', isPrib:true},
+  {target:'mlýn', cand:'mléko', isPrib:false},
+  /* L - lyže */
+  {target:'lyže', cand:'lyžař', isPrib:true},
+  {target:'lyže', cand:'liška', isPrib:false},
+  /* L - slyšet */
+  {target:'slyšet', cand:'slyšitelný', isPrib:true},
+  {target:'slyšet', cand:'silný', isPrib:false},
+  /* M - mýt */
+  {target:'mýt', cand:'umyvadlo', isPrib:true},
+  {target:'mýt', cand:'mít', isPrib:false},
+  /* M - myslit */
+  {target:'myslit', cand:'myšlenka', isPrib:true},
+  {target:'myslit', cand:'milovat', isPrib:false},
+  /* M - myš */
+  {target:'myš', cand:'myší', isPrib:true},
+  {target:'myš', cand:'míč', isPrib:false},
+  /* P - pýcha */
+  {target:'pýcha', cand:'pyšný', isPrib:true},
+  {target:'pýcha', cand:'pícha', isPrib:false},
+  /* P - klopýtat */
+  {target:'klopýtat', cand:'klopýtnout', isPrib:true},
+  {target:'klopýtat', cand:'kopat', isPrib:false},
+  /* P - pyl */
+  {target:'pyl', cand:'opylit', isPrib:true},
+  {target:'pyl', cand:'pilný', isPrib:false},
+  /* S - syn */
+  {target:'syn', cand:'synovec', isPrib:true},
+  {target:'syn', cand:'silný', isPrib:false},
+  /* S - sýr */
+  {target:'sýr', cand:'sýrový', isPrib:true},
+  {target:'sýr', cand:'sirup', isPrib:false},
+  /* S - sypat */
+  {target:'sypat', cand:'sypký', isPrib:true},
+  {target:'sypat', cand:'sipot', isPrib:false},
+  /* V - vysoký */
+  {target:'vysoký', cand:'výška', isPrib:true},
+  {target:'vysoký', cand:'visutý', isPrib:false},
+  /* V - vydra */
+  {target:'vydra', cand:'vydří (ocas)', isPrib:true},
+  {target:'vydra', cand:'vidět', isPrib:false},
+  /* Z - jazyk */
+  {target:'jazyk', cand:'jazýček', isPrib:true},
+  {target:'jazyk', cand:'jasný', isPrib:false}
+];
+
+/* ─────────────────────────────────────────────
+   CV-PRIB: Příbuzné Ano/Ne
+───────────────────────────────────────────── */
+var prbSt = {seq:[], idx:0, body:0, sp:0, locked:false};
+
+function prbStart(){
+  prbSt = {seq: shuffle(PRB_DATA).slice(0, 12), idx:0, body:0, sp:0, locked:false};
+  el('prb-res').style.display='none';
+  el('prb-ob').style.display='block';
+  prbRender();
+}
+function prbRender(){
+  var s = prbSt;
+  if(s.idx >= s.seq.length){ prbFinish(); return; }
+  var item = s.seq[s.idx];
+  el('prb-t').textContent = item.target;
+  el('prb-c').textContent = item.cand;
+  el('prb-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('prb-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('prb-bd').textContent = s.body;
+  el('prb-sp').textContent = s.sp;
+  el('prb-pg').style.width = ((s.idx)/s.seq.length*100)+'%';
+  el('prb-fb').textContent = '';
+  el('prb-fb').className = 'fb';
+  el('prb-nx').style.display = 'none';
+  document.querySelectorAll('#cv-prib .pribBtn').forEach(function(b){
+    b.disabled=false; b.classList.remove('ok','err');
+  });
+  s.locked = false;
+}
+function prbAns(picked, btn){
+  var s = prbSt;
+  if(s.locked) return;
+  s.locked = true;
+  var item = s.seq[s.idx];
+  if(picked === item.isPrib){
+    btn.classList.add('ok');
+    s.body += 6; s.sp += 1; addPoints(6);
+    if(item.isPrib){
+      el('prb-fb').innerHTML = '✓ Správně! <b>'+item.cand+'</b> je příbuzné slovo k <b>'+item.target+'</b>.';
+    } else {
+      el('prb-fb').innerHTML = '✓ Správně! <b>'+item.cand+'</b> není příbuzné k <b>'+item.target+'</b>.';
+    }
+    el('prb-fb').className = 'fb ok';
+  } else {
+    btn.classList.add('err');
+    /* Zvýraznit správnou */
+    document.querySelectorAll('#cv-prib .pribBtn').forEach(function(b){
+      var isAno = b.classList.contains('pribAno');
+      if(isAno === item.isPrib) b.classList.add('ok');
+    });
+    if(item.isPrib){
+      el('prb-fb').innerHTML = '✗ <b>'+item.cand+'</b> JE příbuzné k <b>'+item.target+'</b>.';
+    } else {
+      el('prb-fb').innerHTML = '✗ <b>'+item.cand+'</b> NENÍ příbuzné k <b>'+item.target+'</b> — jen tak zní podobně.';
+    }
+    el('prb-fb').className = 'fb err';
+  }
+  document.querySelectorAll('#cv-prib .pribBtn').forEach(function(b){b.disabled=true;});
+  el('prb-bd').textContent = s.body;
+  el('prb-sp').textContent = s.sp;
+  el('prb-nx').style.display = 'block';
+}
+function prbNext(){ prbSt.idx++; prbRender(); }
+function prbFinish(){
+  var s = prbSt;
+  el('prb-ob').style.display='none';
+  el('prb-res').style.display='block';
+  el('prb-pp').textContent = 'Správně '+s.sp+' z '+s.seq.length+' · získala jsi '+s.body+' bodů.';
+  el('prb-sc').textContent = s.body;
+  el('prb-tot').textContent = totalScore;
+}
+
+/* ─────────────────────────────────────────────
+   CV-KRIZ: KŘÍŽOVKA
+   Mřížka 8 sloupců × N řad. Buňky:
+     - prázdná (' ') = černá / neviditelná
+     - písmeno = vyplnitelná buňka
+   Slova jsou vodorovně (across) i svisle (down).
+   Tajenka v 1. sloupci (prostřední řada) zformuje slovo.
+───────────────────────────────────────────── */
+
+/* Statická křížovka - pevná mřížka 9 řad × 8 sloupců.
+   Tajenka v 5. sloupci (index 4) shora dolů: VYJMENOVÁNO ... ne, tak velké slovo se nevejde.
+   Pojďme na něco kratší: TAJENKA = slovo ve sloupci.
+   Klasický formát: každé slovo do řádku (vodorovně), z některých písmen složí tajenku ve svislém sloupci.
+*/
+var KRIZ = {
+  /* 7 řádků - každý je 1 vyjmenované slovo, písmeno na pozici tajenky tvoří slovo dolů */
+  /* Tajenka: BYDLENÍ - asi moc dlouhé. Pokus: PYTEL */
+  /* Vyber 5 vyjm. slov, kde písmeno na pozici X tvoří dolů "PYTEL" - moc obtížné navrhnout */
+  /* Jednodušeji: všechna slova mají Y na stejné pozici (např. 2. písmeno) */
+  /* Ale to je nudné. Pojďme: každé slovo má přesně písmeno tajenky na sloupci. */
+  /* Tajenka: BYSTRÝ - 6 písmen */
+  /* Slova musí mít: B na pozici X v slově 1, Y na pos X v slově 2, S na pos X v slově 3, atd */
+  /* Reálně: udělám to klasicky - tajenka přes 5. sloupec, slova s různou délkou */
+  /* Tajenka HMYZ (4 znaky) → 4 slova:
+     1. BÝK     → na pozici X je H? ne, máme býk = BÝK = B,Ý,K. Jak na H?
+     Nejjednodušší: tajenka tvoří slovo z některých vodorovných písmen.
+     Pojďme s tajenkou MYŠ (3 řady):
+       1. UMYJ (4 písmena) - M na pozici 2
+       2. SYTÝ (4 písmena) - Y na pozici 2
+       3. NÝŠ - neexistuje
+     Lepší: tajenka VYŠŠÍ ne. Místo toho dělám klasickou křížovku se 2 dimenzemi.
+  */
+  /* PROZATÍMNÍ: 5 vodorovných slov, 1 svislé tajenka (1. písmena tvoří) */
+  rows: [
+    /* Každý řádek: {clue: 'náv', word: 'SLOVO'}. Tajenka = první písmena. */
+    {clue:'Pták s velkýma očima, létá v noci', word:'VÝR'},
+    {clue:'Část nohy pod kolenem', word:'LÝTKO'},
+    {clue:'Druh listnatého stromu, na kterém roste ovoce', word:'JABLOŇ'},  // J - není vyjm., ale potřeba pro tajenku VLAJKA
+    /* Ne, takhle to dělat netřeba. Předělám: */
+  ],
+  /* Vlastní design: jeden vyjmenovaný "kostr" - slovo svisle, kolem něj vodorovná slova */
+  /* SVISLE: VYJMENOVANÁ (12 písmen) - moc dlouhé.
+     Použiju kratší: TAJENKA = 'BYLINY' (6 znaků), tedy 6 vodorovných slov, jejichž X-té písmeno tvoří 'BYLINY' */
+  /* Pro start: vytvořím 6 řádků, tajenka = 'BYLINY', tajenka v 1. sloupci */
+  layout: [
+    /* Vodorovná slova - každé začíná v 1. sloupci, písmeno na pozici 0 tvoří tajenku */
+    /* Tajenka 'BYLINY' není moc nápaditá. Použiju 'JAZYKY' (Z-řada): J,A,Z,Y,K,Y */
+    /* Pojďme na klasiku: tajenka 'BYTOST' (6 vyjm. slov v sobě): */
+  ]
+};
+
+/* PŘEDĚLÁM CELOU KŘÍŽOVKU pomocí jednoduchého layout-grid stylu */
+/* Každé slovo má začátek (řádek, sloupec, směr "across"/"down") a délku. */
+/* Slova:
+   1. Across, řádek 0: BÝK (3) - "Samec krávy"  (B,Ý,K)
+   2. Down,   sloupec 1: BYDLET (6) - "Mít domov"  (Y,Ý,T,L,E,T)
+   3. Across, řádek 2: SYR (3) - "Mléčný výrobek (správně sýr)" - ne, ÝR ne
+   
+   Tohle je hodně náročné na ruční tvorbu. Pojďme udělat JEDNODUCHOU křížovku:
+*/
+
+var KRIZ_DEF = {
+  /* Křížovka 8 sloupců × 8 řad. 5 vyjmenovaných slov, 3 křížení.
+     # = černá, písmeno = bílá k vyplnění.
+     
+     Layout:
+              0  1  2  3  4  5  6  7
+        0     #  #  #  B  #  #  #  #     ← B (BÝK shora)
+        1     #  M  L  Ý  N  #  #  #     ← MLÝN, Ý kříží BÝK
+        2     #  #  #  K  #  #  #  #     ← K (BÝK)
+        3     #  L  #  #  #  #  #  #     ← L (LYŽE shora)
+        4     #  Y  #  S  #  #  #  #     ← Y (LYŽE), S (SYN)
+        5     #  Ž  P  Y  T  E  L  #     ← Ž+PYTEL, Y kříží SYN
+        6     #  E  #  N  #  #  #  #     ← E (LYŽE konec), N (SYN konec)
+        7     #  #  #  #  #  #  #  #
+  */
+  grid: [
+    /*           col   0    1    2    3    4    5    6    7  */
+    /* row 0 */ ['#','#','#', 'B','#','#','#','#'],
+    /* row 1 */ ['#','M', 'L','Ý','N','#','#','#'],   /* 1A MLÝN */
+    /* row 2 */ ['#','#','#', 'K','#','#','#','#'],
+    /* row 3 */ ['#','L', '#','#','#','#','#','#'],
+    /* row 4 */ ['#','Y', '#','S','#','#','#','#'],
+    /* row 5 */ ['#','Ž', 'P','Y','T','E','L','#'],   /* 5A PYTEL */
+    /* row 6 */ ['#','E', '#','N','#','#','#','#'],
+    /* row 7 */ ['#','#','#','#','#','#','#','#']
+  ],
+  clues_across: [
+    {row:1, col:1, num:1, word:'MLÝN', clue:'Stavba, kde se mele obilí na mouku'},
+    {row:5, col:2, num:5, word:'PYTEL', clue:'Pytlík na mouku nebo brambory'}
+  ],
+  clues_down: [
+    {row:0, col:3, num:2, word:'BÝK',  clue:'Samec krávy'},
+    {row:3, col:1, num:3, word:'LYŽE', clue:'Sportovní náčiní pro klouzání po sněhu'},
+    {row:4, col:3, num:4, word:'SYN',  clue:'Mužský potomek (ne dcera)'}
+  ]
+};
+
+var krizState = {inputs:[]};
+
+function krizStart(){
+  krizRender();
+  el('kriz-fb').textContent = '';
+  el('kriz-fb').className = 'fb';
+}
+
+function krizRender(){
+  var def = KRIZ_DEF;
+  var grid = def.grid;
+  var rows = grid.length;
+  var cols = grid[0].length;
+
+  /* Sestavit číslování - které buňky mají číslo? Začátek vodorovného nebo svislého slova. */
+  var nums = {};
+  def.clues_across.forEach(function(c){ nums[c.row+','+c.col] = c.num; });
+  def.clues_down.forEach(function(c){
+    var k = c.row+','+c.col;
+    if(!nums[k]) nums[k] = c.num;
+  });
+
+  /* Vykreslit mřížku */
+  var wrap = el('kriz-grid-wrap');
+  wrap.innerHTML = '';
+  var gridDiv = document.createElement('div');
+  gridDiv.className = 'krizGrid';
+  gridDiv.style.gridTemplateColumns = 'repeat('+cols+', 38px)';
+
+  krizState.inputs = [];
+  for(var r=0; r<rows; r++){
+    for(var c=0; c<cols; c++){
+      var cell = document.createElement('div');
+      var content = grid[r][c];
+      if(content === '#'){
+        cell.className = 'krizCell empty';
+      } else {
+        cell.className = 'krizCell fill';
+        var inp = document.createElement('input');
+        inp.maxLength = 1;
+        inp.dataset.row = r;
+        inp.dataset.col = c;
+        inp.dataset.expected = content;
+        inp.oninput = function(e){
+          this.value = (this.value || '').toUpperCase();
+          if(this.value.length === 1){
+            /* Skoč na další input */
+            krizFocusNext(parseInt(this.dataset.row), parseInt(this.dataset.col));
+          }
+          krizCheckSilent();
+        };
+        cell.appendChild(inp);
+        krizState.inputs.push(inp);
+        if(nums[r+','+c]){
+          var nb = document.createElement('span');
+          nb.className = 'krizNum';
+          nb.textContent = nums[r+','+c];
+          cell.appendChild(nb);
+        }
+      }
+      gridDiv.appendChild(cell);
+    }
+  }
+  wrap.appendChild(gridDiv);
+
+  /* Nápovědy */
+  var across = el('kriz-across');
+  across.innerHTML = '';
+  def.clues_across.forEach(function(c){
+    var li = document.createElement('li');
+    li.value = c.num;
+    li.textContent = c.clue;
+    li.dataset.id = 'a'+c.num;
+    across.appendChild(li);
+  });
+  var down = el('kriz-down');
+  down.innerHTML = '';
+  def.clues_down.forEach(function(c){
+    var li = document.createElement('li');
+    li.value = c.num;
+    li.textContent = c.clue;
+    li.dataset.id = 'd'+c.num;
+    down.appendChild(li);
+  });
+}
+
+/* Skok na další input v mřížce */
+function krizFocusNext(r, c){
+  var cols = KRIZ_DEF.grid[0].length;
+  /* Najdi další buňku napravo, pokud existuje a je vyplnitelná, jinak zkus dolů */
+  for(var i=c+1; i<cols; i++){
+    if(KRIZ_DEF.grid[r][i] !== '#'){
+      var inp = krizState.inputs.find(function(x){return parseInt(x.dataset.row)===r && parseInt(x.dataset.col)===i;});
+      if(inp){ inp.focus(); return; }
+    }
+    if(KRIZ_DEF.grid[r][i] === '#') break;
+  }
+  /* Jinak: zkus dolů */
+  for(var i=r+1; i<KRIZ_DEF.grid.length; i++){
+    if(KRIZ_DEF.grid[i][c] !== '#'){
+      var inp = krizState.inputs.find(function(x){return parseInt(x.dataset.row)===i && parseInt(x.dataset.col)===c;});
+      if(inp){ inp.focus(); return; }
+    }
+    if(KRIZ_DEF.grid[i][c] === '#') break;
+  }
+}
+
+/* Kontrola - vrátí počet správných */
+function krizCheckSilent(){
+  var ok = 0, total = krizState.inputs.length;
+  krizState.inputs.forEach(function(inp){
+    if(inp.value.toUpperCase() === inp.dataset.expected.toUpperCase()) ok++;
+  });
+  if(ok === total){
+    /* Zelená všechno */
+    krizState.inputs.forEach(function(inp){
+      inp.classList.add('ok');
+      inp.classList.remove('err');
+    });
+    el('kriz-fb').innerHTML = '🎉 <b>Výborně!</b> Vyřešila jsi celou křížovku!';
+    el('kriz-fb').className = 'fb ok';
+    /* Body 1× za vyřešenou křížovku */
+    if(!krizState.solved){
+      krizState.solved = true;
+      addPoints(30);
+    }
+  }
+  return ok;
+}
+
+function krizCheck(){
+  var ok = 0, total = krizState.inputs.length;
+  krizState.inputs.forEach(function(inp){
+    inp.classList.remove('ok','err');
+    if(!inp.value){
+      /* Prázdná - nekontrolujem */
+    } else if(inp.value.toUpperCase() === inp.dataset.expected.toUpperCase()){
+      inp.classList.add('ok');
+      ok++;
+    } else {
+      inp.classList.add('err');
+    }
+  });
+  if(ok === total){
+    el('kriz-fb').innerHTML = '🎉 <b>Výborně!</b> Vyřešila jsi celou křížovku!';
+    el('kriz-fb').className = 'fb ok';
+    if(!krizState.solved){
+      krizState.solved = true;
+      addPoints(30);
+    }
+  } else {
+    el('kriz-fb').innerHTML = 'Správně '+ok+' z '+total+' písmen. Chyby jsou červené, opravy zkus znovu.';
+    el('kriz-fb').className = 'fb';
+  }
+}
+
+function krizClear(){
+  krizState.inputs.forEach(function(inp){
+    inp.value = '';
+    inp.classList.remove('ok','err');
+  });
+  el('kriz-fb').textContent = '';
+  el('kriz-fb').className = 'fb';
+  krizState.solved = false;
+}
+
+function krizReveal(){
+  if(!confirm('Opravdu chceš vidět celé řešení? Nebudeš si moct dále luštit.')) return;
+  krizState.inputs.forEach(function(inp){
+    inp.value = inp.dataset.expected;
+    inp.classList.add('ok');
+    inp.classList.remove('err');
+    inp.disabled = true;
+  });
+  el('kriz-fb').innerHTML = '👀 Řešení odhaleno. Klikni <b>Smazat</b> pro nový pokus.';
+  el('kriz-fb').className = 'fb';
+}
+
+/* ─────────────────────────────────────────────
+   CV-HRA: T-rex doplňuje y/i
+   Mechanika podle hry "letadlo" v mekke-tvrde.html:
+     - 4 pruhy: i, y, í, ý (shora dolů)
+     - T-rex stojí vlevo (animace běhu na místě)
+     - Z pravé strany přijíždí "kameny" s písmeny
+     - Slovo s prázdnem je v HTML divu pod canvasem
+     - Žák skáče mezi pruhy ↑↓ tlačítky/klávesami/tapem
+     - Když T-rex potká kámen ve svém pruhu:
+         - Když písmeno = správné → +1 bod, další slovo
+         - Když písmeno ≠ správné → -1 život
+─────────────────────────────────────────────── */
+
+var HRA_POOL = DOP_DATA.slice();
+
+var HRA = {
+  running:false, lane:1, trexY:0, lives:3, score:0, errs:0,
+  rocks:[], speed:1.6, spawnTimer:0, spawnInt:220,
+  raf:null, hitFlash:0, okFlash:0,
+  wordIdx:0, words:[], frameCount:0
+};
+var HRA_W = 480, HRA_H = 280, HRA_N = 4;
+var HRA_LETS = ['i','y','í','ý'];
+function hraLY(i){ return Math.round(HRA_H/HRA_N * (i + 0.5)); }
+var HRA_TREX_X = 90;
+
+function hraIntro(){
+  el('hra-intro').style.display='block';
+  el('hra-play').style.display='none';
+  el('hra-over').style.display='none';
+}
+
+function hraStart(){
+  if(HRA.raf) cancelAnimationFrame(HRA.raf);
+  HRA.words = shuffle(HRA_POOL.slice());
+  HRA.wordIdx = 0;
+  Object.assign(HRA, {
+    running:true, lane:1, trexY:0, lives:3, score:0, errs:0,
+    rocks:[], speed:1.6, spawnTimer:0, spawnInt:220,
+    hitFlash:0, okFlash:0, frameCount:0
+  });
+  HRA.trexY = hraLY(1);
+  el('hra-sc').textContent = '0';
+  el('hra-lv').textContent = '❤️❤️❤️';
+  el('hra-intro').style.display='none';
+  el('hra-play').style.display='block';
+  el('hra-over').style.display='none';
+  hraShowWord();
+  HRA.raf = requestAnimationFrame(hraLoop);
+}
+
+function hraShowWord(){
+  var s = HRA.words[HRA.wordIdx % HRA.words.length];
+  var gap = makeGap(s.full, s.a);
+  el('hra-word').innerHTML = gap.replace('_','<span style="color:var(--o);font-weight:800;border-bottom:3px solid var(--o);padding:0 .15em">_</span>');
+}
+
+function hraMove(lane){
+  if(!HRA.running) return;
+  HRA.lane = Math.max(0, Math.min(HRA_N-1, lane));
+}
+
+function hraStop(){
+  HRA.running = false;
+  if(HRA.raf) cancelAnimationFrame(HRA.raf);
+  HRA.raf = null;
+}
+
+function hraDrawTrex(ctx, cx, cy){
+  var col = HRA.hitFlash > 0 ? '#dc2626' : '#535353';
+  var legSwap = (HRA.frameCount || 0) % 12 < 6;
+
+  ctx.fillStyle = 'rgba(0,0,0,.15)';
+  ctx.beginPath();
+  ctx.ellipse(cx, cy+30, 22, 4, 0, 0, Math.PI*2);
+  ctx.fill();
+
+  ctx.fillStyle = col;
+  ctx.fillRect(cx+8, cy-22, 18, 14);
+  ctx.fillRect(cx+10, cy-24, 14, 2);
+
+  ctx.fillStyle = 'white';
+  ctx.fillRect(cx+19, cy-19, 3, 3);
+  ctx.fillStyle = col;
+  ctx.fillRect(cx+20, cy-18, 1, 1);
+
+  ctx.fillRect(cx+8, cy-8, 6, 8);
+  ctx.fillRect(cx-2, cy, 16, 14);
+  ctx.fillRect(cx-6, cy+2, 4, 10);
+
+  ctx.fillRect(cx-12, cy+2, 6, 4);
+  ctx.fillRect(cx-16, cy+4, 4, 2);
+
+  ctx.fillRect(cx+12, cy+4, 3, 2);
+
+  ctx.fillStyle = 'white';
+  ctx.fillRect(cx+22, cy-12, 4, 2);
+
+  ctx.fillStyle = col;
+  if(legSwap){
+    ctx.fillRect(cx-2, cy+14, 4, 8);
+    ctx.fillRect(cx+8, cy+14, 4, 6);
+    ctx.fillRect(cx+8, cy+18, 6, 2);
+    ctx.fillRect(cx-4, cy+22, 6, 2);
+  } else {
+    ctx.fillRect(cx-2, cy+14, 4, 6);
+    ctx.fillRect(cx+8, cy+14, 4, 8);
+    ctx.fillRect(cx+8, cy+22, 6, 2);
+    ctx.fillRect(cx-4, cy+18, 6, 2);
+  }
+}
+
+function hraDrawRock(ctx, x, y, letter, flash){
+  var fc = flash > 0 ? '#dcfce7' : (flash < 0 ? '#fee2e2' : '#fef3c7');
+  var bc = flash > 0 ? '#16a34a' : (flash < 0 ? '#dc2626' : '#d97706');
+  var tc = flash > 0 ? '#15803d' : (flash < 0 ? '#dc2626' : '#92400e');
+
+  ctx.fillStyle = fc;
+  ctx.beginPath();
+  ctx.moveTo(x-22, y+8);
+  ctx.quadraticCurveTo(x-25, y-15, x-10, y-18);
+  ctx.quadraticCurveTo(x, y-22, x+10, y-18);
+  ctx.quadraticCurveTo(x+25, y-15, x+22, y+8);
+  ctx.lineTo(x+22, y+18);
+  ctx.lineTo(x-22, y+18);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = bc;
+  ctx.lineWidth = 2.5;
+  ctx.stroke();
+
+  ctx.font = 'bold 28px Verdana';
+  ctx.textAlign = 'center';
+  ctx.fillStyle = tc;
+  ctx.fillText(letter, x, y+8);
+}
+
+function hraDrawBackground(ctx){
+  var g = ctx.createLinearGradient(0, 0, 0, HRA_H);
+  g.addColorStop(0, '#fef9c3');
+  g.addColorStop(0.5, '#fef3c7');
+  g.addColorStop(1, '#fed7aa');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, HRA_W, HRA_H);
+
+  ctx.fillStyle = 'rgba(251,191,36,.7)';
+  ctx.beginPath();
+  ctx.arc(HRA_W-50, 35, 22, 0, Math.PI*2);
+  ctx.fill();
+
+  ctx.fillStyle = 'rgba(180,83,9,.25)';
+  ctx.beginPath();
+  ctx.moveTo(0, 80);
+  ctx.lineTo(80, 30);
+  ctx.lineTo(160, 70);
+  ctx.lineTo(260, 25);
+  ctx.lineTo(340, 65);
+  ctx.lineTo(420, 35);
+  ctx.lineTo(HRA_W, 75);
+  ctx.lineTo(HRA_W, 100);
+  ctx.lineTo(0, 100);
+  ctx.closePath();
+  ctx.fill();
+
+  for(var i = 0; i < HRA_N; i++){
+    var y = hraLY(i);
+    var stripeBg = i % 2 === 0 ? 'rgba(255,255,255,.15)' : 'rgba(251,191,36,.05)';
+    ctx.fillStyle = stripeBg;
+    ctx.fillRect(0, i*HRA_H/HRA_N, HRA_W, HRA_H/HRA_N);
+
+    if(i === HRA.lane){
+      ctx.fillStyle = 'rgba(50,160,210,.18)';
+      ctx.fillRect(0, i*HRA_H/HRA_N, HRA_W, HRA_H/HRA_N);
+      ctx.fillStyle = '#32a0d2';
+      ctx.fillRect(0, i*HRA_H/HRA_N, 4, HRA_H/HRA_N);
+    }
+
+    ctx.font = 'bold 28px Verdana';
+    ctx.textAlign = 'left';
+    ctx.fillStyle = 'rgba(31,41,55,.5)';
+    ctx.fillText(HRA_LETS[i], 8, y + 9);
+  }
+
+  ctx.strokeStyle = 'rgba(180,83,9,.3)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([6, 4]);
+  for(var i = 1; i < HRA_N; i++){
+    var ly = i*HRA_H/HRA_N;
+    ctx.beginPath();
+    ctx.moveTo(0, ly);
+    ctx.lineTo(HRA_W, ly);
+    ctx.stroke();
+  }
+  ctx.setLineDash([]);
+}
+
+function hraLoop(){
+  if(!HRA.running) return;
+  HRA.frameCount++;
+
+  var ctx = el('gameCv').getContext('2d');
+  hraDrawBackground(ctx);
+
+  HRA.spawnTimer++;
+  if(HRA.spawnTimer >= HRA.spawnInt){
+    HRA.spawnTimer = 0;
+    var lets = shuffle(HRA_LETS.slice());
+    for(var i = 0; i < HRA_N; i++){
+      HRA.rocks.push({
+        x: HRA_W + 50,
+        lane: i,
+        letter: lets[i],
+        scored: false,
+        flash: 0
+      });
+    }
+  }
+
+  HRA.rocks.forEach(function(r){ r.x -= HRA.speed; });
+
+  var cw = HRA.words[HRA.wordIdx % HRA.words.length];
+  HRA.rocks.forEach(function(r){
+    if(!r.scored && r.x < HRA_TREX_X+50 && r.x > HRA_TREX_X-20){
+      if(r.lane === HRA.lane){
+        r.scored = true;
+        if(r.letter === cw.a){
+          r.flash = 16;
+          HRA.okFlash = 12;
+          HRA.score++;
+          el('hra-sc').textContent = HRA.score;
+          addPoints(2);
+          HRA.wordIdx++;
+          hraShowWord();
+          if(HRA.score % 7 === 0){
+            HRA.speed = Math.min(5, HRA.speed + 0.2);
+            HRA.spawnInt = Math.max(130, HRA.spawnInt - 12);
+          }
+        } else {
+          r.flash = -16;
+          HRA.hitFlash = 18;
+          HRA.errs++;
+          HRA.lives--;
+          hraUpdateLives();
+          if(HRA.lives <= 0){
+            HRA.running = false;
+            setTimeout(hraOver, 700);
+          }
+        }
+      }
+    }
+  });
+
+  HRA.rocks = HRA.rocks.filter(function(r){ return r.x > -100; });
+
+  HRA.rocks.forEach(function(r){
+    hraDrawRock(ctx, r.x, hraLY(r.lane), r.letter, r.flash);
+    if(r.flash > 0) r.flash--;
+    else if(r.flash < 0) r.flash++;
+  });
+
+  if(HRA.hitFlash > 0){
+    ctx.fillStyle = 'rgba(220,38,38,'+(HRA.hitFlash/18*.28)+')';
+    ctx.fillRect(0, 0, HRA_W, HRA_H);
+    HRA.hitFlash--;
+  }
+  if(HRA.okFlash > 0){
+    ctx.fillStyle = 'rgba(22,163,74,'+(HRA.okFlash/12*.18)+')';
+    ctx.fillRect(0, 0, HRA_W, HRA_H);
+    HRA.okFlash--;
+  }
+
+  var tgtY = hraLY(HRA.lane);
+  HRA.trexY += (tgtY - HRA.trexY) * 0.20;
+
+  hraDrawTrex(ctx, HRA_TREX_X, HRA.trexY);
+
+  HRA.raf = requestAnimationFrame(hraLoop);
+}
+
+function hraUpdateLives(){
+  el('hra-lv').textContent = ['❤️❤️❤️','❤️❤️🖤','❤️🖤🖤','🖤🖤🖤'][Math.max(0, Math.min(3, 3-HRA.lives))];
+}
+
+function hraOver(){
+  el('hra-play').style.display = 'none';
+  el('hra-over').style.display = 'block';
+  el('hra-fin').textContent = HRA.score;
+  el('hra-pp').textContent = 'Správně '+HRA.score+'× · spletla se '+HRA.errs+'×';
+  if(HRA.score >= 15){ el('hra-tx').textContent = '🏆 Šampion!'; }
+  else if(HRA.score >= 8){ el('hra-tx').textContent = '🎉 Výborně!'; }
+  else { el('hra-tx').textContent = '💪 Zkus znovu!'; }
+}
+
+document.addEventListener('keydown', function(e){
+  if(!HRA.running) return;
+  if(e.key === 'ArrowUp' && HRA.lane > 0){ e.preventDefault(); HRA.lane--; }
+  else if(e.key === 'ArrowDown' && HRA.lane < HRA_N-1){ e.preventDefault(); HRA.lane++; }
+  else if(e.key === '1'){ hraMove(0); }
+  else if(e.key === '2'){ hraMove(1); }
+  else if(e.key === '3'){ hraMove(2); }
+  else if(e.key === '4'){ hraMove(3); }
+});
+
+document.addEventListener('DOMContentLoaded', function(){
+  var cv = el('gameCv');
+  if(!cv) return;
+  function tap(e){
+    if(!HRA.running) return;
+    var r = cv.getBoundingClientRect();
+    var cy = e.touches ? e.touches[0].clientY : e.clientY;
+    var rel = (cy - r.top) / r.height;
+    HRA.lane = Math.min(HRA_N-1, Math.floor(rel * HRA_N));
+  }
+  cv.addEventListener('click', tap);
+  cv.addEventListener('touchstart', function(e){ e.preventDefault(); tap(e); }, {passive:false});
+});
+
+
+
+/* ─────────────────────────────────────────────
+   PRINT KIT — pracovní listy k tisku
+───────────────────────────────────────────── */
+var PRINT_TOPICS = [
+  {key:'dop_y', label:'Doplň y/i — s nápovědou', count:'15 slov'},
+  {key:'dop_t', label:'Doplň y/i — bez nápovědy (těžší)', count:'20 slov'},
+  {key:'sady', label:'Karty vyjmenovaných slov (učební list)', count:'B/L/M/P/S/V/Z'},
+  {key:'mix', label:'Smíšený list — doplň y/i v textu', count:'20 slov'},
+  {key:'hom', label:'Dvojice významů — vyber správné slovo', count:'10 vět'},
+  {key:'pex', label:'Pexeso k vystřižení (vyjm. + odvozené)', count:'8 párů'}
+];
+function printChoice(){
+  var html = '<div style="background:white;padding:1rem;border-radius:12px;max-width:380px;margin:0 auto;font-family:var(--font);max-height:80vh;overflow-y:auto">'+
+             '<h3 style="color:var(--m);margin-bottom:.8rem">🖨️ Vyber téma k tisku</h3>';
+  PRINT_TOPICS.forEach(function(t){
+    html += '<button onclick="printWorksheet(\''+t.key+'\')" style="display:block;width:100%;padding:.7rem .9rem;margin:.3rem 0;background:#e8f4fb;border:1.5px solid var(--m);border-radius:8px;font-family:var(--font);font-weight:700;font-size:.95rem;color:#1a5f7a;cursor:pointer;text-align:left">'+t.label+' <span style="float:right;color:#9ca3af;font-weight:400">'+(t.count||'')+'</span></button>';
+  });
+  html += '<button onclick="closePrintChoice()" style="display:block;width:100%;padding:.6rem;margin-top:1rem;background:white;border:1.5px solid #d1d5db;border-radius:8px;font-family:var(--font);font-weight:600;cursor:pointer">Zavřít</button>';
+  html += '</div>';
+  var overlay = document.createElement('div');
+  overlay.id = 'printOverlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:1rem';
+  overlay.innerHTML = html;
+  overlay.onclick = function(e){ if(e.target===overlay) closePrintChoice(); };
+  document.body.appendChild(overlay);
+}
+function closePrintChoice(){ var o=document.getElementById('printOverlay'); if(o)o.remove(); }
+function printWorksheet(key){
+  closePrintChoice();
+  var data = printGetData(key);
+  var w = window.open('','_blank','width=900,height=1100');
+  if(!w){ alert('Prohlížeč zablokoval otevření okna.'); return; }
+  w.document.write(printHTML(data));
+  w.document.close();
+  setTimeout(function(){ try{ w.print(); }catch(e){} }, 500);
+}
+
+function printGetData(key){
+  if(key === 'dop_y'){
+    /* Doplň y/i - s nápovědou na vyjm. slovo */
+    var picked = shuffle(DOP_DATA).slice(0, 15);
+    var qHtml = '';
+    picked.forEach(function(it,i){
+      var gap = makeGap(it.full, it.a);
+      qHtml += '<div class="task"><span class="num">'+(i+1)+'.</span> '+gap.replace('_','___')+
+               ' <span style="color:#9ca3af;font-size:.85rem">(odvozeno od: '+it.root+')</span></div>';
+    });
+    var aHtml = '';
+    picked.forEach(function(it,i){
+      aHtml += '<div class="task"><span class="num">'+(i+1)+'.</span> <b>'+it.full+'</b></div>';
+    });
+    return {title:'Doplň y/i — s nápovědou', topic:'Vyjmenovaná slova', instructions:'Doplň do prázdných míst správné písmeno (y, i, ý, nebo í). V závorce máš nápovědu.', qHtml:qHtml, aHtml:aHtml};
+  }
+  if(key === 'dop_t'){
+    /* Doplň y/i - bez nápovědy */
+    var picked = shuffle(DOP_DATA).slice(0, 20);
+    var qHtml = '<div class="task" style="margin:.5rem 0">Doplň y, i, ý, nebo í do prázdných míst:</div>';
+    picked.forEach(function(it,i){
+      var gap = makeGap(it.full, it.a);
+      qHtml += '<div class="task"><span class="num">'+(i+1)+'.</span> '+gap.replace('_','___')+'</div>';
+    });
+    var aHtml = '';
+    picked.forEach(function(it,i){
+      aHtml += '<div class="task"><span class="num">'+(i+1)+'.</span> <b>'+it.full+'</b> &nbsp;<span style="color:#9ca3af;font-size:.85rem">('+it.root+')</span></div>';
+    });
+    return {title:'Doplň y/i — bez nápovědy', topic:'Vyjmenovaná slova', instructions:'Doplň do prázdných míst správné písmeno (y, i, ý, nebo í). Pamatuj na vyjmenovaná slova!', qHtml:qHtml, aHtml:aHtml};
+  }
+  if(key === 'sady'){
+    /* Učební list všech sad B/L/M/P/S/V/Z */
+    var qHtml = '<div class="task" style="margin:.4rem 0;font-size:.9rem;color:#6b7280">Tato karta je na učení. Vystřihni a zalaminuj — používej, kdykoliv si potřebuješ připomenout vyjmenovaná slova.</div>';
+    VYJM_KEYS.forEach(function(k){
+      var d = VYJM[k];
+      qHtml += '<div style="border:2px solid #32a0d2;border-radius:10px;padding:.8rem;margin:.6rem 0;page-break-inside:avoid">'+
+                 '<div style="font-size:1.4rem;font-weight:800;color:#32a0d2;margin-bottom:.4rem">'+k+' — '+d.label.replace('Vyjmenovaná slova po '+k,'')+'</div>'+
+                 '<div style="font-family:Verdana,Geneva,sans-serif;font-size:1rem;line-height:1.8;color:#1f2937">'+d.words.join(' · ')+'</div>'+
+               '</div>';
+    });
+    return {title:'Vyjmenovaná slova — učební karty', topic:'Vyjmenovaná slova', instructions:'Tato karta je na učení nazpaměť. Říkej slova vždy ve stejném pořadí — tím se naučíš celou řadu.', qHtml:qHtml, aHtml:'', skipSolution:true};
+  }
+  if(key === 'mix'){
+    /* Smíšený list - text k vyplnění */
+    var picked = shuffle(DOP_DATA).slice(0, 20);
+    var qHtml = '<div class="task" style="margin:.5rem 0">Doplň y, i, ý, nebo í. Zapiš celé slovo na vedlejší řádek:</div>';
+    picked.forEach(function(it,i){
+      var gap = makeGap(it.full, it.a);
+      qHtml += '<div class="task" style="border-bottom:1px solid #d1d5db;padding:.5rem 0;display:flex;justify-content:space-between">'+
+               '<span><span class="num">'+(i+1)+'.</span> '+gap.replace('_','___')+'</span>'+
+               '<span style="color:#9ca3af">→ ____________</span>'+
+               '</div>';
+    });
+    var aHtml = '';
+    picked.forEach(function(it,i){
+      aHtml += '<div class="task" style="display:inline-block;width:48%"><span class="num">'+(i+1)+'.</span> '+it.full+'</div>';
+    });
+    return {title:'Doplň a přepiš slovo', topic:'Vyjmenovaná slova', instructions:'Doplň y/i a celé slovo přepiš na vedlejší řádek. Tím si zapamatuješ správný tvar.', qHtml:qHtml, aHtml:aHtml};
+  }
+  if(key === 'hom'){
+    /* Homonyma - věty s prázdnem + 2 možnosti k zakroužkování */
+    var picked = shuffle(HOM_DATA).slice(0, 10);
+    var qHtml = '<div class="task" style="margin:.5rem 0">U každé věty zakroužkuj <b>správné</b> slovo (záleží na významu):</div>';
+    picked.forEach(function(it,i){
+      var sentence = it.sentence.replace('___','______');
+      qHtml += '<div class="task" style="border-bottom:1px solid #d1d5db;padding:.5rem 0">'+
+               '<div><span class="num">'+(i+1)+'.</span> '+sentence+'</div>'+
+               '<div style="margin-left:1.5rem;margin-top:.2rem">'+
+               '<span style="display:inline-block;border:1.5px solid #9ca3af;border-radius:6px;padding:.2rem .6rem;margin:.15rem;font-family:Verdana,Geneva,sans-serif"><b>a)</b> '+it.pair[0].w+'</span>'+
+               '<span style="display:inline-block;border:1.5px solid #9ca3af;border-radius:6px;padding:.2rem .6rem;margin:.15rem;font-family:Verdana,Geneva,sans-serif"><b>b)</b> '+it.pair[1].w+'</span>'+
+               '</div></div>';
+    });
+    var aHtml = '';
+    picked.forEach(function(it,i){
+      var letter = it.correct === 0 ? 'a' : 'b';
+      aHtml += '<div class="task"><span class="num">'+(i+1)+'.</span> <b>'+letter+')</b> '+it.pair[it.correct].w+'</div>';
+    });
+    return {title:'Dvojice významů', topic:'Vyjmenovaná slova', instructions:'V každé větě zakroužkuj správné slovo. Záleží na významu — některá slova zní podobně, ale znamenají něco jiného.', qHtml:qHtml, aHtml:aHtml};
+  }
+  if(key === 'pex'){
+    /* Pexeso k vystřižení — 16 kartiček (8 párů) na A4 */
+    var pairs = shuffle(PEX_DATA).slice(0, 8);
+    var allCards = [];
+    pairs.forEach(function(p){
+      allCards.push(p.a);
+      allCards.push(p.b);
+    });
+    allCards = shuffle(allCards);
+    var qHtml = '<div class="task" style="margin:.5rem 0;font-size:.9rem;color:#6b7280">Vystřihni kartičky a hraj pexeso. Spojuj vždy <b>vyjmenované slovo</b> s jeho <b>příbuzným</b> (odvozeným).</div>';
+    qHtml += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;margin:.5rem 0">';
+    allCards.forEach(function(w){
+      qHtml += '<div style="border:2px dashed #9ca3af;border-radius:8px;padding:1rem .3rem;text-align:center;font-family:Verdana,Geneva,sans-serif;font-weight:700;font-size:.95rem;background:#fafafa;min-height:60px;display:flex;align-items:center;justify-content:center">'+w+'</div>';
+    });
+    qHtml += '</div>';
+    /* Klíč — páry */
+    var aHtml = '<div class="task" style="margin:.4rem 0;font-size:.9rem;color:#6b7280">Páry pexesa:</div>';
+    pairs.forEach(function(p,i){
+      aHtml += '<div class="task"><span class="num">'+(i+1)+'.</span> <b>'+p.a+'</b> ↔ '+p.b+'</div>';
+    });
+    return {title:'Pexeso k vystřižení', topic:'Vyjmenovaná slova', instructions:'Vystřihni kartičky a hraj pexeso. Hledej dvojice: vyjmenované slovo + slovo příbuzné.', qHtml:qHtml, aHtml:aHtml};
+  }
+}
+
+function printHTML(data){
+  var d=new Date(); var dateStr=d.getDate()+'.'+(d.getMonth()+1)+'.'+d.getFullYear();
+  return '<!doctype html><html lang="cs"><head><meta charset="utf-8"><title>Pracovní list — '+data.title+'</title><style>'+
+    '*{box-sizing:border-box;margin:0;padding:0;}'+
+    'body{font-family:"Barlow Condensed",Arial,sans-serif;color:#1f2937;padding:1rem;}'+
+    '.sheet{max-width:760px;margin:0 auto;}'+
+    '.head{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #32a0d2;padding-bottom:.4rem;margin-bottom:.6rem;}'+
+    '.brand{font-size:.95rem;font-weight:800;color:#32a0d2;}'+
+    '.meta{font-size:.85rem;color:#6b7280;}'+
+    '.title{font-size:1.4rem;font-weight:800;color:#32a0d2;text-align:center;margin:.5rem 0;}'+
+    '.instructions{background:#fff8ee;border-left:4px solid #ffaa37;padding:.5rem .75rem;border-radius:6px;font-size:.95rem;margin:.5rem 0;}'+
+    '.name-line{margin:.4rem 0;font-size:.9rem;color:#374151;}'+
+    '.name-line span{display:inline-block;border-bottom:1px solid #9ca3af;width:200px;height:1.2em;}'+
+    '.task{font-size:1.05rem;line-height:1.9;padding:.1rem 0;font-family:Verdana,Geneva,sans-serif;}'+
+    '.num{font-weight:800;color:#32a0d2;display:inline-block;min-width:1.5rem;}'+
+    '.cut{margin:1.5rem 0 1rem;border-top:2px dashed #9ca3af;text-align:center;color:#9ca3af;font-size:.85rem;position:relative;}'+
+    '.cut::before{content:"✂ rozstřihni";position:absolute;top:-.7rem;background:white;padding:0 .5rem;left:50%;transform:translateX(-50%);}'+
+    '.solution-head{background:#dcfce7;border-left:4px solid #16a34a;padding:.4rem .75rem;border-radius:6px;font-size:.95rem;font-weight:700;color:#15803d;margin:.5rem 0;}'+
+    '.toolbar{position:fixed;top:.5rem;right:.5rem;background:#32a0d2;color:white;padding:.5rem 1rem;border-radius:99px;border:none;font-family:inherit;font-weight:700;font-size:.95rem;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2);}'+
+    '@media print{.toolbar{display:none;}body{padding:.5cm;}.sheet{max-width:100%;}}'+
+    '@page{size:A4;margin:1cm;}'+
+    '</style></head><body>'+
+    '<button class="toolbar" onclick="window.print()">🖨️ Vytisknout / Uložit PDF</button>'+
+    '<div class="sheet">'+
+      '<div class="head"><span class="brand">LinguaCzech · ZŠ Lingua Universal</span><span class="meta">'+(data.topic||data.title)+' · '+dateStr+'</span></div>'+
+      '<div class="title">'+data.title+'</div>'+
+      '<div class="name-line">Jméno: <span></span> &nbsp;&nbsp; Třída: <span style="width:80px"></span></div>'+
+      '<div class="instructions"><b>Pokyn:</b> '+data.instructions+'</div>'+
+      data.qHtml+
+      (data.skipSolution ? '' : ('<div class="cut"></div><div class="solution-head">✓ Klíč pro paní učitelku / rodiče</div>'+data.aHtml))+
+    '</div>'+
+    '</body></html>';
+}
+
+loadScore();
+</script>
+</body>
+</html>

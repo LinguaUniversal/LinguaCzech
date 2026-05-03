@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Čtení s porozuměním — LinguaCzech 3. třída</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --m:#32a0d2;--ms:#e8f4fb;
+  --o:#ffaa37;--os:#fff8ee;
+  --z:#16a34a;--zs:#dcfce7;
+  --r:#dc2626;--rs:#fee2e2;
+  --p:#7c3aed;--ps:#f3e8ff;
+  --font:'Barlow Condensed',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
+.hl{max-width:760px;margin:1.5rem auto;padding:.5rem 1rem;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.4rem 0 1rem;}
+.topbar a{color:var(--m);text-decoration:none;font-weight:700;font-size:.95rem;}
+.topbar span{font-weight:800;color:var(--m);}
+.scbg{position:fixed;top:10px;right:12px;background:var(--o);color:white;border-radius:99px;padding:.3rem .85rem;font-weight:700;font-size:1rem;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.18);pointer-events:none;}
+.mh{text-align:center;margin:.5rem 0 1.2rem;}
+.mh h1{font-size:1.9rem;color:var(--m);font-weight:800;margin:0;}
+.mh p{color:#6b7280;margin:.3rem 0 0;}
+.mg{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem;}
+.mk{padding:1rem;border-radius:14px;cursor:pointer;text-align:center;transition:all .15s;border:2.5px solid transparent;background:white;}
+.mk:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08);}
+.mk-m{background:var(--ms);border-color:var(--m);}
+.mk-o{background:var(--os);border-color:var(--o);}
+.mk-p{background:var(--ps);border-color:var(--p);}
+.mk h3{font-size:1.05rem;font-weight:800;margin-bottom:.2rem;}
+.mk p{font-size:.85rem;color:#6b7280;margin:0;}
+.cv{display:none;}
+.nav{display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;}
+.zpet{background:white;border:1.5px solid #d1d5db;border-radius:8px;padding:.4rem .9rem;font-weight:600;cursor:pointer;font-family:var(--font);}
+.tit{font-size:1.1rem;font-weight:700;}
+.var{margin-left:auto;background:var(--ms);color:var(--m);border-radius:99px;padding:.2rem .8rem;font-weight:600;font-size:.85rem;}
+.sk{display:flex;justify-content:space-around;background:var(--os);border:1px solid #ffd48a;border-radius:10px;padding:.7rem;margin-bottom:.75rem;}
+.skn{font-size:1.4rem;font-weight:700;color:var(--o);text-align:center;}
+.skl{font-size:.75rem;color:#6b7280;text-align:center;}
+.pg{height:8px;background:#e5e7eb;border-radius:99px;overflow:hidden;margin-bottom:1rem;}
+.pgf{height:100%;background:var(--m);border-radius:99px;transition:width .3s;}
+.ka{background:white;border:1.5px solid #e5e7eb;border-radius:12px;padding:1rem;margin-bottom:1rem;}
+.q{font-weight:700;text-align:center;margin-bottom:.5rem;color:#374151;}
+.fb{margin-top:.7rem;font-size:.95rem;min-height:1.2rem;font-weight:600;text-align:center;}
+.fb.ok{color:var(--z);}
+.fb.err{color:var(--r);}
+.nxt{display:none;width:100%;background:var(--m);color:white;border:none;border-radius:8px;padding:.85rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:var(--font);margin-top:.5rem;}
+.res{display:none;text-align:center;padding:2rem 1rem;}
+.res h2{color:var(--m);font-size:1.6rem;margin:.5rem 0;}
+.res-row{display:flex;gap:1rem;justify-content:center;margin:1rem 0;flex-wrap:wrap;}
+.rs{background:var(--ms);border-radius:10px;padding:.75rem 1rem;}
+.rsv{font-size:1.4rem;font-weight:800;}
+.rsl{font-size:.8rem;color:#6b7280;}
+.znovu,.mbtn{padding:.7rem 1.2rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:.95rem;margin:.3rem;}
+.znovu{background:var(--m);color:white;border:none;}
+.mbtn{background:white;color:#374151;border:1.5px solid #d1d5db;}
+
+/* Text čtení - dvě varianty stylu */
+.textBox{font-family:Verdana,Geneva,sans-serif;font-size:1rem;line-height:1.7;background:var(--ms);padding:1rem 1.2rem;border-radius:10px;margin:.7rem 0;color:#1f2937;border-left:4px solid var(--m);}
+.textBox.naucny{background:#fff7ed;border-left-color:var(--o);}
+.textBox b{color:var(--m);}
+.textBox.naucny b{color:var(--o);}
+
+@media print{body{background:white;}.scbg{display:none;}}
+</style>
+</head>
+<body>
+<div class="scbg" id="scbg">⭐ 0 b.</div>
+<div class="hl">
+
+<!-- MENU -->
+<div id="menu">
+  <div class="topbar"><a href="3trida.html">← 3. třída</a><span>LinguaCzech</span></div>
+  <div class="mh"><h1>Čtení s porozuměním</h1><p>3. ročník — krátké příběhy + naučné texty</p></div>
+  <div class="mg">
+    <div onclick="go('kratke')" class="mk mk-m" style="grid-column:span 2"><h3>📖 Krátké příběhy</h3><p>8 krátkých textů ze života · 4 otázky každý</p></div>
+    <div onclick="go('naucne')" class="mk mk-o" style="grid-column:span 2"><h3>🌍 Naučné texty</h3><p>23 textů o světě · světadíly · historie · příroda</p></div>
+    <div onclick="printChoice()" class="mk" style="grid-column:span 2;background:#f3f4f6;border:2px dashed #9ca3af"><h3 style="color:#374151">🖨️ Vytisknout pracovní list</h3><p style="color:#6b7280">PDF k procvičování doma</p></div>
+  </div>
+</div>
+
+<!-- CV: KRÁTKÉ -->
+<div class="cv" id="cv-kratke">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">📖 Krátké příběhy</span><span class="var" id="kr-v">1/4</span></div>
+  <div class="sk">
+    <div><div class="skn" id="kr-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="kr-ci">1/4</div><div class="skl">text</div></div>
+    <div><div class="skn" id="kr-sp">0</div><div class="skl">perfektně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="kr-pg" style="width:0%"></div></div>
+  <div id="kr-ob">
+    <div class="ka">
+      <div class="q">Pozorně si přečti text. Pak odpověz na otázky vlastními slovy.</div>
+      <div class="textBox" id="kr-text">—</div>
+      <div id="kr-questions" style="margin-top:1rem"></div>
+      <div class="fb" id="kr-fb"></div>
+    </div>
+    <button class="nxt" id="kr-nx" onclick="krNext()">Další text →</button>
+    <div style="text-align:center;margin-top:.5rem">
+      <button class="mbtn" id="kr-check" onclick="krCheck()" style="background:var(--m);color:white;border:none">Zkontrolovat odpovědi ✓</button>
+    </div>
+  </div>
+  <div class="res" id="kr-res">
+    <div style="font-size:3rem">📚</div><h2>Skvělé čtení!</h2><p id="kr-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="kr-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="kr-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('kratke')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV: NAUČNÉ -->
+<div class="cv" id="cv-naucne">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🌍 Naučné texty</span><span class="var" id="na-v">1/5</span></div>
+  <div class="sk">
+    <div><div class="skn" id="na-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="na-ci">1/5</div><div class="skl">text</div></div>
+    <div><div class="skn" id="na-sp">0</div><div class="skl">perfektně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="na-pg" style="width:0%"></div></div>
+  <div id="na-ob">
+    <div class="ka">
+      <div class="q">Pozorně si přečti naučný text. Pak odpověz na otázky.</div>
+      <div class="textBox naucny" id="na-text">—</div>
+      <div id="na-questions" style="margin-top:1rem"></div>
+      <div class="fb" id="na-fb"></div>
+    </div>
+    <button class="nxt" id="na-nx" onclick="naNext()">Další text →</button>
+    <div style="text-align:center;margin-top:.5rem">
+      <button class="mbtn" id="na-check" onclick="naCheck()" style="background:var(--o);color:white;border:none">Zkontrolovat odpovědi ✓</button>
+    </div>
+  </div>
+  <div class="res" id="na-res">
+    <div style="font-size:3rem">🌟</div><h2>Vynikající!</h2><p id="na-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="na-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="na-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('naucne')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+</div><!-- .hl -->
+
+<script>
+var SCORE_KEY='ctp3_score';
+var totalScore=0;
+try{totalScore=parseInt(localStorage.getItem(SCORE_KEY))||0;}catch(e){}
+function el(id){return document.getElementById(id);}
+function shuffle(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t;}return b;}
+function addPoints(n){totalScore+=n;try{localStorage.setItem(SCORE_KEY,totalScore);}catch(e){}updateScore();}
+function updateScore(){el('scbg').textContent='⭐ '+totalScore+' b.';}
+updateScore();
+function go(id){
+  el('menu').style.display='none';
+  document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
+  el('cv-'+id).style.display='block';
+  if(id==='kratke') krStart();
+  if(id==='naucne') naStart();
+}
+function back(){
+  el('menu').style.display='block';
+  document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
+}
+
+/* ─────────────────────────────────────────────
+   POROVNÁVÁNÍ ODPOVĚDÍ
+   - normalizuje (malá písmena, bez diakritiky, čísla → slova a naopak)
+   - každá otázka má pole `keywords`, kde každý prvek je VARIANTA správné odpovědi
+   - varianty jsou OR (stačí najít jednu z nich)
+   - pokud varianta obsahuje "+", všechny části musí být v odpovědi (AND)
+   - příklady:
+     keywords: ['pastvinska']           → musí obsahovat "pastvinska"
+     keywords: ['treti', '3.']           → třetí NEBO 3.
+     keywords: ['pepa+honza']            → musí obsahovat OBĚ slova (jakékoli pořadí)
+     keywords: ['pepa+honza', 'kamarad']→ buď oba kluci, nebo "kamarád"
+─────────────────────────────────────────── */
+function ctNormalize(s){
+  var n = (s || '').toLowerCase()
+    .replace(/á/g,'a').replace(/é/g,'e').replace(/í/g,'i').replace(/ó/g,'o')
+    .replace(/ú/g,'u').replace(/ů/g,'u').replace(/ý/g,'y').replace(/ě/g,'e')
+    .replace(/š/g,'s').replace(/č/g,'c').replace(/ř/g,'r').replace(/ž/g,'z')
+    .replace(/ť/g,'t').replace(/ď/g,'d').replace(/ň/g,'n')
+    .replace(/[.,!?;:'"()\[\]\/]/g,' ')
+    .replace(/\s+/g,' ').trim();
+  /* Čísla zapsaná slovem → nahradit jejich číselnou variantou pro porovnání */
+  /* Sloupec: slovo → cifra. Vyhledávání je obousměrné: hledáme číslo i slovo */
+  return n;
+}
+/* Pomocné mapování čísel - jak slovem, tak cifrou */
+var CISLA_MAP = {
+  'jeden':'1', 'jedna':'1', 'jedno':'1',
+  'dva':'2', 'dve':'2',
+  'tri':'3', 'treti':'3',
+  'ctyri':'4', 'ctvrty':'4',
+  'pet':'5', 'paty':'5',
+  'sest':'6', 'sesty':'6',
+  'sedm':'7', 'sedmy':'7',
+  'osm':'8', 'osmy':'8',
+  'devet':'9', 'devaty':'9',
+  'deset':'10', 'desaty':'10'
+};
+/* Vrátí seznam možných normalizovaných tvarů odpovědi - originál + tvary s nahrazenými čísly */
+function ctVariants(normAns){
+  var variants = [normAns];
+  /* Pro každé slovo zjisti jestli je v CISLA_MAP, pokud ano přidej variantu s číslem */
+  Object.keys(CISLA_MAP).forEach(function(slovo){
+    if(normAns.indexOf(slovo) >= 0){
+      variants.push(normAns.replace(new RegExp(slovo,'g'), CISLA_MAP[slovo]));
+    }
+    /* A naopak: pokud je tam cifra, přidej tvar se slovem */
+    var cifra = CISLA_MAP[slovo];
+    if(normAns.indexOf(cifra) >= 0){
+      variants.push(normAns.replace(new RegExp(cifra,'g'), slovo));
+    }
+  });
+  return variants;
+}
+/* Hlavní porovnávací funkce */
+function ctMatch(answer, keywords){
+  var normAns = ctNormalize(answer);
+  if(!normAns) return false;
+  var variants = ctVariants(normAns);
+  /* Test každé varianty proti každému keyword */
+  return keywords.some(function(kw){
+    /* Keyword může být AND ("pepa+honza") */
+    var parts = kw.toLowerCase().split('+');
+    return variants.some(function(v){
+      return parts.every(function(p){
+        return v.indexOf(p) >= 0;
+      });
+    });
+  });
+}
+
+/* ─────────────────────────────────────────────
+   DATA: KRÁTKÉ PŘÍBĚHY (8)
+─────────────────────────────────────────── */
+var KRATKE_TEXTY = [
+  {
+    text: 'Eliška jezdí v létě na chalupu s babičkou a dědou. Vždy se moc těší. U chalupy je malý les a kousek dál je přehrada, která se jmenuje Pastvinská. Je v ní hodně studená voda a velké ryby. Dá se objet na kole.',
+    questions: [
+      {q:'Jak se jmenuje přehrada?', keywords:['pastvinska']},
+      {q:'Kdy jezdí Eliška na chalupu?', keywords:['lete','leto']},
+      {q:'S kým jezdí Eliška na chalupu?', keywords:['babickou+dedou','babicka+deda','babickou','dedou']},
+      {q:'Co je u chalupy?', keywords:['les','maly les']}
+    ]
+  },
+  {
+    text: 'Tomáš má rád zvířata. Doma má psa Boženu a kočku Mourka. Božena je velká černá fenka a každé ráno chodí s Tomášem ven. Mourek je zrzavý kocour a celý den spí na okně. Tomáš o ně rád pečuje, krmí je a hraje si s nimi.',
+    questions: [
+      {q:'Jak se jmenuje Tomášův pes?', keywords:['bozena']},
+      {q:'Jakou barvu má kočka Mourek?', keywords:['zrzav']},
+      {q:'Kde Mourek celý den spí?', keywords:['okn']},
+      {q:'Kdy Tomáš chodí s Boženou ven?', keywords:['rano']}
+    ]
+  },
+  {
+    text: 'V parku rostl velký starý dub. Jeho větve sahaly vysoko do nebe. Pod dubem si hrály děti a v jeho koruně bydleli ptáčci. Na podzim padaly z dubu žaludy a veverka Rita si je sbírala do svého doupěte ve stromě. Měla jich tam plnou zásobu na zimu.',
+    questions: [
+      {q:'Co rostlo v parku?', keywords:['dub','stary dub']},
+      {q:'Jak se jmenuje veverka?', keywords:['rita']},
+      {q:'Co padalo z dubu na podzim?', keywords:['zalud']},
+      {q:'Proč si veverka schovávala žaludy?', keywords:['zim','na zimu','zasob']}
+    ]
+  },
+  {
+    text: 'Karolína je v 3. třídě a moc ráda čte. Její nejoblíbenější knížka je o pirátech, kteří hledají poklad na vzdáleném ostrově. Knížku dostala od babičky k narozeninám. Každý večer si v ní čte alespoň jednu kapitolu. Když knihu dočte, vrací se k ní znovu.',
+    questions: [
+      {q:'Do které třídy chodí Karolína?', keywords:['treti','3','3 trida','treti trida']},
+      {q:'O čem je její oblíbená knížka?', keywords:['pirat','poklad']},
+      {q:'Od koho dostala knížku?', keywords:['babi']},
+      {q:'Kdy si v knížce čte?', keywords:['vecer','kazdy vecer']}
+    ]
+  },
+  {
+    text: 'Honza a Pepa jsou kamarádi. Po škole spolu chodí na hřiště hrát fotbal. Honza dává vždycky góly a Pepa stojí v bráně. Včera se utkali s kluky z paralelní třídy. Vyhráli 3 : 1. Po zápase si dali zmrzlinu v cukrárně na rohu.',
+    questions: [
+      {q:'Jak se jmenují oba kamarádi?', keywords:['honza+pepa','pepa+honza']},
+      {q:'Kdo stojí v bráně?', keywords:['pepa']},
+      {q:'Jakým výsledkem zápas vyhráli?', keywords:['3','3:1','3 1','tri ku jedne','tri']},
+      {q:'Kde si dali zmrzlinu?', keywords:['cukrarn']}
+    ]
+  },
+  {
+    text: 'V neděli jsme s rodiči byli na výletě. Jeli jsme autem do Krkonoš. Vystoupili jsme na nejvyšší českou horu Sněžku. Cesta nahoru trvala dvě hodiny a byla docela náročná. Na vrcholu byla zima a foukal silný vítr. Z kopce jsme se ale viděli daleko - až do Polska.',
+    questions: [
+      {q:'V kterém pohoří jsme byli?', keywords:['krkonos','krkonose']},
+      {q:'Jak se jmenuje hora, na kterou jsme vystoupili?', keywords:['snezka']},
+      {q:'Jak dlouho trvala cesta nahoru?', keywords:['2','dve','dve hodiny','2 hodiny']},
+      {q:'Co bylo na vrcholu?', keywords:['zima','vitr','silny vitr','zima+vitr']}
+    ]
+  },
+  {
+    text: 'Adélka má novou kamarádku. Jmenuje se Marta a chodí do stejné třídy. Adélka ji pozvala na svoje narozeniny. Bude jich osm a chystá pizza párty. Pozvané jsou ještě další tři kamarádky a jedna sestřenice. Maminka napekla velký dort se šlehačkou a jahodami.',
+    questions: [
+      {q:'Jak se jmenuje Adélčina nová kamarádka?', keywords:['marta']},
+      {q:'Kolik let bude Adélce?', keywords:['osm','8']},
+      {q:'Jakou párty Adélka chystá?', keywords:['pizza','pizza party']},
+      {q:'Co napekla maminka?', keywords:['dort','velky dort','sleha+jahod','dort+sleha','dort+jahod']}
+    ]
+  },
+  {
+    text: 'Filip má nové kolo. Dostal ho k Vánocům od babičky a dědy. Kolo je modré a má 6 převodů. Filip ho zkoušel hned o prázdninách v lese za domem. Naučil se zatáčet, brzdit a jezdit po cestičkách. Tatínek mu koupil i bezpečnostní helmu, kterou musí vždy nosit.',
+    questions: [
+      {q:'Od koho Filip dostal kolo?', keywords:['babicky+dedy','babicka+deda','babicky','dedy','prarodicu']},
+      {q:'Jakou barvu má kolo?', keywords:['modre','modr']},
+      {q:'Kolik převodů má kolo?', keywords:['6','sest']},
+      {q:'Co mu koupil tatínek?', keywords:['helm','bezpec','bezpecnostni helm']}
+    ]
+  }
+];
+
+/* ─────────────────────────────────────────────
+   DATA: NAUČNÉ TEXTY (23) — pro 3. třídu, srozumitelná délka
+─────────────────────────────────────────── */
+var NAUCNE_TEXTY = [
+  /* === SVĚTADÍLY === */
+  {
+    text: 'Antarktida je pátý největší světadíl na Zemi. Leží okolo jižního pólu. Je to pevnina pokrytá ledem - místy je led tlustý až 2 km! Antarktida je nejchladnější, nejsušší a největrnější místo na světě. Je to jediný kontinent bez stálých obyvatel - žijí tu jen vědci na výzkumných stanicích. Mezi typická zvířata patří tučňáci a tuleni. Poprvé ji lidé spatřili v roce 1820.',
+    questions: [
+      {q:'Kolikátým největším světadílem je Antarktida?', keywords:['paty','5']},
+      {q:'Jak silný je tam led?', keywords:['2','dva']},
+      {q:'Kdo žije na Antarktidě?', keywords:['vedci','vyzkumn']},
+      {q:'Jaká zvířata tam žijí?', keywords:['tucnak+tulen','tucnak','tulen']},
+      {q:'Kdy ji lidé poprvé spatřili?', keywords:['1820']}
+    ]
+  },
+  {
+    text: 'Evropa je druhý nejmenší světadíl. Leží na západě a severu Asie. Žije tu přes 700 milionů lidí. Patří sem i naše Česká republika. V Evropě je 47 zemí, mezi nimi Francie, Německo, Itálie, Polsko a Španělsko. Nejvyšší horou Evropy je Mont Blanc (4 810 m), nejdelší řekou Volha. Evropu obklopují 3 oceány: Atlantský, Severní ledový a Středozemní moře.',
+    questions: [
+      {q:'Kolikátým nejmenším světadílem je Evropa?', keywords:['druhy','2']},
+      {q:'Kolik lidí v Evropě žije?', keywords:['700','sedm set']},
+      {q:'Patří k Evropě Česká republika?', keywords:['ano','patri','cesk']},
+      {q:'Kolik je v Evropě zemí?', keywords:['47']},
+      {q:'Jak se jmenuje nejvyšší hora Evropy?', keywords:['mont blanc','blanc']}
+    ]
+  },
+  {
+    text: 'Austrálie je nejmenší ze všech světadílů. Leží na jižní polokouli. Má jen jednu zemi - také se jmenuje Austrálie. Hlavním městem je Canberra. Žije tu mnoho zvláštních zvířat, která nikde jinde nežijí - klokani, koaly, ptakopyskové a vombati. Většina Austrálie je poušť, ale na východě je tropický deštný prales. Velký bariérový útes je největší korálový útes na světě.',
+    questions: [
+      {q:'Jak se jmenuje hlavní město Austrálie?', keywords:['canberra']},
+      {q:'Kolikátým světadílem podle velikosti je Austrálie?', keywords:['nejmensi','prvni','1']},
+      {q:'Jaká zvláštní zvířata tam žijí?', keywords:['klokan','koala','ptakopysk','vombat']},
+      {q:'Co je Velký bariérový útes?', keywords:['koralovy','utes','najvetsi koralovy utes']},
+      {q:'Co tvoří většinu Austrálie?', keywords:['poust']}
+    ]
+  },
+  {
+    text: 'Asie je největší a nejlidnatější světadíl světa. Žije zde přes 4,5 miliardy lidí - tedy víc než polovina lidí na Zemi. V Asii leží i nejvyšší hora světa - Mount Everest. Najdeme zde Čínu (nejlidnatější zemi), Indii, Japonsko, Rusko, Vietnam a další. V Asii vznikly nejstarší civilizace - mezi nimi Mezopotámie a Čína. Asie je také domovem tygrů, pand a slonů.',
+    questions: [
+      {q:'Jaká je Asie z hlediska velikosti?', keywords:['nejvetsi','prvni','1']},
+      {q:'Jak se jmenuje nejvyšší hora světa?', keywords:['mount everest','everest']},
+      {q:'Která země je v Asii nejlidnatější?', keywords:['cina']},
+      {q:'Jaká zvířata jsou typická pro Asii?', keywords:['tygr','panda','slon']},
+      {q:'Které civilizace tu vznikly?', keywords:['mezopotam','cina']}
+    ]
+  },
+  {
+    text: 'Amerika je druhý největší světadíl. Dělíme ji na dvě části - Severní Ameriku a Jižní Ameriku. V Severní Americe jsou Spojené státy americké (USA), Kanada a Mexiko. V Jižní Americe jsou například Brazílie, Argentina a Peru. Ameriku objevil Kryštof Kolumbus v roce 1492. Předtím tu žili původní obyvatelé - Indiáni. Žijí zde také jaguáři, lamy, kondoři a další zvířata.',
+    questions: [
+      {q:'Na kolik částí dělíme Ameriku?', keywords:['dve','2']},
+      {q:'Jak se jmenují části Ameriky?', keywords:['severni+jizni','severni','jizni']},
+      {q:'Kdo objevil Ameriku?', keywords:['kolumbus']},
+      {q:'Kdy byla Amerika objevena?', keywords:['1492']},
+      {q:'Kdo žil v Americe před objevením?', keywords:['indian','puvodni']}
+    ]
+  },
+  {
+    text: 'Afrika je druhý největší světadíl po Asii. Leží jižně od Evropy. Žije zde přes 1,4 miliardy lidí. V Africe je největší poušť na světě - Sahara. Najdeme zde také nejdelší řeku světa - Nil. Afrika je domovem mnoha zvířat: lvi, sloni, žirafy, hroši, zebry, gepardi a opice. Žije tu také mnoho různých kmenů. Hlavními zeměmi jsou Egypt, Jihoafrická republika, Keňa nebo Maroko.',
+    questions: [
+      {q:'Kolikátým největším světadílem je Afrika?', keywords:['druhy','2']},
+      {q:'Jak se jmenuje největší africká poušť?', keywords:['sahara']},
+      {q:'Která řeka je nejdelší na světě?', keywords:['nil']},
+      {q:'Jaká zvířata žijí v Africe?', keywords:['lev','slon','zirafa','zebra']},
+      {q:'Které jsou hlavní africké země?', keywords:['egypt','keňa','keni','maroko','jar']}
+    ]
+  },
+  /* === HORY A PŘÍRODA === */
+  {
+    text: 'Mount Everest je nejvyšší hora na Zemi. Měří 8 848 metrů. Leží v pohoří Himálaj na hranici Nepálu a Číny. Tibetsky se hora jmenuje Čomolungma, což znamená "Matka bohyně Země". Lidé na ni začali stoupat ve 20. století. Poprvé ji v roce 1953 zdolali Edmund Hillary a Tenzing Norgay. Stoupání je velmi nebezpečné - je tam zima, málo kyslíku a často zuří bouře.',
+    questions: [
+      {q:'Jak vysoký je Mount Everest?', keywords:['8 848','8848','8000']},
+      {q:'V jakém pohoří leží?', keywords:['himalaj']},
+      {q:'Jak se říká Mount Everestu tibetsky?', keywords:['comolungma']},
+      {q:'Kdo poprvé vystoupil na vrchol?', keywords:['hillary+norgay','hillary','norgay']},
+      {q:'V jakém roce byl Mount Everest poprvé zdolán?', keywords:['1953']}
+    ]
+  },
+  {
+    text: 'Amazonka je nejvodnatější řeka světa. Pramení v Andách v Peru a teče přes Jižní Ameriku do Atlantského oceánu. Je dlouhá přes 6 400 kilometrů. Kolem Amazonky roste největší tropický deštný prales na světě - Amazonský prales. Říká se mu plíce planety, protože vyrábí hodně kyslíku. V Amazonce žijí piraně, sladkovodní delfíni a anakondy.',
+    questions: [
+      {q:'Kde Amazonka pramení?', keywords:['andy','andach','peru']},
+      {q:'Jak je Amazonka dlouhá?', keywords:['6 400','6400']},
+      {q:'Jak se říká Amazonskému pralesu?', keywords:['plice planety','plice']},
+      {q:'Jaká zvířata žijí v Amazonce?', keywords:['piran','delfin','anakonda']},
+      {q:'Do kterého oceánu Amazonka teče?', keywords:['atlantsk']}
+    ]
+  },
+  {
+    text: 'Vačnatci jsou zvláštní skupina savců. Jejich mláďata se rodí velmi malá a nedospělá. Maminka má na břiše vak (kapsu), kde mládě dorůstá. Kojí se mateřským mlékem. Mezi vačnatce patří klokan, koala, ďábel medvědovitý nebo vombat. Většina vačnatců žije v Austrálii a na Nové Guineji. V Americe žije například vačice. Klokan dokáže skočit do dálky až 12 metrů!',
+    questions: [
+      {q:'Kde mláďata vačnatců dorůstají?', keywords:['vak','kapsa','vaku','kapse','na brise']},
+      {q:'Jaká zvířata patří mezi vačnatce?', keywords:['klokan','koala','vombat','dabel']},
+      {q:'Kde většina vačnatců žije?', keywords:['australii','australie','nova guinea']},
+      {q:'Jak daleko skočí klokan?', keywords:['12','dvanact']},
+      {q:'Čím se vačnatci kojí?', keywords:['mlek','materskym mlekem']}
+    ]
+  },
+  {
+    text: 'Dinosauři žili na Zemi přes 160 milionů let. Byli to plazi, kteří měli nejrůznější velikosti - od malých jako kuře až po obrovské jako několikapatrový dům. Před 66 miliony let dinosauři vyhynuli. Vědci si myslí, že to bylo kvůli velkému meteoritu, který narazil do Země. Při dopadu vznikl mrak prachu, který zakryl slunce. Bez slunce nemohly růst rostliny a dinosauři neměli co jíst.',
+    questions: [
+      {q:'Jak dlouho žili dinosauři?', keywords:['160','sto sedesat']},
+      {q:'Kdy dinosauři vyhynuli?', keywords:['66']},
+      {q:'Co podle vědců způsobilo zánik dinosaurů?', keywords:['meteorit','meteor']},
+      {q:'Co se stalo po dopadu meteoritu?', keywords:['mrak prachu','prach','zakryl slunce']},
+      {q:'Proč dinosauři nemohli přežít?', keywords:['rostliny','nemely co jist','nemely jidlo']}
+    ]
+  },
+  /* === HISTORIE A MÍSTA === */
+  {
+    text: 'První lidé přistáli na Měsíci 20. července 1969. Byli to američtí astronauti Neil Armstrong a Buzz Aldrin. Třetí astronaut Michael Collins zůstal v lodi obíhat kolem Měsíce. Cesta na Měsíc byla dlouhá - trvala tři dny. Když Neil Armstrong vystoupil z modulu, řekl slavnou větu: "Je to malý krok pro člověka, ale obrovský skok pro lidstvo." Astronauti přivezli zpět kameny a prach z Měsíce.',
+    questions: [
+      {q:'Kdy přistáli první lidé na Měsíci?', keywords:['1969','20 cervence']},
+      {q:'Kdo byli první astronauti na Měsíci?', keywords:['armstrong+aldrin','armstrong','aldrin']},
+      {q:'Kdo zůstal v lodi?', keywords:['collins']},
+      {q:'Jak dlouho trvala cesta?', keywords:['3 dny','tri dny','tri']},
+      {q:'Co astronauti přivezli zpět?', keywords:['kameny','prach','vzorky']}
+    ]
+  },
+  {
+    text: 'Pyramidy v Gíze jsou jedním z divů světa. Stojí v Egyptě poblíž města Káhira. Postavili je staří Egypťané před více než 4 500 lety. Sloužily jako hroby pro faraony. Největší pyramida se jmenuje Cheopsova a je vysoká 147 metrů - to je jako 50patrový dům! Postavena je z obrovských kamenných bloků. Vědci dodnes přesně nevědí, jak ji Egypťané dokázali postavit bez moderních strojů.',
+    questions: [
+      {q:'V které zemi pyramidy stojí?', keywords:['egypt']},
+      {q:'Před kolika lety byly pyramidy postaveny?', keywords:['4500','4 500']},
+      {q:'Komu sloužily pyramidy?', keywords:['faraon','jako hrob','hrob']},
+      {q:'Jak se jmenuje největší pyramida?', keywords:['cheopsov','cheops']},
+      {q:'Jak je vysoká největší pyramida?', keywords:['147']}
+    ]
+  },
+  {
+    text: 'Pražský orloj je středověký astronomický stroj. Visí na Staroměstské radnici v Praze. Byl postaven v roce 1410, takže má přes 600 let. Ukazuje čas, polohu Slunce a Měsíce, znamení zvěrokruhu i datum. Každou hodinu se na něm objeví dvanáct apoštolů (svatých Ježíšových žáků). Pod nimi se pohybují figurky smrtky, lakomce a Turka. Lidé z celého světa jezdí orloj obdivovat.',
+    questions: [
+      {q:'Kde Pražský orloj visí?', keywords:['staromestsk','staromestska radnice']},
+      {q:'Kdy byl orloj postaven?', keywords:['1410']},
+      {q:'Co se na orloji každou hodinu objeví?', keywords:['12 apostolu','dvanact apostolu','apostol','12']},
+      {q:'Co všechno orloj ukazuje?', keywords:['cas','slunce','mesic','datum','zverokruh']},
+      {q:'Kolik let je orloji?', keywords:['600','sest set']}
+    ]
+  },
+  {
+    text: 'Karel IV. byl jeden z nejslavnějších českých panovníků. Byl králem a později i císařem Svaté říše římské. Žil ve 14. století (1316-1378). Za jeho vlády se Praha stala hlavním evropským městem. Karel IV. nechal postavit Karlův most, založil Univerzitu Karlovu (první univerzitu ve střední Evropě) a nechal přestavět Pražský hrad. Také založil hrad Karlštejn, kam ukládal korunovační klenoty.',
+    questions: [
+      {q:'V kterém století Karel IV. žil?', keywords:['14','ctrnactem']},
+      {q:'Co Karel IV. nechal postavit v Praze?', keywords:['karluv most','univerzita karlovu','univerzita','prazsky hrad']},
+      {q:'Jaký hrad Karel IV. založil?', keywords:['karlstejn']},
+      {q:'Co se ukládalo na Karlštejně?', keywords:['korunovacni klenoty','klenoty']},
+      {q:'Kolikátý Karel byl?', keywords:['ctvrty','iv','4']}
+    ]
+  },
+  {
+    text: 'Boubín je nejstarší pralesovité území v Česku. Leží na Šumavě. Některým stromům je víc než 400 let! Roste tu hlavně smrk, buk a jedle. Boubín je chráněná oblast - je tu zakázáno kácet stromy nebo sbírat. Návštěvníci mohou jít po vyznačené stezce a pozorovat divokou přírodu. Žijí tu rysové, jeleni, výři a další lesní zvířata. Vrchol Boubínu měří 1 362 metrů.',
+    questions: [
+      {q:'V jakém pohoří Boubín leží?', keywords:['sumav']},
+      {q:'Kolik let je některým stromům?', keywords:['400','ctyri sta']},
+      {q:'Co je tady zakázáno?', keywords:['kacet','sbirat']},
+      {q:'Jaká zvířata na Boubíně žijí?', keywords:['rys','jelen','vyr']},
+      {q:'Jak vysoký je vrchol?', keywords:['1362','1 362']}
+    ]
+  },
+  {
+    text: 'Litoměřice jsou krásné historické město v severních Čechách. Leží v Českém středohoří, na soutoku řek Labe a Ohře. Mají přes 23 000 obyvatel. Centrum města tvoří krásné Mírové náměstí s gotickou katedrálou svatého Štěpána. Litoměřicím se říká "Zahrada Čech" - rostou tu vinohrady a sady. Pořádá se tu každoročně slavná zahradnická výstava. V Litoměřicích žil i básník Karel Hynek Mácha, který tu zemřel.',
+    questions: [
+      {q:'Kde Litoměřice leží?', keywords:['ceske stredohori','severnich cech','stredohori']},
+      {q:'Kolik mají Litoměřice obyvatel?', keywords:['23000','23 000']},
+      {q:'Jak se Litoměřicím říká?', keywords:['zahrada cech']},
+      {q:'Jaké náměstí je v centru?', keywords:['mirove namesti','katedrala','svateho stepana']},
+      {q:'Který básník v Litoměřicích zemřel?', keywords:['mach','karel hynek mach']}
+    ]
+  },
+  {
+    text: 'Karel Hynek Mácha je nejslavnější český romantický básník. Narodil se v roce 1810 v Praze. Jeho nejznámější dílo se jmenuje Máj. Je to milostná báseň o lásce, smrti a krásách přírody. Mácha rád chodil na dlouhé túry po českých horách a hradech. Měl velkou lásku - Eleonoru Šomkovou. Bohužel zemřel velmi mladý - bylo mu jen 26 let. Zemřel v Litoměřicích v roce 1836.',
+    questions: [
+      {q:'Jak se jmenuje nejslavnější Máchovo dílo?', keywords:['maj']},
+      {q:'O čem je báseň Máj?', keywords:['lasce','laska','smrt','priroda']},
+      {q:'Kde Mácha zemřel?', keywords:['litomerice','litomericich']},
+      {q:'Kolik mu bylo, když zemřel?', keywords:['26']},
+      {q:'V kterém roce se Mácha narodil?', keywords:['1810']}
+    ]
+  },
+  {
+    text: 'Milešovka je hora v Českém středohoří. Měří 837 metrů, ale je to nejvyšší hora celého středohoří. Leží nedaleko Litoměřic a Lovosic. Z vrcholu je krásný výhled - za jasného dne je vidět až do Krkonoš. Říká se jí "královna Českého středohoří". Na vrcholu je meteorologická stanice, která měří počasí. Je to také největrnější místo v Česku - vítr zde fouká silně téměř každý den.',
+    questions: [
+      {q:'Jak vysoká je Milešovka?', keywords:['837']},
+      {q:'V kterém pohoří leží?', keywords:['ceske stredohori','stredohori']},
+      {q:'Jak se Milešovce říká?', keywords:['kralovna']},
+      {q:'Co je na vrcholu?', keywords:['meteorologick','stanice']},
+      {q:'Čím je Milešovka výjimečná?', keywords:['nejvetrnejsi','vitr']}
+    ]
+  },
+  {
+    text: 'České středohoří je pohoří v severních Čechách. Vzniklo před 30 miliony let, když tu vybuchovaly sopky. Dnes jsou sopky vyhaslé, ale jejich kuželovité kopce zůstaly. Mají typický tvar - jsou nezvykle špičaté a strmé. Mezi nejznámější patří Milešovka, Říp a Lovoš. Středohořím protéká řeka Labe a vytváří tu krásné údolí. Roste tu hodně vinohradů a ovocných sadů.',
+    questions: [
+      {q:'Ve kterých Čechách leží České středohoří?', keywords:['severnich','severn']},
+      {q:'Kdy České středohoří vzniklo?', keywords:['30','tricet']},
+      {q:'Co tu kdysi vybuchovalo?', keywords:['sopky','sopka','vulkan']},
+      {q:'Které kopce sem patří?', keywords:['milesovka','rip','lovos']},
+      {q:'Jaká řeka středohořím protéká?', keywords:['labe']}
+    ]
+  },
+  {
+    text: 'Labe je nejdelší česká řeka. Pramení v Krkonoších v 1 387 metrech nad mořem. Teče přes Hradec Králové, Pardubice, Mělník a Litoměřice. V Mělníku se do něj vlévá řeka Vltava. Pak Labe pokračuje do Německa, kde se v Hamburku vlévá do Severního moře. Celá řeka je dlouhá 1 094 km. V Česku je Labe dlouhé 358 km. Na Labi pluje hodně lodí - i nákladních.',
+    questions: [
+      {q:'Kde Labe pramení?', keywords:['krkonosich','krkonose']},
+      {q:'Která řeka se vlévá do Labe v Mělníku?', keywords:['vltava']},
+      {q:'Do kterého moře Labe ústí?', keywords:['severni','severni more']},
+      {q:'Jak je Labe celkem dlouhé?', keywords:['1094','1 094']},
+      {q:'V kterém německém městě se Labe vlévá do moře?', keywords:['hamburk']}
+    ]
+  },
+  {
+    text: 'Terezín je historické město v severních Čechách, blízko Litoměřic. Bylo postaveno koncem 18. století jako pevnost. Měla bránit zemi před nepřáteli. Pevnost má hvězdicový tvar a obrovské hradby. Bohužel za druhé světové války Němci v Terezíně zřídili koncentrační tábor. Vězněni tu byli hlavně Židé, mezi nimi mnoho dětí. Mnoho jich zemřelo nebo bylo posláno do dalších táborů. Dnes je v Terezíně Památník, který připomíná tyto smutné události.',
+    questions: [
+      {q:'Kde Terezín leží?', keywords:['severnich cechach','litomeric']},
+      {q:'Kdy byl Terezín postaven?', keywords:['18 stolet','osmnactem']},
+      {q:'K čemu Terezín původně sloužil?', keywords:['pevnost','obran']},
+      {q:'Co se v Terezíně dělo za 2. světové války?', keywords:['koncentracni tabor','tabor','vezneni']},
+      {q:'Jaký tvar má pevnost?', keywords:['hvezdicov']}
+    ]
+  },
+  {
+    text: 'Marie Terezie byla česká a rakouská královna. Vládla 40 let (1740-1780). Byla velmi vzdělaná a měla 16 dětí! Marie Terezie se snažila stát zlepšit. Zavedla povinnou školní docházku - každé dítě muselo chodit do školy. Také zlepšila armádu, daně i úřady. Jejím nejslavnějším synem byl Josef II., který vládl po ní. Marie Terezie byla jedinou ženou, která kdy vládla Habsburkům.',
+    questions: [
+      {q:'Jak dlouho Marie Terezie vládla?', keywords:['40','ctyricet']},
+      {q:'Kolik měla dětí?', keywords:['16','sestnact']},
+      {q:'Co Marie Terezie zavedla pro děti?', keywords:['povinnou skolni dochazku','dochazku','do skoly','skol']},
+      {q:'Kdo byl jejím slavným synem?', keywords:['josef ii','josef druhy','josef']},
+      {q:'V kterých letech Marie Terezie vládla?', keywords:['1740','1780']}
+    ]
+  },
+  {
+    text: 'Josef II. byl syn Marie Terezie. Byl rakouským císařem a vládl po své matce v letech 1780-1790. Josef II. provedl mnoho reforem - to znamená velkých změn. Zrušil nevolnictví, takže rolníci už nemuseli pracovat zadarmo na polích pánů. Vydal také Toleranční patent - lidé mohli věřit v různá náboženství. Zrušil mnoho klášterů a postavil za jejich peníze nemocnice a školy. Lidé mu říkali "lidový císař".',
+    questions: [
+      {q:'Kdo byl Josef II.?', keywords:['syn marie terezie','syn']},
+      {q:'V kterých letech Josef II. vládl?', keywords:['1780','1790']},
+      {q:'Co Josef II. zrušil?', keywords:['nevolnictvi','klaster']},
+      {q:'Co umožnil Toleranční patent?', keywords:['nabozenstvi','vira','verit']},
+      {q:'Jak lidé Josefa II. nazývali?', keywords:['lidovy cisar']}
+    ]
+  }
+];
+
+
+/* ─────────────────────────────────────────────
+   FUNKCE - sdílené pro krátké i naučné
+─────────────────────────────────────────── */
+function renderText(prefix, item, isNaucny){
+  el(prefix+'-text').textContent = item.text;
+  el(prefix+'-text').className = 'textBox' + (isNaucny ? ' naucny' : '');
+  /* Vykreslit otázky */
+  var box = el(prefix+'-questions');
+  box.innerHTML = '';
+  item.questions.forEach(function(qd, qi){
+    var div = document.createElement('div');
+    div.style.cssText = 'margin-bottom:.6rem;padding-bottom:.5rem;border-bottom:1px solid #e5e7eb';
+    var lbl = document.createElement('label');
+    lbl.style.cssText = 'display:block;font-weight:700;color:'+(isNaucny?'var(--o)':'var(--m)')+';margin-bottom:.3rem;font-size:.95rem;font-family:Verdana,Geneva,sans-serif';
+    lbl.innerHTML = '<b>'+(qi+1)+'.</b> '+qd.q;
+    div.appendChild(lbl);
+    var inp = document.createElement('input');
+    inp.type = 'text';
+    inp.dataset.qi = qi;
+    inp.placeholder = 'Napiš svou odpověď...';
+    inp.style.cssText = 'width:100%;padding:.5rem .7rem;border:2px solid #d1d5db;border-radius:8px;font-family:Verdana,Geneva,sans-serif;font-size:1rem;color:#1f2937';
+    var focusColor = isNaucny ? 'var(--o)' : 'var(--m)';
+    var bgColor = isNaucny ? 'var(--os)' : 'var(--ms)';
+    inp.onfocus = function(){ this.style.borderColor=focusColor; this.style.background=bgColor; };
+    inp.onblur = function(){ this.style.borderColor='#d1d5db'; this.style.background='white'; };
+    div.appendChild(inp);
+    var fb = document.createElement('div');
+    fb.className = prefix+'-qfb';
+    fb.dataset.qi = qi;
+    fb.style.cssText = 'font-size:.85rem;margin-top:.3rem;font-weight:600;min-height:1rem';
+    div.appendChild(fb);
+    box.appendChild(div);
+  });
+}
+
+function checkAnswers(prefix, item){
+  var inputs = document.querySelectorAll('#'+prefix+'-questions input');
+  var fbs = document.querySelectorAll('#'+prefix+'-questions .'+prefix+'-qfb');
+  var correctCount = 0;
+  inputs.forEach(function(inp, i){
+    var qd = item.questions[i];
+    var fb = fbs[i];
+    var hit = ctMatch(inp.value, qd.keywords);
+    if(hit){
+      correctCount++;
+      inp.style.borderColor = 'var(--z)';
+      inp.style.background = 'var(--zs)';
+      inp.style.color = 'var(--z)';
+      fb.textContent = '✓ Správně!';
+      fb.style.color = 'var(--z)';
+    } else {
+      inp.style.borderColor = 'var(--r)';
+      inp.style.background = 'var(--rs)';
+      inp.style.color = 'var(--r)';
+      /* Pro nápovědu vytáhneme první keyword (bez +) */
+      var hint = qd.keywords[0].split('+')[0];
+      fb.innerHTML = '✗ Hledej v textu (klíč: <b>'+hint+'…</b>)';
+      fb.style.color = 'var(--r)';
+    }
+    inp.disabled = true;
+  });
+  return correctCount;
+}
+
+/* ─────────────────────────────────────────────
+   KRÁTKÉ - logika
+─────────────────────────────────────────── */
+var krSt={};
+function krStart(){
+  krSt = {seq: shuffle(KRATKE_TEXTY).slice(0,4), idx:0, body:0, sp:0, locked:false};
+  el('kr-res').style.display='none';
+  el('kr-ob').style.display='block';
+  krRender();
+}
+function krRender(){
+  var s = krSt;
+  if(s.idx >= s.seq.length){ krFinish(); return; }
+  var item = s.seq[s.idx];
+  renderText('kr', item, false);
+  el('kr-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('kr-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('kr-bd').textContent = s.body;
+  el('kr-sp').textContent = s.sp;
+  el('kr-pg').style.width = (s.idx/s.seq.length*100)+'%';
+  el('kr-fb').textContent='';
+  el('kr-fb').className='fb';
+  el('kr-nx').style.display='none';
+  el('kr-check').style.display='inline-block';
+  s.locked=false;
+}
+function krCheck(){
+  var s = krSt;
+  if(s.locked) return;
+  s.locked = true;
+  var item = s.seq[s.idx];
+  var correctCount = checkAnswers('kr', item);
+  var earned = correctCount * 5;
+  s.body += earned;
+  if(correctCount === item.questions.length) s.sp++;
+  addPoints(earned);
+  el('kr-bd').textContent = s.body;
+  el('kr-sp').textContent = s.sp;
+  if(correctCount === item.questions.length){
+    el('kr-fb').innerHTML = '🎉 <b>Vynikající čtení!</b> Všechny odpovědi správné. +'+earned+' bodů.';
+    el('kr-fb').className = 'fb ok';
+  } else if(correctCount > 0){
+    el('kr-fb').innerHTML = '✓ Správně '+correctCount+' z '+item.questions.length+' · +'+earned+' bodů.';
+    el('kr-fb').className = 'fb';
+  } else {
+    el('kr-fb').innerHTML = 'Zkus si text přečíst pomaleji a znovu.';
+    el('kr-fb').className = 'fb err';
+  }
+  el('kr-check').style.display='none';
+  el('kr-nx').style.display='block';
+}
+function krNext(){ krSt.idx++; krRender(); }
+function krFinish(){
+  var s = krSt;
+  el('kr-ob').style.display='none';
+  el('kr-res').style.display='block';
+  el('kr-pp').textContent = 'Přečetla jsi '+s.seq.length+' textů · perfektně '+s.sp+' · získala jsi '+s.body+' bodů.';
+  el('kr-sc').textContent = s.body;
+  el('kr-tot').textContent = totalScore;
+}
+
+/* ─────────────────────────────────────────────
+   NAUČNÉ - logika
+─────────────────────────────────────────── */
+var naSt={};
+function naStart(){
+  naSt = {seq: shuffle(NAUCNE_TEXTY).slice(0,5), idx:0, body:0, sp:0, locked:false};
+  el('na-res').style.display='none';
+  el('na-ob').style.display='block';
+  naRender();
+}
+function naRender(){
+  var s = naSt;
+  if(s.idx >= s.seq.length){ naFinish(); return; }
+  var item = s.seq[s.idx];
+  renderText('na', item, true);
+  el('na-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('na-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('na-bd').textContent = s.body;
+  el('na-sp').textContent = s.sp;
+  el('na-pg').style.width = (s.idx/s.seq.length*100)+'%';
+  el('na-fb').textContent='';
+  el('na-fb').className='fb';
+  el('na-nx').style.display='none';
+  el('na-check').style.display='inline-block';
+  s.locked=false;
+}
+function naCheck(){
+  var s = naSt;
+  if(s.locked) return;
+  s.locked = true;
+  var item = s.seq[s.idx];
+  var correctCount = checkAnswers('na', item);
+  var earned = correctCount * 6;  /* naučné = víc bodů */
+  s.body += earned;
+  if(correctCount === item.questions.length) s.sp++;
+  addPoints(earned);
+  el('na-bd').textContent = s.body;
+  el('na-sp').textContent = s.sp;
+  if(correctCount === item.questions.length){
+    el('na-fb').innerHTML = '🌟 <b>Vynikající!</b> Všechny odpovědi správné. +'+earned+' bodů.';
+    el('na-fb').className = 'fb ok';
+  } else if(correctCount > 0){
+    el('na-fb').innerHTML = '✓ Správně '+correctCount+' z '+item.questions.length+' · +'+earned+' bodů.';
+    el('na-fb').className = 'fb';
+  } else {
+    el('na-fb').innerHTML = 'Zkus si text přečíst pomaleji a znovu.';
+    el('na-fb').className = 'fb err';
+  }
+  el('na-check').style.display='none';
+  el('na-nx').style.display='block';
+}
+function naNext(){ naSt.idx++; naRender(); }
+function naFinish(){
+  var s = naSt;
+  el('na-ob').style.display='none';
+  el('na-res').style.display='block';
+  el('na-pp').textContent = 'Přečetla jsi '+s.seq.length+' textů · perfektně '+s.sp+' · získala jsi '+s.body+' bodů.';
+  el('na-sc').textContent = s.body;
+  el('na-tot').textContent = totalScore;
+}
+
+/* ─────────────────────────────────────────────
+   PRINT
+─────────────────────────────────────────── */
+function printChoice(){
+  var topics = [
+    {key:'kratke3', label:'Krátké příběhy (3 texty)'},
+    {key:'naucne2', label:'Naučné texty (2 texty)'}
+  ];
+  var html = '<div style="position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem"><div style="background:white;border-radius:12px;padding:1.5rem;max-width:480px;width:100%"><h3 style="margin:0 0 1rem;color:var(--m);text-align:center">🖨️ Vyber pracovní list</h3>';
+  topics.forEach(function(t){
+    html += '<button onclick="doPrint(\\\''+t.key+'\\\');this.parentNode.parentNode.remove()" style="width:100%;padding:.85rem;margin:.3rem 0;background:var(--ms);border:2px solid var(--m);border-radius:8px;font-weight:700;color:var(--m);cursor:pointer;font-family:var(--font);font-size:1rem;text-align:left">'+t.label+'</button>';
+  });
+  html += '<button onclick="this.parentNode.parentNode.remove()" style="width:100%;padding:.6rem;margin-top:.5rem;background:#f3f4f6;border:1px solid #d1d5db;border-radius:8px;cursor:pointer;font-family:var(--font)">Zavřít</button></div></div>';
+  var d = document.createElement('div');
+  d.innerHTML = html;
+  document.body.appendChild(d.firstChild);
+}
+function doPrint(key){
+  var w = window.open('', '_blank');
+  if(!w){ alert('Prohlížeč zablokoval okno pro tisk. Povol popup okna pro tento web.'); return; }
+  var data = printGetData(key);
+  w.document.write(printHTML(data));
+  w.document.close();
+}
+function printGetData(key){
+  if(key==='kratke3'){
+    var picked = shuffle(KRATKE_TEXTY).slice(0,3);
+    var qHtml = '<p>Pozorně si přečti každý text a odpověz na otázky vlastními slovy.</p>';
+    picked.forEach(function(it,i){
+      qHtml += '<div style="margin:.6rem 0 1rem;page-break-inside:avoid">';
+      qHtml += '<div style="background:#eff6ff;border-left:4px solid #1e3a5f;padding:.5rem .8rem;margin-bottom:.5rem;font-style:italic;font-size:.95rem"><b>Text '+(i+1)+':</b> '+it.text+'</div>';
+      it.questions.forEach(function(qd, qi){
+        qHtml += '<div style="margin:.25rem 0 .4rem;padding-bottom:.25rem;border-bottom:1px dotted #ccc"><b>'+(qi+1)+'.</b> '+qd.q+'<br>&nbsp;&nbsp;&nbsp;___________________________________________</div>';
+      });
+      qHtml += '</div>';
+    });
+    var aHtml = '';
+    picked.forEach(function(it,i){
+      aHtml += '<div style="margin:.4rem 0"><b>Text '+(i+1)+'</b></div>';
+      it.questions.forEach(function(qd, qi){
+        var hint = qd.keywords[0].split('+').join(' + ');
+        aHtml += '<div style="padding-left:1rem;font-size:.9rem">'+(qi+1)+'. '+qd.q+' → <b>'+hint+'…</b></div>';
+      });
+    });
+    return {title:'Čtení s porozuměním — krátké', topic:'Krátké příběhy', instructions:'Přečti si pozorně každý text a odpověz na otázky vlastními slovy.', qHtml:qHtml, aHtml:aHtml};
+  }
+  if(key==='naucne2'){
+    var picked = shuffle(NAUCNE_TEXTY).slice(0,2);
+    var qHtml = '<p>Pozorně si přečti každý naučný text a odpověz na otázky vlastními slovy.</p>';
+    picked.forEach(function(it,i){
+      qHtml += '<div style="margin:.6rem 0 1rem;page-break-inside:avoid">';
+      qHtml += '<div style="background:#fff7ed;border-left:4px solid #ea580c;padding:.6rem .8rem;margin-bottom:.5rem;font-style:italic;font-size:.95rem"><b>Text '+(i+1)+':</b> '+it.text+'</div>';
+      it.questions.forEach(function(qd, qi){
+        qHtml += '<div style="margin:.25rem 0 .4rem;padding-bottom:.25rem;border-bottom:1px dotted #ccc"><b>'+(qi+1)+'.</b> '+qd.q+'<br>&nbsp;&nbsp;&nbsp;___________________________________________</div>';
+      });
+      qHtml += '</div>';
+    });
+    var aHtml = '';
+    picked.forEach(function(it,i){
+      aHtml += '<div style="margin:.4rem 0"><b>Text '+(i+1)+'</b></div>';
+      it.questions.forEach(function(qd, qi){
+        var hint = qd.keywords[0].split('+').join(' + ');
+        aHtml += '<div style="padding-left:1rem;font-size:.9rem">'+(qi+1)+'. '+qd.q+' → <b>'+hint+'…</b></div>';
+      });
+    });
+    return {title:'Čtení s porozuměním — naučné', topic:'Naučné texty', instructions:'Přečti si pozorně každý naučný text a odpověz na otázky vlastními slovy.', qHtml:qHtml, aHtml:aHtml};
+  }
+}
+function printHTML(data){
+  var d=new Date();var dateStr=d.getDate()+'.'+(d.getMonth()+1)+'.'+d.getFullYear();
+  return '<!doctype html><html lang="cs"><head><meta charset="utf-8"><title>Pracovní list — '+data.title+'</title><style>body{font-family:Arial,sans-serif;max-width:780px;margin:1rem auto;padding:1rem;color:#1f2937;font-size:11pt;line-height:1.5}h1{color:#1e3a5f;margin:0 0 .5rem;font-size:1.4rem}h2{color:#1e3a5f;margin-top:1.2rem;font-size:1.1rem;border-bottom:2px solid #1e3a5f;padding-bottom:.2rem}h4{margin:.6rem 0 .2rem}.head{display:flex;justify-content:space-between;border-bottom:2px solid #1e3a5f;padding-bottom:.3rem;margin-bottom:1rem}.head .l{display:flex;gap:1rem;align-items:baseline}.head span{font-size:.85rem;color:#6b7280}.instructions{background:#f3f4f6;padding:.5rem .8rem;border-left:4px solid #ffaa37;border-radius:4px;margin:.5rem 0;font-size:.9rem}.solution{page-break-before:always;background:#ecfdf5;padding:.7rem 1rem;border-left:4px solid #16a34a;border-radius:4px;margin-top:1rem}.solution h2{color:#16a34a;border-color:#16a34a}@media print{body{margin:0;padding:.5cm 1cm;font-size:10pt}.solution{page-break-before:always}}</style></head><body onload="setTimeout(function(){window.print();},400)"><div class="head"><div class="l"><h1>📋 '+data.title+'</h1><span>'+data.topic+'</span></div><span>Datum: '+dateStr+' · Jméno: ____________</span></div><div class="instructions"><b>Zadání:</b> '+data.instructions+'</div>'+data.qHtml+'<div class="solution"><h2>✓ Řešení (pro učitele) — klíčová slova</h2>'+data.aHtml+'</div></body></html>';
+}
+</script>
+</body>
+</html>

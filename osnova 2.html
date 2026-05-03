@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tvorba osnovy — LinguaCzech 3. třída</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --m:#32a0d2;--ms:#e8f4fb;
+  --o:#ffaa37;--os:#fff8ee;
+  --z:#16a34a;--zs:#dcfce7;
+  --r:#dc2626;--rs:#fee2e2;
+  --p:#7c3aed;--ps:#f3e8ff;
+  --uv:#16a34a;--uvs:#dcfce7;
+  --st:#ca8a04;--sts:#fef3c7;
+  --zv:#7c3aed;--zvs:#f3e8ff;
+  --font:'Barlow Condensed',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
+.hl{max-width:760px;margin:1.5rem auto;padding:.5rem 1rem;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.4rem 0 1rem;}
+.topbar a{color:var(--m);text-decoration:none;font-weight:700;font-size:.95rem;}
+.topbar span{font-weight:800;color:var(--m);}
+.scbg{position:fixed;top:10px;right:12px;background:var(--o);color:white;border-radius:99px;padding:.3rem .85rem;font-weight:700;font-size:1rem;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.18);pointer-events:none;}
+.mh{text-align:center;margin:.5rem 0 1.2rem;}
+.mh h1{font-size:1.9rem;color:var(--m);font-weight:800;margin:0;}
+.mh p{color:#6b7280;margin:.3rem 0 0;}
+
+.theory{background:white;border:1.5px solid #e5e7eb;border-radius:12px;padding:1rem;margin-bottom:1rem;}
+.theory h3{color:var(--m);margin-bottom:.5rem;font-size:1.1rem;}
+.theory .struct{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin:.6rem 0;}
+.theory .col{background:var(--ms);border-radius:8px;padding:.6rem .5rem;text-align:center;border:2px solid var(--m);}
+.theory .col.uvod{background:var(--uvs);border-color:var(--uv);}
+.theory .col.stat{background:var(--sts);border-color:var(--st);}
+.theory .col.zaver{background:var(--zvs);border-color:var(--zv);}
+.theory .col h4{font-size:.95rem;font-weight:800;margin-bottom:.2rem;}
+.theory .col p{font-size:.78rem;color:#374151;line-height:1.4;margin:0;}
+.theory .col.uvod h4{color:var(--uv);}
+.theory .col.stat h4{color:var(--st);}
+.theory .col.zaver h4{color:var(--zv);}
+
+.cv{display:none;}
+.nav{display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;}
+.zpet{background:white;border:1.5px solid #d1d5db;border-radius:8px;padding:.4rem .9rem;font-weight:600;cursor:pointer;font-family:var(--font);}
+.tit{font-size:1.1rem;font-weight:700;}
+.var{margin-left:auto;background:var(--ms);color:var(--m);border-radius:99px;padding:.2rem .8rem;font-weight:600;font-size:.85rem;}
+
+.sk{display:flex;justify-content:space-around;background:var(--os);border:1px solid #ffd48a;border-radius:10px;padding:.7rem;margin-bottom:.75rem;}
+.skn{font-size:1.4rem;font-weight:700;color:var(--o);text-align:center;}
+.skl{font-size:.75rem;color:#6b7280;text-align:center;}
+
+.ka{background:white;border:1.5px solid #e5e7eb;border-radius:12px;padding:1rem;margin-bottom:1rem;}
+.q{font-weight:700;text-align:center;margin-bottom:.7rem;color:#374151;}
+
+.tema{background:var(--ms);border-left:4px solid var(--m);padding:.5rem .8rem;border-radius:6px;margin-bottom:1rem;font-size:1rem;color:#1f2937;text-align:center;}
+.tema b{color:var(--m);font-size:1.15rem;}
+
+.koise-pool{background:#f9fafb;border:2px dashed #d1d5db;border-radius:10px;padding:.6rem;margin:.5rem 0;}
+.koise-pool-label{font-size:.85rem;color:#6b7280;font-weight:700;text-align:center;margin-bottom:.4rem;}
+.koise-veta{background:white;border:2px solid #d1d5db;border-radius:10px;padding:.55rem .7rem;margin:.3rem 0;cursor:pointer;font-family:Verdana,Geneva,sans-serif;font-size:.93rem;line-height:1.4;color:#1f2937;transition:all .15s;}
+.koise-veta:hover:not(.locked){border-color:var(--m);background:var(--ms);}
+.koise-veta.selected{border-color:var(--m);background:var(--ms);box-shadow:0 0 0 3px rgba(50,160,210,.2);}
+.koise-veta.locked{cursor:default;opacity:.95;}
+
+.kose{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin:.7rem 0;}
+.kos{border:2.5px solid;border-radius:10px;padding:.5rem;min-height:110px;display:flex;flex-direction:column;cursor:pointer;transition:all .15s;}
+.kos:hover{transform:translateY(-2px);box-shadow:0 4px 8px rgba(0,0,0,.08);}
+.kos.uvod{border-color:var(--uv);background:#f0fdf4;}
+.kos.stat{border-color:var(--st);background:#fefce8;}
+.kos.zaver{border-color:var(--zv);background:#faf5ff;}
+.kos.target{box-shadow:0 0 0 4px rgba(50,160,210,.3);transform:scale(1.02);}
+.kos-title{font-weight:800;font-size:.85rem;text-align:center;margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.5px;}
+.kos.uvod .kos-title{color:var(--uv);}
+.kos.stat .kos-title{color:var(--st);}
+.kos.zaver .kos-title{color:var(--zv);}
+.kos-content{flex:1;display:flex;flex-direction:column;gap:.25rem;font-family:Verdana,Geneva,sans-serif;font-size:.85rem;}
+.kos-empty{text-align:center;color:#9ca3af;font-style:italic;font-family:var(--font);font-size:.85rem;padding:.5rem;}
+.kos-veta-mini{background:white;border:1.5px solid #d1d5db;border-radius:6px;padding:.4rem .55rem;font-size:.85rem;line-height:1.3;cursor:pointer;}
+.kos-veta-mini:hover:not(.locked){background:#fef2f2;border-color:var(--r);}
+.kos-veta-mini::before{content:"✕ ";color:#9ca3af;font-size:.7rem;font-weight:600;}
+.kos-veta-mini.locked{cursor:default;}
+.kos-veta-mini.locked::before{content:"";}
+
+.fb{margin:.7rem 0;font-size:.95rem;min-height:1.2rem;font-weight:600;text-align:center;}
+.fb.ok{color:var(--z);}
+.fb.err{color:var(--r);}
+
+.actions{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;margin:.5rem 0;}
+.actions button{padding:.7rem 1rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:.95rem;border:none;}
+.btn-check{background:var(--m);color:white;}
+.btn-reset{background:#f3f4f6;color:#374151;border:1.5px solid #d1d5db !important;}
+
+.vysledek{display:none;background:#dcfce7;border:2px solid var(--z);border-radius:10px;padding:.8rem;margin-top:.6rem;}
+.vysledek h4{color:var(--z);margin-bottom:.4rem;}
+.vyp-uvod{display:block;background:var(--uvs);border-left:4px solid var(--uv);padding:.4rem .7rem;margin:.3rem 0;border-radius:4px;font-family:Verdana,Geneva,sans-serif;font-size:.93rem;line-height:1.5;color:#1f2937;}
+.vyp-stat{display:block;background:var(--sts);border-left:4px solid var(--st);padding:.4rem .7rem;margin:.3rem 0;border-radius:4px;font-family:Verdana,Geneva,sans-serif;font-size:.93rem;line-height:1.5;color:#1f2937;}
+.vyp-zaver{display:block;background:var(--zvs);border-left:4px solid var(--zv);padding:.4rem .7rem;margin:.3rem 0;border-radius:4px;font-family:Verdana,Geneva,sans-serif;font-size:.93rem;line-height:1.5;color:#1f2937;}
+
+.uz-veta-big{background:var(--ms);border:2px solid var(--m);border-radius:10px;padding:.9rem 1rem;margin:1rem 0;font-family:Verdana,Geneva,sans-serif;font-size:1.05rem;line-height:1.5;color:#1f2937;text-align:center;}
+.uz-opts{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:1rem 0;}
+.uz-opt{padding:1.1rem .5rem;background:white;border:2.5px solid #d1d5db;border-radius:10px;font-family:Verdana,Geneva,sans-serif;font-weight:700;font-size:1.05rem;cursor:pointer;text-align:center;transition:all .15s;color:#1f2937;}
+.uz-opt:hover:not(:disabled){border-color:var(--m);background:var(--ms);}
+.uz-opt.uvod-btn{color:var(--uv);}
+.uz-opt.zaver-btn{color:var(--zv);}
+.uz-opt.ok{background:var(--zs);border-color:var(--z);color:var(--z);}
+.uz-opt.err{background:var(--rs);border-color:var(--r);color:var(--r);}
+.nxt{display:none;width:100%;background:var(--m);color:white;border:none;border-radius:8px;padding:.85rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:var(--font);margin-top:.5rem;}
+
+.res{display:none;text-align:center;padding:2rem 1rem;}
+.res h2{color:var(--m);font-size:1.6rem;margin:.5rem 0;}
+.res-row{display:flex;gap:1rem;justify-content:center;margin:1rem 0;flex-wrap:wrap;}
+.rs{background:var(--ms);border-radius:10px;padding:.75rem 1rem;}
+.rsv{font-size:1.4rem;font-weight:800;}
+.rsl{font-size:.8rem;color:#6b7280;}
+.znovu,.mbtn{padding:.7rem 1.2rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:.95rem;margin:.3rem;}
+.znovu{background:var(--m);color:white;border:none;}
+.mbtn{background:white;color:#374151;border:1.5px solid #d1d5db;}
+
+.mg{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem;}
+.mk{padding:1rem;border-radius:14px;cursor:pointer;text-align:center;transition:all .15s;border:2.5px solid transparent;background:white;}
+.mk:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08);}
+.mk-m{background:var(--ms);border-color:var(--m);}
+.mk-o{background:var(--os);border-color:var(--o);}
+.mk h3{font-size:1.05rem;font-weight:800;margin-bottom:.2rem;}
+.mk p{font-size:.85rem;color:#6b7280;margin:0;}
+
+@media (max-width:480px){
+  .kose{grid-template-columns:1fr;}
+  .kos{min-height:auto;}
+}
+
+@media print{body{background:white;}.scbg{display:none;}}
+</style>
+</head>
+<body>
+<div class="scbg" id="scbg">⭐ 0 b.</div>
+<div class="hl">
+
+<div id="menu">
+  <div class="topbar"><a href="3trida.html">← 3. třída</a><span>LinguaCzech</span></div>
+  <div class="mh"><h1>Tvorba osnovy</h1><p>Úvod · Stať · Závěr</p></div>
+
+  <div class="theory">
+    <h3>📋 Co je osnova?</h3>
+    <p style="font-size:.95rem;color:#374151;line-height:1.6;margin-bottom:.4rem">Osnova je <b>plán textu</b>. Pomáhá nám napsat dobré vyprávění nebo sloh. Každý text má tři části:</p>
+    <div class="struct">
+      <div class="col uvod">
+        <h4>🟢 ÚVOD</h4>
+        <p>Začátek. Říká, o čem text bude. Představuje téma, hrdiny, místo.</p>
+      </div>
+      <div class="col stat">
+        <h4>🟡 STAŤ</h4>
+        <p>Hlavní část. Vypráví, co se děje. Detaily, příběh, fakta.</p>
+      </div>
+      <div class="col zaver">
+        <h4>🟣 ZÁVĚR</h4>
+        <p>Konec. Shrnuje, jak to dopadlo, nebo co si z toho odnášíme.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mg">
+    <div onclick="go('roz')" class="mk mk-m" style="grid-column:span 2"><h3>📦 Roztřiď věty do osnovy</h3><p>Klikni na větu a pak na koš (úvod, stať, závěr)</p></div>
+    <div onclick="go('uz')" class="mk mk-o" style="grid-column:span 2"><h3>🎯 Úvod, nebo závěr?</h3><p>Pozná, jestli věta uvozuje text, nebo ho uzavírá</p></div>
+  </div>
+</div>
+
+<div class="cv" id="cv-roz">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">📦 Roztřiď věty</span><span class="var" id="ro-v">1/6</span></div>
+  <div class="sk">
+    <div><div class="skn" id="ro-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="ro-ci">1/6</div><div class="skl">text</div></div>
+    <div><div class="skn" id="ro-sp">0</div><div class="skl">správně</div></div>
+  </div>
+
+  <div id="ro-ob">
+    <div class="ka">
+      <div class="q">Klikni na větu, pak na koš, kam patří.</div>
+      <div class="tema">Téma: <b id="ro-tema">—</b></div>
+
+      <div class="kose">
+        <div class="kos uvod" data-kos="uvod" onclick="rozPlace('uvod')">
+          <div class="kos-title">🟢 Úvod</div>
+          <div class="kos-content" id="ro-kos-uvod"><div class="kos-empty">prázdný</div></div>
+        </div>
+        <div class="kos stat" data-kos="stat" onclick="rozPlace('stat')">
+          <div class="kos-title">🟡 Stať</div>
+          <div class="kos-content" id="ro-kos-stat"><div class="kos-empty">prázdný</div></div>
+        </div>
+        <div class="kos zaver" data-kos="zaver" onclick="rozPlace('zaver')">
+          <div class="kos-title">🟣 Závěr</div>
+          <div class="kos-content" id="ro-kos-zaver"><div class="kos-empty">prázdný</div></div>
+        </div>
+      </div>
+
+      <div class="koise-pool">
+        <div class="koise-pool-label">📋 Věty k roztřídění:</div>
+        <div id="ro-pool"></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-check" onclick="rozCheck()">Zkontrolovat ✓</button>
+        <button class="btn-reset" onclick="rozReset()">Začít znovu 🔄</button>
+      </div>
+      <div class="fb" id="ro-fb"></div>
+      <div class="vysledek" id="ro-vysl">
+        <h4>🎉 Hotová osnova</h4>
+        <div id="ro-vysl-text"></div>
+      </div>
+    </div>
+    <button class="znovu" id="ro-nx" onclick="rozNext()" style="display:none;width:100%">Další text →</button>
+  </div>
+
+  <div class="res" id="ro-res">
+    <div style="font-size:3rem">📦</div><h2>Skvělá práce!</h2><p id="ro-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="ro-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="ro-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('roz')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<div class="cv" id="cv-uz">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🎯 Úvod, nebo závěr?</span><span class="var" id="uz-v">1/10</span></div>
+  <div class="sk">
+    <div><div class="skn" id="uz-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="uz-ci">1/10</div><div class="skl">věta</div></div>
+    <div><div class="skn" id="uz-sp">0</div><div class="skl">správně</div></div>
+  </div>
+
+  <div id="uz-ob">
+    <div class="ka">
+      <div class="q">Je to <b style="color:var(--uv)">úvod</b> textu, nebo <b style="color:var(--zv)">závěr</b>?</div>
+      <div class="uz-veta-big" id="uz-veta">—</div>
+      <div class="uz-opts">
+        <button class="uz-opt uvod-btn" onclick="uzAns('uvod',this)">🟢 ÚVOD</button>
+        <button class="uz-opt zaver-btn" onclick="uzAns('zaver',this)">🟣 ZÁVĚR</button>
+      </div>
+      <div class="fb" id="uz-fb"></div>
+    </div>
+    <button class="nxt" id="uz-nx" onclick="uzNext()">Další věta →</button>
+  </div>
+
+  <div class="res" id="uz-res">
+    <div style="font-size:3rem">🎯</div><h2>Výborně!</h2><p id="uz-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="uz-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="uz-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('uz')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+var SCORE_KEY='osnova_score';
+var totalScore=0;
+try{totalScore=parseInt(localStorage.getItem(SCORE_KEY))||0;}catch(e){}
+function el(id){return document.getElementById(id);}
+function shuffle(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t;}return b;}
+function addPoints(n){totalScore+=n;try{localStorage.setItem(SCORE_KEY,totalScore);}catch(e){}updateScore();}
+function updateScore(){el('scbg').textContent='⭐ '+totalScore+' b.';}
+updateScore();
+function go(id){
+  el('menu').style.display='none';
+  document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
+  el('cv-'+id).style.display='block';
+  if(id==='roz') rozStart();
+  if(id==='uz') uzStart();
+}
+function back(){
+  el('menu').style.display='block';
+  document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
+}
+
+/* DATA: 18 textů — uvod 1 věta, stat 3 věty, zaver 1 věta */
+var TEXTY = [
+  {tema:'Můj domácí mazlíček', uvod:'Mám doma kočku, která se jmenuje Mína.', stat:['Mína je černá s bílými ponožkami na nohách.','Každé ráno mě budí, abych jí dal granule.','Nejraději si hraje s klubíčkem vlny a spí na okně.'], zaver:'Mína je nejlepší kamarádka, kterou jsem si mohl přát.'},
+  {tema:'Návštěva ZOO', uvod:'V neděli jsme s rodiči vyrazili do ZOO.', stat:['Nejdřív jsme šli za slony, kteří se zrovna koupali.','Pak nás zaujali opice, jak se houpaly na lianách.','Na konci jsme stihli krmení tučňáků v polární expozici.'], zaver:'Domů jsme se vrátili unavení, ale plní krásných zážitků.'},
+  {tema:'Moje narozeniny', uvod:'V sobotu jsem oslavila své deváté narozeniny.', stat:['Maminka napekla velký čokoládový dort se svíčkami.','Pozvala jsem si pět nejlepších kamarádek na pizza párty.','Hrály jsme společenské hry a tančily na hudbu.'], zaver:'Byly to nejhezčí narozeniny, na které dlouho nezapomenu.'},
+  {tema:'Jaro v parku', uvod:'Jaro je moje nejoblíbenější roční období.', stat:['Stromy se začnou zelenat a kvetou první květiny.','V parku můžeme pozorovat ptáky, kteří se vrátili z teplých krajů.','Děti si hrají na trávě a pouštějí draky.'], zaver:'Jaro nám přináší radost po dlouhé tmavé zimě.'},
+  {tema:'Výlet do lesa', uvod:'V sobotu jsme se s tatínkem rozhodli vyrazit na výlet do lesa.', stat:['Cestou jsme viděli veverku, jak skáče z větve na větev.','Posbírali jsme krásné šišky a barevné podzimní listí.','Tatínek mi ukázal, jak rozeznat různé druhy stromů.'], zaver:'Výlet se mi moc líbil a těším se na další.'},
+  {tema:'Vánoční den', uvod:'Vánoce jsou pro mě nejkrásnější svátky v roce.', stat:['Maminka peče cukroví a celý dům voní vanilkou.','Společně zdobíme stromek barevnými ozdobami a světýlky.','Po štědrovečerní večeři rozbalujeme dárky pod stromečkem.'], zaver:'Tyto chvíle s rodinou jsou pro mě nejcennější.'},
+  {tema:'Můj kamarád Honza', uvod:'Můj nejlepší kamarád se jmenuje Honza.', stat:['Známe se už od školky a sedíme spolu v lavici.','Společně chodíme na fotbal a hrajeme počítačové hry.','Vždycky si pomáháme s úkoly a vzájemně se podporujeme.'], zaver:'Jsem moc rád, že mám tak skvělého kamaráda.'},
+  {tema:'První den ve škole', uvod:'Nikdy nezapomenu na svůj první den ve škole.', stat:['Maminka mě doprovodila do třídy s novou aktovkou.','Paní učitelka nás přivítala a posadila nás do lavic.','Seznámila jsem se s novými spolužáky a získala první kamarády.'], zaver:'Z toho dne mám dodnes hezkou vzpomínku.'},
+  {tema:'Sníh za oknem', uvod:'Když jsem se ráno probudila, za oknem padal sníh.', stat:['Sněhové vločky pomalu klesaly k zemi a pokrývaly všechno bílou peřinou.','Rychle jsem se oblékla a vyběhla ven s kamarády.','Postavili jsme velkého sněhuláka a jezdili na sáňkách.'], zaver:'První sníh je vždycky kouzelný zážitek.'},
+  {tema:'Naše třída', uvod:'Chodím do 3. A na základní školu Lingua Universal.', stat:['Ve třídě je nás dvacet a máme úžasnou paní učitelku.','Každý den se učíme nové věci a hrajeme zajímavé hry.','O přestávkách si povídáme s kamarády nebo si hrajeme v koutku.'], zaver:'Naše třída je jako velká rodina, ve které se všichni máme rádi.'},
+  {tema:'Letní prázdniny u babičky', uvod:'Každé léto jezdím na prázdniny k babičce na vesnici.', stat:['Společně se staráme o slepice, kachny a králíky.','Odpoledne chodíme na louku trhat květiny pro vázu.','Babička mě učí péct buchty a vařit dobrou polévku.'], zaver:'Prázdniny u babičky jsou pro mě nejhezčí čas v roce.'},
+  {tema:'Naše rodina', uvod:'Naše rodina je velká a moc se máme rádi.', stat:['Tatínek pracuje v továrně a maminka učí ve škole.','Mám staršího bratra Honzu a malou sestru Aničku.','Každou neděli společně obědváme u babičky a dědy.'], zaver:'Být součástí naší rodiny je to nejcennější, co mám.'},
+  {tema:'Halloween ve škole', uvod:'V říjnu jsme ve škole slavili veselý Halloween.', stat:['Všichni jsme přišli ve strašidelných kostýmech.','Já jsem byla čarodějnice s černým kloboukem a koštětem.','Vyřezávali jsme dýně a zdobili třídu pavučinami.'], zaver:'Ten den ve škole byl nejzábavnější za celý rok.'},
+  {tema:'Můj koníček', uvod:'Mým největším koníčkem je sportovní gymnastika.', stat:['Trénuji třikrát týdně v tělocvičně u nás ve městě.','Učím se přemety, kotouly a cvičit na kladině.','Loni jsem se zúčastnila své první soutěže a vyhrála medaili.'], zaver:'Gymnastika mi dává radost a sílu pro celý život.'},
+  {tema:'Cesta do školy', uvod:'Každé ráno se vydávám pěšky do školy.', stat:['Cestou potkávám sousedku paní Novákovou s pejskem Punťou.','U přechodu na mě vždy čeká paní strážnice.','Před školou se shledávám se svými kamarády ze třídy.'], zaver:'Tahle ranní procházka mi vždy zlepší náladu na celý den.'},
+  {tema:'Můj pokoj', uvod:'Nejraději trávím čas ve svém pokoji.', stat:['Mám tu velkou postel s polštáři ve tvaru srdíček.','V regálech jsou knížky, hračky a moje sbírka mušlí.','Stěny zdobí plakáty mých oblíbených zvířat.'], zaver:'Můj pokoj je moje malé království, kde jsem nejšťastnější.'},
+  {tema:'Návštěva muzea', uvod:'Minulý týden jsme se školou navštívili technické muzeum.', stat:['Viděli jsme staré parní lokomotivy a první automobily.','Nejvíc mě zaujaly modely letadel a vesmírných raket.','Paní průvodkyně nám vyprávěla zajímavé příběhy o vynálezcích.'], zaver:'Z muzea jsem si přivezl spoustu nových znalostí.'},
+  {tema:'Bouřka v noci', uvod:'Včera v noci nás vzbudila silná bouřka.', stat:['Blesky osvětlovaly celý pokoj jako za bílého dne.','Hromy duněly tak hlasitě, až se třásla okna.','Schoval jsem se s mladší sestrou pod peřinu k mamince.'], zaver:'Ráno už svítilo slunce a bouřka byla jen vzpomínka.'}
+];
+
+/* === CVIČENÍ 1: ROZTŘIĎ DO KOŠŮ === */
+var rozSt={};
+function rozStart(){
+  rozSt = {seq: shuffle(TEXTY).slice(0,6), idx:0, body:0, sp:0, locked:false, selectedVeta:null, placement:{}, allVety:[]};
+  el('ro-res').style.display='none';
+  el('ro-ob').style.display='block';
+  rozRender();
+}
+function rozRender(){
+  var s = rozSt;
+  if(s.idx >= s.seq.length){ rozFinish(); return; }
+  var item = s.seq[s.idx];
+  var allVety = [];
+  allVety.push({text:item.uvod, kos:'uvod', id:'u0'});
+  item.stat.forEach(function(v, i){ allVety.push({text:v, kos:'stat', id:'s'+i}); });
+  allVety.push({text:item.zaver, kos:'zaver', id:'z0'});
+  s.allVety = shuffle(allVety);
+  s.placement = {};
+  s.allVety.forEach(function(v){ s.placement[v.id] = null; });
+  s.selectedVeta = null;
+  s.locked = false;
+
+  el('ro-tema').textContent = item.tema;
+  el('ro-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('ro-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('ro-bd').textContent = s.body;
+  el('ro-sp').textContent = s.sp;
+  el('ro-fb').textContent='';
+  el('ro-fb').className='fb';
+  el('ro-vysl').style.display='none';
+  el('ro-nx').style.display='none';
+  rozRenderUI();
+  document.querySelector('#ro-ob .actions').style.display = 'flex';
+}
+function rozRenderUI(){
+  var s = rozSt;
+  var pool = el('ro-pool');
+  pool.innerHTML = '';
+  var hasInPool = false;
+  s.allVety.forEach(function(v){
+    if(s.placement[v.id] === null){
+      hasInPool = true;
+      var d = document.createElement('div');
+      d.className = 'koise-veta' + (s.selectedVeta === v.id ? ' selected' : '') + (s.locked ? ' locked' : '');
+      d.textContent = v.text;
+      d.onclick = function(e){
+        e.stopPropagation();
+        if(!s.locked) rozSelect(v.id);
+      };
+      pool.appendChild(d);
+    }
+  });
+  if(!hasInPool){
+    pool.innerHTML = '<div style="text-align:center;color:#9ca3af;font-style:italic;padding:.5rem">Všechny věty jsou roztříděné</div>';
+  }
+  ['uvod','stat','zaver'].forEach(function(kos){
+    var box = el('ro-kos-'+kos);
+    box.innerHTML = '';
+    var any = false;
+    s.allVety.forEach(function(v){
+      if(s.placement[v.id] === kos){
+        any = true;
+        var d = document.createElement('div');
+        d.className = 'kos-veta-mini' + (s.locked ? ' locked' : '');
+        d.textContent = v.text;
+        if(!s.locked){
+          d.onclick = function(e){
+            e.stopPropagation();
+            s.placement[v.id] = null;
+            rozRenderUI();
+          };
+        }
+        if(s.locked){
+          if(v.kos === kos){
+            d.style.borderColor = 'var(--z)';
+            d.style.background = 'var(--zs)';
+          } else {
+            d.style.borderColor = 'var(--r)';
+            d.style.background = 'var(--rs)';
+          }
+        }
+        box.appendChild(d);
+      }
+    });
+    if(!any){
+      var em = document.createElement('div');
+      em.className = 'kos-empty';
+      em.textContent = 'prázdný';
+      box.appendChild(em);
+    }
+  });
+  document.querySelectorAll('#cv-roz .kos').forEach(function(k){
+    if(s.selectedVeta){ k.classList.add('target'); }
+    else { k.classList.remove('target'); }
+  });
+}
+function rozSelect(id){
+  var s = rozSt;
+  if(s.selectedVeta === id){ s.selectedVeta = null; }
+  else { s.selectedVeta = id; }
+  rozRenderUI();
+}
+function rozPlace(kos){
+  var s = rozSt;
+  if(s.locked) return;
+  if(!s.selectedVeta){
+    el('ro-fb').innerHTML = '👆 Nejprve klikni na větu z dolního seznamu, pak na koš.';
+    el('ro-fb').className = 'fb';
+    setTimeout(function(){ el('ro-fb').textContent=''; }, 1500);
+    return;
+  }
+  s.placement[s.selectedVeta] = kos;
+  s.selectedVeta = null;
+  rozRenderUI();
+}
+function rozCheck(){
+  var s = rozSt;
+  if(s.locked) return;
+  var unplaced = s.allVety.filter(function(v){ return s.placement[v.id] === null; });
+  if(unplaced.length > 0){
+    el('ro-fb').innerHTML = 'Některé věty zůstaly nezařazené ('+unplaced.length+'). Roztřiď je všechny do košů.';
+    el('ro-fb').className = 'fb err';
+    return;
+  }
+  var correctCount = 0;
+  s.allVety.forEach(function(v){
+    if(s.placement[v.id] === v.kos) correctCount++;
+  });
+  s.locked = true;
+  if(correctCount === s.allVety.length){
+    var earned = 12;
+    s.body += earned;
+    s.sp++;
+    addPoints(earned);
+    el('ro-bd').textContent = s.body;
+    el('ro-sp').textContent = s.sp;
+    el('ro-fb').innerHTML = '🎉 <b>Vynikající!</b> Všechny věty na správném místě. +'+earned+' bodů.';
+    el('ro-fb').className = 'fb ok';
+    var item = s.seq[s.idx];
+    el('ro-vysl-text').innerHTML =
+      '<span class="vyp-uvod"><b>🟢 Úvod:</b> '+item.uvod+'</span>'+
+      '<span class="vyp-stat"><b>🟡 Stať:</b> '+item.stat.join(' ')+'</span>'+
+      '<span class="vyp-zaver"><b>🟣 Závěr:</b> '+item.zaver+'</span>';
+    el('ro-vysl').style.display = 'block';
+    el('ro-nx').style.display = 'block';
+    document.querySelector('#ro-ob .actions').style.display = 'none';
+    rozRenderUI();
+  } else {
+    var earned = correctCount;
+    s.body += earned;
+    addPoints(earned);
+    el('ro-bd').textContent = s.body;
+    el('ro-fb').innerHTML = '✓ Správně '+correctCount+' z '+s.allVety.length+' vět. +'+earned+' bodů. Zelené jsou OK, červené přesuň.';
+    el('ro-fb').className = 'fb';
+    rozRenderUI();
+    setTimeout(function(){
+      s.locked = false;
+      rozRenderUI();
+      document.querySelector('#ro-ob .actions').style.display = 'flex';
+    }, 2000);
+  }
+}
+function rozReset(){
+  var s = rozSt;
+  if(s.locked) return;
+  s.allVety.forEach(function(v){ s.placement[v.id] = null; });
+  s.selectedVeta = null;
+  el('ro-fb').textContent='';
+  el('ro-fb').className='fb';
+  rozRenderUI();
+}
+function rozNext(){ rozSt.idx++; rozRender(); }
+function rozFinish(){
+  var s = rozSt;
+  el('ro-ob').style.display='none';
+  el('ro-res').style.display='block';
+  el('ro-pp').textContent = 'Roztřídila jsi všech '+s.seq.length+' textů · perfektně '+s.sp+' · získala jsi '+s.body+' bodů.';
+  el('ro-sc').textContent = s.body;
+  el('ro-tot').textContent = totalScore;
+}
+
+/* === CVIČENÍ 2: ÚVOD NEBO ZÁVĚR === */
+var uzSt={};
+function uzStart(){
+  var pool = [];
+  TEXTY.forEach(function(t){
+    pool.push({text:t.uvod, typ:'uvod', tema:t.tema});
+    pool.push({text:t.zaver, typ:'zaver', tema:t.tema});
+  });
+  uzSt = {seq: shuffle(pool).slice(0,10), idx:0, body:0, sp:0, locked:false};
+  el('uz-res').style.display='none';
+  el('uz-ob').style.display='block';
+  uzRender();
+}
+function uzRender(){
+  var s = uzSt;
+  if(s.idx >= s.seq.length){ uzFinish(); return; }
+  var item = s.seq[s.idx];
+  el('uz-veta').textContent = '"' + item.text + '"';
+  el('uz-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('uz-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('uz-bd').textContent = s.body;
+  el('uz-sp').textContent = s.sp;
+  el('uz-fb').textContent='';
+  el('uz-fb').className='fb';
+  el('uz-nx').style.display='none';
+  document.querySelectorAll('#cv-uz .uz-opt').forEach(function(b){
+    b.disabled=false; b.classList.remove('ok','err');
+  });
+  s.locked=false;
+}
+function uzAns(picked, btn){
+  var s = uzSt;
+  if(s.locked) return;
+  s.locked=true;
+  var item = s.seq[s.idx];
+  if(picked === item.typ){
+    btn.classList.add('ok');
+    var earned = 4;
+    s.body += earned; s.sp++;
+    addPoints(earned);
+    el('uz-fb').innerHTML = '✓ Správně! Tahle věta je <b>'+(picked==='uvod'?'úvodní':'závěrečná')+'</b> z textu o "'+item.tema+'".';
+    el('uz-fb').className = 'fb ok';
+  } else {
+    btn.classList.add('err');
+    document.querySelectorAll('#cv-uz .uz-opt').forEach(function(b){
+      var btnTyp = b.classList.contains('uvod-btn') ? 'uvod' : 'zaver';
+      if(btnTyp === item.typ){ b.classList.add('ok'); }
+    });
+    el('uz-fb').innerHTML = '✗ Tahle věta je <b>'+(item.typ==='uvod'?'úvodní':'závěrečná')+'</b>. Pochází z textu "'+item.tema+'".';
+    el('uz-fb').className = 'fb err';
+  }
+  document.querySelectorAll('#cv-uz .uz-opt').forEach(function(b){b.disabled=true;});
+  el('uz-bd').textContent = s.body;
+  el('uz-sp').textContent = s.sp;
+  el('uz-nx').style.display='block';
+}
+function uzNext(){ uzSt.idx++; uzRender(); }
+function uzFinish(){
+  var s = uzSt;
+  el('uz-ob').style.display='none';
+  el('uz-res').style.display='block';
+  el('uz-pp').textContent = 'Správně '+s.sp+' z '+s.seq.length+' · získala jsi '+s.body+' bodů.';
+  el('uz-sc').textContent = s.body;
+  el('uz-tot').textContent = totalScore;
+}
+</script>
+</body>
+</html>

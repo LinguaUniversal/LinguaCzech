@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tvorba osnovy — LinguaCzech 3. třída</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --m:#32a0d2;--ms:#e8f4fb;
+  --o:#ffaa37;--os:#fff8ee;
+  --z:#16a34a;--zs:#dcfce7;
+  --r:#dc2626;--rs:#fee2e2;
+  --p:#7c3aed;--ps:#f3e8ff;
+  --font:'Barlow Condensed',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
+.hl{max-width:760px;margin:1.5rem auto;padding:.5rem 1rem;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.4rem 0 1rem;}
+.topbar a{color:var(--m);text-decoration:none;font-weight:700;font-size:.95rem;}
+.topbar span{font-weight:800;color:var(--m);}
+.scbg{position:fixed;top:10px;right:12px;background:var(--o);color:white;border-radius:99px;padding:.3rem .85rem;font-weight:700;font-size:1rem;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.18);pointer-events:none;}
+.mh{text-align:center;margin:.5rem 0 1.2rem;}
+.mh h1{font-size:1.9rem;color:var(--m);font-weight:800;margin:0;}
+.mh p{color:#6b7280;margin:.3rem 0 0;}
+
+/* Vysvětlení teorie */
+.theory{background:white;border:1.5px solid #e5e7eb;border-radius:12px;padding:1rem;margin-bottom:1rem;}
+.theory h3{color:var(--m);margin-bottom:.5rem;font-size:1.1rem;}
+.theory .struct{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin:.6rem 0;}
+.theory .col{background:var(--ms);border-radius:8px;padding:.6rem .5rem;text-align:center;border:2px solid var(--m);}
+.theory .col.uvod{background:#dcfce7;border-color:var(--z);}
+.theory .col.stat{background:#fef3c7;border-color:var(--o);}
+.theory .col.zaver{background:#f3e8ff;border-color:var(--p);}
+.theory .col h4{font-size:.95rem;font-weight:800;margin-bottom:.2rem;}
+.theory .col p{font-size:.78rem;color:#374151;line-height:1.4;margin:0;}
+
+.cv{display:none;}
+.nav{display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;}
+.zpet{background:white;border:1.5px solid #d1d5db;border-radius:8px;padding:.4rem .9rem;font-weight:600;cursor:pointer;font-family:var(--font);}
+.tit{font-size:1.1rem;font-weight:700;}
+.var{margin-left:auto;background:var(--ms);color:var(--m);border-radius:99px;padding:.2rem .8rem;font-weight:600;font-size:.85rem;}
+
+.sk{display:flex;justify-content:space-around;background:var(--os);border:1px solid #ffd48a;border-radius:10px;padding:.7rem;margin-bottom:.75rem;}
+.skn{font-size:1.4rem;font-weight:700;color:var(--o);text-align:center;}
+.skl{font-size:.75rem;color:#6b7280;text-align:center;}
+
+.ka{background:white;border:1.5px solid #e5e7eb;border-radius:12px;padding:1rem;margin-bottom:1rem;}
+.q{font-weight:700;text-align:center;margin-bottom:.7rem;color:#374151;}
+
+.tema{background:var(--ms);border-left:4px solid var(--m);padding:.5rem .8rem;border-radius:6px;margin-bottom:1rem;font-size:1rem;color:#1f2937;text-align:center;}
+.tema b{color:var(--m);font-size:1.15rem;}
+
+.veta-list{display:flex;flex-direction:column;gap:.4rem;margin:.8rem 0;}
+.veta{display:flex;align-items:flex-start;gap:.5rem;background:white;border:2px solid #d1d5db;border-radius:10px;padding:.6rem;transition:all .15s;}
+.veta.spravne{background:var(--zs);border-color:var(--z);}
+.veta.spatne{background:var(--rs);border-color:var(--r);}
+.veta-num{flex-shrink:0;width:28px;height:28px;background:var(--m);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9rem;}
+.veta.spravne .veta-num{background:var(--z);}
+.veta.spatne .veta-num{background:var(--r);}
+.veta-text{flex:1;font-family:Verdana,Geneva,sans-serif;font-size:.92rem;line-height:1.4;color:#1f2937;}
+.veta-ctrl{flex-shrink:0;display:flex;flex-direction:column;gap:.2rem;}
+.veta-btn{width:32px;height:24px;background:#f3f4f6;border:1px solid #d1d5db;border-radius:5px;cursor:pointer;font-size:.85rem;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.veta-btn:hover:not(:disabled){background:var(--ms);border-color:var(--m);color:var(--m);}
+.veta-btn:disabled{opacity:.3;cursor:not-allowed;}
+
+.fb{margin:.7rem 0;font-size:.95rem;min-height:1.2rem;font-weight:600;text-align:center;}
+.fb.ok{color:var(--z);}
+.fb.err{color:var(--r);}
+
+.actions{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;margin:.5rem 0;}
+.actions button{padding:.7rem 1rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:.95rem;border:none;}
+.btn-check{background:var(--m);color:white;}
+.btn-reset{background:#f3f4f6;color:#374151;border:1.5px solid #d1d5db !important;}
+
+.vysledek{display:none;background:#dcfce7;border:2px solid var(--z);border-radius:10px;padding:.8rem;margin-top:.6rem;}
+.vysledek h4{color:var(--z);margin-bottom:.4rem;}
+.vysledek p{font-family:Verdana,Geneva,sans-serif;font-size:.95rem;line-height:1.6;color:#1f2937;}
+
+.res{display:none;text-align:center;padding:2rem 1rem;}
+.res h2{color:var(--m);font-size:1.6rem;margin:.5rem 0;}
+.res-row{display:flex;gap:1rem;justify-content:center;margin:1rem 0;flex-wrap:wrap;}
+.rs{background:var(--ms);border-radius:10px;padding:.75rem 1rem;}
+.rsv{font-size:1.4rem;font-weight:800;}
+.rsl{font-size:.8rem;color:#6b7280;}
+.znovu,.mbtn{padding:.7rem 1.2rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:.95rem;margin:.3rem;}
+.znovu{background:var(--m);color:white;border:none;}
+.mbtn{background:white;color:#374151;border:1.5px solid #d1d5db;}
+
+.mg{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem;}
+.mk{padding:1rem;border-radius:14px;cursor:pointer;text-align:center;transition:all .15s;border:2.5px solid transparent;background:white;}
+.mk:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08);}
+.mk-m{background:var(--ms);border-color:var(--m);}
+.mk-o{background:var(--os);border-color:var(--o);}
+.mk h3{font-size:1.05rem;font-weight:800;margin-bottom:.2rem;}
+.mk p{font-size:.85rem;color:#6b7280;margin:0;}
+
+@media print{body{background:white;}.scbg{display:none;}}
+</style>
+</head>
+<body>
+<div class="scbg" id="scbg">⭐ 0 b.</div>
+<div class="hl">
+
+<!-- MENU -->
+<div id="menu">
+  <div class="topbar"><a href="3trida.html">← 3. třída</a><span>LinguaCzech</span></div>
+  <div class="mh"><h1>Tvorba osnovy</h1><p>Úvod · Stať · Závěr</p></div>
+
+  <!-- Krátké vysvětlení -->
+  <div class="theory">
+    <h3>📋 Co je osnova?</h3>
+    <p style="font-size:.95rem;color:#374151;line-height:1.6;margin-bottom:.4rem">Osnova je <b>plán textu</b>. Pomáhá nám napsat dobré vyprávění nebo sloh. Každý text má tři části:</p>
+    <div class="struct">
+      <div class="col uvod">
+        <h4>🟢 ÚVOD</h4>
+        <p>Začátek. Říká, o čem text bude. Představuje téma, hrdiny, místo.</p>
+      </div>
+      <div class="col stat">
+        <h4>🟡 STAŤ</h4>
+        <p>Hlavní část. Vypráví, co se děje. Detaily, příběh, fakta.</p>
+      </div>
+      <div class="col zaver">
+        <h4>🟣 ZÁVĚR</h4>
+        <p>Konec. Shrnuje, jak to dopadlo, nebo co si z toho odnášíme.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mg">
+    <div onclick="go('serad')" class="mk mk-m" style="grid-column:span 2"><h3>🧩 Seřaď věty do správného pořadí</h3><p>Rozházené věty → seřaď: úvod, stať, závěr</p></div>
+  </div>
+</div>
+
+<!-- CV: SEŘAĎ VĚTY -->
+<div class="cv" id="cv-serad">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🧩 Seřaď věty</span><span class="var" id="se-v">1/6</span></div>
+  <div class="sk">
+    <div><div class="skn" id="se-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="se-ci">1/6</div><div class="skl">text</div></div>
+    <div><div class="skn" id="se-sp">0</div><div class="skl">správně</div></div>
+  </div>
+
+  <div id="se-ob">
+    <div class="ka">
+      <div class="q">Seřaď věty tak, aby tvořily smysluplný text. Začni úvodem, pak stať a nakonec závěr.</div>
+      <div class="tema">Téma: <b id="se-tema">—</b></div>
+      <div id="se-veta-list" class="veta-list"></div>
+      <div class="actions">
+        <button class="btn-check" onclick="seCheck()">Zkontrolovat ✓</button>
+        <button class="btn-reset" onclick="seReset()">Zamíchat znovu 🔀</button>
+      </div>
+      <div class="fb" id="se-fb"></div>
+      <div class="vysledek" id="se-vysl">
+        <h4>🎉 Správně seřazený text</h4>
+        <p id="se-vysl-text">—</p>
+      </div>
+    </div>
+    <button class="znovu" id="se-nx" onclick="seNext()" style="display:none;width:100%">Další text →</button>
+  </div>
+
+  <div class="res" id="se-res">
+    <div style="font-size:3rem">📝</div><h2>Skvělá práce!</h2><p id="se-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="se-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="se-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('serad')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+</div><!-- .hl -->
+
+<script>
+var SCORE_KEY='osnova_score';
+var totalScore=0;
+try{totalScore=parseInt(localStorage.getItem(SCORE_KEY))||0;}catch(e){}
+function el(id){return document.getElementById(id);}
+function shuffle(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t;}return b;}
+function addPoints(n){totalScore+=n;try{localStorage.setItem(SCORE_KEY,totalScore);}catch(e){}updateScore();}
+function updateScore(){el('scbg').textContent='⭐ '+totalScore+' b.';}
+updateScore();
+function go(id){
+  el('menu').style.display='none';
+  document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
+  el('cv-'+id).style.display='block';
+  if(id==='serad') seStart();
+}
+function back(){
+  el('menu').style.display='block';
+  document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
+}
+
+/* ─────────────────────────────────────────────
+   DATA: Texty pro tvorbu osnovy
+   - Každý text má tema (titulek), pak věty rozdělené na úvod, stať, závěr
+   - V hraní: věty se zamíchají, dítě je seřadí
+   - Správné pořadí: vety[0..N-1] = úvod + stať + závěr
+─────────────────────────────────────────── */
+var TEXTY = [
+  {
+    tema: 'Můj domácí mazlíček',
+    /* První věta = úvod, poslední = závěr, mezi = stať */
+    vety: [
+      'Mám doma kočku, která se jmenuje Mína.',
+      'Mína je černá s bílými ponožkami na nohách.',
+      'Každé ráno mě budí, abych jí dal granule.',
+      'Nejraději si hraje s klubíčkem vlny a spí na okně.',
+      'Mína je nejlepší kamarádka, kterou jsem si mohl přát.'
+    ]
+  },
+  {
+    tema: 'Návštěva ZOO',
+    vety: [
+      'V neděli jsme s rodiči vyrazili do ZOO.',
+      'Nejdřív jsme šli za slony, kteří se zrovna koupali.',
+      'Pak nás zaujali opice, jak se houpaly na lianách.',
+      'Na konci jsme stihli krmení tučňáků v polární expozici.',
+      'Domů jsme se vrátili unavení, ale plní krásných zážitků.'
+    ]
+  },
+  {
+    tema: 'Moje narozeniny',
+    vety: [
+      'V sobotu jsem oslavila své deváté narozeniny.',
+      'Maminka napekla velký čokoládový dort se svíčkami.',
+      'Pozvala jsem si pět nejlepších kamarádek na pizza párty.',
+      'Hrály jsme společenské hry a tančily na hudbu.',
+      'Byly to nejhezčí narozeniny, na které dlouho nezapomenu.'
+    ]
+  },
+  {
+    tema: 'Jaro v parku',
+    vety: [
+      'Jaro je moje nejoblíbenější roční období.',
+      'Stromy se začnou zelenat a kvetou první květiny.',
+      'V parku můžeme pozorovat ptáky, kteří se vrátili z teplých krajů.',
+      'Děti si hrají na trávě a pouštějí draky.',
+      'Jaro nám přináší radost po dlouhé tmavé zimě.'
+    ]
+  },
+  {
+    tema: 'Výlet do lesa',
+    vety: [
+      'V sobotu jsme se s tatínkem rozhodli vyrazit na výlet do lesa.',
+      'Cestou jsme viděli veverku, jak skáče z větve na větev.',
+      'Posbírali jsme krásné šišky a barevné podzimní listí.',
+      'Tatínek mi ukázal, jak rozeznat různé druhy stromů.',
+      'Výlet se mi moc líbil a těším se na další.'
+    ]
+  },
+  {
+    tema: 'Vánoční den',
+    vety: [
+      'Vánoce jsou pro mě nejkrásnější svátky v roce.',
+      'Maminka peče cukroví a celý dům voní vanilkou.',
+      'Společně zdobíme stromek barevnými ozdobami a světýlky.',
+      'Po štědrovečerní večeři rozbalujeme dárky pod stromečkem.',
+      'Tyto chvíle s rodinou jsou pro mě nejcennější.'
+    ]
+  },
+  {
+    tema: 'Můj kamarád Honza',
+    vety: [
+      'Můj nejlepší kamarád se jmenuje Honza.',
+      'Známe se už od školky a sedíme spolu v lavici.',
+      'Společně chodíme na fotbal a hrajeme počítačové hry.',
+      'Vždycky si pomáháme s úkoly a vzájemně se podporujeme.',
+      'Jsem moc rád, že mám tak skvělého kamaráda.'
+    ]
+  },
+  {
+    tema: 'První den ve škole',
+    vety: [
+      'Nikdy nezapomenu na svůj první den ve škole.',
+      'Maminka mě doprovodila do třídy s novou aktovkou.',
+      'Paní učitelka nás přivítala a posadila nás do lavic.',
+      'Seznámila jsem se s novými spolužáky a získala první kamarády.',
+      'Z toho dne mám dodnes hezkou vzpomínku.'
+    ]
+  },
+  {
+    tema: 'Sníh za oknem',
+    vety: [
+      'Když jsem se ráno probudila, za oknem padal sníh.',
+      'Sněhové vločky pomalu klesaly k zemi a pokrývaly všechno bílou peřinou.',
+      'Rychle jsem se oblékla a vyběhla ven s kamarády.',
+      'Postavili jsme velkého sněhuláka a jezdili na sáňkách.',
+      'První sníh je vždycky kouzelný zážitek.'
+    ]
+  },
+  {
+    tema: 'Naše třída',
+    vety: [
+      'Chodím do 3. A na základní školu Lingua Universal.',
+      'Ve třídě je nás dvacet a máme úžasnou paní učitelku.',
+      'Každý den se učíme nové věci a hrajeme zajímavé hry.',
+      'O přestávkách si povídáme s kamarády nebo si hrajeme v koutku.',
+      'Naše třída je jako velká rodina, ve které se všichni máme rádi.'
+    ]
+  },
+  {
+    tema: 'Letní prázdniny u babičky',
+    vety: [
+      'Každé léto jezdím na prázdniny k babičce na vesnici.',
+      'Společně se staráme o slepice, kachny a králíky.',
+      'Odpoledne chodíme na louku trhat květiny pro vázu.',
+      'Babička mě učí péct buchty a vařit dobrou polévku.',
+      'Prázdniny u babičky jsou pro mě nejhezčí čas v roce.'
+    ]
+  },
+  {
+    tema: 'Naše rodina',
+    vety: [
+      'Naše rodina je velká a moc se máme rádi.',
+      'Tatínek pracuje v továrně a maminka učí ve škole.',
+      'Mám staršího bratra Honzu a malou sestru Aničku.',
+      'Každou neděli společně obědváme u babičky a dědy.',
+      'Být součástí naší rodiny je to nejcennější, co mám.'
+    ]
+  },
+  {
+    tema: 'Halloween ve škole',
+    vety: [
+      'V říjnu jsme ve škole slavili veselý Halloween.',
+      'Všichni jsme přišli ve strašidelných kostýmech.',
+      'Já jsem byla čarodějnice s černým kloboukem a koštětem.',
+      'Vyřezávali jsme dýně a zdobili třídu pavučinami.',
+      'Ten den ve škole byl nejzábavnější za celý rok.'
+    ]
+  },
+  {
+    tema: 'Můj koníček',
+    vety: [
+      'Mým největším koníčkem je sportovní gymnastika.',
+      'Trénuji třikrát týdně v tělocvičně u nás ve městě.',
+      'Učím se přemety, kotouly a cvičit na kladině.',
+      'Loni jsem se zúčastnila své první soutěže a vyhrála medaili.',
+      'Gymnastika mi dává radost a sílu pro celý život.'
+    ]
+  },
+  {
+    tema: 'Cesta do školy',
+    vety: [
+      'Každé ráno se vydávám pěšky do školy.',
+      'Cestou potkávám sousedku paní Novákovou s pejskem Punťou.',
+      'U přechodu na mě vždy čeká paní strážnice.',
+      'Před školou se shledávám se svými kamarády ze třídy.',
+      'Tahle ranní procházka mi vždy zlepší náladu na celý den.'
+    ]
+  },
+  {
+    tema: 'Můj pokoj',
+    vety: [
+      'Nejraději trávím čas ve svém pokoji.',
+      'Mám tu velkou postel s polštáři ve tvaru srdíček.',
+      'V regálech jsou knížky, hračky a moje sbírka mušlí.',
+      'Stěny zdobí plakáty mých oblíbených zvířat.',
+      'Můj pokoj je moje malé království, kde jsem nejšťastnější.'
+    ]
+  },
+  {
+    tema: 'Návštěva muzea',
+    vety: [
+      'Minulý týden jsme se školou navštívili technické muzeum.',
+      'Viděli jsme staré parní lokomotivy a první automobily.',
+      'Nejvíc mě zaujaly modely letadel a vesmírných raket.',
+      'Paní průvodkyně nám vyprávěla zajímavé příběhy o vynálezcích.',
+      'Z muzea jsem si přivezl spoustu nových znalostí.'
+    ]
+  },
+  {
+    tema: 'Bouřka v noci',
+    vety: [
+      'Včera v noci nás vzbudila silná bouřka.',
+      'Blesky osvětlovaly celý pokoj jako za bílého dne.',
+      'Hromy duněly tak hlasitě, až se třásla okna.',
+      'Schoval jsem se s mladší sestrou pod peřinu k mamince.',
+      'Ráno už svítilo slunce a bouřka byla jen vzpomínka.'
+    ]
+  }
+];
+
+/* ─────────────────────────────────────────────
+   SEŘAĎ VĚTY - logika
+─────────────────────────────────────────── */
+var seSt={};
+function seStart(){
+  /* Vyber 5 textů (z 10) náhodně */
+  seSt = {seq: shuffle(TEXTY).slice(0,6), idx:0, body:0, sp:0, locked:false, current:null};
+  el('se-res').style.display='none';
+  el('se-ob').style.display='block';
+  seRender();
+}
+function seRender(){
+  var s = seSt;
+  if(s.idx >= s.seq.length){ seFinish(); return; }
+  var item = s.seq[s.idx];
+  /* Připrav zamíchané pořadí + zachovej originální index každé věty */
+  s.current = item.vety.map(function(v, i){ return {text:v, origIdx:i}; });
+  /* Zamíchat tak, aby určitě nebyly v původním pořadí */
+  do {
+    s.current = shuffle(s.current);
+  } while(s.current.every(function(v,i){ return v.origIdx === i; }) && s.current.length > 1);
+  el('se-tema').textContent = item.tema;
+  el('se-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('se-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('se-bd').textContent = s.body;
+  el('se-sp').textContent = s.sp;
+  el('se-fb').textContent='';
+  el('se-fb').className='fb';
+  el('se-vysl').style.display='none';
+  el('se-nx').style.display='none';
+  s.locked=false;
+  seRenderList();
+}
+function seRenderList(){
+  var box = el('se-veta-list');
+  box.innerHTML = '';
+  seSt.current.forEach(function(v, i){
+    var div = document.createElement('div');
+    div.className = 'veta';
+    div.dataset.idx = i;
+    /* Pořadové číslo v aktuálním pořadí */
+    var num = document.createElement('div');
+    num.className = 'veta-num';
+    num.textContent = (i+1) + '.';
+    div.appendChild(num);
+    /* Text věty */
+    var txt = document.createElement('div');
+    txt.className = 'veta-text';
+    txt.textContent = v.text;
+    div.appendChild(txt);
+    /* Ovládací šipky */
+    var ctrl = document.createElement('div');
+    ctrl.className = 'veta-ctrl';
+    var up = document.createElement('button');
+    up.className = 'veta-btn';
+    up.innerHTML = '▲';
+    up.title = 'Posunout nahoru';
+    up.disabled = (i === 0);
+    up.onclick = function(){ seMove(i, -1); };
+    ctrl.appendChild(up);
+    var down = document.createElement('button');
+    down.className = 'veta-btn';
+    down.innerHTML = '▼';
+    down.title = 'Posunout dolů';
+    down.disabled = (i === seSt.current.length - 1);
+    down.onclick = function(){ seMove(i, 1); };
+    ctrl.appendChild(down);
+    div.appendChild(ctrl);
+    box.appendChild(div);
+  });
+}
+function seMove(idx, dir){
+  if(seSt.locked) return;
+  var arr = seSt.current;
+  var newIdx = idx + dir;
+  if(newIdx < 0 || newIdx >= arr.length) return;
+  /* Prohodit */
+  var temp = arr[idx];
+  arr[idx] = arr[newIdx];
+  arr[newIdx] = temp;
+  seRenderList();
+}
+function seCheck(){
+  var s = seSt;
+  if(s.locked) return;
+  /* Zjisti, kolik je správně - tedy kolik vět je na své původní pozici */
+  var correctCount = 0;
+  var allCorrect = true;
+  s.current.forEach(function(v, i){
+    if(v.origIdx === i){
+      correctCount++;
+    } else {
+      allCorrect = false;
+    }
+  });
+  /* Vizuálně označ správně / špatně umístěné */
+  document.querySelectorAll('#se-veta-list .veta').forEach(function(div, i){
+    div.classList.remove('spravne','spatne');
+    if(s.current[i].origIdx === i){
+      div.classList.add('spravne');
+    } else {
+      div.classList.add('spatne');
+    }
+  });
+  if(allCorrect){
+    /* Vše správně - hotovo */
+    s.locked = true;
+    var earned = 10;
+    s.body += earned;
+    s.sp++;
+    addPoints(earned);
+    el('se-bd').textContent = s.body;
+    el('se-sp').textContent = s.sp;
+    el('se-fb').innerHTML = '🎉 <b>Výborně!</b> Všech '+s.current.length+' vět správně. +'+earned+' bodů.';
+    el('se-fb').className = 'fb ok';
+    /* Ukaž souvislý text */
+    var item = s.seq[s.idx];
+    el('se-vysl-text').textContent = item.vety.join(' ');
+    el('se-vysl').style.display = 'block';
+    el('se-nx').style.display = 'block';
+    /* Skryj kontrolní tlačítka */
+    document.querySelector('#se-ob .actions').style.display = 'none';
+    /* Zablokuj šipky */
+    document.querySelectorAll('#se-veta-list .veta-btn').forEach(function(b){b.disabled=true;});
+  } else {
+    /* Část správně - dej zpětnou vazbu, ať pokračují */
+    el('se-fb').innerHTML = '✓ Správně '+correctCount+' z '+s.current.length+' vět. Zkus přesunout ostatní.';
+    el('se-fb').className = 'fb';
+  }
+}
+function seReset(){
+  if(seSt.locked) return;
+  /* Zamíchat znovu */
+  do {
+    seSt.current = shuffle(seSt.current);
+  } while(seSt.current.every(function(v,i){ return v.origIdx === i; }) && seSt.current.length > 1);
+  el('se-fb').textContent='';
+  el('se-fb').className='fb';
+  document.querySelectorAll('#se-veta-list .veta').forEach(function(div){
+    div.classList.remove('spravne','spatne');
+  });
+  seRenderList();
+}
+function seNext(){
+  document.querySelector('#se-ob .actions').style.display = 'flex';
+  seSt.idx++;
+  seRender();
+}
+function seFinish(){
+  var s = seSt;
+  el('se-ob').style.display='none';
+  el('se-res').style.display='block';
+  el('se-pp').textContent = 'Seřadila jsi všech '+s.seq.length+' textů · perfektně '+s.sp+' · získala jsi '+s.body+' bodů.';
+  el('se-sc').textContent = s.body;
+  el('se-tot').textContent = totalScore;
+}
+</script>
+</body>
+</html>

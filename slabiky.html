@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Slabiky a slova — LinguaCzech 2. třída</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --m:#32a0d2;--ms:#e8f4fb;
+  --o:#ffaa37;--os:#fff8ee;
+  --z:#16a34a;--zs:#dcfce7;
+  --r:#dc2626;--rs:#fee2e2;
+  --p:#7c3aed;--ps:#f3e8ff;
+  --font:'Barlow Condensed',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
+.hl{max-width:760px;margin:1.5rem auto;padding:.5rem 1rem;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.4rem 0 1rem;}
+.topbar a{color:var(--m);text-decoration:none;font-weight:700;font-size:.95rem;}
+.topbar span{font-weight:800;color:var(--m);}
+.scbg{position:fixed;top:10px;right:12px;background:var(--o);color:white;border-radius:99px;padding:.3rem .85rem;font-weight:700;font-size:1rem;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.18);pointer-events:none;}
+.mh{text-align:center;margin:.5rem 0 1.2rem;}
+.mh h1{font-size:1.9rem;color:var(--m);font-weight:800;margin:0;}
+.mh p{color:#6b7280;margin:.3rem 0 0;}
+
+.cv{display:none;}
+.nav{display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;}
+.zpet{background:white;border:1.5px solid #d1d5db;border-radius:8px;padding:.4rem .9rem;font-weight:600;cursor:pointer;font-family:var(--font);}
+.tit{font-size:1.1rem;font-weight:700;}
+.var{margin-left:auto;background:var(--ms);color:var(--m);border-radius:99px;padding:.2rem .8rem;font-weight:600;font-size:.85rem;}
+
+.sk{display:flex;justify-content:space-around;background:var(--os);border:1px solid #ffd48a;border-radius:10px;padding:.7rem;margin-bottom:.75rem;}
+.skn{font-size:1.4rem;font-weight:700;color:var(--o);text-align:center;}
+.skl{font-size:.75rem;color:#6b7280;text-align:center;}
+
+.pg{height:8px;background:#e5e7eb;border-radius:99px;overflow:hidden;margin-bottom:1rem;}
+.pgf{height:100%;background:var(--m);border-radius:99px;transition:width .3s;}
+
+.ka{background:white;border:1.5px solid #e5e7eb;border-radius:12px;padding:1rem;margin-bottom:1rem;}
+.q{font-weight:700;text-align:center;margin-bottom:.7rem;color:#374151;}
+
+.fb{margin-top:.7rem;font-size:.95rem;min-height:1.2rem;font-weight:600;text-align:center;}
+.fb.ok{color:var(--z);}
+.fb.err{color:var(--r);}
+
+.nxt{display:none;width:100%;background:var(--m);color:white;border:none;border-radius:8px;padding:.85rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:var(--font);margin-top:.5rem;}
+
+.res{display:none;text-align:center;padding:2rem 1rem;}
+.res h2{color:var(--m);font-size:1.6rem;margin:.5rem 0;}
+.res-row{display:flex;gap:1rem;justify-content:center;margin:1rem 0;flex-wrap:wrap;}
+.rs{background:var(--ms);border-radius:10px;padding:.75rem 1rem;}
+.rsv{font-size:1.4rem;font-weight:800;}
+.rsl{font-size:.8rem;color:#6b7280;}
+.znovu,.mbtn{padding:.7rem 1.2rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:.95rem;margin:.3rem;}
+.znovu{background:var(--m);color:white;border:none;}
+.mbtn{background:white;color:#374151;border:1.5px solid #d1d5db;}
+
+.mg{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem;}
+.mk{padding:1rem;border-radius:14px;cursor:pointer;text-align:center;transition:all .15s;border:2.5px solid transparent;background:white;}
+.mk:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08);}
+.mk-m{background:var(--ms);border-color:var(--m);}
+.mk-o{background:var(--os);border-color:var(--o);}
+.mk-p{background:var(--ps);border-color:var(--p);}
+.mk h3{font-size:1.05rem;font-weight:800;margin-bottom:.2rem;}
+.mk p{font-size:.85rem;color:#6b7280;margin:0;}
+
+/* Cvičení Slabiky */
+.slabikSlovo{font-family:Verdana,Geneva,sans-serif;font-size:2rem;font-weight:800;text-align:center;color:var(--m);background:var(--ms);padding:1.5rem;border-radius:10px;margin:1rem 0;letter-spacing:1px;}
+
+/* Tlesknutí — pomůcka pro děti */
+.napoveda{background:#fffbeb;border-left:4px solid var(--o);padding:.5rem .8rem;border-radius:6px;margin:.5rem 0;font-size:.9rem;color:#374151;}
+
+/* Číselné možnosti */
+.optsNum{display:grid;grid-template-columns:repeat(5,1fr);gap:.4rem;margin:1rem 0;}
+.optNum{padding:1.2rem .3rem;background:white;border:2.5px solid #d1d5db;border-radius:10px;font-family:Verdana,Geneva,sans-serif;font-weight:800;font-size:1.4rem;cursor:pointer;text-align:center;transition:all .15s;color:#1f2937;}
+.optNum:hover:not(:disabled){border-color:var(--m);background:var(--ms);}
+.optNum.ok{background:var(--zs);border-color:var(--z);color:var(--z);}
+.optNum.err{background:var(--rs);border-color:var(--r);color:var(--r);}
+
+/* Cvičení Slova ve větě */
+.vetaBox{font-family:Verdana,Geneva,sans-serif;font-size:1.25rem;text-align:center;line-height:1.6;background:var(--ms);padding:1.2rem;border-radius:10px;margin:1rem 0;color:#1f2937;font-weight:600;}
+
+/* Cvičení Rozděl slovo na slabiky */
+.slabikDelitelne{font-family:Verdana,Geneva,sans-serif;font-size:1.6rem;text-align:center;background:var(--ms);padding:1rem;border-radius:10px;margin:.8rem 0;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:.3rem;}
+.slabikLetter{display:inline-block;font-weight:700;color:#1f2937;}
+.slabikDivider{display:inline-block;width:24px;height:24px;background:#f3f4f6;border:2px solid #d1d5db;border-radius:50%;cursor:pointer;font-size:.95rem;color:#6b7280;line-height:1;display:flex;align-items:center;justify-content:center;font-weight:800;transition:all .15s;}
+.slabikDivider:hover:not(.locked){background:var(--ms);border-color:var(--m);color:var(--m);}
+.slabikDivider.active{background:var(--o);border-color:var(--o);color:white;}
+
+@media print{body{background:white;}.scbg{display:none;}}
+</style>
+</head>
+<body>
+<div class="scbg" id="scbg">⭐ 0 b.</div>
+<div class="hl">
+
+<!-- MENU -->
+<div id="menu">
+  <div class="topbar"><a href="2trida.html">← 2. třída</a><span>LinguaCzech</span></div>
+  <div class="mh"><h1>Slabiky a slova</h1><p>2. třída — počítej slabiky a slova</p></div>
+
+  <div class="mg">
+    <div onclick="go('slabik')" class="mk mk-m"><h3>👏 Počítání slabik</h3><p>Kolik slabik má slovo?</p></div>
+    <div onclick="go('slov')" class="mk mk-o"><h3>📝 Počítání slov</h3><p>Kolik slov má věta?</p></div>
+    <div onclick="go('rozdel')" class="mk mk-p" style="grid-column:span 2"><h3>✂️ Rozděl slovo na slabiky</h3><p>Klikni mezi písmena, kde je hranice slabik</p></div>
+  </div>
+</div>
+
+<!-- CV: POČÍTÁNÍ SLABIK -->
+<div class="cv" id="cv-slabik">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">👏 Počítání slabik</span><span class="var" id="sl-v">1/12</span></div>
+  <div class="sk">
+    <div><div class="skn" id="sl-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="sl-ci">1/12</div><div class="skl">slovo</div></div>
+    <div><div class="skn" id="sl-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="sl-pg" style="width:0%"></div></div>
+  <div id="sl-ob">
+    <div class="ka">
+      <div class="q">Kolik slabik má toto slovo?</div>
+      <div class="napoveda">💡 <b>Pomůcka:</b> Můžeš si slovo vytleskat. Každé tlesknutí = jedna slabika.</div>
+      <div class="slabikSlovo" id="sl-w">—</div>
+      <div class="optsNum" id="sl-c"></div>
+      <div class="fb" id="sl-fb"></div>
+    </div>
+    <button class="nxt" id="sl-nx" onclick="slNext()">Další →</button>
+  </div>
+  <div class="res" id="sl-res">
+    <div style="font-size:3rem">👏</div><h2>Výborně!</h2><p id="sl-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="sl-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="sl-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('slabik')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV: POČÍTÁNÍ SLOV VE VĚTĚ -->
+<div class="cv" id="cv-slov">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">📝 Počítání slov</span><span class="var" id="sv-v">1/10</span></div>
+  <div class="sk">
+    <div><div class="skn" id="sv-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="sv-ci">1/10</div><div class="skl">věta</div></div>
+    <div><div class="skn" id="sv-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="sv-pg" style="width:0%"></div></div>
+  <div id="sv-ob">
+    <div class="ka">
+      <div class="q">Kolik slov má tato věta?</div>
+      <div class="napoveda">💡 <b>Pomůcka:</b> Slova jsou oddělená mezerami. I krátká slova jako "a", "v", "se" se počítají!</div>
+      <div class="vetaBox" id="sv-w">—</div>
+      <div class="optsNum" id="sv-c"></div>
+      <div class="fb" id="sv-fb"></div>
+    </div>
+    <button class="nxt" id="sv-nx" onclick="svNext()">Další →</button>
+  </div>
+  <div class="res" id="sv-res">
+    <div style="font-size:3rem">📝</div><h2>Výborně!</h2><p id="sv-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="sv-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="sv-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('slov')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV: ROZDĚL SLOVO NA SLABIKY -->
+<div class="cv" id="cv-rozdel">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">✂️ Rozděl slovo na slabiky</span><span class="var" id="rd-v">1/8</span></div>
+  <div class="sk">
+    <div><div class="skn" id="rd-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="rd-ci">1/8</div><div class="skl">slovo</div></div>
+    <div><div class="skn" id="rd-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="rd-pg" style="width:0%"></div></div>
+  <div id="rd-ob">
+    <div class="ka">
+      <div class="q">Klikni mezi písmena, kde končí slabika.</div>
+      <div class="napoveda">💡 <b>Pomůcka:</b> Vytleskej slovo. Po každém tlesknutí klikni na tečku za poslední písmeno té slabiky.</div>
+      <div id="rd-w" class="slabikDelitelne">—</div>
+      <div style="text-align:center;font-size:.85rem;color:#6b7280;margin:.5rem 0">Označeno: <b id="rd-pocet">0</b> hranic · Slovo má <b id="rd-cil">?</b> slabik</div>
+      <div style="text-align:center">
+        <button class="znovu" onclick="rdCheck()" style="padding:.6rem 1.2rem">Zkontrolovat ✓</button>
+        <button class="mbtn" onclick="rdReset()" style="padding:.6rem 1.2rem">Smazat 🗑️</button>
+      </div>
+      <div class="fb" id="rd-fb"></div>
+    </div>
+    <button class="nxt" id="rd-nx" onclick="rdNext()">Další →</button>
+  </div>
+  <div class="res" id="rd-res">
+    <div style="font-size:3rem">✂️</div><h2>Výborně!</h2><p id="rd-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="rd-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="rd-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('rozdel')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+</div><!-- .hl -->
+
+<script>
+var SCORE_KEY='slabiky_score';
+var totalScore=0;
+try{totalScore=parseInt(localStorage.getItem(SCORE_KEY))||0;}catch(e){}
+function el(id){return document.getElementById(id);}
+function shuffle(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t;}return b;}
+function addPoints(n){totalScore+=n;try{localStorage.setItem(SCORE_KEY,totalScore);}catch(e){}updateScore();}
+function updateScore(){el('scbg').textContent='⭐ '+totalScore+' b.';}
+updateScore();
+function go(id){
+  el('menu').style.display='none';
+  document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
+  el('cv-'+id).style.display='block';
+  if(id==='slabik') slStart();
+  if(id==='slov') svStart();
+  if(id==='rozdel') rdStart();
+}
+function back(){
+  el('menu').style.display='block';
+  document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
+}
+
+/* ─────────────────────────────────────────────
+   DATA SLABIKY
+   slovo s vyznačenými slabikami pomocí | (svislá čára)
+   např. "ko|čka" = 2 slabiky, "ja|blí|čko" = 3 slabiky
+─────────────────────────────────────────── */
+var SLOVA_SLABIKY = [
+  /* 1 slabika */
+  {slovo:'pes', slabiky:'pes'},
+  {slovo:'kost', slabiky:'kost'},
+  {slovo:'lev', slabiky:'lev'},
+  {slovo:'sníh', slabiky:'sníh'},
+  {slovo:'míč', slabiky:'míč'},
+  {slovo:'syn', slabiky:'syn'},
+  {slovo:'pták', slabiky:'pták'},
+  {slovo:'sůl', slabiky:'sůl'},
+  /* 2 slabiky */
+  {slovo:'kočka', slabiky:'koč|ka'},
+  {slovo:'auto', slabiky:'au|to'},
+  {slovo:'okno', slabiky:'ok|no'},
+  {slovo:'tužka', slabiky:'tuž|ka'},
+  {slovo:'kniha', slabiky:'kni|ha'},
+  {slovo:'ryba', slabiky:'ry|ba'},
+  {slovo:'voda', slabiky:'vo|da'},
+  {slovo:'pole', slabiky:'po|le'},
+  {slovo:'kolo', slabiky:'ko|lo'},
+  {slovo:'banán', slabiky:'ba|nán'},
+  {slovo:'rohlík', slabiky:'roh|lík'},
+  {slovo:'jaro', slabiky:'ja|ro'},
+  {slovo:'léto', slabiky:'lé|to'},
+  {slovo:'táta', slabiky:'tá|ta'},
+  /* 3 slabiky */
+  {slovo:'maminka', slabiky:'ma|min|ka'},
+  {slovo:'sluníčko', slabiky:'slu|níč|ko'},
+  {slovo:'jablíčko', slabiky:'jab|líč|ko'},
+  {slovo:'dovolená', slabiky:'do|vo|le|ná'},
+  {slovo:'kuchyně', slabiky:'ku|chy|ně'},
+  {slovo:'kalhoty', slabiky:'kal|ho|ty'},
+  {slovo:'koleda', slabiky:'ko|le|da'},
+  {slovo:'autobus', slabiky:'au|to|bus'},
+  {slovo:'počítač', slabiky:'po|čí|tač'},
+  {slovo:'babička', slabiky:'ba|bič|ka'},
+  {slovo:'rodina', slabiky:'ro|di|na'},
+  {slovo:'zahrada', slabiky:'za|hra|da'},
+  /* 4 slabiky */
+  {slovo:'pampeliška', slabiky:'pam|pe|liš|ka'},
+  {slovo:'počítadlo', slabiky:'po|čí|tad|lo'},
+  {slovo:'limonáda', slabiky:'li|mo|ná|da'},
+  {slovo:'kamarádka', slabiky:'ka|ma|rád|ka'},
+  {slovo:'velikonoce', slabiky:'ve|li|ko|no|ce'},
+  /* 5 slabik */
+  {slovo:'matematika', slabiky:'ma|te|ma|ti|ka'},
+  {slovo:'gymnastika', slabiky:'gym|nas|ti|ka'}
+];
+
+/* Vyfiltruj jen slova s konzistentními slabikami */
+function pocetSlabik(slabiky){
+  return slabiky.split('|').length;
+}
+
+/* ─────────────────────────────────────────────
+   DATA VĚTY pro počítání slov
+─────────────────────────────────────────── */
+var VETY = [
+  {veta:'Pes štěká.', pocet:2},
+  {veta:'Kočka spí.', pocet:2},
+  {veta:'Maminka peče koláč.', pocet:3},
+  {veta:'Petr má rád auto.', pocet:4},
+  {veta:'Děti si hrají na zahradě.', pocet:5},
+  {veta:'Babička čte pohádku.', pocet:3},
+  {veta:'Kluk a holka chodí do školy.', pocet:6},
+  {veta:'Slunce svítí na obloze.', pocet:4},
+  {veta:'Honza dnes dostal pětku.', pocet:4},
+  {veta:'Tatínek opravuje rozbité kolo.', pocet:4},
+  {veta:'Včera v noci pršelo.', pocet:4},
+  {veta:'V lese rostou houby.', pocet:4},
+  {veta:'Pták zpívá na stromě.', pocet:4},
+  {veta:'Auta jezdí po silnici.', pocet:4},
+  {veta:'Filip se učí matematiku.', pocet:4},
+  {veta:'V zahradě kvetou krásné růže.', pocet:5},
+  {veta:'Anička si hraje s panenkou.', pocet:5},
+  {veta:'Po obědě jsme šli ven.', pocet:5},
+  {veta:'Děda vypráví staré příběhy.', pocet:4},
+  {veta:'Sníh padá z oblohy.', pocet:4}
+];
+
+/* ═════════════════════════════════════════════
+   CV: POČÍTÁNÍ SLABIK
+═════════════════════════════════════════════ */
+var slSt={};
+function slStart(){
+  /* Vyber 12 slov, pokud existuje vícekrát stejné slovo, deduplikovat */
+  var seen = {};
+  var unique = SLOVA_SLABIKY.filter(function(it){
+    if(seen[it.slovo]) return false;
+    seen[it.slovo] = true;
+    return true;
+  });
+  slSt = {seq: shuffle(unique).slice(0,12), idx:0, body:0, sp:0, locked:false};
+  el('sl-res').style.display='none';
+  el('sl-ob').style.display='block';
+  slRender();
+}
+function slRender(){
+  var s = slSt;
+  if(s.idx >= s.seq.length){ slFinish(); return; }
+  var item = s.seq[s.idx];
+  el('sl-w').textContent = item.slovo;
+  /* Vykresli 5 možností (1-5) */
+  var c = el('sl-c');
+  c.innerHTML = '';
+  for(var i = 1; i <= 5; i++){
+    (function(n){
+      var b = document.createElement('button');
+      b.className = 'optNum';
+      b.textContent = n;
+      b.onclick = function(){ slAns(n, b, item); };
+      c.appendChild(b);
+    })(i);
+  }
+  el('sl-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('sl-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('sl-bd').textContent = s.body;
+  el('sl-sp').textContent = s.sp;
+  el('sl-pg').style.width = (s.idx/s.seq.length*100)+'%';
+  el('sl-fb').textContent='';
+  el('sl-fb').className='fb';
+  el('sl-nx').style.display='none';
+  s.locked=false;
+}
+function slAns(picked, btn, item){
+  var s = slSt;
+  if(s.locked) return;
+  s.locked = true;
+  var spravnyPocet = pocetSlabik(item.slabiky);
+  if(picked === spravnyPocet){
+    btn.classList.add('ok');
+    var earned = 4;
+    s.body += earned; s.sp++;
+    addPoints(earned);
+    el('sl-fb').innerHTML = '✓ Správně! <b>'+item.slabiky+'</b> = '+spravnyPocet+' '+(spravnyPocet===1?'slabika':(spravnyPocet<5?'slabiky':'slabik'))+'.';
+    el('sl-fb').className = 'fb ok';
+  } else {
+    btn.classList.add('err');
+    /* Najít správné tlačítko a označit */
+    var btns = document.querySelectorAll('#sl-c .optNum');
+    btns.forEach(function(b){ if(parseInt(b.textContent)===spravnyPocet) b.classList.add('ok'); });
+    el('sl-fb').innerHTML = '✗ Slovo má '+spravnyPocet+' '+(spravnyPocet===1?'slabiku':(spravnyPocet<5?'slabiky':'slabik'))+': <b>'+item.slabiky+'</b>';
+    el('sl-fb').className = 'fb err';
+  }
+  document.querySelectorAll('#sl-c .optNum').forEach(function(b){b.disabled=true;});
+  el('sl-bd').textContent = s.body;
+  el('sl-sp').textContent = s.sp;
+  el('sl-nx').style.display='block';
+}
+function slNext(){ slSt.idx++; slRender(); }
+function slFinish(){
+  var s = slSt;
+  el('sl-ob').style.display='none';
+  el('sl-res').style.display='block';
+  el('sl-pp').textContent = 'Správně '+s.sp+' z '+s.seq.length+' · získala jsi '+s.body+' bodů.';
+  el('sl-sc').textContent = s.body;
+  el('sl-tot').textContent = totalScore;
+}
+
+/* ═════════════════════════════════════════════
+   CV: POČÍTÁNÍ SLOV
+═════════════════════════════════════════════ */
+var svSt={};
+function svStart(){
+  svSt = {seq: shuffle(VETY).slice(0,10), idx:0, body:0, sp:0, locked:false};
+  el('sv-res').style.display='none';
+  el('sv-ob').style.display='block';
+  svRender();
+}
+function svRender(){
+  var s = svSt;
+  if(s.idx >= s.seq.length){ svFinish(); return; }
+  var item = s.seq[s.idx];
+  el('sv-w').textContent = item.veta;
+  /* Vykresli možnosti — pokud věta má 6+ slov, ukaž 3-7, jinak 2-6 nebo 1-5 */
+  var c = el('sv-c');
+  c.innerHTML = '';
+  /* Ukážeme 5 možností tak, aby správná byla mezi nimi - od max(1, pocet-2) do pocet+2 */
+  var min = Math.max(1, item.pocet - 2);
+  var max = min + 4;
+  for(var i = min; i <= max; i++){
+    (function(n){
+      var b = document.createElement('button');
+      b.className = 'optNum';
+      b.textContent = n;
+      b.onclick = function(){ svAns(n, b, item); };
+      c.appendChild(b);
+    })(i);
+  }
+  el('sv-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('sv-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('sv-bd').textContent = s.body;
+  el('sv-sp').textContent = s.sp;
+  el('sv-pg').style.width = (s.idx/s.seq.length*100)+'%';
+  el('sv-fb').textContent='';
+  el('sv-fb').className='fb';
+  el('sv-nx').style.display='none';
+  s.locked=false;
+}
+function svAns(picked, btn, item){
+  var s = svSt;
+  if(s.locked) return;
+  s.locked = true;
+  if(picked === item.pocet){
+    btn.classList.add('ok');
+    var earned = 4;
+    s.body += earned; s.sp++;
+    addPoints(earned);
+    /* Vykresli zvýrazněnou větu - oddělená slova */
+    var slova = item.veta.replace(/[.,!?]/g,'').split(/\s+/);
+    var oznaceno = slova.map(function(w,i){return '<b style="color:var(--m)">'+(i+1)+'. '+w+'</b>';}).join(' ');
+    el('sv-fb').innerHTML = '✓ Správně! Věta má <b>'+item.pocet+'</b> '+(item.pocet===1?'slovo':(item.pocet<5?'slova':'slov'))+'.<br><span style="font-size:.85rem">'+oznaceno+'</span>';
+    el('sv-fb').className = 'fb ok';
+  } else {
+    btn.classList.add('err');
+    var btns = document.querySelectorAll('#sv-c .optNum');
+    btns.forEach(function(b){ if(parseInt(b.textContent)===item.pocet) b.classList.add('ok'); });
+    el('sv-fb').innerHTML = '✗ Věta má '+item.pocet+' '+(item.pocet===1?'slovo':(item.pocet<5?'slova':'slov'))+'.';
+    el('sv-fb').className = 'fb err';
+  }
+  document.querySelectorAll('#sv-c .optNum').forEach(function(b){b.disabled=true;});
+  el('sv-bd').textContent = s.body;
+  el('sv-sp').textContent = s.sp;
+  el('sv-nx').style.display='block';
+}
+function svNext(){ svSt.idx++; svRender(); }
+function svFinish(){
+  var s = svSt;
+  el('sv-ob').style.display='none';
+  el('sv-res').style.display='block';
+  el('sv-pp').textContent = 'Správně '+s.sp+' z '+s.seq.length+' · získala jsi '+s.body+' bodů.';
+  el('sv-sc').textContent = s.body;
+  el('sv-tot').textContent = totalScore;
+}
+
+/* ═════════════════════════════════════════════
+   CV: ROZDĚL SLOVO NA SLABIKY
+   - Mezi každá písmena vloží klikatelný divider
+   - Dítě klikne na dividery, kde končí slabika
+   - Kontrola: porovnat se správnou pozicí dividerů
+═════════════════════════════════════════════ */
+var rdSt={};
+function rdStart(){
+  /* Pouze slova s 2+ slabikami */
+  var pool = SLOVA_SLABIKY.filter(function(it){ return pocetSlabik(it.slabiky) >= 2; });
+  /* Deduplikace */
+  var seen = {};
+  pool = pool.filter(function(it){
+    if(seen[it.slovo]) return false;
+    seen[it.slovo] = true;
+    return true;
+  });
+  rdSt = {seq: shuffle(pool).slice(0,8), idx:0, body:0, sp:0, locked:false, marked:[]};
+  el('rd-res').style.display='none';
+  el('rd-ob').style.display='block';
+  rdRender();
+}
+function rdRender(){
+  var s = rdSt;
+  if(s.idx >= s.seq.length){ rdFinish(); return; }
+  var item = s.seq[s.idx];
+  s.marked = [];
+  s.locked = false;
+  /* Spočítej správné pozice dividerů */
+  /* Slovo má X slabik → X-1 dividerů */
+  /* Najít pozice | v slabiky stringu */
+  s.spravnePozice = [];
+  var pos = 0;
+  for(var i = 0; i < item.slabiky.length; i++){
+    if(item.slabiky[i] === '|'){
+      s.spravnePozice.push(pos);
+    } else {
+      pos++;
+    }
+  }
+  /* Vykreslit slovo s dividery mezi písmeny */
+  var box = el('rd-w');
+  box.innerHTML = '';
+  for(var i = 0; i < item.slovo.length; i++){
+    var ltr = document.createElement('span');
+    ltr.className = 'slabikLetter';
+    ltr.textContent = item.slovo[i];
+    box.appendChild(ltr);
+    if(i < item.slovo.length - 1){
+      (function(idxPos){
+        var div = document.createElement('span');
+        div.className = 'slabikDivider';
+        div.textContent = '·';
+        div.dataset.pos = idxPos;
+        div.onclick = function(){ rdToggle(idxPos, div); };
+        box.appendChild(div);
+      })(i + 1);  /* Pozice za i-tým písmenem */
+    }
+  }
+  el('rd-pocet').textContent = '0';
+  el('rd-cil').textContent = pocetSlabik(item.slabiky);
+  el('rd-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('rd-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('rd-bd').textContent = s.body;
+  el('rd-sp').textContent = s.sp;
+  el('rd-pg').style.width = (s.idx/s.seq.length*100)+'%';
+  el('rd-fb').textContent='';
+  el('rd-fb').className='fb';
+  el('rd-nx').style.display='none';
+}
+function rdToggle(pos, div){
+  if(rdSt.locked) return;
+  var idx = rdSt.marked.indexOf(pos);
+  if(idx >= 0){
+    rdSt.marked.splice(idx, 1);
+    div.classList.remove('active');
+    div.textContent = '·';
+  } else {
+    rdSt.marked.push(pos);
+    div.classList.add('active');
+    div.textContent = '|';
+  }
+  el('rd-pocet').textContent = rdSt.marked.length;
+}
+function rdCheck(){
+  var s = rdSt;
+  if(s.locked) return;
+  var item = s.seq[s.idx];
+  /* Porovnej s.marked (seznam pozic) s s.spravnePozice */
+  var sortedMarked = s.marked.slice().sort(function(a,b){return a-b;});
+  var sortedSpravne = s.spravnePozice.slice().sort(function(a,b){return a-b;});
+  var spravne = sortedMarked.length === sortedSpravne.length &&
+                sortedMarked.every(function(v, i){ return v === sortedSpravne[i]; });
+  s.locked = true;
+  if(spravne){
+    var earned = 6;
+    s.body += earned; s.sp++;
+    addPoints(earned);
+    el('rd-fb').innerHTML = '🎉 <b>Správně!</b> '+item.slabiky+' = '+pocetSlabik(item.slabiky)+' slabik.';
+    el('rd-fb').className = 'fb ok';
+  } else {
+    /* Označ správné pozice */
+    document.querySelectorAll('#rd-w .slabikDivider').forEach(function(div){
+      var pos = parseInt(div.dataset.pos);
+      div.classList.add('locked');
+      if(s.spravnePozice.indexOf(pos) >= 0){
+        div.classList.add('active');
+        div.textContent = '|';
+        div.style.background = 'var(--z)';
+        div.style.borderColor = 'var(--z)';
+      } else if(s.marked.indexOf(pos) >= 0){
+        div.style.background = 'var(--r)';
+        div.style.borderColor = 'var(--r)';
+        div.style.color = 'white';
+      }
+    });
+    el('rd-fb').innerHTML = '✗ Správné rozdělení: <b>'+item.slabiky+'</b>';
+    el('rd-fb').className = 'fb err';
+  }
+  el('rd-bd').textContent = s.body;
+  el('rd-sp').textContent = s.sp;
+  el('rd-nx').style.display='block';
+}
+function rdReset(){
+  if(rdSt.locked) return;
+  rdSt.marked = [];
+  document.querySelectorAll('#rd-w .slabikDivider').forEach(function(div){
+    div.classList.remove('active');
+    div.textContent = '·';
+  });
+  el('rd-pocet').textContent = '0';
+}
+function rdNext(){ rdSt.idx++; rdRender(); }
+function rdFinish(){
+  var s = rdSt;
+  el('rd-ob').style.display='none';
+  el('rd-res').style.display='block';
+  el('rd-pp').textContent = 'Správně '+s.sp+' z '+s.seq.length+' · získala jsi '+s.body+' bodů.';
+  el('rd-sc').textContent = s.body;
+  el('rd-tot').textContent = totalScore;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tvrdé / měkké / obojetné — LinguaCzech 2. třída</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --m:#32a0d2;--ms:#e8f4fb;
+  --o:#ffaa37;--os:#fff8ee;
+  --z:#16a34a;--zs:#dcfce7;
+  --r:#dc2626;--rs:#fee2e2;
+  --p:#7c3aed;--ps:#f3e8ff;
+  --tv:#dc2626;--tvs:#fee2e2;     /* tvrdé - červené */
+  --me:#16a34a;--mes:#dcfce7;     /* měkké - zelené */
+  --ob:#7c3aed;--obs:#f3e8ff;     /* obojetné - fialové */
+  --font:'Barlow Condensed',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
+.hl{max-width:760px;margin:1.5rem auto;padding:.5rem 1rem;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.4rem 0 1rem;}
+.topbar a{color:var(--m);text-decoration:none;font-weight:700;font-size:.95rem;}
+.topbar span{font-weight:800;color:var(--m);}
+.scbg{position:fixed;top:10px;right:12px;background:var(--o);color:white;border-radius:99px;padding:.3rem .85rem;font-weight:700;font-size:1rem;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.18);pointer-events:none;}
+.mh{text-align:center;margin:.5rem 0 1.2rem;}
+.mh h1{font-size:1.9rem;color:var(--m);font-weight:800;margin:0;}
+.mh p{color:#6b7280;margin:.3rem 0 0;}
+
+.theory{background:white;border:1.5px solid #e5e7eb;border-radius:12px;padding:1rem;margin-bottom:1rem;}
+.theory h3{color:var(--m);margin-bottom:.5rem;font-size:1.1rem;}
+.theory .row{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;}
+.theory .col{background:var(--ms);border-radius:8px;padding:.55rem .4rem;text-align:center;border:2px solid var(--m);}
+.theory .col.tv{background:var(--tvs);border-color:var(--tv);}
+.theory .col.me{background:var(--mes);border-color:var(--me);}
+.theory .col.ob{background:var(--obs);border-color:var(--ob);}
+.theory .col h4{font-size:.95rem;font-weight:800;margin-bottom:.25rem;}
+.theory .col.tv h4{color:var(--tv);}
+.theory .col.me h4{color:var(--me);}
+.theory .col.ob h4{color:var(--ob);}
+.theory .pism{font-family:Verdana,Geneva,sans-serif;font-weight:800;font-size:1.05rem;letter-spacing:1px;}
+
+.cv{display:none;}
+.nav{display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;}
+.zpet{background:white;border:1.5px solid #d1d5db;border-radius:8px;padding:.4rem .9rem;font-weight:600;cursor:pointer;font-family:var(--font);}
+.tit{font-size:1.1rem;font-weight:700;}
+.var{margin-left:auto;background:var(--ms);color:var(--m);border-radius:99px;padding:.2rem .8rem;font-weight:600;font-size:.85rem;}
+
+.sk{display:flex;justify-content:space-around;background:var(--os);border:1px solid #ffd48a;border-radius:10px;padding:.7rem;margin-bottom:.75rem;}
+.skn{font-size:1.4rem;font-weight:700;color:var(--o);text-align:center;}
+.skl{font-size:.75rem;color:#6b7280;text-align:center;}
+.pg{height:8px;background:#e5e7eb;border-radius:99px;overflow:hidden;margin-bottom:1rem;}
+.pgf{height:100%;background:var(--m);border-radius:99px;transition:width .3s;}
+
+.ka{background:white;border:1.5px solid #e5e7eb;border-radius:12px;padding:1rem;margin-bottom:1rem;}
+.q{font-weight:700;text-align:center;margin-bottom:.7rem;color:#374151;}
+
+.fb{margin-top:.7rem;font-size:.95rem;min-height:1.2rem;font-weight:600;text-align:center;}
+.fb.ok{color:var(--z);}
+.fb.err{color:var(--r);}
+
+.nxt{display:none;width:100%;background:var(--m);color:white;border:none;border-radius:8px;padding:.85rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:var(--font);margin-top:.5rem;}
+
+.res{display:none;text-align:center;padding:2rem 1rem;}
+.res h2{color:var(--m);font-size:1.6rem;margin:.5rem 0;}
+.res-row{display:flex;gap:1rem;justify-content:center;margin:1rem 0;flex-wrap:wrap;}
+.rs{background:var(--ms);border-radius:10px;padding:.75rem 1rem;}
+.rsv{font-size:1.4rem;font-weight:800;}
+.rsl{font-size:.8rem;color:#6b7280;}
+.znovu,.mbtn{padding:.7rem 1.2rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:.95rem;margin:.3rem;}
+.znovu{background:var(--m);color:white;border:none;}
+.mbtn{background:white;color:#374151;border:1.5px solid #d1d5db;}
+
+.mg{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem;}
+.mk{padding:1rem;border-radius:14px;cursor:pointer;text-align:center;transition:all .15s;border:2.5px solid transparent;background:white;}
+.mk:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08);}
+.mk-m{background:var(--ms);border-color:var(--m);}
+.mk-o{background:var(--os);border-color:var(--o);}
+.mk-p{background:var(--ps);border-color:var(--p);}
+.mk h3{font-size:1.05rem;font-weight:800;margin-bottom:.2rem;}
+.mk p{font-size:.85rem;color:#6b7280;margin:0;}
+
+/* Velké písmeno otázky */
+.bigPism{font-family:Verdana,Geneva,sans-serif;font-size:5rem;font-weight:800;text-align:center;color:var(--m);background:var(--ms);padding:1.2rem;border-radius:14px;margin:1rem 0;letter-spacing:2px;}
+
+/* Tlačítka 3 možností */
+.opts3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin:1rem 0;}
+.opt3{padding:1.2rem .4rem;background:white;border:2.5px solid #d1d5db;border-radius:10px;font-family:var(--font);font-weight:800;font-size:1.05rem;cursor:pointer;text-align:center;transition:all .15s;color:#1f2937;text-transform:uppercase;letter-spacing:.4px;}
+.opt3:hover:not(:disabled){transform:translateY(-2px);}
+.opt3.tv{border-color:var(--tv);color:var(--tv);}
+.opt3.tv:hover:not(:disabled){background:var(--tvs);}
+.opt3.me{border-color:var(--me);color:var(--me);}
+.opt3.me:hover:not(:disabled){background:var(--mes);}
+.opt3.ob{border-color:var(--ob);color:var(--ob);}
+.opt3.ob:hover:not(:disabled){background:var(--obs);}
+.opt3.ok{background:var(--zs)!important;border-color:var(--z)!important;color:var(--z)!important;}
+.opt3.err{background:var(--rs)!important;border-color:var(--r)!important;color:var(--r)!important;}
+
+/* Slovo s odhalovaným písmenem */
+.slovo-box{font-family:Verdana,Geneva,sans-serif;font-size:2.4rem;font-weight:800;text-align:center;background:var(--ms);padding:1.2rem;border-radius:14px;margin:1rem 0;color:#1f2937;letter-spacing:2px;}
+.slovo-box .zvyrazn{color:var(--m);background:rgba(50,160,210,.15);padding:.05em .2em;border-radius:6px;}
+
+/* Tříděč 3 košů */
+.kose3{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin:.7rem 0;}
+.kos3{border:2.5px solid;border-radius:10px;padding:.5rem;min-height:90px;display:flex;flex-direction:column;cursor:pointer;transition:all .15s;}
+.kos3.tv{border-color:var(--tv);background:#fef2f2;}
+.kos3.me{border-color:var(--me);background:#f0fdf4;}
+.kos3.ob{border-color:var(--ob);background:#faf5ff;}
+.kos3:hover{transform:translateY(-2px);box-shadow:0 4px 8px rgba(0,0,0,.08);}
+.kos3.target{box-shadow:0 0 0 4px rgba(50,160,210,.3);transform:scale(1.02);}
+.kos3-title{font-weight:800;font-size:.85rem;text-align:center;margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.4px;}
+.kos3.tv .kos3-title{color:var(--tv);}
+.kos3.me .kos3-title{color:var(--me);}
+.kos3.ob .kos3-title{color:var(--ob);}
+.kos3-content{flex:1;display:flex;flex-wrap:wrap;gap:.25rem;justify-content:center;align-items:flex-start;}
+.kos3-empty{text-align:center;color:#9ca3af;font-style:italic;font-family:var(--font);font-size:.8rem;padding:.5rem;}
+.pism-mini{background:white;border:1.5px solid #d1d5db;border-radius:6px;padding:.3rem .55rem;font-family:Verdana,Geneva,sans-serif;font-weight:800;font-size:1.1rem;cursor:pointer;color:#1f2937;}
+.pism-mini:hover:not(.locked){background:#fef2f2;}
+
+.pool{background:#f9fafb;border:2px dashed #d1d5db;border-radius:10px;padding:.6rem;margin:.5rem 0;}
+.pool-label{font-size:.85rem;color:#6b7280;font-weight:700;text-align:center;margin-bottom:.4rem;}
+.pool-pism{display:flex;flex-wrap:wrap;gap:.3rem;justify-content:center;}
+.pism-big{background:white;border:2px solid #d1d5db;border-radius:8px;padding:.55rem .8rem;font-family:Verdana,Geneva,sans-serif;font-weight:800;font-size:1.25rem;cursor:pointer;color:#1f2937;transition:all .15s;}
+.pism-big.selected{border-color:var(--m);background:var(--ms);box-shadow:0 0 0 3px rgba(50,160,210,.2);}
+.pism-big.locked{cursor:default;opacity:.95;}
+
+.actions{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;margin:.5rem 0;}
+.actions button{padding:.7rem 1rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:.95rem;border:none;}
+.btn-check{background:var(--m);color:white;}
+.btn-reset{background:#f3f4f6;color:#374151;border:1.5px solid #d1d5db !important;}
+
+@media (max-width:480px){
+  .kose3{grid-template-columns:1fr;}
+}
+
+@media print{body{background:white;}.scbg{display:none;}}
+</style>
+</head>
+<body>
+<div class="scbg" id="scbg">⭐ 0 b.</div>
+<div class="hl">
+
+<!-- MENU -->
+<div id="menu">
+  <div class="topbar"><a href="2trida.html">← 2. třída</a><span>LinguaCzech</span></div>
+  <div class="mh"><h1>Tvrdé · Měkké · Obojetné</h1><p>Souhlásky a jejich rozdělení</p></div>
+
+  <!-- Krátké vysvětlení -->
+  <div class="theory">
+    <h3>📋 Tři skupiny souhlásek</h3>
+    <div class="row">
+      <div class="col tv">
+        <h4>🟥 TVRDÉ</h4>
+        <div class="pism">h ch k r d t n</div>
+        <p style="font-size:.72rem;color:#374151;margin-top:.3rem">po nich píšeme <b>y, ý</b></p>
+      </div>
+      <div class="col me">
+        <h4>🟩 MĚKKÉ</h4>
+        <div class="pism">ž š č ř c j ď ť ň</div>
+        <p style="font-size:.72rem;color:#374151;margin-top:.3rem">po nich píšeme <b>i, í</b></p>
+      </div>
+      <div class="col ob">
+        <h4>🟪 OBOJETNÉ</h4>
+        <div class="pism">b f l m p s v z</div>
+        <p style="font-size:.72rem;color:#374151;margin-top:.3rem">po nich může být <b>i nebo y</b></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mg">
+    <div onclick="go('rozeznej')" class="mk mk-m" style="grid-column:span 2"><h3>🎯 Poznáš souhlásku?</h3><p>Klikni, jestli je tvrdá, měkká nebo obojetná</p></div>
+    <div onclick="go('roztrid')" class="mk mk-p" style="grid-column:span 2"><h3>📦 Roztřiď souhlásky</h3><p>Klikni na písmeno, pak na koš (3 koše)</p></div>
+  </div>
+</div>
+
+<!-- CV: ROZEZNEJ JEDNOTLIVÉ PÍSMENO -->
+<div class="cv" id="cv-rozeznej">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🎯 Poznáš souhlásku?</span><span class="var" id="rz-v">1/15</span></div>
+  <div class="sk">
+    <div><div class="skn" id="rz-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="rz-ci">1/15</div><div class="skl">úkol</div></div>
+    <div><div class="skn" id="rz-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="rz-pg" style="width:0%"></div></div>
+  <div id="rz-ob">
+    <div class="ka">
+      <div class="q">Je to <b style="color:var(--tv)">tvrdá</b>, <b style="color:var(--me)">měkká</b>, nebo <b style="color:var(--ob)">obojetná</b> souhláska?</div>
+      <div class="bigPism" id="rz-w">—</div>
+      <div class="opts3">
+        <button class="opt3 tv" onclick="rzAns('tv',this)">🟥 Tvrdá</button>
+        <button class="opt3 me" onclick="rzAns('me',this)">🟩 Měkká</button>
+        <button class="opt3 ob" onclick="rzAns('ob',this)">🟪 Obojetná</button>
+      </div>
+      <div class="fb" id="rz-fb"></div>
+    </div>
+    <button class="nxt" id="rz-nx" onclick="rzNext()">Další →</button>
+  </div>
+  <div class="res" id="rz-res">
+    <div style="font-size:3rem">🎯</div><h2>Výborně!</h2><p id="rz-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="rz-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="rz-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('rozeznej')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+<!-- CV: ROZTŘIĎ SOUHLÁSKY DO 3 KOŠŮ -->
+<div class="cv" id="cv-roztrid">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">📦 Roztřiď souhlásky</span><span class="var" id="rt-v">1/5</span></div>
+  <div class="sk">
+    <div><div class="skn" id="rt-bd">0</div><div class="skl">body</div></div>
+    <div><div class="skn" id="rt-ci">1/5</div><div class="skl">sada</div></div>
+    <div><div class="skn" id="rt-sp">0</div><div class="skl">správně</div></div>
+  </div>
+  <div class="pg"><div class="pgf" id="rt-pg" style="width:0%"></div></div>
+  <div id="rt-ob">
+    <div class="ka">
+      <div class="q">Klikni na písmeno, pak na koš.</div>
+
+      <div class="kose3">
+        <div class="kos3 tv" data-typ="tv" onclick="rtPlace('tv')">
+          <div class="kos3-title">🟥 Tvrdé</div>
+          <div class="kos3-content" id="rt-kos-tv"><div class="kos3-empty">prázdný</div></div>
+        </div>
+        <div class="kos3 me" data-typ="me" onclick="rtPlace('me')">
+          <div class="kos3-title">🟩 Měkké</div>
+          <div class="kos3-content" id="rt-kos-me"><div class="kos3-empty">prázdný</div></div>
+        </div>
+        <div class="kos3 ob" data-typ="ob" onclick="rtPlace('ob')">
+          <div class="kos3-title">🟪 Obojetné</div>
+          <div class="kos3-content" id="rt-kos-ob"><div class="kos3-empty">prázdný</div></div>
+        </div>
+      </div>
+
+      <div class="pool">
+        <div class="pool-label">📋 Písmena k roztřídění:</div>
+        <div class="pool-pism" id="rt-pool"></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-check" onclick="rtCheck()">Zkontrolovat ✓</button>
+        <button class="btn-reset" onclick="rtReset()">Začít znovu 🔄</button>
+      </div>
+      <div class="fb" id="rt-fb"></div>
+    </div>
+    <button class="znovu" id="rt-nx" onclick="rtNext()" style="display:none;width:100%">Další sada →</button>
+  </div>
+  <div class="res" id="rt-res">
+    <div style="font-size:3rem">📦</div><h2>Výborně!</h2><p id="rt-pp"></p>
+    <div class="res-row"><div class="rs"><div class="rsv" id="rt-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="rt-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
+    <button class="znovu" onclick="go('roztrid')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+var SCORE_KEY='tmo_score';
+var totalScore=0;
+try{totalScore=parseInt(localStorage.getItem(SCORE_KEY))||0;}catch(e){}
+function el(id){return document.getElementById(id);}
+function shuffle(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t;}return b;}
+function addPoints(n){totalScore+=n;try{localStorage.setItem(SCORE_KEY,totalScore);}catch(e){}updateScore();}
+function updateScore(){el('scbg').textContent='⭐ '+totalScore+' b.';}
+updateScore();
+function go(id){
+  el('menu').style.display='none';
+  document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
+  el('cv-'+id).style.display='block';
+  if(id==='rozeznej') rzStart();
+  if(id==='roztrid') rtStart();
+}
+function back(){
+  el('menu').style.display='block';
+  document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
+}
+
+/* ─────────────────────────────────────────────
+   DATA — souhlásky podle typu
+─────────────────────────────────────────── */
+var TVRDE = ['h','ch','k','r','d','t','n'];
+var MEKKE = ['ž','š','č','ř','c','j','ď','ť','ň'];
+var OBOJETNE = ['b','f','l','m','p','s','v','z'];
+
+function getTyp(pism){
+  if(TVRDE.indexOf(pism) >= 0) return 'tv';
+  if(MEKKE.indexOf(pism) >= 0) return 'me';
+  if(OBOJETNE.indexOf(pism) >= 0) return 'ob';
+  return null;
+}
+function getTypNazev(typ){
+  if(typ === 'tv') return 'tvrdá';
+  if(typ === 'me') return 'měkká';
+  if(typ === 'ob') return 'obojetná';
+  return '?';
+}
+
+/* ═════════════════════════════════════════════
+   CV: ROZEZNEJ JEDNOTLIVÉ PÍSMENO
+═════════════════════════════════════════════ */
+var rzSt={};
+function rzStart(){
+  /* Sestav pool: všechny souhlásky */
+  var pool = TVRDE.concat(MEKKE).concat(OBOJETNE);
+  rzSt = {seq: shuffle(pool).slice(0,15), idx:0, body:0, sp:0, locked:false};
+  el('rz-res').style.display='none';
+  el('rz-ob').style.display='block';
+  rzRender();
+}
+function rzRender(){
+  var s = rzSt;
+  if(s.idx >= s.seq.length){ rzFinish(); return; }
+  var pism = s.seq[s.idx];
+  el('rz-w').textContent = pism;
+  el('rz-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('rz-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('rz-bd').textContent = s.body;
+  el('rz-sp').textContent = s.sp;
+  el('rz-pg').style.width = (s.idx/s.seq.length*100)+'%';
+  el('rz-fb').textContent='';
+  el('rz-fb').className='fb';
+  el('rz-nx').style.display='none';
+  document.querySelectorAll('#cv-rozeznej .opt3').forEach(function(b){
+    b.disabled=false; b.classList.remove('ok','err');
+  });
+  s.locked=false;
+}
+function rzAns(picked, btn){
+  var s = rzSt;
+  if(s.locked) return;
+  s.locked=true;
+  var pism = s.seq[s.idx];
+  var spravnyTyp = getTyp(pism);
+  if(picked === spravnyTyp){
+    btn.classList.add('ok');
+    var earned = 3;
+    s.body += earned; s.sp++;
+    addPoints(earned);
+    el('rz-fb').innerHTML = '✓ Správně! Písmeno <b>'+pism+'</b> je '+getTypNazev(spravnyTyp)+'.';
+    el('rz-fb').className = 'fb ok';
+  } else {
+    btn.classList.add('err');
+    /* Najít správné tlačítko */
+    document.querySelectorAll('#cv-rozeznej .opt3').forEach(function(b){
+      if(b.classList.contains(spravnyTyp)){
+        b.classList.add('ok');
+      }
+    });
+    el('rz-fb').innerHTML = '✗ Písmeno <b>'+pism+'</b> je '+getTypNazev(spravnyTyp)+'.';
+    el('rz-fb').className = 'fb err';
+  }
+  document.querySelectorAll('#cv-rozeznej .opt3').forEach(function(b){b.disabled=true;});
+  el('rz-bd').textContent = s.body;
+  el('rz-sp').textContent = s.sp;
+  el('rz-nx').style.display='block';
+}
+function rzNext(){ rzSt.idx++; rzRender(); }
+function rzFinish(){
+  var s = rzSt;
+  el('rz-ob').style.display='none';
+  el('rz-res').style.display='block';
+  el('rz-pp').textContent = 'Správně '+s.sp+' z '+s.seq.length+' · získala jsi '+s.body+' bodů.';
+  el('rz-sc').textContent = s.body;
+  el('rz-tot').textContent = totalScore;
+}
+
+/* ═════════════════════════════════════════════
+   CV: ROZTŘIĎ SOUHLÁSKY DO 3 KOŠŮ
+═════════════════════════════════════════════ */
+var rtSt={};
+function rtStart(){
+  /* 5 sad - každá sada má 6 písmen, 2 z každé skupiny */
+  var sady = [];
+  for(var i = 0; i < 5; i++){
+    var sada = [];
+    sada = sada.concat(shuffle(TVRDE).slice(0,2));
+    sada = sada.concat(shuffle(MEKKE).slice(0,2));
+    sada = sada.concat(shuffle(OBOJETNE).slice(0,2));
+    sady.push(sada);
+  }
+  rtSt = {seq: sady, idx:0, body:0, sp:0, locked:false, selected:null, placement:{}, allPism:[]};
+  el('rt-res').style.display='none';
+  el('rt-ob').style.display='block';
+  rtRender();
+}
+function rtRender(){
+  var s = rtSt;
+  if(s.idx >= s.seq.length){ rtFinish(); return; }
+  var sada = s.seq[s.idx];
+  /* Zamíchat */
+  s.allPism = shuffle(sada).map(function(p, i){ return {pism:p, id:'p'+i, typ:getTyp(p)}; });
+  s.placement = {};
+  s.allPism.forEach(function(p){ s.placement[p.id] = null; });
+  s.selected = null;
+  s.locked = false;
+
+  el('rt-v').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('rt-ci').textContent = (s.idx+1)+'/'+s.seq.length;
+  el('rt-bd').textContent = s.body;
+  el('rt-sp').textContent = s.sp;
+  el('rt-pg').style.width = (s.idx/s.seq.length*100)+'%';
+  el('rt-fb').textContent='';
+  el('rt-fb').className='fb';
+  el('rt-nx').style.display='none';
+  document.querySelector('#rt-ob .actions').style.display = 'flex';
+  rtRenderUI();
+}
+function rtRenderUI(){
+  var s = rtSt;
+  /* Pool */
+  var pool = el('rt-pool');
+  pool.innerHTML = '';
+  var hasInPool = false;
+  s.allPism.forEach(function(p){
+    if(s.placement[p.id] === null){
+      hasInPool = true;
+      var d = document.createElement('div');
+      d.className = 'pism-big' + (s.selected === p.id ? ' selected' : '') + (s.locked ? ' locked' : '');
+      d.textContent = p.pism;
+      d.onclick = function(e){
+        e.stopPropagation();
+        if(!s.locked) rtSelect(p.id);
+      };
+      pool.appendChild(d);
+    }
+  });
+  if(!hasInPool){
+    pool.innerHTML = '<div style="text-align:center;color:#9ca3af;font-style:italic;padding:.5rem;width:100%">Všechna písmena roztříděná</div>';
+  }
+  /* Koše */
+  ['tv','me','ob'].forEach(function(typ){
+    var box = el('rt-kos-'+typ);
+    box.innerHTML = '';
+    var any = false;
+    s.allPism.forEach(function(p){
+      if(s.placement[p.id] === typ){
+        any = true;
+        var d = document.createElement('div');
+        d.className = 'pism-mini' + (s.locked ? ' locked' : '');
+        d.textContent = p.pism;
+        if(!s.locked){
+          d.onclick = function(e){
+            e.stopPropagation();
+            s.placement[p.id] = null;
+            rtRenderUI();
+          };
+        }
+        if(s.locked){
+          if(p.typ === typ){
+            d.style.borderColor = 'var(--z)';
+            d.style.background = 'var(--zs)';
+          } else {
+            d.style.borderColor = 'var(--r)';
+            d.style.background = 'var(--rs)';
+          }
+        }
+        box.appendChild(d);
+      }
+    });
+    if(!any){
+      var em = document.createElement('div');
+      em.className = 'kos3-empty';
+      em.textContent = 'prázdný';
+      box.appendChild(em);
+    }
+  });
+  document.querySelectorAll('#cv-roztrid .kos3').forEach(function(k){
+    if(s.selected){ k.classList.add('target'); }
+    else { k.classList.remove('target'); }
+  });
+}
+function rtSelect(id){
+  var s = rtSt;
+  if(s.selected === id){ s.selected = null; }
+  else { s.selected = id; }
+  rtRenderUI();
+}
+function rtPlace(typ){
+  var s = rtSt;
+  if(s.locked) return;
+  if(!s.selected){
+    el('rt-fb').innerHTML = '👆 Nejprve klikni na písmeno z dolního seznamu, pak na koš.';
+    el('rt-fb').className = 'fb';
+    setTimeout(function(){ el('rt-fb').textContent=''; }, 1500);
+    return;
+  }
+  s.placement[s.selected] = typ;
+  s.selected = null;
+  rtRenderUI();
+}
+function rtCheck(){
+  var s = rtSt;
+  if(s.locked) return;
+  var unplaced = s.allPism.filter(function(p){ return s.placement[p.id] === null; });
+  if(unplaced.length > 0){
+    el('rt-fb').innerHTML = 'Některá písmena zůstala nezařazená ('+unplaced.length+').';
+    el('rt-fb').className = 'fb err';
+    return;
+  }
+  var correctCount = 0;
+  s.allPism.forEach(function(p){
+    if(s.placement[p.id] === p.typ) correctCount++;
+  });
+  s.locked = true;
+  if(correctCount === s.allPism.length){
+    var earned = 10;
+    s.body += earned; s.sp++;
+    addPoints(earned);
+    el('rt-bd').textContent = s.body;
+    el('rt-sp').textContent = s.sp;
+    el('rt-fb').innerHTML = '🎉 <b>Vynikající!</b> Všechno správně. +'+earned+' bodů.';
+    el('rt-fb').className = 'fb ok';
+    el('rt-nx').style.display = 'block';
+    document.querySelector('#rt-ob .actions').style.display = 'none';
+    rtRenderUI();
+  } else {
+    var earned = correctCount;
+    s.body += earned;
+    addPoints(earned);
+    el('rt-bd').textContent = s.body;
+    el('rt-fb').innerHTML = '✓ Správně '+correctCount+' z '+s.allPism.length+'. +'+earned+' bodů. Zelené jsou OK, červené přesuň.';
+    el('rt-fb').className = 'fb';
+    rtRenderUI();
+    setTimeout(function(){
+      s.locked = false;
+      rtRenderUI();
+      document.querySelector('#rt-ob .actions').style.display = 'flex';
+    }, 2000);
+  }
+}
+function rtReset(){
+  var s = rtSt;
+  if(s.locked) return;
+  s.allPism.forEach(function(p){ s.placement[p.id] = null; });
+  s.selected = null;
+  el('rt-fb').textContent='';
+  el('rt-fb').className='fb';
+  rtRenderUI();
+}
+function rtNext(){ rtSt.idx++; rtRender(); }
+function rtFinish(){
+  var s = rtSt;
+  el('rt-ob').style.display='none';
+  el('rt-res').style.display='block';
+  el('rt-pp').textContent = 'Správně '+s.sp+' z '+s.seq.length+' sad · získala jsi '+s.body+' bodů.';
+  el('rt-sc').textContent = s.body;
+  el('rt-tot').textContent = totalScore;
+}
+</script>
+</body>
+</html>

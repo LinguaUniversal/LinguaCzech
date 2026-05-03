@@ -20,6 +20,9 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:.4rem 0 1rem;}
 .topbar a{color:var(--m);text-decoration:none;font-weight:700;font-size:.95rem;}
 .topbar span{font-weight:800;color:var(--m);}
+.brand{display:inline-flex;align-items:center;gap:.4rem;}
+.brand-logo{width:24px;height:24px;border-radius:50%;background:white;padding:1.5px;flex-shrink:0;vertical-align:middle;}
+
 .scbg{position:fixed;top:10px;right:12px;background:var(--o);color:white;border-radius:99px;padding:.3rem .85rem;font-weight:700;font-size:1rem;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.18);pointer-events:none;}
 .mh{text-align:center;margin:.5rem 0 1.2rem;}
 .mh h1{font-size:1.9rem;color:var(--m);font-weight:800;margin:0;}
@@ -99,14 +102,13 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
 
 <!-- MENU -->
 <div id="menu">
-  <div class="topbar"><a href="3trida.html">← 3. třída</a><span>LinguaCzech</span></div>
+  <div class="topbar"><a href="3trida.html">← 3. třída</a><span class="brand"><img class="brand-logo" src="logo.png" alt="">Lingua Universal</span></div>
   <div class="mh"><h1>Slovní druhy — všech 10</h1><p>3. ročník — rozšíření 2. třídy</p></div>
   <div class="mg">
     <div onclick="go('sady')" class="mk mk-p" style="grid-column:span 2"><h3>📋 Naučím se</h3><p>Všech 10 slovních druhů · ohebné × neohebné</p></div>
     <div onclick="go('urci')" class="mk mk-m"><h3>🎯 Urči slovní druh</h3><p>Slovo → vyber druh (1-10)</p></div>
     <div onclick="go('ohne')" class="mk mk-o"><h3>🔄 Ohebné × neohebné</h3><p>Mění tvar / nemění tvar?</p></div>
     <div onclick="go('najdi')" class="mk mk-m"><h3>🔍 Najdi slova ve větě</h3><p>Klikni na zadaný druh</p></div>
-    <div onclick="go('cteni')" class="mk mk-o"><h3>📖 Čtení s porozuměním</h3><p>Přečti text · odpověz na otázky</p></div>
     <div onclick="printChoice()" class="mk" style="grid-column:span 2;background:#f3f4f6;border:2px dashed #9ca3af"><h3 style="color:#374151">🖨️ Vytisknout pracovní list</h3><p style="color:#6b7280">PDF k procvičování doma</p></div>
   </div>
 </div>
@@ -196,34 +198,6 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
   </div>
 </div>
 
-<!-- CV: ČTENÍ S POROZUMĚNÍM -->
-<div class="cv" id="cv-cteni">
-  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">📖 Čtení s porozuměním</span><span class="var" id="ct-v">1/4</span></div>
-  <div class="sk">
-    <div><div class="skn" id="ct-bd">0</div><div class="skl">body</div></div>
-    <div><div class="skn" id="ct-ci">1/4</div><div class="skl">text</div></div>
-    <div><div class="skn" id="ct-sp">0</div><div class="skl">správně</div></div>
-  </div>
-  <div class="pg"><div class="pgf" id="ct-pg" style="width:0%"></div></div>
-  <div id="ct-ob">
-    <div class="ka">
-      <div class="q">Pozorně si přečti text. Pak odpověz na otázky vlastními slovy.</div>
-      <div id="ct-text" style="font-family:Verdana,Geneva,sans-serif;font-size:1.05rem;line-height:1.7;background:var(--ms);padding:1rem 1.2rem;border-radius:10px;margin:.7rem 0;color:#1f2937;border-left:4px solid var(--m)">—</div>
-      <div id="ct-questions" style="margin-top:1rem"></div>
-      <div class="fb" id="ct-fb"></div>
-    </div>
-    <button class="nxt" id="ct-nx" onclick="ctNext()">Další text →</button>
-    <div style="text-align:center;margin-top:.5rem">
-      <button class="mbtn" id="ct-check" onclick="ctCheck()" style="background:var(--m);color:white;border:none">Zkontrolovat odpovědi ✓</button>
-    </div>
-  </div>
-  <div class="res" id="ct-res">
-    <div style="font-size:3rem">📚</div><h2>Skvělé čtení!</h2><p id="ct-pp"></p>
-    <div class="res-row"><div class="rs"><div class="rsv" id="ct-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="ct-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
-    <button class="znovu" onclick="go('cteni')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
-  </div>
-</div>
-
 </div><!-- .hl -->
 
 <script>
@@ -243,7 +217,6 @@ function go(id){
   if(id==='urci') urcStart();
   if(id==='ohne') ohStart();
   if(id==='najdi') najStart();
-  if(id==='cteni') ctStart();
 }
 function back(){
   el('menu').style.display='block';
@@ -621,190 +594,12 @@ function najFinish(){
   el('naj-tot').textContent=totalScore;
 }
 
-/* ───────── ČTENÍ S POROZUMĚNÍM ─────────
-   Žák čte text, pak píše odpovědi vlastními slovy.
-   Kontrola: porovnává klíčová slova v odpovědi (case-insensitive, bez diakritiky).
-─────────────────────────────────────────── */
-var TEXTY = [
-  {
-    text: 'Eliška jezdí v létě na chalupu s babičkou a dědou. Vždy se moc těší. U chalupy je malý les a kousek dál je přehrada, která se jmenuje Pastvinská. Je v ní hodně studená voda a velké ryby. Dá se objet na kole.',
-    questions: [
-      {q:'Jak se jmenuje přehrada?', keywords:['pastvinska']},
-      {q:'Kdy jezdí Eliška na chalupu?', keywords:['lete']},
-      {q:'S kým jezdí Eliška na chalupu?', keywords:['babickou','dedou']},
-      {q:'Co je u chalupy?', keywords:['les']}
-    ]
-  },
-  {
-    text: 'Tomáš má rád zvířata. Doma má psa Boženu a kočku Mourka. Božena je velká černá fenka a každé ráno chodí s Tomášem ven. Mourek je zrzavý kocour a celý den spí na okně. Tomáš o ně rád pečuje, krmí je a hraje si s nimi.',
-    questions: [
-      {q:'Jak se jmenuje Tomášův pes?', keywords:['bozena']},
-      {q:'Jakou barvu má kočka Mourek?', keywords:['zrzav']},
-      {q:'Kde Mourek celý den spí?', keywords:['okn']},
-      {q:'Kdy Tomáš chodí s Boženou ven?', keywords:['rano','rano']}
-    ]
-  },
-  {
-    text: 'V parku rostl velký starý dub. Jeho větve sahaly vysoko do nebe. Pod dubem si hrály děti a v jeho koruně bydleli ptáčci. Na podzim padaly z dubu žaludy a veverka Rita si je sbírala do svého doupěte ve stromě. Měla jich tam plnou zásobu na zimu.',
-    questions: [
-      {q:'Co rostlo v parku?', keywords:['dub']},
-      {q:'Jak se jmenuje veverka?', keywords:['rita']},
-      {q:'Co padalo z dubu na podzim?', keywords:['zaludy','zalud']},
-      {q:'Proč si veverka schovávala žaludy?', keywords:['zim']}
-    ]
-  },
-  {
-    text: 'Karolína je v 3. třídě a moc ráda čte. Její nejoblíbenější knížka je o pirátech, kteří hledají poklad na vzdáleném ostrově. Knížku dostala od babičky k narozeninám. Každý večer si v ní čte alespoň jednu kapitolu. Když knihu dočte, vrací se k ní znovu.',
-    questions: [
-      {q:'Do které třídy chodí Karolína?', keywords:['treti','3.']},
-      {q:'O čem je její oblíbená knížka?', keywords:['pirat']},
-      {q:'Od koho dostala knížku?', keywords:['babi']},
-      {q:'Kdy si v knížce čte?', keywords:['vecer']}
-    ]
-  },
-  {
-    text: 'Honza a Pepa jsou kamarádi. Po škole spolu chodí na hřiště hrát fotbal. Honza dává vždycky góly a Pepa stojí v bráně. Včera se utkali s kluky z paralelní třídy. Vyhráli 3 : 1. Po zápase si dali zmrzlinu v cukrárně na rohu.',
-    questions: [
-      {q:'Jak se jmenují oba kamarádi?', keywords:['honza','pepa']},
-      {q:'Kdo stojí v bráně?', keywords:['pepa']},
-      {q:'Jakým výsledkem zápas vyhráli?', keywords:['3','3:1']},
-      {q:'Kde si dali zmrzlinu?', keywords:['cukrarn']}
-    ]
-  }
-];
-
-var ctSt={};
-function ctStart(){
-  ctSt = {seq: shuffle(TEXTY).slice(0,4), idx:0, body:0, sp:0, locked:false};
-  el('ct-res').style.display='none';
-  el('ct-ob').style.display='block';
-  ctRender();
-}
-/* Normalizace pro porovnání — malá písmena + bez diakritiky */
-function ctNormalize(s){
-  return (s || '').toLowerCase()
-    .replace(/á/g,'a').replace(/é/g,'e').replace(/í/g,'i').replace(/ó/g,'o')
-    .replace(/ú/g,'u').replace(/ů/g,'u').replace(/ý/g,'y').replace(/ě/g,'e')
-    .replace(/š/g,'s').replace(/č/g,'c').replace(/ř/g,'r').replace(/ž/g,'z')
-    .replace(/ť/g,'t').replace(/ď/g,'d').replace(/ň/g,'n')
-    .replace(/[.,!?;:"„"]/g,' ')
-    .replace(/\s+/g,' ').trim();
-}
-function ctRender(){
-  var s = ctSt;
-  if(s.idx >= s.seq.length){ ctFinish(); return; }
-  var item = s.seq[s.idx];
-  el('ct-text').textContent = item.text;
-  /* Vykreslit otázky s textovými poli */
-  var box = el('ct-questions');
-  box.innerHTML = '';
-  item.questions.forEach(function(qd, qi){
-    var div = document.createElement('div');
-    div.style.cssText = 'margin-bottom:.7rem;padding-bottom:.6rem;border-bottom:1px solid #e5e7eb';
-    var lbl = document.createElement('label');
-    lbl.style.cssText = 'display:block;font-weight:700;color:var(--m);margin-bottom:.3rem;font-size:.95rem;font-family:Verdana,Geneva,sans-serif';
-    lbl.innerHTML = '<b>'+(qi+1)+'.</b> '+qd.q;
-    div.appendChild(lbl);
-    var inp = document.createElement('input');
-    inp.type = 'text';
-    inp.dataset.qi = qi;
-    inp.placeholder = 'Napiš svou odpověď...';
-    inp.style.cssText = 'width:100%;padding:.5rem .7rem;border:2px solid #d1d5db;border-radius:8px;font-family:Verdana,Geneva,sans-serif;font-size:1rem;color:#1f2937';
-    inp.onfocus = function(){ this.style.borderColor='var(--m)'; this.style.background='var(--ms)'; };
-    inp.onblur = function(){ this.style.borderColor='#d1d5db'; this.style.background='white'; };
-    div.appendChild(inp);
-    /* Místo pro feedback */
-    var fb = document.createElement('div');
-    fb.className = 'ct-qfb';
-    fb.dataset.qi = qi;
-    fb.style.cssText = 'font-size:.85rem;margin-top:.3rem;font-weight:600;min-height:1rem';
-    div.appendChild(fb);
-    box.appendChild(div);
-  });
-  el('ct-v').textContent = (s.idx+1)+'/'+s.seq.length;
-  el('ct-ci').textContent = (s.idx+1)+'/'+s.seq.length;
-  el('ct-bd').textContent = s.body;
-  el('ct-sp').textContent = s.sp;
-  el('ct-pg').style.width = (s.idx/s.seq.length*100)+'%';
-  el('ct-fb').textContent='';
-  el('ct-fb').className='fb';
-  el('ct-nx').style.display='none';
-  el('ct-check').style.display='inline-block';
-  s.locked=false;
-}
-function ctCheck(){
-  var s = ctSt;
-  if(s.locked) return;
-  s.locked = true;
-  var item = s.seq[s.idx];
-  var inputs = document.querySelectorAll('#ct-questions input');
-  var fbs = document.querySelectorAll('#ct-questions .ct-qfb');
-  var correctCount = 0;
-  inputs.forEach(function(inp, i){
-    var ans = ctNormalize(inp.value);
-    var qd = item.questions[i];
-    var fb = fbs[i];
-    /* Najít alespoň 1 z keywords v odpovědi */
-    var hit = false;
-    if(ans){
-      hit = qd.keywords.some(function(kw){
-        return ans.indexOf(kw) >= 0;
-      });
-    }
-    if(hit){
-      correctCount++;
-      inp.style.borderColor = 'var(--z)';
-      inp.style.background = 'var(--zs)';
-      inp.style.color = 'var(--z)';
-      fb.textContent = '✓ Správně!';
-      fb.style.color = 'var(--z)';
-    } else {
-      inp.style.borderColor = 'var(--r)';
-      inp.style.background = 'var(--rs)';
-      inp.style.color = 'var(--r)';
-      /* Ukázat klíčové slovo z textu pro nápovědu */
-      fb.innerHTML = '✗ Hledej v textu (klíč: <b>'+qd.keywords[0]+'…</b>)';
-      fb.style.color = 'var(--r)';
-    }
-    inp.disabled = true;
-  });
-  /* Body za počet správných */
-  var earned = correctCount * 5;
-  s.body += earned;
-  if(correctCount === item.questions.length) s.sp++;
-  addPoints(earned);
-  el('ct-bd').textContent = s.body;
-  el('ct-sp').textContent = s.sp;
-  if(correctCount === item.questions.length){
-    el('ct-fb').innerHTML = '🎉 <b>Vynikající čtení!</b> Všechny odpovědi správné. +'+earned+' bodů.';
-    el('ct-fb').className = 'fb ok';
-  } else if(correctCount > 0){
-    el('ct-fb').innerHTML = '✓ Správně '+correctCount+' z '+item.questions.length+' · +'+earned+' bodů.';
-    el('ct-fb').className = 'fb';
-  } else {
-    el('ct-fb').innerHTML = 'Zkus si text přečíst pomaleji a znovu.';
-    el('ct-fb').className = 'fb err';
-  }
-  el('ct-check').style.display='none';
-  el('ct-nx').style.display='block';
-}
-function ctNext(){ ctSt.idx++; ctRender(); }
-function ctFinish(){
-  var s = ctSt;
-  el('ct-ob').style.display='none';
-  el('ct-res').style.display='block';
-  el('ct-pp').textContent = 'Přečetla jsi '+s.seq.length+' textů · perfektně '+s.sp+' · získala jsi '+s.body+' bodů.';
-  el('ct-sc').textContent = s.body;
-  el('ct-tot').textContent = totalScore;
-}
-
 /* ───────── PRINT ───────── */
 function printChoice(){
   var topics = [
     {key:'urc', label:'Urči slovní druh (15 slov)'},
     {key:'oh', label:'Ohebné × neohebné (15 slov)'},
-    {key:'najdi', label:'Najdi ve větě (8 vět)'},
-    {key:'cteni', label:'Čtení s porozuměním (4 texty)'}
+    {key:'najdi', label:'Najdi ve větě (8 vět)'}
   ];
   var html = '<div style="position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem"><div style="background:white;border-radius:12px;padding:1.5rem;max-width:480px;width:100%"><h3 style="margin:0 0 1rem;color:var(--m);text-align:center">🖨️ Vyber pracovní list</h3>';
   topics.forEach(function(t){
@@ -897,26 +692,6 @@ function printGetData(key){
       aHtml += '<div>'+(i+1)+'. '+html+'</div>';
     });
     return {title:'Najdi podstatná jména ve větě', topic:'Slovní druhy', instructions:'V každé větě podtrhni všechna podstatná jména.', qHtml:qHtml, aHtml:aHtml};
-  }
-  if(key==='cteni'){
-    var picked = shuffle(TEXTY).slice(0,4);
-    var qHtml = '<p>Pozorně si přečti každý text a odpověz na otázky vlastními slovy.</p>';
-    picked.forEach(function(it,i){
-      qHtml += '<div style="margin:.6rem 0 1rem;page-break-inside:avoid">';
-      qHtml += '<div style="background:#eff6ff;border-left:4px solid #1e3a5f;padding:.5rem .8rem;margin-bottom:.5rem;font-style:italic">'+(i+1)+'. '+it.text+'</div>';
-      it.questions.forEach(function(qd, qi){
-        qHtml += '<div style="margin:.3rem 0 .5rem;padding-bottom:.3rem;border-bottom:1px dotted #ccc"><b>'+(qi+1)+'.</b> '+qd.q+'<br>&nbsp;&nbsp;✏️ ___________________________________________</div>';
-      });
-      qHtml += '</div>';
-    });
-    var aHtml = '';
-    picked.forEach(function(it,i){
-      aHtml += '<div style="margin:.5rem 0"><b>Text '+(i+1)+'</b> ('+it.text.substring(0, 30)+'…)</div>';
-      it.questions.forEach(function(qd, qi){
-        aHtml += '<div style="padding-left:1rem">'+(qi+1)+'. '+qd.q+' → klíčové slovo: <b>'+qd.keywords[0]+'…</b></div>';
-      });
-    });
-    return {title:'Čtení s porozuměním', topic:'Slovní druhy / čtení', instructions:'Přečti si pozorně každý text a odpověz na otázky vlastními slovy.', qHtml:qHtml, aHtml:aHtml};
   }
 }
 function printHTML(data){

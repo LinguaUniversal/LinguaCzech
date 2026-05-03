@@ -19,8 +19,13 @@ body{font-family:var(--font);background:#f0f7fc;}
 .topbar a:hover{opacity:1;}
 .topbar span{color:rgba(255,255,255,.75);font-size:.78rem;font-weight:700;
   letter-spacing:.5px;text-transform:uppercase;}
+.brand{display:inline-flex;align-items:center;gap:.4rem;}
+.brand-logo{width:24px;height:24px;border-radius:50%;background:white;padding:1.5px;flex-shrink:0;vertical-align:middle;}
+
 
 .hdr{background:linear-gradient(135deg,#1a7fa8,var(--m));border-radius:16px;padding:1.5rem;text-align:center;color:white;margin-bottom:1.25rem;}
+.hdr-row{display:flex;align-items:center;justify-content:center;gap:.8rem;}
+.hdr-logo{width:54px;height:54px;background:white;border-radius:50%;padding:4px;flex-shrink:0;box-shadow:0 3px 8px rgba(0,0,0,.15);}
 .hdr h1{font-size:2rem;font-weight:800;}
 .hdr p{opacity:.85;font-size:.9rem;margin-top:.2rem;}
 
@@ -45,11 +50,16 @@ body{font-family:var(--font);background:#f0f7fc;}
 </head>
 <body>
 <div class="wrap">
-  <div class="topbar"><a href="index.html">← Úvod</a><span>LinguaCzech</span></div>
+  <div class="topbar"><a href="index.html">← Úvod</a><span class="brand"><img class="brand-logo" src="logo.png" alt="">Lingua Universal</span></div>
 
   <div class="hdr">
-    <h1>🌱 1. třída</h1>
-    <p>LinguaCzech · přehled bodů</p>
+    <div class="hdr-row">
+      <img class="hdr-logo" src="logo.png" alt="Lingua Universal">
+      <div>
+        <h1>1. třída</h1>
+        <p>Lingua Universal · čeština</p>
+      </div>
+    </div>
   </div>
 
   <div class="score-card">

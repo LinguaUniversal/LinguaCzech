@@ -25,6 +25,9 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:.4rem 0 1rem;}
 .topbar a{color:var(--m);text-decoration:none;font-weight:700;font-size:.95rem;}
 .topbar span{font-weight:800;color:var(--m);}
+.brand{display:inline-flex;align-items:center;gap:.4rem;}
+.brand-logo{width:24px;height:24px;border-radius:50%;background:white;padding:1.5px;flex-shrink:0;vertical-align:middle;}
+
 .scbg{position:fixed;top:10px;right:12px;background:var(--o);color:white;border-radius:99px;padding:.3rem .85rem;font-weight:700;font-size:1rem;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.18);pointer-events:none;}
 .mh{text-align:center;margin:.5rem 0 1.2rem;}
 .mh h1{font-size:1.9rem;color:var(--m);font-weight:800;margin:0;}
@@ -114,7 +117,7 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
 
 <!-- MENU -->
 <div id="menu">
-  <div class="topbar"><a href="3trida.html">← 3. třída</a><span>LinguaCzech</span></div>
+  <div class="topbar"><a href="3trida.html">← 3. třída</a><span class="brand"><img class="brand-logo" src="logo.png" alt="">Lingua Universal</span></div>
   <div class="mh"><h1>Podstatná jména</h1><p>3. ročník — rod, číslo, pád</p></div>
   <div class="mg">
     <div onclick="go('sady')" class="mk mk-p" style="grid-column:span 2"><h3>📋 Naučím se</h3><p>Rody · Číslo · Pády (přehled)</p></div>

@@ -13,9 +13,9 @@ body{font-family:var(--font);background:#f0f7fc;min-height:100vh;overflow-x:hidd
 /* HERO */
 .hero{background:linear-gradient(160deg,#0e6fa3 0%,var(--m) 50%,#5bc8ec 100%);padding:2.5rem 1rem 0;text-align:center;position:relative;overflow:hidden;}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(255,255,255,.08) 0%,transparent 60%);}
-.school-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.35);border-radius:99px;padding:.35rem 1rem;margin-bottom:1rem;position:relative;}
-.school-dot{width:9px;height:9px;background:var(--o);border-radius:50%;}
-.school-name{font-size:1rem;font-weight:800;color:white;letter-spacing:.5px;}
+.school-badge{display:inline-flex;align-items:center;gap:.6rem;background:rgba(255,255,255,.95);border:2px solid rgba(255,255,255,.5);border-radius:99px;padding:.35rem 1.1rem .35rem .35rem;margin-bottom:1rem;position:relative;box-shadow:0 4px 12px rgba(0,0,0,.15);}
+.school-logo{width:38px;height:38px;border-radius:50%;background:white;padding:2px;flex-shrink:0;display:block;}
+.school-name{font-size:1rem;font-weight:800;color:#1e4a6b;letter-spacing:.5px;}
 .hero h1{font-size:clamp(2.2rem,8vw,3.6rem);font-weight:800;color:white;line-height:1.05;margin-bottom:.5rem;position:relative;}
 .hero h1 em{color:var(--o);font-style:normal;}
 .hero p{color:rgba(255,255,255,.88);font-size:1rem;font-weight:600;margin-bottom:1.5rem;position:relative;}
@@ -69,7 +69,7 @@ body{font-family:var(--font);background:#f0f7fc;min-height:100vh;overflow-x:hidd
 
 <div class="hero">
   <div style="position:relative">
-    <div class="school-badge"><div class="school-dot"></div><span class="school-name">Lingua Universal</span></div>
+    <div class="school-badge"><img class="school-logo" src="logo.png" alt="Lingua Universal"><span class="school-name">Lingua Universal</span></div>
     <h1><em style="color:#ffec6e;font-style:normal">Čeština</em><br><em style="color:#ffaa37;font-style:normal">hravě</em></h1>
     <p>Cvičení pro 1. stupeň ZŠ</p>
   </div>

@@ -23,6 +23,9 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:.4rem 0 1rem;}
 .topbar a{color:var(--m);text-decoration:none;font-weight:700;font-size:.95rem;}
 .topbar span{font-weight:800;color:var(--m);}
+.brand{display:inline-flex;align-items:center;gap:.4rem;}
+.brand-logo{width:24px;height:24px;border-radius:50%;background:white;padding:1.5px;flex-shrink:0;vertical-align:middle;}
+
 .scbg{position:fixed;top:10px;right:12px;background:var(--o);color:white;border-radius:99px;padding:.3rem .85rem;font-weight:700;font-size:1rem;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.18);pointer-events:none;}
 .mh{text-align:center;margin:.5rem 0 1.2rem;}
 .mh h1{font-size:1.9rem;color:var(--m);font-weight:800;margin:0;}
@@ -98,14 +101,6 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
 .vyp-stat{display:block;background:var(--sts);border-left:4px solid var(--st);padding:.4rem .7rem;margin:.3rem 0;border-radius:4px;font-family:Verdana,Geneva,sans-serif;font-size:.93rem;line-height:1.5;color:#1f2937;}
 .vyp-zaver{display:block;background:var(--zvs);border-left:4px solid var(--zv);padding:.4rem .7rem;margin:.3rem 0;border-radius:4px;font-family:Verdana,Geneva,sans-serif;font-size:.93rem;line-height:1.5;color:#1f2937;}
 
-.uz-veta-big{background:var(--ms);border:2px solid var(--m);border-radius:10px;padding:.9rem 1rem;margin:1rem 0;font-family:Verdana,Geneva,sans-serif;font-size:1.05rem;line-height:1.5;color:#1f2937;text-align:center;}
-.uz-opts{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:1rem 0;}
-.uz-opt{padding:1.1rem .5rem;background:white;border:2.5px solid #d1d5db;border-radius:10px;font-family:Verdana,Geneva,sans-serif;font-weight:700;font-size:1.05rem;cursor:pointer;text-align:center;transition:all .15s;color:#1f2937;}
-.uz-opt:hover:not(:disabled){border-color:var(--m);background:var(--ms);}
-.uz-opt.uvod-btn{color:var(--uv);}
-.uz-opt.zaver-btn{color:var(--zv);}
-.uz-opt.ok{background:var(--zs);border-color:var(--z);color:var(--z);}
-.uz-opt.err{background:var(--rs);border-color:var(--r);color:var(--r);}
 .nxt{display:none;width:100%;background:var(--m);color:white;border:none;border-radius:8px;padding:.85rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:var(--font);margin-top:.5rem;}
 
 .res{display:none;text-align:center;padding:2rem 1rem;}
@@ -139,7 +134,7 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
 <div class="hl">
 
 <div id="menu">
-  <div class="topbar"><a href="3trida.html">← 3. třída</a><span>LinguaCzech</span></div>
+  <div class="topbar"><a href="3trida.html">← 3. třída</a><span class="brand"><img class="brand-logo" src="logo.png" alt="">Lingua Universal</span></div>
   <div class="mh"><h1>Tvorba osnovy</h1><p>Úvod · Stať · Závěr</p></div>
 
   <div class="theory">
@@ -163,7 +158,6 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
 
   <div class="mg">
     <div onclick="go('roz')" class="mk mk-m" style="grid-column:span 2"><h3>📦 Roztřiď věty do osnovy</h3><p>Klikni na větu a pak na koš (úvod, stať, závěr)</p></div>
-    <div onclick="go('uz')" class="mk mk-o" style="grid-column:span 2"><h3>🎯 Úvod, nebo závěr?</h3><p>Pozná, jestli věta uvozuje text, nebo ho uzavírá</p></div>
   </div>
 </div>
 
@@ -219,35 +213,6 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
     <button class="znovu" onclick="go('roz')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
   </div>
 </div>
-
-<div class="cv" id="cv-uz">
-  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🎯 Úvod, nebo závěr?</span><span class="var" id="uz-v">1/10</span></div>
-  <div class="sk">
-    <div><div class="skn" id="uz-bd">0</div><div class="skl">body</div></div>
-    <div><div class="skn" id="uz-ci">1/10</div><div class="skl">věta</div></div>
-    <div><div class="skn" id="uz-sp">0</div><div class="skl">správně</div></div>
-  </div>
-
-  <div id="uz-ob">
-    <div class="ka">
-      <div class="q">Je to <b style="color:var(--uv)">úvod</b> textu, nebo <b style="color:var(--zv)">závěr</b>?</div>
-      <div class="uz-veta-big" id="uz-veta">—</div>
-      <div class="uz-opts">
-        <button class="uz-opt uvod-btn" onclick="uzAns('uvod',this)">🟢 ÚVOD</button>
-        <button class="uz-opt zaver-btn" onclick="uzAns('zaver',this)">🟣 ZÁVĚR</button>
-      </div>
-      <div class="fb" id="uz-fb"></div>
-    </div>
-    <button class="nxt" id="uz-nx" onclick="uzNext()">Další věta →</button>
-  </div>
-
-  <div class="res" id="uz-res">
-    <div style="font-size:3rem">🎯</div><h2>Výborně!</h2><p id="uz-pp"></p>
-    <div class="res-row"><div class="rs"><div class="rsv" id="uz-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="uz-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
-    <button class="znovu" onclick="go('uz')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
-  </div>
-</div>
-
 </div>
 
 <script>
@@ -264,7 +229,6 @@ function go(id){
   document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
   el('cv-'+id).style.display='block';
   if(id==='roz') rozStart();
-  if(id==='uz') uzStart();
 }
 function back(){
   el('menu').style.display='block';
@@ -474,71 +438,6 @@ function rozFinish(){
   el('ro-tot').textContent = totalScore;
 }
 
-/* === CVIČENÍ 2: ÚVOD NEBO ZÁVĚR === */
-var uzSt={};
-function uzStart(){
-  var pool = [];
-  TEXTY.forEach(function(t){
-    pool.push({text:t.uvod, typ:'uvod', tema:t.tema});
-    pool.push({text:t.zaver, typ:'zaver', tema:t.tema});
-  });
-  uzSt = {seq: shuffle(pool).slice(0,10), idx:0, body:0, sp:0, locked:false};
-  el('uz-res').style.display='none';
-  el('uz-ob').style.display='block';
-  uzRender();
-}
-function uzRender(){
-  var s = uzSt;
-  if(s.idx >= s.seq.length){ uzFinish(); return; }
-  var item = s.seq[s.idx];
-  el('uz-veta').textContent = '"' + item.text + '"';
-  el('uz-v').textContent = (s.idx+1)+'/'+s.seq.length;
-  el('uz-ci').textContent = (s.idx+1)+'/'+s.seq.length;
-  el('uz-bd').textContent = s.body;
-  el('uz-sp').textContent = s.sp;
-  el('uz-fb').textContent='';
-  el('uz-fb').className='fb';
-  el('uz-nx').style.display='none';
-  document.querySelectorAll('#cv-uz .uz-opt').forEach(function(b){
-    b.disabled=false; b.classList.remove('ok','err');
-  });
-  s.locked=false;
-}
-function uzAns(picked, btn){
-  var s = uzSt;
-  if(s.locked) return;
-  s.locked=true;
-  var item = s.seq[s.idx];
-  if(picked === item.typ){
-    btn.classList.add('ok');
-    var earned = 4;
-    s.body += earned; s.sp++;
-    addPoints(earned);
-    el('uz-fb').innerHTML = '✓ Správně! Tahle věta je <b>'+(picked==='uvod'?'úvodní':'závěrečná')+'</b> z textu o "'+item.tema+'".';
-    el('uz-fb').className = 'fb ok';
-  } else {
-    btn.classList.add('err');
-    document.querySelectorAll('#cv-uz .uz-opt').forEach(function(b){
-      var btnTyp = b.classList.contains('uvod-btn') ? 'uvod' : 'zaver';
-      if(btnTyp === item.typ){ b.classList.add('ok'); }
-    });
-    el('uz-fb').innerHTML = '✗ Tahle věta je <b>'+(item.typ==='uvod'?'úvodní':'závěrečná')+'</b>. Pochází z textu "'+item.tema+'".';
-    el('uz-fb').className = 'fb err';
-  }
-  document.querySelectorAll('#cv-uz .uz-opt').forEach(function(b){b.disabled=true;});
-  el('uz-bd').textContent = s.body;
-  el('uz-sp').textContent = s.sp;
-  el('uz-nx').style.display='block';
-}
-function uzNext(){ uzSt.idx++; uzRender(); }
-function uzFinish(){
-  var s = uzSt;
-  el('uz-ob').style.display='none';
-  el('uz-res').style.display='block';
-  el('uz-pp').textContent = 'Správně '+s.sp+' z '+s.seq.length+' · získala jsi '+s.body+' bodů.';
-  el('uz-sc').textContent = s.body;
-  el('uz-tot').textContent = totalScore;
-}
 </script>
 </body>
 </html>

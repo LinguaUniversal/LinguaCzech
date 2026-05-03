@@ -385,7 +385,7 @@ canvas#gameCv{display:block;width:100%;height:280px;background:linear-gradient(1
 
 <!-- CV: HRA T-REX Y/I -->
 <div class="cv" id="cv-hra">
-  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🦖 T-rex doplňuje y/i</span><span class="var">v33</span></div>
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🦖 T-rex doplňuje y/i</span><span class="var">v32</span></div>
   <div id="hra-intro">
     <div class="ka" style="text-align:center">
       <div style="font-size:3.5rem">🦖</div>
@@ -770,7 +770,7 @@ var DOP_DATA = [
   {full:'slepýš',  a:'ý', root:'slepýš'},
   /* P - příbuzná */
   {full:'pyšný',   a:'y', root:'pýcha'},
-  {full:'klopýtnout',a:'ý', root:'klopýtat'},
+  {full:'klopýtnout',a:'y', root:'klopýtat'},
   {full:'třpytivý',a:'y', root:'třpytit se'},
 
   /* S - vyjmenovaná */
@@ -1102,18 +1102,16 @@ function pexFinish(){
    Format: {sentence:'...___...', pair:[w1,w2], correct:0, meanings:[m1,m2]}
 ───────────────────────────────────────────── */
 var HOM_DATA = [
-  /* DOBÝT × DOBÍT */
   {
     sentence:'Voják se snažil ___ hrad nepřátel.',
-    pair:[{w:'dobýt', m:'obsadit, zmocnit se'},{w:'dobít', m:'naplnit baterii'}],
+    pair:[{w:'dobýt', m:'obsadit, zmocnit se'},{w:'dobít', m:'naplnit baterii, dorazit'}],
     correct:0
   },
   {
-    sentence:'Musím si ___ baterii v telefonu.',
-    pair:[{w:'dobýt', m:'obsadit, zmocnit se'},{w:'dobít', m:'naplnit baterii'}],
+    sentence:'Musím ___ baterii v telefonu.',
+    pair:[{w:'dobýt', m:'obsadit, zmocnit se'},{w:'dobít', m:'naplnit baterii, dorazit'}],
     correct:1
   },
-  /* MÝT × MÍT (skloňované tvary) */
   {
     sentence:'Po ránu si jdu ___ ruce do umyvadla.',
     pair:[{w:'mýt', m:'umývat se vodou'},{w:'mít', m:'vlastnit'}],
@@ -1124,67 +1122,45 @@ var HOM_DATA = [
     pair:[{w:'mýt', m:'umývat se vodou'},{w:'mít', m:'vlastnit'}],
     correct:1
   },
-  /* VÝT × VÍT — skloňované! "vyje" / "vije" */
   {
-    sentence:'Vlk v noci hlasitě ___ na měsíc.',
-    pair:[{w:'vyje', m:'od slovesa výt — vydává zvuk'},{w:'vije', m:'od slovesa vít — plete věnec'}],
+    sentence:'Vlk v noci hlasitě ___.',
+    pair:[{w:'výt', m:'vydávat zvuk (vlk vyje)'},{w:'vít', m:'plést věnec, splétat'}],
     correct:0
   },
   {
-    sentence:'Babička ___ věnec z květin.',
-    pair:[{w:'vyje', m:'od slovesa výt — vydává zvuk'},{w:'vije', m:'od slovesa vít — plete věnec'}],
-    correct:1
-  },
-  /* BÝT × BÍT */
-  {
-    sentence:'Petr chce ___ lékařem, až vyroste.',
-    pair:[{w:'být', m:'existovat, sloveso být'},{w:'bít', m:'tlouct, udeřit'}],
-    correct:0
-  },
-  {
-    sentence:'Hodiny začaly ___ celou hodinu.',
-    pair:[{w:'být', m:'existovat, sloveso být'},{w:'bít', m:'tlouct, udeřit'}],
-    correct:1
-  },
-  /* MÝVAL × MÍVAL — správně skloňované */
-  {
-    sentence:'Tatínek ___ vždycky moc práce.',
-    pair:[{w:'mýval', m:'malé zvíře — mýval severní'},{w:'míval', m:'minulý čas slovesa mít'}],
+    sentence:'Babička nás učila ___ věnce z květin.',
+    pair:[{w:'výt', m:'vydávat zvuk (vlk vyje)'},{w:'vít', m:'plést věnec, splétat'}],
     correct:1
   },
   {
-    sentence:'V ZOO jsme viděli ___, co si umýval jídlo.',
-    pair:[{w:'mýval', m:'malé zvíře — mýval severní'},{w:'míval', m:'minulý čas slovesa mít'}],
-    correct:0
-  },
-  /* SÝR × SIR */
-  {
-    sentence:'Petr měl k svačině kousek ___.',
-    pair:[{w:'sýr', m:'mléčný výrobek'},{w:'sir', m:'anglické oslovení šlechtice'}],
+    sentence:'Slunce zítra začne ___ velmi brzy.',
+    pair:[{w:'být', m:'existovat'},{w:'bít', m:'tlouct, udeřit'}],
     correct:0
   },
   {
-    sentence:'V Anglii oslovili rytíře ___.',
-    pair:[{w:'sýr', m:'mléčný výrobek'},{w:'sir', m:'anglické oslovení šlechtice'}],
+    sentence:'Hodiny začaly ___ jednu hodinu po půlnoci.',
+    pair:[{w:'být', m:'existovat'},{w:'bít', m:'tlouct, udeřit'}],
     correct:1
   },
-  /* LÝKO × LIKO (jednoslovní distraktor i jiný) — vyjm. po L */
   {
-    sentence:'Z lipového ___ se pletly košíky.',
-    pair:[{w:'lýko', m:'vlákno z lipové kůry'},{w:'liko', m:'neexistuje (správně lýko)'}],
+    sentence:'Maminka ___ koláče s povidly.',
+    pair:[{w:'mýval', m:'malé zvíře (mýval severní)'},{w:'míval', m:'minulý čas slovesa mít'}],
+    correct:1
+  },
+  {
+    sentence:'V ZOO jsme viděli zvíře ___, které si umývalo jídlo.',
+    pair:[{w:'mýval', m:'malé zvíře (mýval severní)'},{w:'míval', m:'minulý čas slovesa mít'}],
     correct:0
   },
-  /* BYT × BIT */
   {
-    sentence:'Bydlíme v novém ___ v centru.',
-    pair:[{w:'bytě', m:'od slova byt — místo bydlení'},{w:'bitě', m:'od slova bití — tlouct'}],
+    sentence:'Petr měl k svačině jen kousek ___.',
+    pair:[{w:'sýr', m:'mléčný výrobek'},{w:'sir', m:'pán (anglické oslovení)'}],
     correct:0
   },
-  /* PYTEL × PITEL */
   {
-    sentence:'Otec přinesl velký ___ brambor.',
-    pair:[{w:'pytel', m:'velká taška, vak'},{w:'pitel', m:'neexistuje (správně pytel)'}],
-    correct:0
+    sentence:'Tatínek si myslí, že je velký ___ jako baronet.',
+    pair:[{w:'sýr', m:'mléčný výrobek'},{w:'sir', m:'pán (anglické oslovení)'}],
+    correct:1
   }
 ];
 
@@ -2013,6 +1989,12 @@ function hraDrawBackground(ctx){
       ctx.fillStyle = '#32a0d2';
       ctx.fillRect(0, i*HRA_H/HRA_N, 4, HRA_H/HRA_N);
     }
+
+    /* Velké písmeno vlevo (label pruhu) */
+    ctx.font = 'bold 28px Verdana';
+    ctx.textAlign = 'left';
+    ctx.fillStyle = 'rgba(31,41,55,.5)';
+    ctx.fillText(HRA_LETS[i], 8, y + 9);
   }
 
   /* Linky oddělující pruhy */
@@ -2066,7 +2048,7 @@ function hraLoop(){
           addPoints(2);
           HRA.wordIdx++;
           hraShowWord();
-          if(HRA.score % 4 === 0){
+          if(HRA.score % 7 === 0){
             HRA.speed = Math.min(5, HRA.speed + 0.2);
             HRA.spawnInt = Math.max(130, HRA.spawnInt - 12);
           }
@@ -2313,7 +2295,7 @@ function printHTML(data){
     '.toolbar{position:fixed;top:.5rem;right:.5rem;background:#32a0d2;color:white;padding:.5rem 1rem;border-radius:99px;border:none;font-family:inherit;font-weight:700;font-size:.95rem;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2);}'+
     '@media print{.toolbar{display:none;}body{padding:.5cm;}.sheet{max-width:100%;}}'+
     '@page{size:A4;margin:1cm;}'+
-    '</style></head><body onload="setTimeout(function(){window.print();},400)">'+
+    '</style></head><body>'+
     '<button class="toolbar" onclick="window.print()">🖨️ Vytisknout / Uložit PDF</button>'+
     '<div class="sheet">'+
       '<div class="head"><span class="brand">LinguaCzech · ZŠ Lingua Universal</span><span class="meta">'+(data.topic||data.title)+' · '+dateStr+'</span></div>'+

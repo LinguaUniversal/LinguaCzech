@@ -77,7 +77,7 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
   <div class="mh"><h1>Čtení s porozuměním</h1><p>3. ročník — krátké příběhy + naučné texty</p></div>
   <div class="mg">
     <div onclick="go('kratke')" class="mk mk-m" style="grid-column:span 2"><h3>📖 Krátké příběhy</h3><p>8 krátkých textů ze života · 4 otázky každý</p></div>
-    <div onclick="go('naucne')" class="mk mk-o" style="grid-column:span 2"><h3>🌍 Naučné texty</h3><p>23 textů o světě · světadíly · historie · příroda</p></div>
+    <div onclick="go('naucne-menu')" class="mk mk-o" style="grid-column:span 2"><h3>🌍 Naučné texty</h3><p>23 témat · vyber, co tě zajímá · každé samostatně</p></div>
     <div onclick="printChoice()" class="mk" style="grid-column:span 2;background:#f3f4f6;border:2px dashed #9ca3af"><h3 style="color:#374151">🖨️ Vytisknout pracovní list</h3><p style="color:#6b7280">PDF k procvičování doma</p></div>
   </div>
 </div>
@@ -110,15 +110,21 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
   </div>
 </div>
 
-<!-- CV: NAUČNÉ -->
+<!-- CV: ROZCESTNÍK NAUČNÝCH TÉMAT -->
+<div class="cv" id="cv-naucne-menu">
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🌍 Naučné texty — vyber téma</span></div>
+  <div style="text-align:center;color:#6b7280;font-size:.9rem;margin-bottom:.7rem">Klikni na téma. Každé je samostatné cvičení.</div>
+  <div id="na-list" style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem"></div>
+</div>
+
+<!-- CV: NAUČNÉ — JEDEN TEXT -->
 <div class="cv" id="cv-naucne">
-  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🌍 Naučné texty</span><span class="var" id="na-v">1/5</span></div>
+  <div class="nav"><button class="zpet" onclick="go('naucne-menu')">← Témata</button><span class="tit" id="na-tit">🌍 Naučný text</span></div>
   <div class="sk">
     <div><div class="skn" id="na-bd">0</div><div class="skl">body</div></div>
-    <div><div class="skn" id="na-ci">1/5</div><div class="skl">text</div></div>
-    <div><div class="skn" id="na-sp">0</div><div class="skl">perfektně</div></div>
+    <div><div class="skn" id="na-ci">—</div><div class="skl">otázek</div></div>
+    <div><div class="skn" id="na-sp">0</div><div class="skl">správně</div></div>
   </div>
-  <div class="pg"><div class="pgf" id="na-pg" style="width:0%"></div></div>
   <div id="na-ob">
     <div class="ka">
       <div class="q">Pozorně si přečti naučný text. Pak odpověz na otázky.</div>
@@ -126,16 +132,16 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;color:#1f2937;}
       <div id="na-questions" style="margin-top:1rem"></div>
       <div class="fb" id="na-fb"></div>
     </div>
-    <button class="nxt" id="na-nx" onclick="naNext()">Další text →</button>
     <div style="text-align:center;margin-top:.5rem">
       <button class="mbtn" id="na-check" onclick="naCheck()" style="background:var(--o);color:white;border:none">Zkontrolovat odpovědi ✓</button>
     </div>
   </div>
   <div class="res" id="na-res">
-    <div style="font-size:3rem">🌟</div><h2>Vynikající!</h2><p id="na-pp"></p>
+    <div style="font-size:3rem">🌟</div><h2>Hotovo!</h2><p id="na-pp"></p>
     <div class="res-row"><div class="rs"><div class="rsv" id="na-sc">0</div><div class="rsl">body</div></div><div class="rs"><div class="rsv" id="na-tot">0</div><div class="rsl">celkem ⭐</div></div></div>
-    <button class="znovu" onclick="go('naucne')">Jiná sada 🔄</button><button class="mbtn" onclick="back()">Menu</button>
+    <button class="znovu" onclick="naReplay()">Zkus znovu 🔄</button><button class="mbtn" onclick="go('naucne-menu')">Vyber jiné téma</button>
   </div>
+</div>
 </div>
 
 </div><!-- .hl -->
@@ -154,7 +160,7 @@ function go(id){
   document.querySelectorAll('.cv').forEach(function(c){c.style.display='none';});
   el('cv-'+id).style.display='block';
   if(id==='kratke') krStart();
-  if(id==='naucne') naStart();
+  if(id==='naucne-menu') naMenu();
 }
 function back(){
   el('menu').style.display='block';
@@ -310,206 +316,247 @@ var KRATKE_TEXTY = [
 ];
 
 /* ─────────────────────────────────────────────
-   DATA: NAUČNÉ TEXTY (23) — pro 3. třídu, srozumitelná délka
+   DATA: NAUČNÉ TEXTY (23) — každý je samostatné cvičení
+   delší texty (~80-110 slov), title pro rozcestník, icon
 ─────────────────────────────────────────── */
 var NAUCNE_TEXTY = [
   /* === SVĚTADÍLY === */
   {
-    text: 'Antarktida je pátý největší světadíl na Zemi. Leží okolo jižního pólu. Je to pevnina pokrytá ledem - místy je led tlustý až 2 km! Antarktida je nejchladnější, nejsušší a největrnější místo na světě. Je to jediný kontinent bez stálých obyvatel - žijí tu jen vědci na výzkumných stanicích. Mezi typická zvířata patří tučňáci a tuleni. Poprvé ji lidé spatřili v roce 1820.',
+    title:'Antarktida', icon:'🐧', skupina:'Světadíly',
+    text: 'Antarktida je pátý největší světadíl po Asii, Severní Americe, Jižní Americe a Africe. Leží okolo jižního pólu Země. Na rozdíl od Arktidy je Antarktida pevnina pokrytá ledem - Arktida je jen zamrzlý oceán. Ledová pokrývka je místy tlustá až 2 km! Antarktida je nejchladnější, nejsušší a největrnější místo na světě. Většina kontinentu je polární poušť. Je to jediný kontinent bez stálých obyvatel - žijí tu jen vědci na výzkumných stanicích. Typickými zvířaty jsou tučňáci a tuleni. Poprvé ji lidé spatřili 28. ledna 1820. Během léta tu slunce zapadá kolem půlnoci nebo nezapadá vůbec.',
     questions: [
       {q:'Kolikátým největším světadílem je Antarktida?', keywords:['paty','5']},
-      {q:'Jak silný je tam led?', keywords:['2','dva']},
-      {q:'Kdo žije na Antarktidě?', keywords:['vedci','vyzkumn']},
+      {q:'Jaký je rozdíl mezi Antarktidou a Arktidou?', keywords:['pevnina+ocean','pevnina','ocean','antarktida pevnina','arktida ocean']},
+      {q:'Jak silný je tam led?', keywords:['2','dva km','dva']},
+      {q:'Kdo žije na Antarktidě?', keywords:['vedci','vyzkumn','vedci na vyzkum']},
       {q:'Jaká zvířata tam žijí?', keywords:['tucnak+tulen','tucnak','tulen']},
-      {q:'Kdy ji lidé poprvé spatřili?', keywords:['1820']}
+      {q:'Kdy ji lidé poprvé spatřili?', keywords:['1820','28 ledna','28.1.1820']}
     ]
   },
   {
-    text: 'Evropa je druhý nejmenší světadíl. Leží na západě a severu Asie. Žije tu přes 700 milionů lidí. Patří sem i naše Česká republika. V Evropě je 47 zemí, mezi nimi Francie, Německo, Itálie, Polsko a Španělsko. Nejvyšší horou Evropy je Mont Blanc (4 810 m), nejdelší řekou Volha. Evropu obklopují 3 oceány: Atlantský, Severní ledový a Středozemní moře.',
+    title:'Evropa', icon:'🏰', skupina:'Světadíly',
+    text: 'Evropa je druhý nejmenší světadíl. Leží na západě a severu Asie, od které ji odděluje pohoří Ural. Žije tu přes 700 milionů lidí ve 47 zemích. Patří sem i naše Česká republika. Mezi nejznámější evropské země patří Francie, Německo, Itálie, Polsko a Španělsko. Nejvyšší horou Evropy je Mont Blanc, který měří 4 810 metrů. Nejdelší řekou je Volha, která teče v Rusku. Evropu obklopují tři moře a oceány: Atlantský oceán, Severní ledový oceán a Středozemní moře. Evropa je domovem mnoha kultur, jazyků a slavných památek - například Eiffelovy věže, Kolosea nebo Big Benu.',
     questions: [
       {q:'Kolikátým nejmenším světadílem je Evropa?', keywords:['druhy','2']},
-      {q:'Kolik lidí v Evropě žije?', keywords:['700','sedm set']},
-      {q:'Patří k Evropě Česká republika?', keywords:['ano','patri','cesk']},
+      {q:'Kolik lidí v Evropě žije?', keywords:['700','sedm set milionu','700 milionu']},
       {q:'Kolik je v Evropě zemí?', keywords:['47']},
-      {q:'Jak se jmenuje nejvyšší hora Evropy?', keywords:['mont blanc','blanc']}
+      {q:'Jak se jmenuje nejvyšší hora Evropy?', keywords:['mont blanc','blanc']},
+      {q:'Která řeka je v Evropě nejdelší?', keywords:['volha']},
+      {q:'Které pohoří odděluje Evropu od Asie?', keywords:['ural']}
     ]
   },
   {
-    text: 'Austrálie je nejmenší ze všech světadílů. Leží na jižní polokouli. Má jen jednu zemi - také se jmenuje Austrálie. Hlavním městem je Canberra. Žije tu mnoho zvláštních zvířat, která nikde jinde nežijí - klokani, koaly, ptakopyskové a vombati. Většina Austrálie je poušť, ale na východě je tropický deštný prales. Velký bariérový útes je největší korálový útes na světě.',
+    title:'Austrálie', icon:'🦘', skupina:'Světadíly',
+    text: 'Austrálie je nejmenší ze všech světadílů. Leží na jižní polokouli a má jen jednu zemi - také se jmenuje Austrálie. Hlavním městem je Canberra, ale větším a známějším je Sydney. Žije tu mnoho zvláštních zvířat, která nikde jinde nežijí - klokani, koaly, ptakopyskové, vombati a ďáblové medvědovití. Většina Austrálie je horká poušť, ale na východě je tropický deštný prales. U pobřeží leží Velký bariérový útes - největší korálový útes na světě, dlouhý přes 2 300 km. Když do Austrálie přišli první lidé z Anglie, nazývali ji "neznámý jižní kraj" - Terra Australis.',
     questions: [
       {q:'Jak se jmenuje hlavní město Austrálie?', keywords:['canberra']},
-      {q:'Kolikátým světadílem podle velikosti je Austrálie?', keywords:['nejmensi','prvni','1']},
-      {q:'Jaká zvláštní zvířata tam žijí?', keywords:['klokan','koala','ptakopysk','vombat']},
-      {q:'Co je Velký bariérový útes?', keywords:['koralovy','utes','najvetsi koralovy utes']},
-      {q:'Co tvoří většinu Austrálie?', keywords:['poust']}
+      {q:'Která jsou typická australská zvířata?', keywords:['klokan','koala','ptakopysk','vombat','klokan+koal']},
+      {q:'Co je Velký bariérový útes?', keywords:['koralovy','utes','najvetsi koralovy']},
+      {q:'Co tvoří většinu Austrálie?', keywords:['poust']},
+      {q:'Které větší město kromě Canberry text zmiňuje?', keywords:['sydney']},
+      {q:'Co znamená název Terra Australis?', keywords:['neznamy','jizni','jizni kraj','neznamy jizni']}
     ]
   },
   {
-    text: 'Asie je největší a nejlidnatější světadíl světa. Žije zde přes 4,5 miliardy lidí - tedy víc než polovina lidí na Zemi. V Asii leží i nejvyšší hora světa - Mount Everest. Najdeme zde Čínu (nejlidnatější zemi), Indii, Japonsko, Rusko, Vietnam a další. V Asii vznikly nejstarší civilizace - mezi nimi Mezopotámie a Čína. Asie je také domovem tygrů, pand a slonů.',
+    title:'Asie', icon:'🐼', skupina:'Světadíly',
+    text: 'Asie je největší a nejlidnatější světadíl světa. Žije zde přes 4,5 miliardy lidí - tedy víc než polovina lidí na Zemi. V Asii leží i nejvyšší hora světa - Mount Everest. Najdeme zde také největší zemi co se týče počtu obyvatel - Čínu (přes 1,4 miliardy lidí). Mezi další asijské země patří Indie, Japonsko, Rusko, Vietnam, Thajsko a Mongolsko. V Asii vznikly nejstarší civilizace světa - mezi nimi Mezopotámie a Čína. Asie je také domovem zajímavých zvířat: tygrů, pand, slonů, opic a velbloudů. V Asii pramení i dvě dlouhé řeky - Jang-c´-ťiang a Mekong.',
     questions: [
-      {q:'Jaká je Asie z hlediska velikosti?', keywords:['nejvetsi','prvni','1']},
-      {q:'Jak se jmenuje nejvyšší hora světa?', keywords:['mount everest','everest']},
-      {q:'Která země je v Asii nejlidnatější?', keywords:['cina']},
-      {q:'Jaká zvířata jsou typická pro Asii?', keywords:['tygr','panda','slon']},
-      {q:'Které civilizace tu vznikly?', keywords:['mezopotam','cina']}
+      {q:'Která je nejvyšší hora světa?', keywords:['mount everest','everest']},
+      {q:'Která země v Asii má nejvíc obyvatel?', keywords:['cina']},
+      {q:'Kolik lidí žije v Asii?', keywords:['4,5','45','45 miliardy','4 5 miliard','vic nez polovina']},
+      {q:'Která zvířata jsou typická pro Asii?', keywords:['tygr','panda','slon','tygr+panda']},
+      {q:'Které civilizace v Asii vznikly?', keywords:['mezopotam','cina']},
+      {q:'Které dvě řeky v Asii pramení?', keywords:['jang','mekong','jang+mekong']}
     ]
   },
   {
-    text: 'Amerika je druhý největší světadíl. Dělíme ji na dvě části - Severní Ameriku a Jižní Ameriku. V Severní Americe jsou Spojené státy americké (USA), Kanada a Mexiko. V Jižní Americe jsou například Brazílie, Argentina a Peru. Ameriku objevil Kryštof Kolumbus v roce 1492. Předtím tu žili původní obyvatelé - Indiáni. Žijí zde také jaguáři, lamy, kondoři a další zvířata.',
+    title:'Amerika', icon:'🦅', skupina:'Světadíly',
+    text: 'Amerika je druhý největší světadíl. Dělíme ji na dvě části - Severní Ameriku a Jižní Ameriku. V Severní Americe jsou Spojené státy americké (USA), Kanada a Mexiko. V Jižní Americe jsou Brazílie, Argentina, Peru, Chile, Kolumbie a další. Ameriku objevil Kryštof Kolumbus v roce 1492, když hledal cestu do Indie - proto první obyvatele nazval Indiány. Předtím tu žily desítky milionů původních obyvatel - Indiánů. V Americe žijí zajímavá zvířata: jaguáři, lamy, kondoři, hroznýši, aligátoři a tučňáci. Najdeme tu také nejdelší pohoří světa - Andy v Jižní Americe.',
     questions: [
       {q:'Na kolik částí dělíme Ameriku?', keywords:['dve','2']},
       {q:'Jak se jmenují části Ameriky?', keywords:['severni+jizni','severni','jizni']},
-      {q:'Kdo objevil Ameriku?', keywords:['kolumbus']},
+      {q:'Kdo objevil Ameriku?', keywords:['kolumbus','krystof']},
       {q:'Kdy byla Amerika objevena?', keywords:['1492']},
-      {q:'Kdo žil v Americe před objevením?', keywords:['indian','puvodni']}
+      {q:'Kdo žil v Americe před Kolumbem?', keywords:['indian','puvodni']},
+      {q:'Jak se jmenuje nejdelší pohoří v Americe?', keywords:['andy']}
     ]
   },
   {
-    text: 'Afrika je druhý největší světadíl po Asii. Leží jižně od Evropy. Žije zde přes 1,4 miliardy lidí. V Africe je největší poušť na světě - Sahara. Najdeme zde také nejdelší řeku světa - Nil. Afrika je domovem mnoha zvířat: lvi, sloni, žirafy, hroši, zebry, gepardi a opice. Žije tu také mnoho různých kmenů. Hlavními zeměmi jsou Egypt, Jihoafrická republika, Keňa nebo Maroko.',
+    title:'Afrika', icon:'🦁', skupina:'Světadíly',
+    text: 'Afrika je druhý největší světadíl po Asii. Leží jižně od Evropy. Od Evropy ji odděluje Středozemní moře. Žije zde přes 1,4 miliardy lidí v 54 zemích. V Africe je největší poušť na světě - Sahara, která zabírá většinu severní Afriky. Najdeme zde také nejdelší řeku světa - Nil, který je dlouhý 6 650 km. Afrika je domovem velkých savců: lvů, slonů, žiraf, hrochů, zeber, gepardů, nosorožců a opic. Žije tu také mnoho různých kmenů s vlastními jazyky a tradicemi. Hlavními zeměmi jsou Egypt, Jihoafrická republika, Keňa, Maroko nebo Nigérie.',
     questions: [
       {q:'Kolikátým největším světadílem je Afrika?', keywords:['druhy','2']},
       {q:'Jak se jmenuje největší africká poušť?', keywords:['sahara']},
       {q:'Která řeka je nejdelší na světě?', keywords:['nil']},
-      {q:'Jaká zvířata žijí v Africe?', keywords:['lev','slon','zirafa','zebra']},
-      {q:'Které jsou hlavní africké země?', keywords:['egypt','keňa','keni','maroko','jar']}
+      {q:'Jak je dlouhý Nil?', keywords:['6650','6 650','sest tisic']},
+      {q:'Jaká zvířata žijí v Africe?', keywords:['lev','slon','zirafa','zebra','lev+slon']},
+      {q:'Které moře odděluje Afriku od Evropy?', keywords:['stredozemni','stredozemne']}
     ]
   },
   /* === HORY A PŘÍRODA === */
   {
-    text: 'Mount Everest je nejvyšší hora na Zemi. Měří 8 848 metrů. Leží v pohoří Himálaj na hranici Nepálu a Číny. Tibetsky se hora jmenuje Čomolungma, což znamená "Matka bohyně Země". Lidé na ni začali stoupat ve 20. století. Poprvé ji v roce 1953 zdolali Edmund Hillary a Tenzing Norgay. Stoupání je velmi nebezpečné - je tam zima, málo kyslíku a často zuří bouře.',
+    title:'Mount Everest', icon:'🏔️', skupina:'Příroda',
+    text: 'Mount Everest je nejvyšší hora na Zemi. Měří úctyhodných 8 848 metrů. Leží v pohoří Himálaj na hranici Nepálu a Číny. Tibetsky se hora jmenuje Čomolungma, což znamená "Matka bohyně Země". Nepálsky se nazývá Sagarmátha. Lidé na ni začali stoupat ve 20. století. Poprvé na vrchol vystoupili 29. května 1953 Edmund Hillary z Nového Zélandu a šerpa Tenzing Norgay. Stoupání je velmi nebezpečné - je tam zima i 60 stupňů pod nulou, málo kyslíku a často zuří bouře. Na cestě se nachází tzv. "zóna smrti" nad 8 000 metrů, kde lidské tělo dlouho nepřežije.',
     questions: [
-      {q:'Jak vysoký je Mount Everest?', keywords:['8 848','8848','8000']},
+      {q:'Jak vysoký je Mount Everest?', keywords:['8 848','8848','osm tisic osm set ctyricet osm']},
       {q:'V jakém pohoří leží?', keywords:['himalaj']},
       {q:'Jak se říká Mount Everestu tibetsky?', keywords:['comolungma']},
       {q:'Kdo poprvé vystoupil na vrchol?', keywords:['hillary+norgay','hillary','norgay']},
-      {q:'V jakém roce byl Mount Everest poprvé zdolán?', keywords:['1953']}
+      {q:'V jakém roce byl Mount Everest poprvé zdolán?', keywords:['1953']},
+      {q:'Co je "zóna smrti"?', keywords:['nad 8000','8000','osm tisic','kde clovek dlouho nepreziva','nepreziv']}
     ]
   },
   {
-    text: 'Amazonka je nejvodnatější řeka světa. Pramení v Andách v Peru a teče přes Jižní Ameriku do Atlantského oceánu. Je dlouhá přes 6 400 kilometrů. Kolem Amazonky roste největší tropický deštný prales na světě - Amazonský prales. Říká se mu plíce planety, protože vyrábí hodně kyslíku. V Amazonce žijí piraně, sladkovodní delfíni a anakondy.',
+    title:'Amazonka', icon:'🌊', skupina:'Příroda',
+    text: 'Amazonka je nejvodnatější řeka světa. Pramení v Andách v Peru a teče přes Jižní Ameriku do Atlantského oceánu. Je dlouhá přes 6 400 kilometrů. V některých místech je tak široká, že na druhý břeh nedohlédneš! Kolem Amazonky roste největší tropický deštný prales na světě - Amazonský prales. Říká se mu "plíce planety", protože vyrábí spoustu kyslíku, který dýcháme. V Amazonce žijí zajímavá zvířata - piraně se zuby ostrými jako břitva, sladkovodní růžoví delfíni, anakondy a obří želvy. V pralese kolem žijí jaguáři, papoušci, lenochodi a mnoho druhů opic.',
     questions: [
       {q:'Kde Amazonka pramení?', keywords:['andy','andach','peru']},
       {q:'Jak je Amazonka dlouhá?', keywords:['6 400','6400']},
       {q:'Jak se říká Amazonskému pralesu?', keywords:['plice planety','plice']},
-      {q:'Jaká zvířata žijí v Amazonce?', keywords:['piran','delfin','anakonda']},
-      {q:'Do kterého oceánu Amazonka teče?', keywords:['atlantsk']}
+      {q:'Jaká zvířata žijí v Amazonce?', keywords:['piran','delfin','anakonda','zelva']},
+      {q:'Do kterého oceánu Amazonka teče?', keywords:['atlantsk']},
+      {q:'Jaká zvířata žijí v pralese kolem?', keywords:['jaguar','papousek','lenochod','opice']}
     ]
   },
   {
-    text: 'Vačnatci jsou zvláštní skupina savců. Jejich mláďata se rodí velmi malá a nedospělá. Maminka má na břiše vak (kapsu), kde mládě dorůstá. Kojí se mateřským mlékem. Mezi vačnatce patří klokan, koala, ďábel medvědovitý nebo vombat. Většina vačnatců žije v Austrálii a na Nové Guineji. V Americe žije například vačice. Klokan dokáže skočit do dálky až 12 metrů!',
+    title:'Vačnatci', icon:'🦘', skupina:'Příroda',
+    text: 'Vačnatci jsou zvláštní skupina savců. Jejich mláďata se rodí velmi malá, slepá a nedospělá - často jsou velká jen jako fazole! Maminka má na břiše vak (kapsu), kde mládě dorůstá. Tam je v teple, bezpečí a kojí se mateřským mlékem. Mezi vačnatce patří klokan, koala, ďábel medvědovitý, vombat a vačice. Většina vačnatců žije v Austrálii a na Nové Guineji. V Severní a Jižní Americe žije jen vačice. Klokan dokáže skočit do dálky až 12 metrů a jeho ocas je tak silný, že na něm umí stát! Koala spí asi 20 hodin denně a živí se listy eukalyptu.',
     questions: [
       {q:'Kde mláďata vačnatců dorůstají?', keywords:['vak','kapsa','vaku','kapse','na brise']},
       {q:'Jaká zvířata patří mezi vačnatce?', keywords:['klokan','koala','vombat','dabel']},
       {q:'Kde většina vačnatců žije?', keywords:['australii','australie','nova guinea']},
       {q:'Jak daleko skočí klokan?', keywords:['12','dvanact']},
-      {q:'Čím se vačnatci kojí?', keywords:['mlek','materskym mlekem']}
+      {q:'Čím se vačnatci kojí?', keywords:['mlek','materskym']},
+      {q:'Co jí koala?', keywords:['eukalypt','listy eukalypt','listy']}
     ]
   },
   {
-    text: 'Dinosauři žili na Zemi přes 160 milionů let. Byli to plazi, kteří měli nejrůznější velikosti - od malých jako kuře až po obrovské jako několikapatrový dům. Před 66 miliony let dinosauři vyhynuli. Vědci si myslí, že to bylo kvůli velkému meteoritu, který narazil do Země. Při dopadu vznikl mrak prachu, který zakryl slunce. Bez slunce nemohly růst rostliny a dinosauři neměli co jíst.',
+    title:'Zánik dinosaurů', icon:'🦕', skupina:'Příroda',
+    text: 'Dinosauři žili na Zemi přes 160 milionů let. Byli to plazi, kteří měli nejrůznější velikosti - od malých jako kuře až po obrovské jako několikapatrový dům. Nejznámější jsou Tyrannosaurus rex, Triceratops nebo Brachiosaurus. Před 66 miliony let dinosauři vyhynuli. Vědci si myslí, že to bylo kvůli velkému meteoritu, který narazil do dnešního Mexika. Při dopadu vznikl obrovský mrak prachu, který zakryl slunce. Bez slunce nemohly růst rostliny a býložraví dinosauři neměli co jíst. Pak vyhynuli i masožraví, protože neměli koho lovit. Spolu s dinosaury vyhynula až tři čtvrtiny všech druhů. Některé skupiny ale přežily - třeba předkové ptáků a savců.',
     questions: [
       {q:'Jak dlouho žili dinosauři?', keywords:['160','sto sedesat']},
       {q:'Kdy dinosauři vyhynuli?', keywords:['66']},
       {q:'Co podle vědců způsobilo zánik dinosaurů?', keywords:['meteorit','meteor']},
+      {q:'Kde meteorit dopadl?', keywords:['mexik']},
       {q:'Co se stalo po dopadu meteoritu?', keywords:['mrak prachu','prach','zakryl slunce']},
-      {q:'Proč dinosauři nemohli přežít?', keywords:['rostliny','nemely co jist','nemely jidlo']}
+      {q:'Které skupiny zvířat přežily?', keywords:['ptak','savec','predkove']}
     ]
   },
   /* === HISTORIE A MÍSTA === */
   {
-    text: 'První lidé přistáli na Měsíci 20. července 1969. Byli to američtí astronauti Neil Armstrong a Buzz Aldrin. Třetí astronaut Michael Collins zůstal v lodi obíhat kolem Měsíce. Cesta na Měsíc byla dlouhá - trvala tři dny. Když Neil Armstrong vystoupil z modulu, řekl slavnou větu: "Je to malý krok pro člověka, ale obrovský skok pro lidstvo." Astronauti přivezli zpět kameny a prach z Měsíce.',
+    title:'První přistání na Měsíci', icon:'🌙', skupina:'Historie',
+    text: 'První lidé přistáli na Měsíci 20. července 1969. Byli to američtí astronauti Neil Armstrong a Buzz Aldrin. Třetí astronaut Michael Collins zůstal v lodi obíhat kolem Měsíce. Cesta na Měsíci byla dlouhá - trvala tři dny. Když Neil Armstrong vystoupil z lodi, řekl slavnou větu: "Je to malý krok pro člověka, ale obrovský skok pro lidstvo." Astronauti na Měsíci strávili 21 hodin. Šli pomalu poskakovat, protože gravitace je tu šestkrát menší než na Zemi. Vztyčili americkou vlajku, vyfotografovali Zemi a přivezli zpět 22 kilogramů kamenů a prachu. Tato mise se jmenovala Apollo 11.',
     questions: [
       {q:'Kdy přistáli první lidé na Měsíci?', keywords:['1969','20 cervence']},
       {q:'Kdo byli první astronauti na Měsíci?', keywords:['armstrong+aldrin','armstrong','aldrin']},
       {q:'Kdo zůstal v lodi?', keywords:['collins']},
-      {q:'Jak dlouho trvala cesta?', keywords:['3 dny','tri dny','tri']},
-      {q:'Co astronauti přivezli zpět?', keywords:['kameny','prach','vzorky']}
+      {q:'Jak se jmenovala mise?', keywords:['apollo','apollo 11','apollo jedenact']},
+      {q:'Jak dlouho cesta trvala?', keywords:['3 dny','tri dny','tri']},
+      {q:'Co astronauti přivezli zpět?', keywords:['kameny','prach','22']}
     ]
   },
   {
-    text: 'Pyramidy v Gíze jsou jedním z divů světa. Stojí v Egyptě poblíž města Káhira. Postavili je staří Egypťané před více než 4 500 lety. Sloužily jako hroby pro faraony. Největší pyramida se jmenuje Cheopsova a je vysoká 147 metrů - to je jako 50patrový dům! Postavena je z obrovských kamenných bloků. Vědci dodnes přesně nevědí, jak ji Egypťané dokázali postavit bez moderních strojů.',
+    title:'Pyramidy v Gíze', icon:'🔺', skupina:'Historie',
+    text: 'Pyramidy v Gíze jsou jedním z divů světa. Stojí v Egyptě poblíž hlavního města Káhiry. Postavili je staří Egypťané před více než 4 500 lety. V Gíze stojí tři velké pyramidy. Sloužily jako hroby pro faraony - tehdejší krále Egypta. Největší pyramida se jmenuje Cheopsova pyramida a je vysoká 147 metrů - to je jako 50patrový dům! Postavena je z víc než 2 milionů kamenných bloků, každý vážící několik tun. Vědci dodnes přesně nevědí, jak ji Egypťané dokázali postavit bez moderních strojů. Vedle pyramid stojí obrovská socha sfingy - lva s lidskou hlavou. Pyramidy chrání tajemství - mnohé z nich jsou plné skrytých chodeb a komor.',
     questions: [
       {q:'V které zemi pyramidy stojí?', keywords:['egypt']},
       {q:'Před kolika lety byly pyramidy postaveny?', keywords:['4500','4 500']},
-      {q:'Komu sloužily pyramidy?', keywords:['faraon','jako hrob','hrob']},
+      {q:'Komu sloužily pyramidy?', keywords:['faraon','jako hrob','hrob','kralum']},
       {q:'Jak se jmenuje největší pyramida?', keywords:['cheopsov','cheops']},
-      {q:'Jak je vysoká největší pyramida?', keywords:['147']}
+      {q:'Jak je vysoká největší pyramida?', keywords:['147']},
+      {q:'Jaká socha stojí vedle pyramid?', keywords:['sfing','sfinga','lev s lidskou']}
     ]
   },
   {
-    text: 'Pražský orloj je středověký astronomický stroj. Visí na Staroměstské radnici v Praze. Byl postaven v roce 1410, takže má přes 600 let. Ukazuje čas, polohu Slunce a Měsíce, znamení zvěrokruhu i datum. Každou hodinu se na něm objeví dvanáct apoštolů (svatých Ježíšových žáků). Pod nimi se pohybují figurky smrtky, lakomce a Turka. Lidé z celého světa jezdí orloj obdivovat.',
+    title:'Pražský orloj', icon:'🕰️', skupina:'Historie',
+    text: 'Pražský orloj je středověký astronomický stroj. Visí na Staroměstské radnici v Praze. Byl postaven v roce 1410, takže má přes 600 let. Je to jeden z nejstarších fungujících orlojů na světě. Ukazuje čas, polohu Slunce a Měsíce, znamení zvěrokruhu i datum. Každou hodinu se na něm objeví dvanáct apoštolů (svatých Ježíšových žáků), kteří se postupně otáčí v dvou okénkách. Pod nimi se pohybují figurky smrtky, lakomce, marnivosti a Turka. Na konci představení zakokrhá zlatý kohout. Lidé z celého světa jezdí orloj obdivovat. Pověst říká, že orloj postavil mistr Hanuš a aby ho nemohl postavit nikde jinde, byl oslepen.',
     questions: [
-      {q:'Kde Pražský orloj visí?', keywords:['staromestsk','staromestska radnice']},
+      {q:'Kde Pražský orloj visí?', keywords:['staromestsk','staromestske radnici']},
       {q:'Kdy byl orloj postaven?', keywords:['1410']},
       {q:'Co se na orloji každou hodinu objeví?', keywords:['12 apostolu','dvanact apostolu','apostol','12']},
       {q:'Co všechno orloj ukazuje?', keywords:['cas','slunce','mesic','datum','zverokruh']},
-      {q:'Kolik let je orloji?', keywords:['600','sest set']}
+      {q:'Kdo podle pověsti orloj postavil?', keywords:['hanus','mistr hanus']},
+      {q:'Co se s mistrem Hanušem stalo?', keywords:['oslepen','oslepili']}
     ]
   },
   {
-    text: 'Karel IV. byl jeden z nejslavnějších českých panovníků. Byl králem a později i císařem Svaté říše římské. Žil ve 14. století (1316-1378). Za jeho vlády se Praha stala hlavním evropským městem. Karel IV. nechal postavit Karlův most, založil Univerzitu Karlovu (první univerzitu ve střední Evropě) a nechal přestavět Pražský hrad. Také založil hrad Karlštejn, kam ukládal korunovační klenoty.',
+    title:'Karel IV.', icon:'👑', skupina:'Historie',
+    text: 'Karel IV. byl jeden z nejslavnějších českých panovníků. Byl králem Českým a později i císařem Svaté říše římské. Žil ve 14. století (1316-1378). Otec ho jako malého poslal na výchovu do Francie. Karel IV. mluvil pěti jazyky! Za jeho vlády se Praha stala hlavním městem Svaté říše římské. Karel IV. nechal postavit Karlův most přes Vltavu, založil Univerzitu Karlovu v roce 1348 - první univerzitu ve střední Evropě. Také nechal přestavět Pražský hrad a Svatovítskou katedrálu. Dal postavit hrad Karlštejn, kam ukládal korunovační klenoty. Říkalo se mu "Otec vlasti", protože pro Čechy udělal tolik dobrého.',
     questions: [
       {q:'V kterém století Karel IV. žil?', keywords:['14','ctrnactem']},
-      {q:'Co Karel IV. nechal postavit v Praze?', keywords:['karluv most','univerzita karlovu','univerzita','prazsky hrad']},
-      {q:'Jaký hrad Karel IV. založil?', keywords:['karlstejn']},
-      {q:'Co se ukládalo na Karlštejně?', keywords:['korunovacni klenoty','klenoty']},
-      {q:'Kolikátý Karel byl?', keywords:['ctvrty','iv','4']}
+      {q:'Kde byl Karel IV. vychován?', keywords:['francie','franci']},
+      {q:'Jakou univerzitu Karel IV. založil?', keywords:['karlovu','univerzita karlovu']},
+      {q:'Jaký most nechal postavit?', keywords:['karluv most','karluv']},
+      {q:'Jaký hrad založil?', keywords:['karlstejn']},
+      {q:'Jak se mu říkalo?', keywords:['otec vlasti']}
     ]
   },
   {
-    text: 'Boubín je nejstarší pralesovité území v Česku. Leží na Šumavě. Některým stromům je víc než 400 let! Roste tu hlavně smrk, buk a jedle. Boubín je chráněná oblast - je tu zakázáno kácet stromy nebo sbírat. Návštěvníci mohou jít po vyznačené stezce a pozorovat divokou přírodu. Žijí tu rysové, jeleni, výři a další lesní zvířata. Vrchol Boubínu měří 1 362 metrů.',
+    title:'Boubín', icon:'🌲', skupina:'Příroda',
+    text: 'Boubín je nejstarší pralesovité území v Česku. Leží na Šumavě, jižně od Vimperku. Některým stromům je víc než 400 let! Roste tu hlavně smrk, buk a jedle. Boubínský prales je chráněná oblast - je tu zakázáno kácet stromy, sbírat houby nebo lesní plody. Návštěvníci mohou jít po vyznačené stezce a pozorovat divokou přírodu. V pralese leží spousta padlých stromů, které postupně zetlevají a stávají se domovem hub a hmyzu. Žijí tu rysové, jeleni, srnci, výři, datlové a další lesní zvířata. Vrchol Boubínu měří 1 362 metrů a z rozhledny na něm je za jasného počasí vidět až do Alp.',
     questions: [
       {q:'V jakém pohoří Boubín leží?', keywords:['sumav']},
       {q:'Kolik let je některým stromům?', keywords:['400','ctyri sta']},
-      {q:'Co je tady zakázáno?', keywords:['kacet','sbirat']},
-      {q:'Jaká zvířata na Boubíně žijí?', keywords:['rys','jelen','vyr']},
-      {q:'Jak vysoký je vrchol?', keywords:['1362','1 362']}
+      {q:'Jaké stromy v Boubíně rostou?', keywords:['smrk','buk','jedle']},
+      {q:'Co je tady zakázáno?', keywords:['kacet','sbirat','houby','plody']},
+      {q:'Jaká zvířata na Boubíně žijí?', keywords:['rys','jelen','srnec','vyr','datel']},
+      {q:'Co je vidět z rozhledny?', keywords:['alpy','do alp']}
     ]
   },
   {
-    text: 'Litoměřice jsou krásné historické město v severních Čechách. Leží v Českém středohoří, na soutoku řek Labe a Ohře. Mají přes 23 000 obyvatel. Centrum města tvoří krásné Mírové náměstí s gotickou katedrálou svatého Štěpána. Litoměřicím se říká "Zahrada Čech" - rostou tu vinohrady a sady. Pořádá se tu každoročně slavná zahradnická výstava. V Litoměřicích žil i básník Karel Hynek Mácha, který tu zemřel.',
+    title:'Litoměřice', icon:'🏰', skupina:'Místa v Česku',
+    text: 'Litoměřice jsou krásné historické město v severních Čechách. Leží v Českém středohoří, na soutoku řek Labe a Ohře. Mají přes 23 000 obyvatel. Centrum města tvoří krásné Mírové náměstí s gotickou katedrálou svatého Štěpána a starou radnicí. Litoměřicím se říká "Zahrada Čech" - rostou tu rozsáhlé vinohrady a ovocné sady. Pořádá se tu každoročně slavná zahradnická výstava nazvaná Zahrada Čech. V Litoměřicích žil i básník Karel Hynek Mácha, který tu zemřel. Dnes je město známé také školami, kulturou a vinařskými slavnostmi. Po proudu Labe se odsud pluje na lodích až k Mělníku.',
     questions: [
       {q:'Kde Litoměřice leží?', keywords:['ceske stredohori','severnich cech','stredohori']},
-      {q:'Kolik mají Litoměřice obyvatel?', keywords:['23000','23 000']},
+      {q:'Na soutoku jakých řek?', keywords:['labe+ohre','labe','ohre','soutok labe']},
+      {q:'Kolik mají obyvatel?', keywords:['23000','23 000']},
       {q:'Jak se Litoměřicím říká?', keywords:['zahrada cech']},
-      {q:'Jaké náměstí je v centru?', keywords:['mirove namesti','katedrala','svateho stepana']},
+      {q:'Jaká je tam katedrála?', keywords:['svateho stepana','stepana','sv stepana','katedrala']},
       {q:'Který básník v Litoměřicích zemřel?', keywords:['mach','karel hynek mach']}
     ]
   },
   {
-    text: 'Karel Hynek Mácha je nejslavnější český romantický básník. Narodil se v roce 1810 v Praze. Jeho nejznámější dílo se jmenuje Máj. Je to milostná báseň o lásce, smrti a krásách přírody. Mácha rád chodil na dlouhé túry po českých horách a hradech. Měl velkou lásku - Eleonoru Šomkovou. Bohužel zemřel velmi mladý - bylo mu jen 26 let. Zemřel v Litoměřicích v roce 1836.',
+    title:'Karel Hynek Mácha', icon:'📜', skupina:'Historie',
+    text: 'Karel Hynek Mácha je nejslavnější český romantický básník. Narodil se 16. listopadu 1810 v Praze. Studoval práva, ale nejvíc miloval poezii a přírodu. Jeho nejznámější dílo se jmenuje Máj. Je to milostná báseň o lásce, smrti a krásách české krajiny. Mácha rád chodil na dlouhé túry po českých horách a hradech - často za jeden den ušel přes 50 kilometrů! Měl velkou lásku - Eleonoru "Lori" Šomkovou, se kterou měl syna. Bohužel zemřel velmi mladý, bylo mu jen 26 let. Zemřel v Litoměřicích v listopadu 1836, krátce po požáru, který pomáhal hasit. Tam je také pohřben.',
     questions: [
       {q:'Jak se jmenuje nejslavnější Máchovo dílo?', keywords:['maj']},
       {q:'O čem je báseň Máj?', keywords:['lasce','laska','smrt','priroda']},
       {q:'Kde Mácha zemřel?', keywords:['litomerice','litomericich']},
       {q:'Kolik mu bylo, když zemřel?', keywords:['26']},
-      {q:'V kterém roce se Mácha narodil?', keywords:['1810']}
+      {q:'V kterém roce se Mácha narodil?', keywords:['1810']},
+      {q:'Jak se jmenovala jeho láska?', keywords:['eleonora','lori','somkova']}
     ]
   },
   {
-    text: 'Milešovka je hora v Českém středohoří. Měří 837 metrů, ale je to nejvyšší hora celého středohoří. Leží nedaleko Litoměřic a Lovosic. Z vrcholu je krásný výhled - za jasného dne je vidět až do Krkonoš. Říká se jí "královna Českého středohoří". Na vrcholu je meteorologická stanice, která měří počasí. Je to také největrnější místo v Česku - vítr zde fouká silně téměř každý den.',
+    title:'Milešovka', icon:'⛰️', skupina:'Místa v Česku',
+    text: 'Milešovka je hora v Českém středohoří. Měří 837 metrů a je nejvyšší horou celého středohoří. Leží nedaleko Litoměřic a Lovosic. Má kuželovitý tvar - je to vyhaslá sopka. Z vrcholu je úžasný kruhový výhled - za jasného dne je vidět až do Krkonoš a Šumavy. Říká se jí "královna Českého středohoří". Na vrcholu stojí meteorologická stanice, která měří počasí už od roku 1905. Milešovka je největrnější místo v Česku - vítr zde fouká silně téměř každý den. Asi 300 dnů v roce je na vrcholu mlha. Cesta na vrchol vede přes les a poslední úsek je strmý a kamenitý. Většinou trvá asi hodinu.',
     questions: [
       {q:'Jak vysoká je Milešovka?', keywords:['837']},
       {q:'V kterém pohoří leží?', keywords:['ceske stredohori','stredohori']},
       {q:'Jak se Milešovce říká?', keywords:['kralovna']},
       {q:'Co je na vrcholu?', keywords:['meteorologick','stanice']},
-      {q:'Čím je Milešovka výjimečná?', keywords:['nejvetrnejsi','vitr']}
+      {q:'Čím je Milešovka výjimečná?', keywords:['nejvetrnejsi','vitr']},
+      {q:'Kolik dnů v roce je na vrcholu mlha?', keywords:['300','tri sta']}
     ]
   },
   {
-    text: 'České středohoří je pohoří v severních Čechách. Vzniklo před 30 miliony let, když tu vybuchovaly sopky. Dnes jsou sopky vyhaslé, ale jejich kuželovité kopce zůstaly. Mají typický tvar - jsou nezvykle špičaté a strmé. Mezi nejznámější patří Milešovka, Říp a Lovoš. Středohořím protéká řeka Labe a vytváří tu krásné údolí. Roste tu hodně vinohradů a ovocných sadů.',
+    title:'České středohoří', icon:'🌄', skupina:'Místa v Česku',
+    text: 'České středohoří je pohoří v severních Čechách. Vzniklo před 30 miliony let, když tu vybuchovaly sopky. Dnes jsou sopky vyhaslé, ale jejich kuželovité kopce zůstaly - mají typický tvar, jsou nezvykle špičaté a strmé. Mezi nejznámější patří Milešovka (nejvyšší - 837 m), Říp (na který podle pověsti přivedl praotec Čech svůj lid) a Lovoš. Středohořím protéká řeka Labe a vytváří tu krásné údolí mezi kopci. Roste tu hodně vinohradů, ovocných sadů a chmelnic. Žijí tu vzácné rostliny, které jinde v Česku neuvidíš. Na úbočí kopců rostou bukové lesy a na horách smrky. Středohoří je oblíbeným místem pro výlety - vede tu mnoho turistických stezek.',
     questions: [
-      {q:'Ve kterých Čechách leží České středohoří?', keywords:['severnich','severn']},
+      {q:'V jakých Čechách leží České středohoří?', keywords:['severnich','severn']},
       {q:'Kdy České středohoří vzniklo?', keywords:['30','tricet']},
       {q:'Co tu kdysi vybuchovalo?', keywords:['sopky','sopka','vulkan']},
       {q:'Které kopce sem patří?', keywords:['milesovka','rip','lovos']},
+      {q:'Kdo přivedl podle pověsti lid na Říp?', keywords:['praotec cech','cech','praotec']},
       {q:'Jaká řeka středohořím protéká?', keywords:['labe']}
     ]
   },
   {
-    text: 'Labe je nejdelší česká řeka. Pramení v Krkonoších v 1 387 metrech nad mořem. Teče přes Hradec Králové, Pardubice, Mělník a Litoměřice. V Mělníku se do něj vlévá řeka Vltava. Pak Labe pokračuje do Německa, kde se v Hamburku vlévá do Severního moře. Celá řeka je dlouhá 1 094 km. V Česku je Labe dlouhé 358 km. Na Labi pluje hodně lodí - i nákladních.',
+    title:'Labe', icon:'💧', skupina:'Místa v Česku',
+    text: 'Labe je nejdelší česká řeka. Pramení v Krkonoších v 1 387 metrech nad mořem - na Labské louce. Jeho pramen označuje kamenná zídka s erby zemí, kterými řeka teče. Teče přes Vrchlabí, Hradec Králové, Pardubice, Mělník, Litoměřice a Děčín. V Mělníku se do něj vlévá řeka Vltava - která je vlastně delší než Labe v té chvíli. Pak Labe pokračuje do Německa, kde se v Hamburku vlévá do Severního moře. Celá řeka je dlouhá 1 094 km. V Česku je Labe dlouhé 358 km. Na Labi pluje hodně lodí - i nákladních. Žijí v něm ryby jako kapr, štika, candát nebo úhoř.',
     questions: [
-      {q:'Kde Labe pramení?', keywords:['krkonosich','krkonose']},
+      {q:'Kde Labe pramení?', keywords:['krkonosich','krkonose','labska louka']},
+      {q:'V jaké výšce Labe pramení?', keywords:['1387','1 387']},
       {q:'Která řeka se vlévá do Labe v Mělníku?', keywords:['vltava']},
       {q:'Do kterého moře Labe ústí?', keywords:['severni','severni more']},
       {q:'Jak je Labe celkem dlouhé?', keywords:['1094','1 094']},
@@ -517,32 +564,38 @@ var NAUCNE_TEXTY = [
     ]
   },
   {
-    text: 'Terezín je historické město v severních Čechách, blízko Litoměřic. Bylo postaveno koncem 18. století jako pevnost. Měla bránit zemi před nepřáteli. Pevnost má hvězdicový tvar a obrovské hradby. Bohužel za druhé světové války Němci v Terezíně zřídili koncentrační tábor. Vězněni tu byli hlavně Židé, mezi nimi mnoho dětí. Mnoho jich zemřelo nebo bylo posláno do dalších táborů. Dnes je v Terezíně Památník, který připomíná tyto smutné události.',
+    title:'Terezín', icon:'🕯️', skupina:'Místa v Česku',
+    text: 'Terezín je historické město v severních Čechách, blízko Litoměřic. Bylo postaveno koncem 18. století jako pevnost. Postavit ho nechal císař Josef II. v roce 1780. Pevnost měla bránit zemi před nepřáteli a je pojmenována po jeho matce Marii Terezii. Pevnost má hvězdicový tvar a obrovské hradby. Bohužel za druhé světové války Němci v Terezíně zřídili koncentrační tábor. Vězněni tu byli hlavně Židé z různých zemí Evropy, mezi nimi i mnoho dětí. Mnoho jich tu zemřelo nebo bylo posláno do dalších táborů na smrt. Dnes je v Terezíně Památník Terezín, který připomíná tyto smutné události a vzdělává mladé lidi o historii.',
     questions: [
-      {q:'Kde Terezín leží?', keywords:['severnich cechach','litomeric']},
-      {q:'Kdy byl Terezín postaven?', keywords:['18 stolet','osmnactem']},
-      {q:'K čemu Terezín původně sloužil?', keywords:['pevnost','obran']},
-      {q:'Co se v Terezíně dělo za 2. světové války?', keywords:['koncentracni tabor','tabor','vezneni']},
-      {q:'Jaký tvar má pevnost?', keywords:['hvezdicov']}
+      {q:'Kde Terezín leží?', keywords:['severnich cechach','litomeric','blizko litomeric']},
+      {q:'Kdy byl Terezín postaven?', keywords:['18 stolet','1780']},
+      {q:'Kdo nechal Terezín postavit?', keywords:['josef ii','josef druhy','josef']},
+      {q:'Po kom je Terezín pojmenován?', keywords:['marie terezie','marii terezii']},
+      {q:'Co se v Terezíně dělo za 2. světové války?', keywords:['koncentracni tabor','tabor']},
+      {q:'Kdo byli hlavními vězni?', keywords:['zide','zidovskeho puvodu','zidovsk']}
     ]
   },
   {
-    text: 'Marie Terezie byla česká a rakouská královna. Vládla 40 let (1740-1780). Byla velmi vzdělaná a měla 16 dětí! Marie Terezie se snažila stát zlepšit. Zavedla povinnou školní docházku - každé dítě muselo chodit do školy. Také zlepšila armádu, daně i úřady. Jejím nejslavnějším synem byl Josef II., který vládl po ní. Marie Terezie byla jedinou ženou, která kdy vládla Habsburkům.',
+    title:'Marie Terezie', icon:'👸', skupina:'Historie',
+    text: 'Marie Terezie byla česká a rakouská královna. Vládla 40 let (1740-1780) a byla jedinou ženou, která kdy vládla habsburskému rodu. Byla velmi vzdělaná a měla 16 dětí! Marie Terezie se snažila stát zlepšit. Zavedla povinnou školní docházku - od jejího nařízení musely všechny děti od 6 do 12 let chodit do školy. Také zlepšila armádu, daně i úřady. Dala udělat soupis všech obyvatel a domů, kterému se říkalo "tereziánský katastr". Nechala postavit nemocnice, sirotčince a školy. Měla velmi šťastné manželství s Františkem Lotrinským a po jeho smrti nosila do konce života jen černé šaty. Jejím nejslavnějším synem byl Josef II., který vládl po ní.',
     questions: [
       {q:'Jak dlouho Marie Terezie vládla?', keywords:['40','ctyricet']},
       {q:'Kolik měla dětí?', keywords:['16','sestnact']},
-      {q:'Co Marie Terezie zavedla pro děti?', keywords:['povinnou skolni dochazku','dochazku','do skoly','skol']},
+      {q:'Co Marie Terezie zavedla pro děti?', keywords:['povinnou skolni dochazku','dochazku','do skoly']},
+      {q:'Pro jaký věk byla povinná škola?', keywords:['6 do 12','6 12','sest dvanact']},
       {q:'Kdo byl jejím slavným synem?', keywords:['josef ii','josef druhy','josef']},
-      {q:'V kterých letech Marie Terezie vládla?', keywords:['1740','1780']}
+      {q:'Co Marie Terezie nosila po smrti manžela?', keywords:['cerne','cerne saty','smutek']}
     ]
   },
   {
-    text: 'Josef II. byl syn Marie Terezie. Byl rakouským císařem a vládl po své matce v letech 1780-1790. Josef II. provedl mnoho reforem - to znamená velkých změn. Zrušil nevolnictví, takže rolníci už nemuseli pracovat zadarmo na polích pánů. Vydal také Toleranční patent - lidé mohli věřit v různá náboženství. Zrušil mnoho klášterů a postavil za jejich peníze nemocnice a školy. Lidé mu říkali "lidový císař".',
+    title:'Josef II.', icon:'🤴', skupina:'Historie',
+    text: 'Josef II. byl syn Marie Terezie. Byl rakouským císařem a vládl po své matce v letech 1780-1790. Josef II. provedl mnoho reforem - to znamená velkých změn ve státě. Zrušil nevolnictví, takže rolníci už nemuseli pracovat zadarmo na polích pánů a mohli se volně stěhovat. Vydal také Toleranční patent - lidé mohli věřit v různá náboženství, ne jen v katolictví. Zrušil mnoho klášterů a postavil za jejich peníze nemocnice a školy. Zavedl také jednotnou němčinu jako úřední jazyk - to se Čechům moc nelíbilo. Josef II. se převlékal za obyčejného člověka a chodil mezi lid, aby zjistil, jak se mu žije. Lidé mu proto říkali "lidový císař".',
     questions: [
       {q:'Kdo byl Josef II.?', keywords:['syn marie terezie','syn']},
       {q:'V kterých letech Josef II. vládl?', keywords:['1780','1790']},
       {q:'Co Josef II. zrušil?', keywords:['nevolnictvi','klaster']},
       {q:'Co umožnil Toleranční patent?', keywords:['nabozenstvi','vira','verit']},
+      {q:'Jaký jazyk Josef II. zavedl?', keywords:['nemcin','nemecky','nemcinu']},
       {q:'Jak lidé Josefa II. nazývali?', keywords:['lidovy cisar']}
     ]
   }
@@ -678,40 +731,76 @@ function krFinish(){
    NAUČNÉ - logika
 ─────────────────────────────────────────── */
 var naSt={};
-function naStart(){
-  naSt = {seq: shuffle(NAUCNE_TEXTY).slice(0,5), idx:0, body:0, sp:0, locked:false};
+/* Rozcestník 23 témat - vykreslí se v cv-naucne-menu */
+function naMenu(){
+  var list = el('na-list');
+  list.innerHTML = '';
+  /* Skupiny pro nadpis */
+  var skupiny = {};
+  NAUCNE_TEXTY.forEach(function(item, idx){
+    if(!skupiny[item.skupina]) skupiny[item.skupina] = [];
+    skupiny[item.skupina].push({item:item, idx:idx});
+  });
+  /* Vykreslit po skupinách */
+  Object.keys(skupiny).forEach(function(skName){
+    /* Hlavička skupiny */
+    var hd = document.createElement('div');
+    hd.style.cssText = 'grid-column:span 2;margin-top:.6rem;font-weight:800;color:var(--o);font-size:1rem;border-bottom:2px solid var(--o);padding-bottom:.2rem';
+    hd.textContent = skName;
+    list.appendChild(hd);
+    /* Tlačítka pro každý text ve skupině */
+    skupiny[skName].forEach(function(entry){
+      var btn = document.createElement('button');
+      btn.style.cssText = 'background:var(--os);border:2px solid var(--o);border-radius:10px;padding:.7rem .5rem;font-family:var(--font);cursor:pointer;text-align:left;display:flex;align-items:center;gap:.5rem;transition:all .15s';
+      btn.onmouseover = function(){ this.style.background='var(--o)'; this.style.color='white'; };
+      btn.onmouseout = function(){ this.style.background='var(--os)'; this.style.color='inherit'; };
+      btn.innerHTML = '<span style="font-size:1.4rem">'+entry.item.icon+'</span><span style="font-weight:700;font-size:.95rem">'+entry.item.title+'</span>';
+      btn.onclick = function(){ naStart(entry.idx); };
+      list.appendChild(btn);
+    });
+  });
+}
+function naStart(idx){
+  naSt = {idx:idx, body:0, sp:0, locked:false};
+  /* Přepnout zobrazení */
+  el('cv-naucne-menu').style.display='none';
+  el('cv-naucne').style.display='block';
+  el('na-res').style.display='none';
+  el('na-ob').style.display='block';
+  naRender();
+}
+function naReplay(){
+  /* Reset stejný text */
+  naSt.body = 0;
+  naSt.sp = 0;
+  naSt.locked = false;
   el('na-res').style.display='none';
   el('na-ob').style.display='block';
   naRender();
 }
 function naRender(){
-  var s = naSt;
-  if(s.idx >= s.seq.length){ naFinish(); return; }
-  var item = s.seq[s.idx];
+  var item = NAUCNE_TEXTY[naSt.idx];
+  el('na-tit').innerHTML = item.icon + ' ' + item.title;
   renderText('na', item, true);
-  el('na-v').textContent = (s.idx+1)+'/'+s.seq.length;
-  el('na-ci').textContent = (s.idx+1)+'/'+s.seq.length;
-  el('na-bd').textContent = s.body;
-  el('na-sp').textContent = s.sp;
-  el('na-pg').style.width = (s.idx/s.seq.length*100)+'%';
+  el('na-bd').textContent = naSt.body;
+  el('na-ci').textContent = item.questions.length;
+  el('na-sp').textContent = naSt.sp;
   el('na-fb').textContent='';
   el('na-fb').className='fb';
-  el('na-nx').style.display='none';
   el('na-check').style.display='inline-block';
-  s.locked=false;
+  naSt.locked=false;
 }
 function naCheck(){
-  var s = naSt;
-  if(s.locked) return;
-  s.locked = true;
-  var item = s.seq[s.idx];
+  if(naSt.locked) return;
+  naSt.locked = true;
+  var item = NAUCNE_TEXTY[naSt.idx];
   var correctCount = checkAnswers('na', item);
   var earned = correctCount * 6;  /* naučné = víc bodů */
-  s.body += earned;
-  if(correctCount === item.questions.length) s.sp++;
+  naSt.body = earned;
+  naSt.sp = correctCount;
   addPoints(earned);
-  el('na-bd').textContent = s.body;
-  el('na-sp').textContent = s.sp;
+  el('na-bd').textContent = naSt.body;
+  el('na-sp').textContent = naSt.sp;
   if(correctCount === item.questions.length){
     el('na-fb').innerHTML = '🌟 <b>Vynikající!</b> Všechny odpovědi správné. +'+earned+' bodů.';
     el('na-fb').className = 'fb ok';
@@ -723,16 +812,14 @@ function naCheck(){
     el('na-fb').className = 'fb err';
   }
   el('na-check').style.display='none';
-  el('na-nx').style.display='block';
-}
-function naNext(){ naSt.idx++; naRender(); }
-function naFinish(){
-  var s = naSt;
-  el('na-ob').style.display='none';
-  el('na-res').style.display='block';
-  el('na-pp').textContent = 'Přečetla jsi '+s.seq.length+' textů · perfektně '+s.sp+' · získala jsi '+s.body+' bodů.';
-  el('na-sc').textContent = s.body;
-  el('na-tot').textContent = totalScore;
+  /* Po krátké chvíli ukázat výsledky */
+  setTimeout(function(){
+    el('na-ob').style.display='none';
+    el('na-res').style.display='block';
+    el('na-pp').textContent = 'Vyřešila jsi '+correctCount+' z '+item.questions.length+' otázek · získala jsi '+earned+' bodů.';
+    el('na-sc').textContent = earned;
+    el('na-tot').textContent = totalScore;
+  }, 1800);
 }
 
 /* ─────────────────────────────────────────────
@@ -741,7 +828,7 @@ function naFinish(){
 function printChoice(){
   var topics = [
     {key:'kratke3', label:'Krátké příběhy (3 texty)'},
-    {key:'naucne2', label:'Naučné texty (2 texty)'}
+    {key:'naucne1', label:'Naučný text (náhodný)'}
   ];
   var html = '<div style="position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem"><div style="background:white;border-radius:12px;padding:1.5rem;max-width:480px;width:100%"><h3 style="margin:0 0 1rem;color:var(--m);text-align:center">🖨️ Vyber pracovní list</h3>';
   topics.forEach(function(t){
@@ -781,26 +868,26 @@ function printGetData(key){
     });
     return {title:'Čtení s porozuměním — krátké', topic:'Krátké příběhy', instructions:'Přečti si pozorně každý text a odpověz na otázky vlastními slovy.', qHtml:qHtml, aHtml:aHtml};
   }
-  if(key==='naucne2'){
-    var picked = shuffle(NAUCNE_TEXTY).slice(0,2);
-    var qHtml = '<p>Pozorně si přečti každý naučný text a odpověz na otázky vlastními slovy.</p>';
+  if(key==='naucne1'){
+    var picked = shuffle(NAUCNE_TEXTY).slice(0,1);
+    var qHtml = '<p>Pozorně si přečti naučný text a odpověz na otázky vlastními slovy.</p>';
     picked.forEach(function(it,i){
       qHtml += '<div style="margin:.6rem 0 1rem;page-break-inside:avoid">';
-      qHtml += '<div style="background:#fff7ed;border-left:4px solid #ea580c;padding:.6rem .8rem;margin-bottom:.5rem;font-style:italic;font-size:.95rem"><b>Text '+(i+1)+':</b> '+it.text+'</div>';
+      qHtml += '<div style="background:#fff7ed;border-left:4px solid #ea580c;padding:.7rem .9rem;margin-bottom:.7rem;font-style:italic;font-size:1rem;line-height:1.6"><b>'+it.icon+' '+it.title+':</b> '+it.text+'</div>';
       it.questions.forEach(function(qd, qi){
-        qHtml += '<div style="margin:.25rem 0 .4rem;padding-bottom:.25rem;border-bottom:1px dotted #ccc"><b>'+(qi+1)+'.</b> '+qd.q+'<br>&nbsp;&nbsp;&nbsp;___________________________________________</div>';
+        qHtml += '<div style="margin:.3rem 0 .5rem;padding-bottom:.3rem;border-bottom:1px dotted #ccc"><b>'+(qi+1)+'.</b> '+qd.q+'<br>&nbsp;&nbsp;&nbsp;___________________________________________</div>';
       });
       qHtml += '</div>';
     });
     var aHtml = '';
     picked.forEach(function(it,i){
-      aHtml += '<div style="margin:.4rem 0"><b>Text '+(i+1)+'</b></div>';
+      aHtml += '<div style="margin:.4rem 0"><b>'+it.title+'</b></div>';
       it.questions.forEach(function(qd, qi){
         var hint = qd.keywords[0].split('+').join(' + ');
         aHtml += '<div style="padding-left:1rem;font-size:.9rem">'+(qi+1)+'. '+qd.q+' → <b>'+hint+'…</b></div>';
       });
     });
-    return {title:'Čtení s porozuměním — naučné', topic:'Naučné texty', instructions:'Přečti si pozorně každý naučný text a odpověz na otázky vlastními slovy.', qHtml:qHtml, aHtml:aHtml};
+    return {title:'Čtení s porozuměním — naučný text: '+picked[0].title, topic:'Naučné texty', instructions:'Přečti si pozorně text a odpověz na otázky vlastními slovy.', qHtml:qHtml, aHtml:aHtml};
   }
 }
 function printHTML(data){

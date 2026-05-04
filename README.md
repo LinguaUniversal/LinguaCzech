@@ -1,53 +1,40 @@
-# LinguaCzech
+# Lingua · Český jazyk pro 1. stupeň ZŠ — Refresh
 
-Vzdělávací portál českého jazyka pro 1. stupeň ZŠ.
+**Vizuální refresh** — sjednoceno se stylem **LinguaCzech II** (2. stupeň) a **LinguaDeutsch** (němčina).
 
-**ZŠ a MŠ Lingua Universal · Litoměřice**
+## Co se mění
 
-## 🌐 Živý portál
+- ✅ **index.html** — nová landing s velkou sovou (jako 2. stupeň + Deutsch)
+- ✅ **1trida.html, 2trida.html, 3trida.html** — sjednocený topbar, hero, footer + krásný trofejní board
 
-https://linguauniversal.github.io/LinguaCzech/
+## Co zůstává
 
-## 📚 Obsah
+- ✅ **Barvy**: modrá `#32a0d2` + oranžová `#ffaa37`
+- ✅ **Font**: Barlow Condensed
+- ✅ **Trofeje**: 1.tř. 🥉 100 / 🥈 300 / 🥇 600 · 2.tř. 100/400/800 · 3.tř. 200/600/1200
+- ✅ **localStorage klíče** **TOTOŽNÉ** s originálem — žáci nepřijdou o body!
+  - 1. třída: `pismena_score`, `cteni_score`
+  - 2. třída: `hlasky_score`, `mt_score`, `vh_score`, `sd_score`, `dv_score`, `vm_score`, `vs_score`, `abeceda_slov_score`, `tmo_score`, `slabiky_score`, `cteni2_score`
+  - 3. třída: `vyjm_score`, `podst3_score`, `slovesa3_score`, `stsl_score`, `parove3_score`, `slovzas3_score`, `sd3_score`, `ctp3_score`, `osnova_score`
+- ✅ **Všechna cvičení** (`pismena.html`, `cteni.html`, `slabiky.html`, ... 30+ stránek) **beze změn**
+- ✅ **Přihlášení** (`prihlaseni.html`) funguje (jen tlačítko v indexu)
+- ✅ **Učitel/dashboard** (`ucitel.html`, `dashboard.html`) beze změn
 
-### 1. ročník (NOVÉ)
-- **Písmena** — velká tiskací, malá tiskací, párování velkých/malých, první hláska v obrázku, psací obtahování, hra auto
-- **Čtení** — krátká slova, dlouhá slova, čtení vět, porozumění (věta + otázka)
+## Soubory v ZIPu (4 + logo)
 
-### 2. ročník
-- **Hlásky** — samohlásky/souhlásky, abeceda, velká/malá písmena, psací písmo
-- **Měkké a tvrdé** — rozdělování souhlásek, doplňování i/y
-- **Vyber hlásku** — dlouhá/krátká, e/ě, u/ú/ů
-- **Slovní druhy** — vyhledávání ve větách, rozřazovač
-- **Druhy vět** — oznamovací, tázací, rozkazovací, přací
-- **Velká a malá písmena** — vlastní jména, pravopis
-- **Vztahy slov** — souřadná, podřadná, nadřazená
+```
+index.html       ← Nová landing s velkou sovou
+1trida.html      ← 2 cvičení (Písmena, Čtení)
+2trida.html      ← 11 cvičení
+3trida.html      ← 9 cvičení
+logo.png         ← (přepíše stávající, je stejný)
+```
 
-## 🛠️ Technické info
+## Nahrání
 
-- **Font:** Barlow Condensed (Google Fonts)
-- **Barvy:** `#32a0d2` (modrá) + `#ffaa37` (oranžová)
-- **Trofeje:** 🥉 100b · 🥈 150b · 🥇 200b za lekci
-- **Body:** ukládají se do `localStorage` v prohlížeči žáka
-- **Hosting:** GitHub Pages (statický web, zdarma, bez backendu)
+V repu `LinguaCzech` na GitHubu:
+1. **"Add file" → "Upload files"** → přetáhni 5 souborů ze ZIPu (přepíše původní)
+2. Commit: `Vizuální refresh - sjednocení s LinguaCzech II + LinguaDeutsch`
+3. Po 1-2 min se objeví nová verze na `https://linguauniversal.github.io/LinguaCzech/`
 
-## 📁 Struktura souborů
-
-| Soubor | Účel |
-|---|---|
-| `index.html` | Úvodní rozcestník (výběr ročníku) |
-| `1trida.html` | Přehled cvičení 1. třídy |
-| `pismena.html` | Cvičení písmen (1. třída) |
-| `cteni.html` | Cvičení čtení (1. třída) |
-| `2trida.html` | Přehled cvičení 2. třídy |
-| `hlasky.html` | Cvičení hlásek (vč. psacího písma) |
-| `mekke-tvrde.html` | Cvičení měkkých a tvrdých souhlásek |
-| `vyber-hlasku.html` | Cvičení samohlásek a podobných hlásek |
-| `slovni-druhy.html` | Cvičení slovních druhů |
-| `druhy-vet.html` | Cvičení druhů vět |
-| `velka-mala.html` | Cvičení velkých a malých písmen |
-| `vztahy-slov.html` | Cvičení vztahů mezi slovy |
-| `prihlaseni.html` | Lokální přihlášení žáka (jméno + PIN) |
-| `ucitel.html` | Učitelský generátor přístupů s PDF kartičkami |
-| `dashboard.html` | Přehled pokroku třídy s grafy |
-
+**Žáci nepřijdou o body** — localStorage klíče jsou totožné s původní verzí.

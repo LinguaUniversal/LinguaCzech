@@ -31,6 +31,8 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;}
 
 
 /* SKÓRE BADGE + TROFEJE */
+.navhome{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:#eaf4fa;color:#1a7fa8;border-radius:8px;padding:.15rem .5rem;font-size:1.15rem;line-height:1;flex-shrink:0;}
+.navhome:hover{background:#d3e9f5;}
 .scbg{position:fixed;top:10px;right:12px;background:var(--o);color:white;border-radius:99px;padding:.3rem .85rem;font-weight:700;font-size:1rem;font-family:var(--font);z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.18);pointer-events:none;}
 .trophy-bar{position:fixed;top:46px;right:12px;display:flex;gap:.25rem;z-index:200;background:rgba(255,255,255,.85);border-radius:99px;padding:.15rem .5rem;box-shadow:0 1px 6px rgba(0,0,0,.12);}
 .trp{font-size:1.5rem;opacity:.15;transition:opacity .3s,transform .4s;filter:grayscale(1);}
@@ -187,7 +189,7 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;}
 
 <!-- MENU -->
 <div id="menu">
-  <div class="topbar"><a href="1trida.html">← 1. třída</a><span class="brand"><img class="brand-logo" src="logo.png" alt="">Lingua Universal</span></div>
+  <div class="topbar"><a href="index.html">🏠 Úvod</a><a href="1trida.html">← 1. třída</a><span class="brand"><img class="brand-logo" src="logo.png" alt="">Lingua Universal</span></div>
   <div class="mh"><h1>Písmena</h1><p>1. ročník — vyber si cvičení</p></div>
   <div class="mg">
     <div onclick="go('ph')" class="mk mk-m"><h3>První hláska</h3><p>Na co začíná obrázek?</p></div>
@@ -207,7 +209,7 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;}
 
 <!-- ============ CV2: PÁROVÁNÍ velké → malé ============ -->
 <div class="cv" id="cv-par">
-  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">Velké → malé</span><span class="var" id="parv">1/5</span></div>
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><a class="navhome" href="index.html" title="Zpět na úvodní stránku">🏠</a><span class="tit">Velké → malé</span><span class="var" id="parv">1/5</span></div>
   <div class="sk"><div><div class="skn" id="parbd">0</div><div class="skl">body</div></div><div><div class="skn" id="parci">1/5</div><div class="skl">sada</div></div><div><div class="skn" id="parsp">0</div><div class="skl">správně</div></div></div>
   <div class="pg"><div class="pgf" id="parpg" style="width:0%"></div></div>
   <div id="parob">
@@ -233,7 +235,7 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;}
 
 <!-- ============ CV4: PRVNÍ HLÁSKA ============ -->
 <div class="cv" id="cv-ph">
-  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">První hláska</span><span class="var" id="phv">1/10</span></div>
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><a class="navhome" href="index.html" title="Zpět na úvodní stránku">🏠</a><span class="tit">První hláska</span><span class="var" id="phv">1/10</span></div>
   <div class="sk"><div><div class="skn" id="phbd">0</div><div class="skl">body</div></div><div><div class="skn" id="phci">1/10</div><div class="skl">otázka</div></div><div><div class="skn" id="phsp">0</div><div class="skl">správně</div></div></div>
   <div class="pg"><div class="pgf" id="phpg" style="width:0%"></div></div>
   <div id="phob">
@@ -259,7 +261,7 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;}
 
 <!-- ============ CV-PL: POSLEDNÍ HLÁSKA ============ -->
 <div class="cv" id="cv-pl">
-  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">Poslední hláska</span><span class="var" id="plv">1/10</span></div>
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><a class="navhome" href="index.html" title="Zpět na úvodní stránku">🏠</a><span class="tit">Poslední hláska</span><span class="var" id="plv">1/10</span></div>
   <div class="sk"><div><div class="skn" id="plbd">0</div><div class="skl">body</div></div><div><div class="skn" id="plci">1/10</div><div class="skl">otázka</div></div><div><div class="skn" id="plsp">0</div><div class="skl">správně</div></div></div>
   <div class="pg"><div class="pgf" id="plpg" style="width:0%"></div></div>
   <div id="plob">
@@ -285,7 +287,7 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;}
 
 <!-- ============ CV-TS: ČASOVÁ POSLOUPNOST ============ -->
 <div class="cv" id="cv-ts">
-  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">Co bylo dřív?</span><span class="var" id="tsv">1/5</span></div>
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><a class="navhome" href="index.html" title="Zpět na úvodní stránku">🏠</a><span class="tit">Co bylo dřív?</span><span class="var" id="tsv">1/5</span></div>
   <div class="sk"><div><div class="skn" id="tsbd">0</div><div class="skl">body</div></div><div><div class="skn" id="tsci">1/5</div><div class="skl">sada</div></div><div><div class="skn" id="tssp">0</div><div class="skl">správně</div></div></div>
   <div class="pg"><div class="pgf" id="tspg" style="width:0%"></div></div>
   <div id="tsob">
@@ -308,7 +310,7 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;}
 
 <!-- ============ CV-TT: TISKACÍ OBTAHOVÁNÍ ============ -->
 <div class="cv" id="cv-tt">
-  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">Tiskací — obtahování</span><span class="var" id="ttv">0/0</span></div>
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><a class="navhome" href="index.html" title="Zpět na úvodní stránku">🏠</a><span class="tit">Tiskací — obtahování</span><span class="var" id="ttv">0/0</span></div>
   <div class="sk"><div><div class="skn" id="ttbd">0</div><div class="skl">body</div></div><div><div class="skn" id="ttci">0/0</div><div class="skl">písmeno</div></div></div>
   <div class="pg"><div class="pgf" id="ttpg" style="width:0%"></div></div>
   <div id="ttob">
@@ -342,7 +344,7 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;}
 
 <!-- ============ CV5: PSACÍ — OBTAHOVÁNÍ ============ -->
 <div class="cv" id="cv-tr">
-  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">Psací — obtahování</span><span class="var" id="trv">0/0</span></div>
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><a class="navhome" href="index.html" title="Zpět na úvodní stránku">🏠</a><span class="tit">Psací — obtahování</span><span class="var" id="trv">0/0</span></div>
   <div class="sk"><div><div class="skn" id="trbd">0</div><div class="skl">body</div></div><div><div class="skn" id="trci">0/0</div><div class="skl">písmeno</div></div></div>
   <div class="pg"><div class="pgf" id="trpg" style="width:0%"></div></div>
   <div id="trob">
@@ -376,7 +378,7 @@ body{margin:0;font-family:var(--font);background:#f0f7fc;}
 
 <!-- ============ CV6: HRA AUTO (canvas, horizontální pruhy) ============ -->
 <div class="cv" id="cv-auto">
-  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><span class="tit">🚗 Hra auto</span></div>
+  <div class="nav"><button class="zpet" onclick="back()">← Zpět</button><a class="navhome" href="index.html" title="Zpět na úvodní stránku">🏠</a><span class="tit">🚗 Hra auto</span></div>
 
   <!-- ÚVODNÍ OBRAZOVKA -->
   <div id="auto-start" class="ka" style="text-align:center;padding:1.5rem">
